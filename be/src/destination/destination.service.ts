@@ -32,8 +32,6 @@ export class DestinationService {
         return newDestination.save();
     }
     async update(destination: UpdateDestinationDto) {
-        console.log(destination);
-
         if (
             destination.id === null ||
             destination.id === undefined ||

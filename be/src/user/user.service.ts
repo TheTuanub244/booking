@@ -20,20 +20,29 @@ export class UserService {
         private jwtSerivce: JwtService,
     ) { }
     async createUser(createUserDto: CreateUserDto) {
-        const { userName, password } = createUserDto;
+        const { userName, password, dob, email, address, phoneNumber } =
+            createUserDto;
 
         const existedUser = await this.userSchema
             .findOne({
                 userName: userName,
             })
             .exec();
+        console.log(address);
 
         if (existedUser) {
             throw new HttpException('User already exists', HttpStatus.CONFLICT);
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const newUser = new this.userSchema({ userName, password: hashedPassword });
+        const newUser = new this.userSchema({
+            userName,
+            password: hashedPassword,
+            dob,
+            email,
+            address,
+            phoneNumber,
+        });
         return newUser.save();
     }
     async deleteUser(id: string) {
@@ -50,22 +59,23 @@ export class UserService {
             _id: id,
         });
     }
-    async findUser(userName: string) {
+    async findUser(userName: any) {
+
         const user = await this.userSchema
             .findOne({
-                userName: userName,
+                userName: userName.userName,
             })
             .exec();
         return user;
     }
     async signUp(createUserDto: CreateUserDto) {
-        const { userName, password } = createUserDto;
+        const { userName, password, dob, email, address, phoneNumber } =
+            createUserDto;
         const exist = await this.userSchema
             .findOne({
                 userName: userName,
             })
             .exec();
-        console.log(exist);
 
         if (exist) {
             throw new UnauthorizedException('Username already existed');
@@ -74,14 +84,18 @@ export class UserService {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new this.userSchema({
-            userName: userName,
+            userName,
             password: hashedPassword,
+            dob,
+            email,
+            address,
+            phoneNumber,
         });
         return newUser.save();
     }
 
     async signIn(user: any) {
-        const { userName, password, role } = user;
+        const { userName, password } = user;
         const existUser = await this.userSchema
             .findOne({
                 userName: userName,
@@ -90,16 +104,35 @@ export class UserService {
         if (!existUser) {
             throw new UnauthorizedException('Invalid username or password');
         }
-        const isPasswordValid = await bcrypt.compare(
-            password,
-            existUser.password,
-        );
-        console.log(existUser);
+        const isPasswordValid = await bcrypt.compare(password, existUser.password);
 
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid username or password');
         }
+        const signInfo = { userName, role: existUser.role }
+        return { access_token: this.jwtSerivce.sign(signInfo) };
+    }
+    async updateUser(user: any) {
+        const { userName, dob, email, address, phoneNumber, role } = user;
+        const isAdmin = role.some((idx) => idx == 'admin');
 
-        return { access_token: this.jwtSerivce.sign(user) };
+        const findUser = await this.userSchema.findOneAndUpdate(
+            {
+                userName: userName,
+            },
+            {
+                $set: {
+                    userName,
+                    dob,
+                    email,
+                    address,
+                    phoneNumber,
+                    role,
+                    isAdmin: isAdmin,
+                },
+            },
+            { new: true },
+        );
+        return findUser.save();
     }
 }

@@ -8,7 +8,36 @@ export class User {
     userName: string;
     @Prop({ required: true })
     password: string;
+    @Prop()
+    phoneNumber: string;
+    @Prop()
+    gender: boolean;
+    @Prop({
+        type: {
+            province: {
+                type: String,
+                require: true,
+            },
+            district: {
+                type: String,
+                require: true,
+            },
+            ward: {
+                type: String,
+                require: true,
+            },
+        },
+        _id: false,
+    })
+    address: {
+        province: string;
+        district: string;
+        ward: string;
+    };
+    @Prop()
     avatar: string;
+    @Prop({ required: true })
+    email: string;
     @Prop({ type: Date })
     dob: Date;
     @Prop({ type: [String], enum: ROLE, default: ROLE.MEMBER })

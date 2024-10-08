@@ -8,20 +8,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/common/strategy/jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { CreateUserMiddleware } from 'src/common/middleware/CreateUser.middleware';
+import { PassportModule } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [UserController],
-  providers: [
-    UserService,
-    JwtStrategy,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-  ],
-  exports: [UserService, JwtModule],
+  providers: [UserService, JwtStrategy, JwtAuthGuard],
+  exports: [UserService, JwtModule, JwtAuthGuard],
   imports: [
     MongooseModule.forFeature([
       {
@@ -33,6 +29,7 @@ const jwtConstant = {
       secret: jwtConstant.secret,
       signOptions: { expiresIn: '60m' },
     }),
+    PassportModule,
   ],
 })
 export class UserModule {
@@ -42,6 +39,12 @@ export class UserModule {
       .forRoutes(
         { path: '/user/sign-up', method: RequestMethod.POST },
         { path: '/user/sign-in', method: RequestMethod.POST },
+      )
+      .apply(CreateUserMiddleware)
+      .forRoutes(
+        { path: '/user/create-user', method: RequestMethod.POST },
+        { path: '/user/sign-up', method: RequestMethod.POST },
+        { path: '/user/update-user', method: RequestMethod.POST },
       );
   }
 }

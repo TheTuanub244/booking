@@ -11,8 +11,8 @@ export class User {
     avatar: string;
     @Prop({ type: Date })
     dob: Date;
-    @Prop({ required: true, enum: ROLE, default: ROLE.MEMBER })
-    role: string;
+    @Prop({ type: [String], enum: ROLE, default: ROLE.MEMBER })
+    role: ROLE[];
     @Prop({ required: true, default: false })
     isAdmin: boolean;
 }

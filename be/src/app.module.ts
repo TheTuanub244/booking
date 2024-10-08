@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { DestinationModule } from './destination/destination.module';
 import { UserModule } from './user/user.module';
+import { DefaultRoleMiddleware } from './common/middleware/DefaultRole.Middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,4 +19,8 @@ import { UserModule } from './user/user.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(DefaultRoleMiddleware).forRoutes('*');
+  }
+}

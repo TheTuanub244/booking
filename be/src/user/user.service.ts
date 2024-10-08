@@ -12,6 +12,13 @@ import { Model, Types } from 'mongoose';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import {
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+    sendSignInLinkToEmail,
+    signInWithEmailAndPassword,
+} from 'firebase/auth';
+import { auth } from '../../../firebase-config';
 @Injectable()
 export class UserService {
     constructor(
@@ -60,7 +67,6 @@ export class UserService {
         });
     }
     async findUser(userName: any) {
-
         const user = await this.userSchema
             .findOne({
                 userName: userName.userName,
@@ -109,7 +115,7 @@ export class UserService {
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid username or password');
         }
-        const signInfo = { userName, role: existUser.role }
+        const signInfo = { userName, role: existUser.role };
         return { access_token: this.jwtSerivce.sign(signInfo) };
     }
     async updateUser(user: any) {
@@ -134,5 +140,40 @@ export class UserService {
             { new: true },
         );
         return findUser.save();
+    }
+    async signUpWithEmail(createUserDto: CreateUserDto) {
+        try {
+            const { userName, password, dob, email, address, phoneNumber } =
+                createUserDto;
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password,
+            );
+            console.log(userCredential.user);
+
+            await sendEmailVerification(userCredential.user);
+            console.log('Verification email sent!');
+        } catch (err) {
+            throw err;
+        }
+    }
+    async signInWithEmail(signIn: any) {
+        const { email } = signIn
+        const actionCodeSettings = {
+            // URL you want to redirect back to after email link is clicked
+            url: 'http://localhost:3000',
+            handleCodeInApp: true, // This is necessary for linking the email
+        };
+
+        try {
+            await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+            console.log('Email link sent to:', email);
+            // Save the email locally to complete sign-in later
+            localStorage.setItem('emailForSignIn', email);
+        } catch (error) {
+            console.error('Error sending email:', error);
+            throw error; // Handle error appropriately
+        }
     }
 }

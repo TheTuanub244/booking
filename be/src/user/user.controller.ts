@@ -20,9 +20,17 @@ export class UserController {
   async signUp(@Body() createUserDto: CreateUserDto) {
     return this.userService.signUp(createUserDto);
   }
+  @Post('/sign-up-with-email')
+  async signUpWithEmail(@Body() signup: any) {
+    return this.userService.signUpWithEmail(signup)
+  }
   @Post('/sign-in')
   async signIn(@Body() user: any) {
     return this.userService.signIn(user);
+  }
+  @Post('/sign-in-with-email')
+  async signInWithEmail(@Body() signIn: any) {
+    return this.userService.signInWithEmail(signIn)
   }
   @Post('/update-user')
   @Roles(ROLE.ADMIN, ROLE.MEMBER)

@@ -11,19 +11,22 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CreateUserMiddleware } from 'src/common/middleware/CreateUser.middleware';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { Session, SessionSchema } from 'src/session/session.schema';
+import { SessionService } from 'src/session/session.service';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [UserController],
-  providers: [UserService, JwtStrategy, JwtAuthGuard],
-  exports: [UserService, JwtModule, JwtAuthGuard],
+  providers: [UserService, JwtStrategy, JwtAuthGuard, SessionService],
+  exports: [UserService, JwtModule, JwtAuthGuard, SessionService],
   imports: [
     MongooseModule.forFeature([
       {
         name: User.name,
         schema: UserSchema,
       },
+      { name: Session.name, schema: SessionSchema },
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,

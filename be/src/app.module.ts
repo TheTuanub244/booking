@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { DefaultRoleMiddleware } from './common/middleware/DefaultRole.Middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
+import { SessionModule } from './session/session.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,6 +18,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     MongooseModule.forRoot(process.env.DB_URI),
     DestinationModule,
     UserModule,
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [

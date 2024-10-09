@@ -6,6 +6,7 @@ import { ROLE } from './enum/role.enum';
 export class User {
   @Prop({ required: true, unique: true })
   userName: string;
+  @Prop({ select: false })
   password: string;
   @Prop()
   phoneNumber: string;

@@ -6,7 +6,6 @@ import { ROLE } from './enum/role.enum';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 @UseGuards(RolesGuard)
-
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
@@ -22,7 +21,7 @@ export class UserController {
   }
   @Post('/sign-up-with-email')
   async signUpWithEmail(@Body() signup: any) {
-    return this.userService.signUpWithEmail(signup)
+    return this.userService.signUpWithEmail(signup);
   }
   @Post('/sign-in')
   async signIn(@Body() user: any) {
@@ -30,22 +29,15 @@ export class UserController {
   }
   @Post('/sign-in-with-email')
   async signInWithEmail(@Body() signIn: any) {
-    return this.userService.signInWithEmail(signIn)
+    return this.userService.signInWithEmail(signIn);
   }
   @Post('/update-user')
   @Roles(ROLE.ADMIN, ROLE.MEMBER)
-
   async updateUser(@Body() user: any) {
-    return this.userService.updateUser(user)
-  }
-  @UseGuards(RolesGuard)
-  @Roles(ROLE.MEMBER)
-  @Get('find-user')
-  async findUser(@Body() userName: any) {
-    return 'This route is protected and requires a valid JWT with roles.';
+    return this.userService.updateUser(user);
   }
   @Post('reset-password')
   async resetPassword(@Body() email: any) {
-    return this.userService.resetPassword(email)
+    return this.userService.resetPassword(email);
   }
 }

@@ -44,4 +44,8 @@ export class UserController {
   async findUser(@Body() userName: any) {
     return 'This route is protected and requires a valid JWT with roles.';
   }
+  @Post('reset-password')
+  async resetPassword(@Body() email: any) {
+    return this.userService.resetPassword(email)
+  }
 }

@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import {
     createUserWithEmailAndPassword,
     sendEmailVerification,
+    sendPasswordResetEmail,
     sendSignInLinkToEmail,
     signInWithEmailAndPassword,
 } from 'firebase/auth';
@@ -102,21 +103,50 @@ export class UserService {
 
     async signIn(user: any) {
         const { userName, password } = user;
-        const existUser = await this.userSchema
-            .findOne({
-                userName: userName,
-            })
-            .exec();
-        if (!existUser) {
-            throw new UnauthorizedException('Invalid username or password');
-        }
-        const isPasswordValid = await bcrypt.compare(password, existUser.password);
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(userName)) {
+            const existUser = await this.userSchema
+                .findOne({
+                    userName: userName,
+                })
+                .exec();
 
-        if (!isPasswordValid) {
-            throw new UnauthorizedException('Invalid username or password');
+            if (!existUser) {
+                throw new UnauthorizedException('Invalid username or password');
+            }
+            const isPasswordValid = await bcrypt.compare(
+                password,
+                existUser.password,
+            );
+
+            if (!isPasswordValid) {
+                throw new UnauthorizedException('Invalid username or password');
+            }
+            const signInfo = { userName, role: existUser.role };
+            return { access_token: this.jwtSerivce.sign(signInfo) };
+        } else {
+            const existEmail = await this.userSchema.findOne({
+                email: userName,
+            });
+            if (!existEmail) {
+                throw new UnauthorizedException('Invalid username or password');
+            }
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(
+                    auth,
+                    userName,
+                    password,
+                );
+
+                return {
+                    access_token: userCredential.user.getIdToken(),
+                };
+            } catch (err) {
+                throw new UnauthorizedException('Invalid username or password');
+
+            }
         }
-        const signInfo = { userName, role: existUser.role };
-        return { access_token: this.jwtSerivce.sign(signInfo) };
     }
     async updateUser(user: any) {
         const { userName, dob, email, address, phoneNumber, role } = user;
@@ -145,35 +175,59 @@ export class UserService {
         try {
             const { userName, password, dob, email, address, phoneNumber } =
                 createUserDto;
+            const exist = await this.userSchema
+                .findOne({
+                    email: email,
+                })
+                .exec();
+            if (exist) {
+                throw new BadRequestException('Email alread existed');
+            }
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
                 email,
                 password,
             );
-            console.log(userCredential.user);
 
+            const newUser = new this.userSchema({
+                userName,
+                dob,
+                email,
+                address,
+                phoneNumber,
+                uid: userCredential.user.uid,
+            });
             await sendEmailVerification(userCredential.user);
-            console.log('Verification email sent!');
+            return newUser.save();
         } catch (err) {
             throw err;
         }
     }
     async signInWithEmail(signIn: any) {
-        const { email } = signIn
+        const { email } = signIn;
         const actionCodeSettings = {
-            // URL you want to redirect back to after email link is clicked
             url: 'http://localhost:3000',
-            handleCodeInApp: true, // This is necessary for linking the email
+            handleCodeInApp: true,
         };
 
         try {
             await sendSignInLinkToEmail(auth, email, actionCodeSettings);
             console.log('Email link sent to:', email);
-            // Save the email locally to complete sign-in later
-            localStorage.setItem('emailForSignIn', email);
         } catch (error) {
             console.error('Error sending email:', error);
             throw error; // Handle error appropriately
+        }
+    }
+    async resetPassword(email: any) {
+        const actionCodeSettings = {
+            url: 'http://localhost:3000',
+            handleCodeInApp: true,
+        };
+        try {
+            await sendPasswordResetEmail(auth, email.email, actionCodeSettings);
+            console.log('Password reset email sent with custom URL!');
+        } catch (error) {
+            console.error('Error sending password reset email:', error.message);
         }
     }
 }

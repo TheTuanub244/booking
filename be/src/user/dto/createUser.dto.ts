@@ -13,4 +13,5 @@ export class CreateUserDto {
     email: string;
     dob: Date;
     phoneNumber: string;
+    uid: string
 }

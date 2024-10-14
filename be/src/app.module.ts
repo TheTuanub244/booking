@@ -9,6 +9,12 @@ import { DefaultRoleMiddleware } from './common/middleware/DefaultRole.Middlewar
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
 import { SessionModule } from './session/session.module';
+import { PropertyModule } from './property/property.module';
+import { RoomModule } from './room/room.module';
+import { BookingModule } from './booking/booking.module';
+import { ReviewModule } from './review/review.module';
+import { PaymentModule } from './payment/payment.module';
+import { AmentitesModule } from './amentites/amentites.module';
 import * as admin from 'firebase-admin';
 import * as serviceAccount from './config/booking-app-1edf4-firebase-adminsdk-dwj66-88f2e17348.json';
 @Module({
@@ -21,6 +27,12 @@ import * as serviceAccount from './config/booking-app-1edf4-firebase-adminsdk-dw
     DestinationModule,
     UserModule,
     SessionModule,
+    PropertyModule,
+    RoomModule,
+    BookingModule,
+    ReviewModule,
+    PaymentModule,
+    AmentitesModule,
   ],
   controllers: [AppController],
   providers: [

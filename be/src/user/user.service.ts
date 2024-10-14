@@ -148,7 +148,7 @@ export class UserService {
           password,
         );
 
-        const idToken = await userCredential.user.getIdToken()
+        const idToken = await userCredential.user.getIdToken();
 
         const newSession = await this.sessionService.createSession({
           userId: existEmail._id.toString(),

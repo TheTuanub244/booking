@@ -124,18 +124,15 @@ export class UserService {
       if (!isPasswordValid) {
         throw new UnauthorizedException('Invalid username or password');
       }
-      const findSession = await this.sessionService.getSessionByUserId(existUser._id);
-      if (findSession) {
-
-        await this.sessionService.updateSession({ sessionId: findSession?._id, data: "null" });
-      } else {
-        await this.sessionService.createSession({
-          userId: existUser._id.toString(),
-          data: 'null',
-        });
-      }
+      const newSession = await this.sessionService.createSession({
+        userId: existUser._id.toString(),
+        data: 'null',
+      });
       const signInfo = { userName, role: existUser.role };
-      return { access_token: this.jwtSerivce.sign(signInfo) };
+      return {
+        access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
+        refresh_token: newSession.refreshToken,
+      };
     } else {
       const existEmail = await this.userSchema.findOne({
         email: userName,
@@ -150,20 +147,18 @@ export class UserService {
           userName,
           password,
         );
-        const findSession = await this.sessionService.getSession(
-          existEmail._id,
-        );
-        if (findSession) {
-          await this.sessionService.updateSession({ sessionId: findSession?._id, data: "null" });
-        } else {
-          await this.sessionService.createSession({
-            userId: existEmail._id.toString(),
 
-            data: 'null',
-          });
-        }
+        const idToken = await userCredential.user.getIdToken()
+
+        const newSession = await this.sessionService.createSession({
+          userId: existEmail._id.toString(),
+
+          data: 'null',
+        });
+
         return {
-          access_token: userCredential.user.getIdToken(),
+          access_token: idToken,
+          refresh_token: newSession.refreshToken,
         };
       } catch (err) {
         throw new UnauthorizedException('Invalid username or password');
@@ -210,10 +205,12 @@ export class UserService {
         email,
         password,
       );
-
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt)
       const newUser = new this.userSchema({
         userName,
         dob,
+        password: hashedPassword,
         email,
         address,
         phoneNumber,

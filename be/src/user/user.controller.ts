@@ -36,6 +36,11 @@ export class UserController {
   async updateUser(@Body() user: any) {
     return this.userService.updateUser(user);
   }
+  @Get('find-user')
+  @UseGuards(JwtAuthGuard)
+  async findUser(@Body() user: any) {
+    return 'help'
+  }
   @Post('reset-password')
   async resetPassword(@Body() email: any) {
     return this.userService.resetPassword(email);

@@ -30,6 +30,7 @@ const jwtConstant = {
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
+
       signOptions: { expiresIn: '60m' },
     }),
     PassportModule,

@@ -20,6 +20,6 @@ export class SessionController {
     }
     @Delete(':id')
     async deleteSession(@Body() session: any) {
-        return this.sessionService.deleteSession(session)
+        // return this.sessionService.deleteSession(session)
     }
 }

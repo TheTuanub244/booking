@@ -13,6 +13,8 @@ export class Session {
   userId: User;
   @Prop({})
   data: string;
+  @Prop({})
+  recent_search: string;
   @Prop({ type: Date, default: Date.now() })
   last_activity: Date;
   @Prop({

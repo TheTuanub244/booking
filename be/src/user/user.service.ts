@@ -148,7 +148,7 @@ export class UserService {
           password,
         );
 
-        const idToken = await userCredential.user.getIdToken();
+        const idToken = await userCredential.user.getIdToken()
 
         const newSession = await this.sessionService.createSession({
           userId: existEmail._id.toString(),
@@ -206,7 +206,7 @@ export class UserService {
         password,
       );
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt)
+      const hashedPassword = await bcrypt.hash(password, salt);
       const newUser = new this.userSchema({
         userName,
         dob,

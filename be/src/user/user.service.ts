@@ -248,7 +248,6 @@ export class UserService {
       })
       .select('+password')
       .exec();
-    console.log(findUser.password);
 
     const isValid = await bcrypt.compare(oldPassword, findUser.password);
     if (isValid) {

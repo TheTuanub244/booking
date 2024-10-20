@@ -1,2 +1,3 @@
 .env
-/be/src/config/
+./be/src/config/
+./firebase-config.ts

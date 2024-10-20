@@ -29,8 +29,8 @@ export class Property {
             },
             street: {
                 type: String,
-                require: true
-            }
+                require: true,
+            },
         },
         _id: false,
     })
@@ -38,44 +38,47 @@ export class Property {
         province: string;
         district: string;
         ward: string;
-        street: string
+        street: string;
     };
     @Prop({
         type: {
             longtitude: {
                 type: Number,
-                require: true
+                require: true,
             },
             latitude: {
                 type: Number,
-                require: true
-            }
+                require: true,
+            },
         },
         _id: false,
-
     })
     location: {
-        longtitude: number,
-        latitude: number
-    }
+        longtitude: number;
+        latitude: number;
+    };
     @Prop({ type: String, enum: TYPE })
     property_type: TYPE;
 
     @Prop({ required: true })
     rate: number;
-    @Prop([{
-        dealName: String,
-        discount: Number,
-        startDate: Date,
-        endDate: Date,
-        isActive: { type: Boolean, default: true },
-    }])
-    promotions: [{
-        dealName: string;
-        discount: number;
-        startDate: Date;
-        endDate: Date;
-        isActive: boolean;
-    }];
+    @Prop([
+        {
+            dealName: String,
+            discount: Number,
+            startDate: Date,
+            endDate: Date,
+            isActive: { type: Boolean, default: true },
+        },
+    ])
+    promotions: [
+        {
+            dealName: string;
+            discount: number;
+            startDate: Date;
+            endDate: Date;
+            isActive: boolean;
+        },
+    ];
 }
 export const PropertySchema = SchemaFactory.createForClass(Property);

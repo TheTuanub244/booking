@@ -1,7 +1,9 @@
-import { Type } from "class-transformer";
-import { CreateUserDto } from "src/user/dto/createUser.dto";
+import { Type } from 'class-transformer';
 
 export class CreateSessionDto {
-    userId: string
-    data: string
+    userId: string;
+    data: {
+        lastViewProperties: string;
+        lastBooking: string;
+    };
 }

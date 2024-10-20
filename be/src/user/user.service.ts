@@ -21,6 +21,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../../../firebase-config';
 import { SessionService } from 'src/session/session.service';
+import admin from 'firebase-admin';
 @Injectable()
 export class UserService {
   constructor(
@@ -118,15 +119,17 @@ export class UserService {
         throw new UnauthorizedException('Invalid username or password');
       }
 
-
-      const isPasswordValid = await bcrypt.compare(password, existUser.password)
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        existUser.password,
+      );
 
       if (!isPasswordValid) {
         throw new UnauthorizedException('Invalid username or password');
       }
       const newSession = await this.sessionService.createSession({
         userId: existUser._id.toString(),
-        data: 'null',
+        data: null,
       });
       const signInfo = { userName, role: existUser.role };
       return {
@@ -148,12 +151,12 @@ export class UserService {
           password,
         );
 
-        const idToken = await userCredential.user.getIdToken()
+        const idToken = await userCredential.user.getIdToken();
 
         const newSession = await this.sessionService.createSession({
           userId: existEmail._id.toString(),
 
-          data: 'null',
+          data: null,
         });
 
         return {
@@ -225,7 +228,7 @@ export class UserService {
   async signInWithEmail(signIn: any) {
     const { email } = signIn;
     const actionCodeSettings = {
-      url: 'http://localhost:3000',
+      url: 'http://localhost:8000',
       handleCodeInApp: true,
     };
 
@@ -237,16 +240,42 @@ export class UserService {
       throw error; // Handle error appropriately
     }
   }
-  async resetPassword(email: any) {
-    const actionCodeSettings = {
-      url: 'http://localhost:3000',
-      handleCodeInApp: true,
-    };
-    try {
-      await sendPasswordResetEmail(auth, email.email, actionCodeSettings);
-      console.log('Password reset email sent with custom URL!');
-    } catch (error) {
-      console.error('Error sending password reset email:', error.message);
+  async resetPassword(resetPassword: any) {
+    const { email, oldPassword, newPassword } = resetPassword;
+    const findUser = await this.userSchema
+      .findOne({
+        email
+      })
+      .select('+password')
+      .exec();
+    console.log(findUser.password);
+
+    const isValid = await bcrypt.compare(oldPassword, findUser.password);
+    if (isValid) {
+      admin
+        .auth()
+        .updateUser(findUser.uid, {
+          password: newPassword,
+        })
+        .then(async (userRecord) => {
+          console.log(
+            'Successfully updated Firebase password for user:',
+            userRecord.toJSON(),
+          );
+
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(newPassword, salt);
+          await this.userSchema.findOneAndUpdate(
+            {
+              email: email,
+            },
+            {
+              password: hashedPassword,
+            },
+          );
+        });
+    } else {
+      throw new BadRequestException('Wrong old password!');
     }
   }
 }

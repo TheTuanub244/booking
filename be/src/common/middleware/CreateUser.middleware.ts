@@ -7,32 +7,30 @@ import {
 @Injectable()
 export class CreateUserMiddleware implements NestMiddleware {
   async use(req: any, res: any, next: () => void) {
-    const { userName, password, dob, email, address, phoneNumber } = req.body;
-
-    if (!userName) {
-      throw new BadRequestException('Username is required');
-    }
-    if (!password) {
-      throw new BadRequestException('Password is required');
-    }
-    if (!dob) {
-      throw new BadRequestException('Date of birth is required');
-    }
-    if (!email) {
-      throw new BadRequestException('Email is required');
-    } else {
+    const { email } = req.body;
+    const requiredFields = [
+      { message: 'Username is required', field: 'userName' },
+      { message: 'Password is required', field: 'password' },
+      { message: 'Date of birth is required', field: 'dob' },
+      { message: 'Email is required', field: 'email' },
+      { message: 'Address is required', field: 'address' },
+      { message: 'Phone number is required', field: 'phoneNumber' },
+    ];
+    const errors = requiredFields
+      .filter(({ field }) => !req.body[field])
+      .map(({ field, message }) => ({ field, message }));
+    if (email) {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       if (!emailRegex.test(email)) {
-        throw new BadRequestException('Invalid email format');
+        errors.push({ field: 'email', message: 'Invalid email format' });
       }
     }
-    if (!address) {
-      throw new BadRequestException('Address is required');
+    if (errors.length > 0) {
+      throw new BadRequestException({
+        message: errors.map((error) => error.message),
+        field: errors.map((error) => error.field),
+      })
     }
-    if (!phoneNumber) {
-      throw new BadRequestException('Phone number is required');
-    }
-
     next();
   }
 }

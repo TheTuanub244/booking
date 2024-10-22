@@ -9,7 +9,7 @@ function Signup() {
     lastName: '',
     subscribe: true,
   });
-
+  const [isSignUp, setIsSignUp] = useState(true)
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -20,13 +20,13 @@ function Signup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
+    setIsSignUp(true)
   };
-
   return (
     <div className="signup-container">
-      <div className="signup-box">
+      {
+        isSignUp ? (
+          <div className="signup-box">
         <h2>Sign Up</h2>
         <p>
           Already have an account? <a href="/login">Log in</a>
@@ -81,6 +81,10 @@ function Signup() {
           <a href="/privacy">Privacy Policy</a>.
         </p>
       </div>
+        ) : (
+          <div></div>
+        )
+      }
     </div>
   );
 };

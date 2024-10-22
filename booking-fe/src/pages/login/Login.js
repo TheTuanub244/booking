@@ -1,16 +1,18 @@
 import React,{useState} from 'react';
 import './login.css'
 import HeaderLogin from '../../componets/header/HeaderLogin';
+import { signIn } from '../../api/userAPI';
 
 function Login() {
 
   const [inputData,setInputData] = useState({
-    email:'',
+    userName:'',
     password: ''
   });
 
   const handleInputChange = (e) => {
     const {name,value} = e.target;
+    
     setInputData({
       ...inputData,
       [name] : value
@@ -20,7 +22,11 @@ function Login() {
   const handleClickSignUp = () => {
 
   }
-
+  const handleSignIn = async (e) => {
+    const respone = await signIn(inputData)
+    console.log(respone);
+    
+  }
   return (
     <div>
       <HeaderLogin/>
@@ -46,12 +52,12 @@ function Login() {
         <p> OR </p>
         <div className='formLoginContainer'>
           <form className='formLogin'>
-            <input type='email' name='email' placeholder='email' onChange={handleInputChange} />
+            <input type='email' name='userName' placeholder='email' onChange={handleInputChange} />
             <input type='password' name='password' placeholder='password' onChange={handleInputChange} />
 
             <div className='buttonGroup'>
             <button type='button'>Forgot Password ?</button>
-            <button type='submit' name='submit'>Login</button>
+            <button type='submit' name='submit' onClick={handleSignIn}>Login</button>
             </div>
           </form>
         </div>

@@ -153,7 +153,7 @@ export class UserService {
 
         const idToken = await userCredential.user.getIdToken();
 
-        const newSession = await this.sessionService.createSession({
+        await this.sessionService.createSession({
           userId: existEmail._id.toString(),
 
           data: null,
@@ -161,7 +161,6 @@ export class UserService {
 
         return {
           access_token: idToken,
-          refresh_token: newSession.refreshToken,
         };
       } catch (err) {
         throw new UnauthorizedException('Invalid username or password');

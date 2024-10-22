@@ -5,7 +5,7 @@ function List() {
   return (
     <div>
       <Navbar/>
-      <Header/>
+      <Header type='list'/>
     </div>
   );
 }

@@ -7,14 +7,19 @@ function Signup() {
     password: '',
     firstName: '',
     lastName: '',
-    subscribe: true,
   });
 
+  const [hiddenSignUp, changeHiddenState] = useState(true);
+
+  const handleHidden = (e) => {
+    changeHiddenState(prev => !prev)
+  };
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value} = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -48,32 +53,43 @@ function Signup() {
             onChange={handleChange}
             required
           />
-          <input
+          {/* <input
             type="password"
             name="password"
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
             required
-          />
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            value={formData.lastName}
-            onChange={handleChange}
-            required
-          />
+          /> */}
+
+          {hiddenSignUp ? (
+            <div>
+                <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
+            
+          ) : (
+            <div></div>
+          )
+          }
 
           <button type="submit" className="signup-btn">Sign Up</button>
+
+          <button type="button" onClick = {handleHidden}>Change</button>
         </form>
 
         <p>

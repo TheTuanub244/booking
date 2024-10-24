@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 
@@ -18,5 +18,9 @@ export class PropertyController {
     @Post('/getPropetyWithOwner')
     async getPropetyWithOwner(@Body() owner_id: any) {
         return this.propertyService.getPropertyWithOwner(owner_id.owner_id)
+    }
+    @Post(':id')
+    async getPropertyById(@Param('id') id: string) {
+        return this.propertyService.getPropertyById(id)
     }
 }

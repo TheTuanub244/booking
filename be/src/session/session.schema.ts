@@ -11,15 +11,27 @@ export class Session {
     ref: 'User',
   })
   userId: User;
-  @Prop({})
-  data: string;
+  @Prop({
+    type: {
+      lastViewProperties: {
+        type: [String],
+      },
+      lastBooking: {
+        type: String,
+      },
+    },
+  })
+  data: {
+    lastViewProperties: string[];
+    lastBooking: string;
+  };
   @Prop({})
   recent_search: string;
   @Prop({ type: Date, default: Date.now() })
   last_activity: Date;
   @Prop({
     type: Date,
-    default: Date.now() + 60 * 60 * 1000,
+    default: () => Date.now() + 7 * 24 * 60 * 60 * 1000,
     index: { expireAfterSeconds: 0 },
   })
   expires_at: Date;
@@ -27,5 +39,8 @@ export class Session {
   refreshToken: string;
 }
 const SessionSchema = SchemaFactory.createForClass(Session);
-SessionSchema.index({ last_activity: 1 }, { expireAfterSeconds: 3600 });
+SessionSchema.index(
+  { last_activity: 1 },
+  { expireAfterSeconds: 7 * 24 * 60 * 60 },
+);
 export { SessionSchema };

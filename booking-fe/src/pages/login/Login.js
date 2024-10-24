@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import './login.css'
 import HeaderLogin from '../../componets/header/HeaderLogin';
+import { signIn } from '../../api/userAPI';
 
 function Login() {
 
@@ -18,6 +19,7 @@ function Login() {
   };
 
   const [inputData,setInputData] = useState({
+
     email: '',
     password: '',
     userName: '',
@@ -37,6 +39,7 @@ function Login() {
   const [enter, setEnter] = useState(false);
 
   const handleInputChange = (e) => {
+
     const { name, value } = e.target;
 
     // Update address fields separately
@@ -56,9 +59,11 @@ function Login() {
     }
   };
 
+
   const handleClickSignUp = () => {
 
   }
+
 
   function handleLogin(inputData){
     return true;
@@ -133,6 +138,12 @@ function checkEmail(email){
 }
 
 
+  const handleSignIn = async (e) => {
+    const respone = await signIn(inputData)
+    console.log(respone);
+    
+  }
+
   return (
     <div>
       <HeaderLogin/>
@@ -160,6 +171,7 @@ function checkEmail(email){
 
         <p> OR </p>
         <div className='formLoginContainer'>
+
           <form className='formLogin' onSubmit={(e) => {
                                                         handleSubmit(e, inputData)}}>
             <input type='email' name='email' placeholder='email' onChange={handleInputChange} />
@@ -205,6 +217,7 @@ function checkEmail(email){
                                 <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
                               </select>
 
+
                               <select id="district" name="district" onChange={handleInputChange}>
                                 <option value="">Quận/Huyện</option>
                                 
@@ -223,12 +236,14 @@ function checkEmail(email){
             }
             <p>{errorSignUp}</p>
             <div className='buttonGroup'>
+
             {(enter && loginPopUp) && <button type='button'>Forgot Password ?</button>}
             {!enter && <button type='button' onClick={(e) => handleCheckEmail(inputData.email)}>Enter</button>}
             {enter && (loginPopUp ? <button type='submit' name='login'>Login</button> : 
                                     <button type='submit' name='signup'>Sign Up</button>)}
             
             
+
             </div>
           </form>
         </div>

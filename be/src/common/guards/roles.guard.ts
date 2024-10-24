@@ -30,6 +30,7 @@ export class RolesGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
 
+
         if (!token) {
             throw new UnauthorizedException('Token not found');
         }
@@ -37,20 +38,27 @@ export class RolesGuard implements CanActivate {
         let payload;
         try {
             payload = this.jwtService.verify(token);
+
         } catch (error) {
             throw new UnauthorizedException('Invalid token');
         }
 
         request.user = payload;
 
+
         // Now check if the user has the required roles
-        if (!payload || !payload.role) {
+        if (!payload || !payload.signInfo.role) {
             throw new ForbiddenException('No roles found in token');
         }
-
-        const hasRole = requiredRoles.some((role) => payload.role.includes(role));
+        if (payload.signInfo.role === ROLE.GUEST) {
+            throw new UnauthorizedException('You must sign in to perform this action');
+        }
+        const hasRole = requiredRoles.some((role) =>
+            payload.signInfo.role.map((r) => r.toLowerCase()).includes(role.toLowerCase())
+        );
 
         if (!hasRole) {
+            console.log('User does not have the required role:', requiredRoles, 'User role:', payload.signInfo.role);
             throw new ForbiddenException('Insufficient permissions');
         }
 

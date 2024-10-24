@@ -42,7 +42,7 @@ export class UserController {
     return 'help'
   }
   @Post('reset-password')
-  async resetPassword(@Body() email: any) {
-    return this.userService.resetPassword(email);
+  async resetPassword(@Body() resetPassword: any) {
+    return this.userService.resetPassword(resetPassword);
   }
 }

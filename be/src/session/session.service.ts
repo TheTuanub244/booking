@@ -52,6 +52,11 @@ export class SessionService {
         userId: userId,
       })
       .populate('userId')
+      .populate({
+        path: 'data.lastBooking',
+        populate: { path: 'property' },
+      })
+
       .exec();
     return session;
   }

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { Booking } from 'src/booking/booking.schema';
 import { User } from 'src/user/user.schema';
 
 @Schema()
@@ -17,13 +18,15 @@ export class Session {
         type: [String],
       },
       lastBooking: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Booking',
       },
     },
+    _id: false,
   })
   data: {
     lastViewProperties: string[];
-    lastBooking: string;
+    lastBooking: Booking;
   };
   @Prop({})
   recent_search: string;

@@ -19,7 +19,7 @@ import {
   sendSignInLinkToEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { auth } from '../../../firebase-config';
+import { auth } from '../../firebase-config';
 import { SessionService } from 'src/session/session.service';
 import admin from 'firebase-admin';
 @Injectable()

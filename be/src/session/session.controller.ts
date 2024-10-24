@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SessionService } from './session.service';
 import { CreateSessionDto } from './dto/createSession.dto';
 import { Session } from './session.schema';
@@ -16,10 +16,14 @@ export class SessionController {
     }
     @Post(':id')
     async updateSession(@Body() session: any) {
-        return this.sessionService.updateSession(session)
+        return this.sessionService.updateSession(session);
     }
     @Delete(':id')
     async deleteSession(@Body() session: any) {
-        return this.sessionService.deleteSession(session)
+        return this.sessionService.deleteSession(session);
+    }
+    @Get('/getSessionByUser/:id')
+    async getSessionByUser(@Param('id') id: string) {
+        return this.sessionService.getSessionByUserId(id)
     }
 }

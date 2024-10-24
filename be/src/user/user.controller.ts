@@ -25,7 +25,9 @@ export class UserController {
   }
   @Post('/sign-in')
   async signIn(@Body() user: any) {
-    return this.userService.signIn(user);
+    const respone = await this.userService.signIn(user);
+    console.log(respone);
+    return respone
   }
   @Post('/sign-in-with-email')
   async signInWithEmail(@Body() signIn: any) {

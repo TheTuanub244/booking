@@ -128,10 +128,11 @@ function handleSignUp(inputData){
     return true;
 }
 
-function handleSubmit(event, inputData){
+async function handleSubmit(event, inputData){
   event.preventDefault();
   const action = event.nativeEvent.submitter.name;
-  console.log(inputData);
+  const respone = await signIn(inputData)
+    console.log(respone);
   if(action === 'login') {
     if(!handleLogin(inputData)) return;
   }
@@ -162,11 +163,6 @@ function checkEmail(email){
 }
 
 
-  const handleSignIn = async (e) => {
-    const respone = await signIn(inputData)
-    console.log(respone);
-    
-  }
 
   return (
     <div>
@@ -198,7 +194,7 @@ function checkEmail(email){
 
           <form className='formLogin' onSubmit={(e) => {
                                                         handleSubmit(e, inputData)}}>
-            <input type='email' name='email' placeholder='email' onChange={handleInputChange} />
+            <input type='email' name='userName' placeholder='userName' onChange={handleInputChange} />
             {enter && (
                           loginPopUp ? (
                             <input 

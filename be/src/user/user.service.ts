@@ -134,7 +134,8 @@ export class UserService {
       const signInfo = { userName, role: existUser.role };
       return {
         access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
-        refresh_token: newSession.refreshToken,
+        _id: existUser._id,
+
       };
     } else {
       const existEmail = await this.userSchema.findOne({
@@ -161,6 +162,7 @@ export class UserService {
 
         return {
           access_token: idToken,
+          _id: existEmail._id
         };
       } catch (err) {
         throw new UnauthorizedException('Invalid username or password');

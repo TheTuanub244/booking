@@ -12,20 +12,24 @@ export class PropertyService {
         private readonly propertySchema: Model<Property>,
     ) { }
     async createNewProperty(createPropertyDto: CreatePropertyDto) {
-
-
-        const newProperty = new this.propertySchema(createPropertyDto)
-        return newProperty.save()
+        const newProperty = new this.propertySchema(createPropertyDto);
+        return newProperty.save();
     }
     async getAllProperty() {
-        return this.propertySchema.find()
+        return this.propertySchema.find();
     }
     async getPropertyWithOwner(owner_id: string) {
-        return this.propertySchema.findOne({
-            owner_id: owner_id
-        }).populate('owner_id').exec()
+        return this.propertySchema
+            .findOne({
+                owner_id: owner_id,
+            })
+            .populate('owner_id')
+            .exec();
     }
     async getPropertyById(id: string) {
-        return this.propertySchema.findById(id)
+        return this.propertySchema.findById(id);
+    }
+    async getPropertiesSortedByRate() {
+        return this.propertySchema.find().sort({ rate: -1 });
     }
 }

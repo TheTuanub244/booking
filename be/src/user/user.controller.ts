@@ -35,7 +35,7 @@ export class UserController {
   }
   @Post('update-password')
   async updatePassword(@Body() password: any) {
-    return this.userService.updatePassword(password.data)
+    return this.userService.updatePassword(password.password, password.email)
   }
   @Post('/sign-in-with-email')
   async signInWithEmail(@Body() signIn: any) {

@@ -66,11 +66,11 @@ export class UserService {
     });
     return newUser.save();
   }
-  async updatePassword(password: string) {
+  async updatePassword(password: string, email: string) {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
     await this.userSchema.findOneAndUpdate({
-      email
+      email: email
     }, {
       password: hashedPassword
     })

@@ -1,14 +1,16 @@
+import { ObjectId } from "mongoose";
+
 export class CreatePropertyDto {
-    owner_id: string
-    name: string
-    description: string
+    owner_id: ObjectId;
+    name: string;
+    description: string;
     address: {
         province: string;
         district: string;
         ward: string;
         street: string
     }
-    property_type: string
+    property_type: string;
 
-    rate: number
+    rate: number;
 }

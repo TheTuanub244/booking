@@ -9,6 +9,7 @@ export class PropertyController {
     ) { }
     @Post('/createProperty')
     async createNewProperty(@Body() createPropertyDto: CreatePropertyDto) {
+
         return this.propertyService.createNewProperty(createPropertyDto);
     }
     @Get('/getAllProperty')
@@ -19,7 +20,7 @@ export class PropertyController {
     async getPropetyWithOwner(@Body() owner_id: any) {
         return this.propertyService.getPropertyWithOwner(owner_id.owner_id)
     }
-    @Post(':id')
+    @Post('/getPropertyById/:id')
     async getPropertyById(@Param('id') id: string) {
         return this.propertyService.getPropertyById(id)
     }

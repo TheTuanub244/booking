@@ -7,7 +7,6 @@ import { TYPE } from './enum/type.enum';
 export class Room {
   @Prop({
     require: true,
-    unique: true,
     type: mongoose.Schema.ObjectId,
     ref: 'Property',
   })
@@ -42,7 +41,6 @@ export class Room {
     };
   };
   @Prop({
-    required: true,
     type: {
       check_in_date: {
         type: Date,

@@ -12,6 +12,8 @@ export class PropertyService {
         private readonly propertySchema: Model<Property>,
     ) { }
     async createNewProperty(createPropertyDto: CreatePropertyDto) {
+
+
         const newProperty = new this.propertySchema(createPropertyDto)
         return newProperty.save()
     }

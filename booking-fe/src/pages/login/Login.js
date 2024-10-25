@@ -7,6 +7,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 const provider = new GoogleAuthProvider();
 function Login() {
+
   const firebaseConfig = {
     apiKey: "AIzaSyDCraTEdoU1uNk8xAeftbYSfEs-eiCsD3U",
     authDomain: "booking-app-1edf4.firebaseapp.com",
@@ -16,7 +17,8 @@ function Login() {
     appId: "1:319720545675:web:0643aa0a2da6034082e38e",
     measurementId: "G-FK4KH759ZB"
 };
-
+  
+  
 // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);

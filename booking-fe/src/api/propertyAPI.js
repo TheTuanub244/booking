@@ -9,3 +9,9 @@ export const getPropertyById = async (id) => {
     console.log(respone);
     
 }
+export const getLastProperty = async (id) => {
+    const respone = await axios.get()
+}
+export const createProperty = async () => {
+    
+}

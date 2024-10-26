@@ -5,6 +5,7 @@ import Featured from '../../componets/featured/Featured';
 import './home.css'; 
 import PropertyList from '../../componets/propertyList/PropertyList';
 import FeaturedProperties from '../../componets/featuredProperties/FeaturedProperties';
+import Footer from '../../componets/footer/Footer';
 
 function Home() {
   return (
@@ -17,6 +18,7 @@ function Home() {
         <PropertyList />
         <h1 className='homeTitle'>Home guests love</h1>
         <FeaturedProperties/>
+        <Footer/>
       </div>
     </div>
   );

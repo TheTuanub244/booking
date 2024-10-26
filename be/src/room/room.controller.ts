@@ -18,4 +18,20 @@ export class RoomController {
   async findRoom(@Body() findRoomDto: FindRoomDto) {
     return this.roomService.findRoom(findRoomDto);
   }
+  @Post('findRoomWithProperty')
+  async findRoomWithSearch(@Body() data: any) {
+    const { province, check_in, check_out, capacity } = data
+
+    return this.roomService.findAvailableRoomWithSearch(province, check_in, check_out, capacity);
+  }
+  @Post('findAvailableRoomForBooking')
+  async findAvailableRoomForBooking(@Body() data: any) {
+    return this.roomService.findAvailableRoomForBooking(
+      data.room_id,
+      data.property_id,
+      data.check_in,
+      data.check_out,
+      data.capacity,
+    );
+  }
 }

@@ -31,4 +31,5 @@ export class SessionController {
     async updateLastPropertyView(@Param('id') id: ObjectId, @Body() property: any) {
         return this.sessionService.updateLastPropertyView(id, property.data)
     }
+
 }

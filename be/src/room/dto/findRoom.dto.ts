@@ -6,6 +6,7 @@ export class FindRoomDto {
         childs: {
             count: number,
             age: number
-        }
+        },
+        room: number
     }
 }

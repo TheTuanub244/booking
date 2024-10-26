@@ -2,14 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Property } from './property.schema';
 
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { CreatePropertyDto } from './dto/createProperty.dto';
+import { BookingService } from 'src/booking/booking.service';
+import { RoomService } from 'src/room/room.service';
 
 @Injectable()
 export class PropertyService {
     constructor(
         @InjectModel(Property.name)
         private readonly propertySchema: Model<Property>,
+        private readonly bookingService: BookingService,
+        private readonly roomService: RoomService,
     ) { }
     async createNewProperty(createPropertyDto: CreatePropertyDto) {
         const newProperty = new this.propertySchema(createPropertyDto);
@@ -32,4 +36,5 @@ export class PropertyService {
     async getPropertiesSortedByRate() {
         return this.propertySchema.find().sort({ rate: -1 });
     }
+
 }

@@ -28,4 +28,5 @@ export class PropertyController {
     async getPropertiesSortedByRate() {
         return this.propertyService.getPropertiesSortedByRate()
     }
+
 }

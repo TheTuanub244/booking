@@ -18,6 +18,29 @@ export class Booking {
     check_in_date: Date;
     @Prop({ required: true, type: Date })
     check_out_date: Date;
+    @Prop({
+        required: true,
+        type: {
+            adults: {
+                type: Number,
+            },
+            childs: {
+                count: Number,
+                age: Number,
+            },
+            room: {
+                type: Number,
+            },
+        },
+    })
+    capacity: {
+        adults: number;
+        childs: {
+            count: number;
+            age: number;
+        };
+        room: number;
+    };
     @Prop({ required: true })
     total_price: number;
     @Prop({ required: true, enum: BookingStatus, default: BookingStatus.CONFIRMED })

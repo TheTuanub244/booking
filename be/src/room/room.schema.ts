@@ -31,6 +31,9 @@ export class Room {
         count: Number,
         age: Number,
       },
+      room: {
+        type: Number,
+      },
     },
   })
   capacity: {
@@ -39,6 +42,7 @@ export class Room {
       count: number;
       age: number;
     };
+    room: number;
   };
   @Prop({
     type: {
@@ -50,10 +54,6 @@ export class Room {
       },
     },
   })
-  availability: {
-    check_in_date: Date;
-    check_out_date: Date;
-  };
   @Prop({ type: [String] })
   facility: string[];
 }

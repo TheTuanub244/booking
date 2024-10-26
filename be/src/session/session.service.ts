@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Session } from './session.schema';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { CreateSessionDto } from './dto/createSession.dto';
 import { JwtService } from '@nestjs/jwt';
 
@@ -56,6 +56,7 @@ export class SessionService {
         path: 'data.lastBooking',
         populate: { path: 'property' },
       })
+      .populate('data.lastViewProperties')
 
       .exec();
     return session;
@@ -72,6 +73,13 @@ export class SessionService {
     } else {
       throw new BadRequestException('Session does not exist or has expired');
     }
+  }
+  async updateLastPropertyView(session: ObjectId, property: ObjectId) {
+    return await this.sessionSchema.findByIdAndUpdate(session, {
+      $addToSet: { 'data.lastViewProperties': property }
+    },
+      { new: true }
+    )
   }
   async deleteSession(session: any): Promise<Session | void> {
     const { sessionId } = session;

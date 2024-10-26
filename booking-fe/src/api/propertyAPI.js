@@ -8,4 +8,11 @@ export const getPropertyById = async (id) => {
     const respone = await axios.post(`http://localhost:8000/property/${id}`)
     console.log(respone);
     
+    
+}
+export const getLastProperty = async (id) => {
+    const respone = await axios.get()
+}
+export const createProperty = async () => {
+
 }

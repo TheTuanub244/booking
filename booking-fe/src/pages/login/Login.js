@@ -28,9 +28,14 @@ function Login() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log('Signed in user:', user);
-      const userName = user.email;
-      const accessToken = user.accessToken;
-      SaveUserDataToLocal(userName, accessToken);
+      const {userName, accessToken, uid, displayName} = user;
+      const userData = {
+        userName: userName,
+        accessToken: accessToken,
+        uid: uid,
+        displayName: displayName
+      };
+      SaveUserDataToLocal(userData);
       navigate("/");
     } catch (error) {
       console.error('Error during sign-in:', error);
@@ -38,9 +43,12 @@ function Login() {
     }
   }
 
-  function SaveUserDataToLocal(userName, accessToken){
-    localStorage.setItem('userName', userName);
-    localStorage.setItem('accessToken', accessToken);
+  function SaveUserDataToLocal(userData){
+    localStorage.setItem('userName', userData.userName);
+    localStorage.setItem('accessToken', userData.accessToken);
+    localStorage.setItem('userId', userData.id);
+    localStorage.setItem('userDisplayName', userData.displayName);
+    localStorage.setItem('isSignIn', true);
   }
 
   const initialInputData = {
@@ -104,6 +112,14 @@ async function handleSubmit(event, inputData){
   try {
     const respone = await signIn(inputData);
     console.log(respone);
+    const {userName, accessToken, uid, displayName} = respone;
+    const userData = {
+      userName: userName,
+      accessToken: accessToken,
+      uid: uid,
+      displayName: displayName
+    };
+    SaveUserDataToLocal(userData);
     navigate("/");
   } catch (e) {
     console.error('Error during sign-in:', e);

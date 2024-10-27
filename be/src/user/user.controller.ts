@@ -26,8 +26,16 @@ export class UserController {
   @Post('/sign-in')
   async signIn(@Body() user: any) {
     const respone = await this.userService.signIn(user);
-    console.log(respone);
     return respone
+  }
+  @Post('/check-email')
+  async checkEmail(@Body() email: any) {
+
+    return this.userService.checkEmail(email.data)
+  }
+  @Post('update-password')
+  async updatePassword(@Body() password: any) {
+    return this.userService.updatePassword(password.password, password.email)
   }
   @Post('/sign-in-with-email')
   async signInWithEmail(@Body() signIn: any) {

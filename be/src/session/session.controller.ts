@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SessionService } from './session.service';
 import { CreateSessionDto } from './dto/createSession.dto';
 import { Session } from './session.schema';
+import { ObjectId } from 'mongoose';
 
 @Controller('session')
 export class SessionController {
@@ -25,5 +26,9 @@ export class SessionController {
     @Get('/getSessionByUser/:id')
     async getSessionByUser(@Param('id') id: string) {
         return this.sessionService.getSessionByUserId(id)
+    }
+    @Post('/:id/lastViewProperties')
+    async updateLastPropertyView(@Param('id') id: ObjectId, @Body() property: any) {
+        return this.sessionService.updateLastPropertyView(id, property.data)
     }
 }

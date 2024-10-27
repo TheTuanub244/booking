@@ -30,6 +30,16 @@ export class UserService {
     private jwtSerivce: JwtService,
     private sessionService: SessionService,
   ) { }
+  async checkEmail(email: string) {
+    console.log(email);
+
+    const existEmail = await this.userSchema.findOne({ email: email })
+
+    if (existEmail) {
+      throw new UnauthorizedException("Email has already existed")
+    }
+    return true
+  }
   async createUser(createUserDto: CreateUserDto) {
     const { userName, password, dob, email, address, phoneNumber } =
       createUserDto;
@@ -55,6 +65,16 @@ export class UserService {
       phoneNumber,
     });
     return newUser.save();
+  }
+  async updatePassword(password: string, email: string) {
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+    await this.userSchema.findOneAndUpdate({
+      email: email
+    }, {
+      password: hashedPassword
+    })
+    return true
   }
   async deleteUser(id: string) {
     const objectId = new Types.ObjectId(id);

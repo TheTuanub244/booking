@@ -1,12 +1,15 @@
 import React,{useState} from 'react';
 import './Signup-page.css'
 import HeaderLogin from '../../componets/header/HeaderLogin';
-import { signIn } from '../../api/userAPI';
+import { checkEmail, signIn, signUp } from '../../api/userAPI';
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 const provider = new GoogleAuthProvider();
 function SignUp_page() {
+  const navigate = useNavigate(); 
+
   const firebaseConfig = {
     apiKey: "AIzaSyDCraTEdoU1uNk8xAeftbYSfEs-eiCsD3U",
     authDomain: "booking-app-1edf4.firebaseapp.com",
@@ -120,16 +123,28 @@ function checkSignUp(inputData){
 async function handleSubmit(event, inputData){
   event.preventDefault();
   const action = event.nativeEvent.submitter.name;
-  if(checkSignUp(inputData)){
-    //const respone = await signUp(inputData)
-    //console.log(respone);
+  const respone = await signUp(inputData)
+  if(typeof respone === 'string'){
+    setErrorSignUp(respone)
+  }
+  else {
+    navigate('/login')
   }
   
 }
 
-function handleCheckEmail(email){
-    if(checkEmail(email)) setEnter(true);
-    //checkEmail(email) ? setLogInPopUp(true) : setLogInPopUp(false);
+ async function handleCheckEmail(){
+      
+      const respone =  await checkEmail(inputData.email)
+      console.log(respone);
+      
+      if(respone === true){
+        setErrorSignUp('')
+        setEnter(true)
+
+      }else {
+        setErrorSignUp(respone)
+      }
   
 }
 
@@ -140,11 +155,6 @@ function handleGoBackToEmail(){
     email: inputData.email
   });
   setEnter(false);
-}
-
-function checkEmail(email){
-  return true;
-  
 }
 
 
@@ -181,25 +191,25 @@ function checkEmail(email){
 
           <form className='formSignUp' onSubmit={(e) => {
                                                         handleSubmit(e, inputData)}}>
-            <input type='email' name='userName' placeholder='userName' onChange={handleInputChange} />
+            <input type='email' name='email' placeholder='Email or Username' onChange={handleInputChange} />
             
             {enter && (
                             <div className='formSignUp'>
                               <input 
                                 type='text' 
-                                name='username' 
+                                name='userName' 
                                 placeholder='Tên đăng nhập' 
                                 onChange={handleInputChange} 
                               />
                               <input 
                                 type='date' 
-                                name='birthday' 
+                                name='dob' 
                                 placeholder='ngày sinh' 
                                 onChange={handleInputChange} 
                               />
                               <input 
                                 type='number' 
-                                name='number' 
+                                name='phoneNumber' 
                                 placeholder='Số điện thoại' 
                                 onChange={handleInputChange} 
                               />
@@ -234,10 +244,12 @@ function checkEmail(email){
                           )
                         
             }
-            <p>{errorSignUp}</p>
+            {
+              errorSignUp && <p className='errorMessage' >{errorSignUp}</p>
+            }
             <div className='signUp-buttonGroup'>
-            {!enter && <button type='button' onClick={(e) => handleCheckEmail(inputData.email)}>Enter</button>}
-            {enter && (<button type='submit' name='signup'>Sign Up</button>)}
+            {!enter && <button type='button' onClick={(e) => handleCheckEmail()}>Enter</button>}
+            {enter && (<button type='submit' name='signup' >Sign Up</button>)}
             
             </div>
           </form>

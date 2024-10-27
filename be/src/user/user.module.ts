@@ -13,6 +13,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Session, SessionSchema } from 'src/session/session.schema';
 import { SessionService } from 'src/session/session.service';
+import { ResetPasswordMiddleware } from 'src/common/middleware/ResetPassword.middleware';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -49,6 +50,11 @@ export class UserModule {
         { path: '/user/create-user', method: RequestMethod.POST },
         { path: '/user/sign-up', method: RequestMethod.POST },
         { path: '/user/update-user', method: RequestMethod.POST },
-      );
+      )
+      .apply(ResetPasswordMiddleware)
+      .forRoutes(
+        { path: '/user/reset-password', method: RequestMethod.POST }
+      )
+
   }
 }

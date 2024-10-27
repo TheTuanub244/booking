@@ -31,7 +31,6 @@ export class UserService {
     private sessionService: SessionService,
   ) { }
   async checkEmail(email: string) {
-    console.log(email);
 
     const existEmail = await this.userSchema.findOne({ email: email })
 
@@ -99,8 +98,10 @@ export class UserService {
     return user;
   }
   async signUp(createUserDto: CreateUserDto) {
+
     const { userName, password, dob, email, address, phoneNumber } =
       createUserDto;
+
     const exist = await this.userSchema
       .findOne({
         userName: userName,
@@ -126,6 +127,7 @@ export class UserService {
 
   async signIn(user: any) {
     const { userName, password } = user;
+
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(userName)) {
       const existUser = await this.userSchema
@@ -158,9 +160,11 @@ export class UserService {
 
       };
     } else {
+
       const existEmail = await this.userSchema.findOne({
         email: userName,
       });
+
       if (!existEmail) {
         throw new UnauthorizedException('Invalid username or password');
       }
@@ -262,7 +266,7 @@ export class UserService {
     }
   }
   async resetPassword(resetPassword: any) {
-    const { email, oldPassword, newPassword } = resetPassword;
+    const { email, password } = resetPassword;
     const findUser = await this.userSchema
       .findOne({
         email
@@ -270,32 +274,28 @@ export class UserService {
       .select('+password')
       .exec();
 
-    const isValid = await bcrypt.compare(oldPassword, findUser.password);
-    if (isValid) {
-      admin
-        .auth()
-        .updateUser(findUser.uid, {
-          password: newPassword,
-        })
-        .then(async (userRecord) => {
-          console.log(
-            'Successfully updated Firebase password for user:',
-            userRecord.toJSON(),
-          );
+    admin
+      .auth()
+      .updateUser(findUser.uid, {
+        password: password,
+      })
+      .then(async (userRecord) => {
+        console.log(
+          'Successfully updated Firebase password for user:',
+          userRecord.toJSON(),
+        );
 
-          const salt = await bcrypt.genSalt(10);
-          const hashedPassword = await bcrypt.hash(newPassword, salt);
-          await this.userSchema.findOneAndUpdate(
-            {
-              email: email,
-            },
-            {
-              password: hashedPassword,
-            },
-          );
-        });
-    } else {
-      throw new BadRequestException('Wrong old password!');
-    }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        await this.userSchema.findOneAndUpdate(
+          {
+            email: email,
+          },
+          {
+            password: hashedPassword,
+          },
+        );
+      });
+
   }
 }

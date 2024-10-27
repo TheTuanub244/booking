@@ -5,7 +5,6 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from './enum/role.enum';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-@UseGuards(RolesGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
@@ -17,6 +16,7 @@ export class UserController {
   }
   @Post('/sign-up')
   async signUp(@Body() createUserDto: CreateUserDto) {
+
     return this.userService.signUp(createUserDto);
   }
   @Post('/sign-up-with-email')
@@ -53,6 +53,7 @@ export class UserController {
   }
   @Post('reset-password')
   async resetPassword(@Body() resetPassword: any) {
+
     return this.userService.resetPassword(resetPassword);
   }
 }

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './login.css'
 import HeaderLogin from '../../componets/header/HeaderLogin';
 import { signIn } from '../../api/userAPI';
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 const provider = new GoogleAuthProvider();
@@ -135,7 +135,16 @@ function checkSignIn(){
 function errorSignIn(error){
   setErrorLogIn('' + error)
 }
-
+async function forgotPassword (){
+  console.log(inputData);
+  
+  if(!inputData.userName){
+    setErrorLogIn('Invalid email')
+  }else {
+    localStorage.setItem('email', inputData.userName)
+    sendPasswordResetEmail(auth, inputData.userName)
+  }
+}
   return (
     <div>
       <HeaderLogin/>
@@ -182,7 +191,7 @@ function errorSignIn(error){
             
             <div className='buttonGroup'>
 
-            <button type='button'>Forgot Password ?</button>
+            <button type='button' onClick={forgotPassword} >Forgot Password ?</button>
             <button type='submit' name='login'>Login</button> 
                                     
             </div>

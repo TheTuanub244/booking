@@ -20,6 +20,7 @@ function Featured() {
         </div>
       </div>
 
+
       <div className='featuredItem'>
         <img src='https://cf.bstatic.com/xdata/images/city/600x600/688893.jpg?k=d32ef7ff94e5d02b90908214fb2476185b62339549a1bd7544612bdac51fda31&o=' alt='' className='featuredImg'/>
         <div className='featuredTitles'>

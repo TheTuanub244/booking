@@ -35,7 +35,7 @@ export class UserService {
     const existEmail = await this.userSchema.findOne({ email: email })
 
     if (existEmail) {
-      throw new UnauthorizedException("Email has already existed")
+      return false
     }
     return true
   }

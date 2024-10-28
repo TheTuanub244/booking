@@ -29,7 +29,7 @@ export class Session {
     lastBooking: Booking;
   };
   @Prop({})
-  recent_search: string;
+  recent_search: string[];
   @Prop({})
   uid: string;
   @Prop({ type: Date, default: Date.now() })

@@ -1,4 +1,5 @@
 .navbar{
+  padding-top: 20px;
   height: 50px;
   background-color: #003580;
   display: flex;
@@ -18,11 +19,18 @@
 .logo {
   font-weight: 500;
 }
-
+.navItems{
+  width: 20%;
+}
 .navButton{
   margin-left: 20px;
   border: none;
+  border-radius: 4px;
   padding: 5px 10px;
+  font-size: 15px;
   cursor: pointer;
-  color: #003580;
+  color: #006ce4;
+  width: 40%;
+  height: 40px;
+  
 }

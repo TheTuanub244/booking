@@ -34,7 +34,7 @@ export class PropertyService {
         return this.propertySchema.findById(id);
     }
     async getPropertiesSortedByRate() {
-        return this.propertySchema.find().sort({ rate: -1 });
+        return this.propertySchema.find().sort({ rate: -1 }).limit(4);
     }
 
 }

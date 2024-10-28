@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css'
 import HeaderLogin from '../../componets/header/HeaderLogin';
-import { signIn, signInWithGoogle } from '../../api/userAPI';
+import { checkEmail, signIn, signInWithGoogle } from '../../api/userAPI';
 import { GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -91,9 +91,7 @@ function Login() {
   };
 
 
-  const handleClickSignUp = () => {
-
-  }
+  
 
 
 async function handleSubmit(event, inputData){
@@ -118,22 +116,22 @@ async function handleSubmit(event, inputData){
   }
   
 }
-
-function checkSignIn(){
-
-}
-
-function errorSignIn(error){
-  setErrorLogIn('' + error)
-}
 async function forgotPassword (){
   
   if(!inputData.userName){
     setErrorLogIn('Invalid email')
   }else {
     localStorage.setItem('email', inputData.userName)
-    sendPasswordResetEmail(auth, inputData.userName)
-    alert('Reset password email has sent')
+    const respone = await checkEmail(inputData.userName)
+ 
+    
+    if(respone){
+      setErrorLogIn('Invalid email')
+    }else {
+      sendPasswordResetEmail(auth, inputData.userName)
+      alert('Reset password email has sent')
+      setErrorLogIn('')
+    }
   }
 }
   return (
@@ -151,7 +149,7 @@ async function forgotPassword (){
         <h2>Log In</h2>
         <div className='signUpText'>Don't have an account ?
           <a href='/signup'>
-            <span onClick={handleClickSignUp} className='signUpLink'>SignUp</span>
+            <span className='signUpLink'>Sign Up</span>
           </a>
           
         </div>

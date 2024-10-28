@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import './Signup-page.css'
 import HeaderLogin from '../../componets/header/HeaderLogin';
 import { checkEmail, signIn, signUp } from '../../api/userAPI';
@@ -6,6 +6,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
+import { getProvince } from '../../api/addressAPI';
 const provider = new GoogleAuthProvider();
 function SignUp_page() {
   const navigate = useNavigate(); 
@@ -60,27 +61,7 @@ function SignUp_page() {
 
   const [enter, setEnter] = useState(false);
 
-  const handleInputChange = (e) => {
-
-    const { name, value } = e.target;
-
-    // Update address fields separately
-    if (name === 'province' || name === 'district' || name === 'ward') {
-      setInputData((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [name]: value,
-        },
-      }));
-    } else {
-      setInputData({
-        ...inputData,
-        [name]: value,
-      });
-    }
-  };
-
+ 
 
   const handleClickLogIn = () => {
     console.log('fun');
@@ -119,6 +100,67 @@ function checkSignUp(inputData){
     // }
     return true;
 }
+const [address, setAddress] = useState()
+const [district, setDistrict] = useState()
+const [ward, setWard] = useState()
+const handleGetAddress = async () => {
+  const respone = await getProvince()
+  setAddress(respone)
+}
+const getDistrict = async (code) => {
+    
+  const findDistrict = address.find(index => index.code === parseInt(code))
+  console.log(findDistrict);
+  
+  setDistrict(findDistrict.districts)
+  
+}
+const getWard = async(code) => {
+  const findWard = district.find(index => index.code === parseInt(code))
+  console.log(findWard);
+  
+  setWard(findWard?.wards)
+}
+useEffect(() => {
+  handleGetAddress()
+}, [])
+const handleInputChange = async (e) => {
+
+  const { name, value } = e.target;
+
+  if (name === 'province') {
+    await getDistrict(value)
+    setInputData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [name]: value,
+      },
+    }));
+  }else if(name === 'district'){
+    await getWard(value)
+    setInputData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [name]: value,
+      },
+    }));
+  }else if(name === 'ward'){
+    setInputData((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [name]: value,
+      },
+    }));
+  } else {
+    setInputData({
+      ...inputData,
+      [name]: value,
+    });
+  }
+};
 
 async function handleSubmit(event, inputData){
   event.preventDefault();
@@ -144,7 +186,7 @@ async function handleSubmit(event, inputData){
         setEnter(true)
 
       }else {
-        setErrorSignUp(respone)
+        setErrorSignUp('Email has already existed')
       }
   
 }
@@ -224,19 +266,30 @@ function handleGoBackToEmail(){
                               <div class="address-group">
                               <select id="province" name="province" onChange={handleInputChange} required>
                                 <option value="">Tỉnh/Thành phố</option>
-                                <option value="Hà Nội">Hà Nội</option>
-                                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                                {
+                                  address.map((index) => (
+                                    <option value={index.code}>{index.name}</option>
+                                  ))
+                                }
                               </select>
 
 
                               <select id="district" name="district" onChange={handleInputChange}>
                                 <option value="">Quận/Huyện</option>
-                                
+                                {
+                                  district?.map((index) => (
+                                    <option value={index.code}>{index.name}</option>
+                                  ))
+                                }
                               </select>
 
                               <select id="ward" name="ward" onChange={handleInputChange}>
                                 <option value="">Phường/Xã</option>
-                                
+                                {
+                                  ward?.map((index) => (
+                                    <option value={index.code}>{index.name}</option>
+                                  ))
+                                }
                               </select>
                               </div>
                               

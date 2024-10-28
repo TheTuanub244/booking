@@ -29,7 +29,7 @@ export class SessionService {
       { userId: userId },
       { expiresIn: '7d' },
     );
-
+    await this.sessionSchema.deleteMany({ userId })
 
     const newSession = new this.sessionSchema({
       userId: userId,

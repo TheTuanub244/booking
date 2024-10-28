@@ -13,6 +13,23 @@ export const getPropertyById = async (id) => {
 export const getLastProperty = async (id) => {
     const respone = await axios.get()
 }
-export const createProperty = async () => {
+export const recentSearch = async () => {
 
+}
+export const findPropertiesTypeInPlace = async () => {
+
+}
+export const findPropertiesType = async () => {
+
+}
+export const getPropertyByRates = async () => {
+    try{       
+        const respone = await axios.get("http://localhost:8000/property/getPropertiesSortedByRate")
+        return respone.data
+    } catch(error){
+        const respone = error.response.data.message 
+
+        return respone
+        
+    }
 }

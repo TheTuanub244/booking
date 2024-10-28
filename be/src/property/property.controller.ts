@@ -24,7 +24,7 @@ export class PropertyController {
     async getPropertyById(@Param('id') id: string) {
         return this.propertyService.getPropertyById(id)
     }
-    @Post('getPropertiesSortedByRate')
+    @Get('getPropertiesSortedByRate')
     async getPropertiesSortedByRate() {
         return this.propertyService.getPropertiesSortedByRate()
     }

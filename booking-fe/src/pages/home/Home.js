@@ -5,15 +5,17 @@ import './home.css';
 import PropertyList from '../../componets/propertyList/PropertyList';
 import FeaturedProperties from '../../componets/featuredProperties/FeaturedProperties';
 import Footer from '../../componets/footer/Footer';
-
+import { getPropertyByRates } from '../../api/propertyAPI';
+import RecentRearch from '../../componets/recentResearch/RecentRearch';
+import TredingDestination from '../../componets/tredingDestination/TredingDestination';
 function Home() {
-  const propetyByRates = async () => {
+  const propertyByRates = async () => {
     const respone = await getPropertyByRates()
     console.log(respone);
     
   }
   useEffect(() => {
-    propetyByRates()
+    propertyByRates()
   }, [])
   return (
     <div>

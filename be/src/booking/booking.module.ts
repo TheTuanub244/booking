@@ -8,13 +8,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { SessionService } from 'src/session/session.service';
 import { Session, SessionSchema } from 'src/session/session.schema';
+import { UserModule } from 'src/user/user.module';
+import { User, UserSchema } from 'src/user/user.schema';
+import { UserService } from 'src/user/user.service';
 
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [BookingController],
-  providers: [BookingService, JwtAuthGuard, SessionService],
+  providers: [BookingService, JwtAuthGuard, SessionService, UserService],
   imports: [
     MongooseModule.forFeature([
       {
@@ -25,6 +28,8 @@ const jwtConstant = {
         name: Session.name,
         schema: SessionSchema,
       },
+      { name: User.name, schema: UserSchema },
+
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -32,6 +37,7 @@ const jwtConstant = {
       signOptions: { expiresIn: '60m' },
     }),
     PassportModule,
+    UserModule
   ]
 })
 export class BookingModule { }

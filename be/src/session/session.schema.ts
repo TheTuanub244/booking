@@ -6,7 +6,6 @@ import { User } from 'src/user/user.schema';
 @Schema()
 export class Session {
   @Prop({
-    require: true,
     unique: true,
     type: mongoose.Schema.ObjectId,
     ref: 'User',
@@ -31,6 +30,8 @@ export class Session {
   };
   @Prop({})
   recent_search: string;
+  @Prop({})
+  uid: string;
   @Prop({ type: Date, default: Date.now() })
   last_activity: Date;
   @Prop({

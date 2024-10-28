@@ -2,10 +2,11 @@ import React,{useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css'
 import HeaderLogin from '../../componets/header/HeaderLogin';
-import { signIn } from '../../api/userAPI';
+import { signIn, signInWithGoogle } from '../../api/userAPI';
 import { GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { createSessionForLoginWithGoogle } from '../../api/sessionAPI';
 const provider = new GoogleAuthProvider();
 
 function Login() {
@@ -23,16 +24,19 @@ function Login() {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const navigate = useNavigate(); 
-  async function signInWithGoogle() {
+  async function handleSignInWithGoogle() {
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider)
       const user = result.user;
+      const respone = await signInWithGoogle(user)
+   
+      
       console.log('Signed in user:', user);
       const {userName, accessToken, uid, displayName} = user;
       const userData = {
         userName: userName,
         accessToken: accessToken,
-        uid: uid,
+        id: respone.userId ,
         displayName: displayName
       };
       SaveUserDataToLocal(userData);
@@ -50,18 +54,6 @@ function Login() {
     localStorage.setItem('userDisplayName', userData.displayName);
     localStorage.setItem('isSignIn', true);
   }
-
-  const initialInputData = {
-    password: '',
-    userName: '',
-    birthday: '',
-    number: '',
-    address: {
-      province: '',
-      district: '',
-      ward: '',
-    },
-  };
 
   const [inputData,setInputData] = useState({
     password: '',
@@ -108,15 +100,14 @@ async function handleSubmit(event, inputData){
   event.preventDefault();
   const action = event.nativeEvent.submitter.name;
   console.log(inputData);
-  setErrorLogIn('');
   try {
     const respone = await signIn(inputData);
-    console.log(respone);
-    const {userName, accessToken, uid, displayName} = respone;
+    const {userName, accessToken, uid, displayName, _id} = respone;
     const userData = {
       userName: userName,
       accessToken: accessToken,
       uid: uid,
+      id: _id,
       displayName: displayName
     };
     SaveUserDataToLocal(userData);
@@ -136,13 +127,13 @@ function errorSignIn(error){
   setErrorLogIn('' + error)
 }
 async function forgotPassword (){
-  console.log(inputData);
   
   if(!inputData.userName){
     setErrorLogIn('Invalid email')
   }else {
     localStorage.setItem('email', inputData.userName)
     sendPasswordResetEmail(auth, inputData.userName)
+    alert('Reset password email has sent')
   }
 }
   return (
@@ -166,7 +157,7 @@ async function forgotPassword (){
         </div>
 
         <div className='socialButton'>
-          <button className='googleLoginButton' onClick={signInWithGoogle}>
+          <button className='googleLoginButton' onClick={handleSignInWithGoogle}>
             <div className='googleLoginText'>Google</div>
           </button>
         </div>

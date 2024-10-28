@@ -14,12 +14,15 @@ import { SessionSchema } from 'src/session/session.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { PropertyModule } from 'src/property/property.module';
 import { Property, PropertySchema } from 'src/property/property.schema';
+import { UserModule } from 'src/user/user.module';
+import { User, UserSchema } from 'src/user/user.schema';
+import { UserService } from 'src/user/user.service';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [RoomController],
-  providers: [RoomService, BookingService, SessionService],
+  providers: [RoomService, BookingService, SessionService, UserService],
   imports: [
     MongooseModule.forFeature([
       {
@@ -42,6 +45,10 @@ const jwtConstant = {
         name: Property.name,
         schema: PropertySchema,
       },
+      {
+        name: User.name,
+        schema: UserSchema
+      }
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -50,6 +57,7 @@ const jwtConstant = {
     }),
     BookingModule,
     SessionModule,
+    UserModule
   ],
 })
 export class RoomModule { }

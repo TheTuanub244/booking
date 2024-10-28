@@ -1,9 +1,11 @@
 import { Type } from 'class-transformer';
+import { ObjectId } from 'mongoose';
 
 export class CreateSessionDto {
     userId: string;
+    uid: string;
     data: {
-        lastViewProperties: string;
-        lastBooking: string;
+        lastViewProperties: ObjectId[];
+        lastBooking: ObjectId;
     };
 }

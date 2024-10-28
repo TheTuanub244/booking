@@ -16,7 +16,7 @@ import { ReviewModule } from './review/review.module';
 import { PaymentModule } from './payment/payment.module';
 import { AmentitesModule } from './amentites/amentites.module';
 import * as admin from 'firebase-admin';
-import * as serviceAccount from './config/booking-app-1edf4-8060c08a0f7b.json';
+import * as serviceAccount from './config/booking-app-1edf4-firebase-adminsdk-dwj66-9dfe80f215.json';
 @Module({
   imports: [
     ConfigModule.forRoot({

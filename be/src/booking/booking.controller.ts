@@ -14,7 +14,6 @@ export class BookingController {
     ) { }
     @Post('createBooking')
     @Roles(ROLE.MEMBER)
-
     async createBooking(@Body() createBookingDto: CreateBookingDto) {
         return this.bookingService.createBooking(createBookingDto)
     }

@@ -19,6 +19,11 @@ export class ResetPasswordMiddleware implements NestMiddleware {
         field,
         message,
       }));
+    if (req.body.password.length < 6) {
+      throw new BadRequestException({
+        message: "The password must be a string with at least 6 characters"
+      })
+    }
     if (errors.length > 0) {
       throw new BadRequestException({
         message: errors.map((error) => error.message),

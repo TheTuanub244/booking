@@ -129,6 +129,7 @@ async function handleSubmit(event, inputData){
   }
   else {
     navigate('/login')
+    alert("Verify email has been sent!")
   }
   
 }
@@ -191,7 +192,7 @@ function handleGoBackToEmail(){
 
           <form className='formSignUp' onSubmit={(e) => {
                                                         handleSubmit(e, inputData)}}>
-            <input type='email' name='email' placeholder='Email or Username' onChange={handleInputChange} />
+            <input type='email' name='email' placeholder='Email' onChange={handleInputChange} />
             
             {enter && (
                             <div className='formSignUp'>

@@ -37,9 +37,9 @@ export class UserController {
   async updatePassword(@Body() password: any) {
     return this.userService.updatePassword(password.password, password.email)
   }
-  @Post('/sign-in-with-email')
-  async signInWithEmail(@Body() signIn: any) {
-    return this.userService.signInWithEmail(signIn);
+  @Post('/sign-in-with-google')
+  async signInWithEmail(@Body() user: any) {
+    return this.userService.signInWithGoggle(user);
   }
   @Post('/update-user')
   @Roles(ROLE.ADMIN, ROLE.MEMBER)
@@ -53,7 +53,6 @@ export class UserController {
   }
   @Post('reset-password')
   async resetPassword(@Body() resetPassword: any) {
-
     return this.userService.resetPassword(resetPassword);
   }
 }

@@ -15,8 +15,11 @@ export class SessionController {
     async getSession(@Body() id: any): Promise<Session | null> {
         return this.sessionService.getSession(id);
     }
-    @Post(':id')
+    @Post('/update/:id')
     async updateSession(@Body() session: any) {
+
+        console.log(session);
+
         return this.sessionService.updateSession(session);
     }
     @Delete(':id')
@@ -31,5 +34,8 @@ export class SessionController {
     async updateLastPropertyView(@Param('id') id: ObjectId, @Body() property: any) {
         return this.sessionService.updateLastPropertyView(id, property.data)
     }
-
+    @Post('/sign-out')
+    async signOut(@Body() data: any) {
+        return this.sessionService.signOut(data.userId)
+    }
 }

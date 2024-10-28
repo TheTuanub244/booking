@@ -16,6 +16,8 @@ import { RoomModule } from 'src/room/room.module';
 import { Room, RoomSchema } from 'src/room/room.schema';
 import { ReviewModule } from 'src/review/review.module';
 import { Review, ReviewSchema } from 'src/review/review.schema';
+import { User, UserSchema } from 'src/user/user.schema';
+import { UserModule } from 'src/user/user.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -37,12 +39,17 @@ const jwtConstant = {
         schema: SessionSchema,
       },
       { name: Room.name, schema: RoomSchema },
-      { name: Review.name, schema: ReviewSchema }
+      { name: Review.name, schema: ReviewSchema },
+      {
+        name: User.name,
+        schema: UserSchema,
+      },
     ]),
     BookingModule,
     SessionModule,
     RoomModule,
     ReviewModule,
+    UserModule,
     JwtModule.register({
       secret: jwtConstant.secret,
 

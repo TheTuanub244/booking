@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
-import { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -151,7 +151,11 @@ export class UserService {
       }
       const newSession = await this.sessionService.createSession({
         userId: existUser._id.toString(),
-        data: null,
+        data: {
+          lastViewProperties: [],
+          lastBooking: null
+        },
+        uid: null
       });
       const signInfo = { userName, role: existUser.role };
       return {
@@ -180,8 +184,11 @@ export class UserService {
 
         await this.sessionService.createSession({
           userId: existEmail._id.toString(),
-
-          data: null,
+          uid: null,
+          data: {
+            lastViewProperties: [],
+            lastBooking: null,
+          },
         });
 
         return {
@@ -228,6 +235,8 @@ export class UserService {
       if (exist) {
         throw new BadRequestException('Email alread existed');
       }
+      console.log(createUserDto);
+
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -250,23 +259,28 @@ export class UserService {
       throw err;
     }
   }
-  async signInWithEmail(signIn: any) {
-    const { email } = signIn;
-    const actionCodeSettings = {
-      url: 'http://localhost:8000',
-      handleCodeInApp: true,
-    };
+  async signInWithGoggle(user: any) {
+    const { email, uid } = user
+    const findEmail = await this.userSchema.findOne({
+      email: email
+    })
 
-    try {
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      console.log('Email link sent to:', email);
-    } catch (error) {
-      console.error('Error sending email:', error);
-      throw error; // Handle error appropriately
+    if (findEmail) {
+      return await this.sessionService.createSession({
+        userId: findEmail._id.toString(), data: {
+          lastViewProperties: [],
+          lastBooking: null,
+        },
+        uid,
+      })
+    } else {
+      throw new BadRequestException("The email is not registered")
     }
   }
   async resetPassword(resetPassword: any) {
     const { email, password } = resetPassword;
+    console.log(resetPassword);
+
     const findUser = await this.userSchema
       .findOne({
         email
@@ -298,4 +312,5 @@ export class UserService {
       });
 
   }
+
 }

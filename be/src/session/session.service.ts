@@ -8,6 +8,7 @@ import { Session } from './session.schema';
 import { Model, ObjectId } from 'mongoose';
 import { CreateSessionDto } from './dto/createSession.dto';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/user/user.schema';
 
 @Injectable()
 export class SessionService {
@@ -15,16 +16,20 @@ export class SessionService {
     @InjectModel(Session.name)
     private readonly sessionSchema: Model<Session>,
     private readonly jwtService: JwtService,
+    @InjectModel(User.name)
+    private readonly userSchema: Model<User>
   ) { }
+
   async createSession(createSessionDto: CreateSessionDto) {
     const { userId, data } = createSessionDto;
+
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    console.log(expiresAt);
 
     const refreshToken = this.jwtService.sign(
       { userId: userId },
       { expiresIn: '7d' },
     );
+
 
     const newSession = new this.sessionSchema({
       userId: userId,
@@ -36,6 +41,8 @@ export class SessionService {
 
     return newSession.save();
   }
+
+
   async getSession(id: any) {
     const { sessionId } = id;
 
@@ -108,5 +115,11 @@ export class SessionService {
       .findOne({ userId, refreshToken })
       .exec();
     return !!session;
+  }
+  async signOut(userId: ObjectId) {
+
+    return this.sessionSchema.findOneAndDelete({
+      userId: userId
+    })
   }
 }

@@ -29,13 +29,16 @@ const ForgotPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         
-       const email = localStorage.getItem('userName')
+       const email = localStorage.getItem('email')
        inputData.email = email
        const respone = await resetPassword(inputData)
-       if(typeof respone === 'string'){
-        setErrorForgotPassword(respone)
-       }else {
+       
+       if(respone === ''){
         navigate('/login')
+
+       }else {
+        setErrorForgotPassword(respone)
+
        }
        
     }

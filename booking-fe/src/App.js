@@ -9,6 +9,7 @@ import Hotel from './pages/hotel/Hotel'
 import SignupPage from './pages/signup/Signup-page'
 import Login from './pages/login/Login'
 import ForgotPassword from './pages/forgotPassword/ForgotPassword'
+import Auth from './pages/auth/Auth'
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/hotels/:id" element={<Hotel/>}></Route>
         <Route path="/signup" element={<SignupPage/>}></Route>
         <Route path='/forgotPassword' element={<ForgotPassword/>}></Route>
+        <Route path='/auth' element={<Auth/>}></Route>
       </Routes>
     </BrowserRouter>
 

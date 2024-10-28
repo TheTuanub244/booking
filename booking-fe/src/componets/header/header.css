@@ -42,19 +42,22 @@
   background-color: #0071c2;
   color: white;
   font-weight: 500;
-  border: none;
+  font-size: 18px;
   padding: 10px;
   cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 5px;
+  border: none;
 }
 
 .headerSearch {
-  height: 25px;
+  height: 50px;
   background-color: white;
-  border: 3px solid #febb02 ;
+  border: 5px solid #febb02 ;
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  padding: 10px 0;
   border-radius: 5px;
   position: absolute;
   bottom: -20px;
@@ -63,15 +66,42 @@
 }
 
 .headerIcon {
-  color: lightgray;
+  color: rgb(93, 93, 93);
+  font-size: 20px;
 }
 
 .headerSearchItem {
   display: flex;
   align-items: center;
   gap: 10px;
+  height: 50px;
 }
 
+.headerSearchItem.iconBed {
+  padding-left:10px;
+  padding-right:80px;
+  border-right: 5px solid #febb02;
+  
+}
+
+
+.headerSearch .iconCalendar {
+  padding-left: 10px;
+  padding-right: 20px;
+  border-right: 5px solid #febb02;
+  width: 280px;
+}
+
+.headerSearch .iconUser {
+  padding-left: 10px;
+  padding-right: 20px;
+  border-right: 5px solid #febb02;
+  width: 280px;
+}
+
+.headerSearch .btn {
+  width: 108px;
+}
 .headerSearchInput {
   border:none ;
   outline: none;

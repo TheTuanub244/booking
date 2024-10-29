@@ -37,4 +37,8 @@ export class PropertyController {
     async getPropertyByTypeAndPlace(@Body() data: any) {
         return this.propertyService.getPropertyByTypeAndPlace(data.place, data.type)
     }
+    @Get('getAllTypeOfProperties')
+    async getAllTypeOfProperties() {
+        return this.propertyService.getAllTypeOfProperties()
+    }
 }

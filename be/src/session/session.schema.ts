@@ -53,8 +53,12 @@ export class Session {
             },
           },
         },
+        room: {
+          type: Number,
+        },
       },
     ],
+    _id: false,
   })
   recent_search: {
     province: string;
@@ -66,6 +70,7 @@ export class Session {
         age: number;
         count: number;
       };
+      room: number;
     };
   }[];
   @Prop({})
@@ -87,8 +92,8 @@ SessionSchema.pre('save', function (next) {
     this.data.lastViewProperties = this.data.lastViewProperties.slice(-4);
   }
 
-  if (this.recent_search.length > 4) {
-    this.recent_search = this.recent_search.slice(-4);
+  if (this.recent_search.length > 3) {
+    this.recent_search = this.recent_search.slice(-3);
   }
 
   next();

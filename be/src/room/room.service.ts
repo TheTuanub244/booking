@@ -7,6 +7,7 @@ import { FindRoomDto } from './dto/findRoom.dto';
 import { Review } from 'src/review/review.schema';
 import { BookingService } from 'src/booking/booking.service';
 import { Property } from 'src/property/property.schema';
+import { Session } from 'src/session/session.schema';
 
 @Injectable()
 export class RoomService {
@@ -18,6 +19,8 @@ export class RoomService {
         @InjectModel(Review.name)
         private readonly reviewSchema: Model<Review>,
         private readonly bookingService: BookingService,
+        @InjectModel(Session.name)
+        private readonly sessionSchema: Model<Session>,
     ) { }
     async createRoom(createRoomDto: CreateRoomDto) {
         const newRoom = new this.roomSchema(createRoomDto);
@@ -36,7 +39,13 @@ export class RoomService {
         });
         return existedRoom;
     }
-    async findAvailableRoomWithSearch(place, check_in, check_out, capacity) {
+    async findAvailableRoomWithSearch(
+        userId,
+        place,
+        check_in,
+        check_out,
+        capacity,
+    ) {
         const findProperties = await this.propertySchema.find({
             'address.province': place,
         });
@@ -65,6 +74,20 @@ export class RoomService {
                     }),
                 );
             }),
+        );
+        await this.sessionSchema.findOneAndUpdate(
+            {
+                userId,
+            },
+            {
+                $push: {
+                    recent_search: {
+                        $each: [{ province: place, check_in, check_out, capacity }],
+                        $slice: -3,
+                    },
+                },
+            },
+            { new: true },
         );
         return availableRoom;
     }

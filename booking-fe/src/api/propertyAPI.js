@@ -6,21 +6,18 @@ export const getAllProperty = async () => {
 }
 export const getPropertyById = async (id) => {
     const respone = await axios.post(`http://localhost:8000/property/${id}`)
-    console.log(respone);
+    return respone.data    
     
+}
+export const getPropertyTypesByPlace = async (place) => {
+    const respone = await axios.post('http://localhost:8000/property/getPropertyTypesByPlace', {place})
     
+    return respone.data
 }
-export const getLastProperty = async (id) => {
-    const respone = await axios.get()
-}
-export const recentSearch = async () => {
-
-}
-export const findPropertiesTypeInPlace = async () => {
-
-}
-export const findPropertiesType = async () => {
-
+export const getPropertyByTypeAndPlace = async (place, type) => {
+    const respone = await axios.post('http://localhost:8000/property/getPropertyByTypeAndPlace', {place, type})
+    
+    return respone.data
 }
 export const getPropertyByRates = async () => {
     try{       
@@ -28,9 +25,12 @@ export const getPropertyByRates = async () => {
         return respone.data
     } catch(error){
         const respone = error.response.data.message 
-        console.log(error.response);
         
         return respone
         
     }
+}
+export const getAllTypeOfProperties = async () => {
+    const response = await axios.get("http://localhost:8000/property/getAllTypeOfProperties")
+    return response.data
 }

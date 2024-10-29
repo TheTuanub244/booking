@@ -1,13 +1,15 @@
 import axios from "axios";
 
-export const findRoomWithSearch = async (province, check_in, check_out, capacity) => {
+export const findAvailableRoomWithSearch = async(data) => {
     try{       
-        const respone = await axios.post("http://localhost:8000/room/findRoomWithProperty", {province, check_in, check_out, capacity})
+        
+        const respone = await axios.post("http://localhost:8000/room/findAvailableRoomWithSearch", data)
+        
         return respone.data
     } catch(error){
         const respone = error.response.data.message 
-
-        throw new Error(error.response ? error.response.data.message : '');
+        
+        return respone
         
     }
 }

@@ -23,6 +23,7 @@ export class Room {
   price_per_night: number;
   @Prop({
     required: true,
+    _id: false,
     type: {
       adults: {
         type: Number,
@@ -56,5 +57,7 @@ export class Room {
   })
   @Prop({ type: [String] })
   facility: string[];
+  @Prop({})
+  rating: number;
 }
 export const RoomSchema = SchemaFactory.createForClass(Room);

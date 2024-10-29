@@ -5,6 +5,7 @@ import './header.css'
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import { findAvailableRoomWithSearch } from '../../api/roomAPI';
 
 
 
@@ -61,20 +62,25 @@ function Header({ type }) {
   const handleChange = (e) => {
     setSelectedAge(e.target.value);
   }
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
+    const userId = localStorage.getItem('userId')
     const data = {
+      userId,
       place: province,
-      adult: options.adult,
-      check_in: new Date(date[0].startDate).toLocaleDateString('en-GB'),
-      check_out: new Date(date[0].endDate).toLocaleDateString('en-GB'),
-      childs:{
-        count: options.children,
-        age: selectedAge
-      },
-      room: options.room
-    }
+      check_in: new Date(date[0].startDate).toISOString().split('T')[0], 
+      check_out: new Date(date[0].endDate).toISOString().split('T')[0],
+      capacity: {
+        adults: options.adult,
+        childs:{
+          count: options.children,
+          age: parseInt(selectedAge)
+        },
+        room: options.room
 
-    console.log(data);
+      }
+    }
+    
+    const respone = await findAvailableRoomWithSearch(data)
   }
   return (
     <div className='header'>

@@ -18,12 +18,13 @@ import { ReviewModule } from 'src/review/review.module';
 import { Review, ReviewSchema } from 'src/review/review.schema';
 import { User, UserSchema } from 'src/user/user.schema';
 import { UserModule } from 'src/user/user.module';
+import { ReviewService } from 'src/review/review.service';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [PropertyController],
-  providers: [PropertyService, BookingService, SessionService, RoomService],
+  providers: [PropertyService, BookingService, SessionService, RoomService, ReviewService],
   imports: [
     MongooseModule.forFeature([
       {

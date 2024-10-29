@@ -12,14 +12,22 @@ import  RecentRearch  from '../../componets/recentResearch/RecentRearch';
 
 
 import { getPropertyByRates } from '../../api/propertyAPI';
+import { getSessionHistory } from '../../api/sessionAPI';
 
 function Home() {
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
     return response;
   }
+  const get = async () => {
+    const userId = localStorage.getItem('userId')
+    const respone = await getSessionHistory(userId)
+    console.log(respone);
+    
+  }
   useEffect(() => {
     propertyByRates()
+    get()
   }, [])
   return (
     <div>

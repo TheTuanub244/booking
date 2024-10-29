@@ -5,6 +5,8 @@ export const getSessionByUser = async (id) => {
     return respone.data
    
 }
-export const createSessionForLoginWithGoogle = async(user) => {
+export const getSessionHistory = async(userId) => {
+    const respone = await axios.get(`http://localhost:8000/session/getSessionHistory/${userId}`)
+    return respone.data
     
 }

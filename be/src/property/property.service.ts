@@ -6,6 +6,8 @@ import { Model, ObjectId } from 'mongoose';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { BookingService } from 'src/booking/booking.service';
 import { RoomService } from 'src/room/room.service';
+import { Review } from 'src/review/review.schema';
+import { ReviewService } from 'src/review/review.service';
 
 @Injectable()
 export class PropertyService {
@@ -14,6 +16,9 @@ export class PropertyService {
         private readonly propertySchema: Model<Property>,
         private readonly bookingService: BookingService,
         private readonly roomService: RoomService,
+        @InjectModel(Review.name)
+        private readonly reviewSchema: Model<Review>,
+        private readonly reviewService: ReviewService
     ) { }
     async createNewProperty(createPropertyDto: CreatePropertyDto) {
         const newProperty = new this.propertySchema(createPropertyDto);
@@ -34,7 +39,20 @@ export class PropertyService {
         return this.propertySchema.findById(id);
     }
     async getPropertiesSortedByRate() {
-        return this.propertySchema.find().sort({ rate: -1 }).limit(4);
+        const properties = await this.propertySchema.find().sort({ rate: -1 }).limit(4);
+        const propertiesWithRate = []
+        await Promise.all(
+            properties.map(async (property) => {
+                const review = await this.reviewService.findReviewWithProperty(property._id)
+                propertiesWithRate.push({
+                    property,
+                    numberReviews: review
+                })
+
+            })
+        )
+
+        return propertiesWithRate
     }
     async getPropertyTypesByPlace(province: string) {
         return this.propertySchema.distinct('property_type', {
@@ -46,5 +64,9 @@ export class PropertyService {
             'address.province': place,
             property_type: type
         })
+    }
+    async getAllTypeOfProperties() {
+        return this.propertySchema.distinct('property_type')
+
     }
 }

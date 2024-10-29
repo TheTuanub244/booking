@@ -30,11 +30,21 @@ export class PropertyService {
             .populate('owner_id')
             .exec();
     }
-    async getPropertyById(id: string) {
+    async getPropertyById(id: ObjectId) {
         return this.propertySchema.findById(id);
     }
     async getPropertiesSortedByRate() {
         return this.propertySchema.find().sort({ rate: -1 }).limit(4);
     }
-
+    async getPropertyTypesByPlace(province: string) {
+        return this.propertySchema.distinct('property_type', {
+            'address.province': province
+        })
+    }
+    async getPropertyByTypeAndPlace(place: string, type: string) {
+        return this.propertySchema.find({
+            'address.province': place,
+            property_type: type
+        })
+    }
 }

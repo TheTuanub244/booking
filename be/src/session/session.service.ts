@@ -17,7 +17,7 @@ export class SessionService {
     private readonly sessionSchema: Model<Session>,
     private readonly jwtService: JwtService,
     @InjectModel(User.name)
-    private readonly userSchema: Model<User>
+    private readonly userSchema: Model<User>,
   ) { }
 
   async createSession(createSessionDto: CreateSessionDto) {
@@ -29,7 +29,7 @@ export class SessionService {
       { userId: userId },
       { expiresIn: '7d' },
     );
-    await this.sessionSchema.deleteMany({ userId })
+    await this.sessionSchema.deleteMany({ userId });
 
     const newSession = new this.sessionSchema({
       userId: userId,
@@ -41,7 +41,6 @@ export class SessionService {
 
     return newSession.save();
   }
-
 
   async getSession(id: any) {
     const { sessionId } = id;
@@ -82,11 +81,13 @@ export class SessionService {
     }
   }
   async updateLastPropertyView(session: ObjectId, property: ObjectId) {
-    return await this.sessionSchema.findByIdAndUpdate(session, {
-      $addToSet: { 'data.lastViewProperties': property }
-    },
-      { new: true }
-    )
+    return await this.sessionSchema.findByIdAndUpdate(
+      session,
+      {
+        $addToSet: { 'data.lastViewProperties': property },
+      },
+      { new: true },
+    );
   }
   async deleteSession(session: any): Promise<Session | void> {
     const { sessionId } = session;
@@ -117,9 +118,25 @@ export class SessionService {
     return !!session;
   }
   async signOut(userId: ObjectId) {
-
     return this.sessionSchema.findOneAndDelete({
-      userId: userId
-    })
+      userId: userId,
+    });
+  }
+  async getRecentSearch(userId: ObjectId) {
+    const findSession = await this.sessionSchema.findOne({ userId: userId });
+    return findSession.recent_search;
+  }
+  async getSessionHistory(userId: ObjectId) {
+    const lastViewProperties = (
+      await this.sessionSchema.findOne({ userId: userId })
+    ).data.lastViewProperties;
+    const lastBooking = (await this.sessionSchema.findOne({ userId: userId }))
+      .data.lastBooking;
+    const recent_search = await this.getRecentSearch(userId);
+    return {
+      lastViewProperties,
+      lastBooking,
+      recent_search,
+    };
   }
 }

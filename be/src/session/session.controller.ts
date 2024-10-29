@@ -11,7 +11,7 @@ export class SessionController {
     async create(@Body() createSessionDto: CreateSessionDto): Promise<Session> {
         return this.sessionService.createSession(createSessionDto);
     }
-    @Get(':id')
+    @Get('/getSession/:id')
     async getSession(@Body() id: any): Promise<Session | null> {
         return this.sessionService.getSession(id);
     }
@@ -37,5 +37,13 @@ export class SessionController {
     @Post('/sign-out')
     async signOut(@Body() data: any) {
         return this.sessionService.signOut(data.userId)
+    }
+    @Get('/getRecentSearch/:id')
+    async getRecentSearch(@Param('id') id: ObjectId) {
+        return this.sessionService.getRecentSearch(id)
+    }
+    @Get('/getSessionHistory/:id')
+    async getSessionHistory(@Param('id') id: ObjectId) {
+        return this.sessionService.getSessionHistory(id)
     }
 }

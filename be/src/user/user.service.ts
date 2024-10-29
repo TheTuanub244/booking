@@ -155,6 +155,7 @@ export class UserService {
           lastViewProperties: [],
           lastBooking: null
         },
+        recent_search: [],
         uid: null
       });
       const signInfo = { userName, role: existUser.role };
@@ -189,6 +190,7 @@ export class UserService {
             lastViewProperties: [],
             lastBooking: null,
           },
+          recent_search: [],
         });
 
         return {
@@ -272,6 +274,7 @@ export class UserService {
           lastBooking: null,
         },
         uid,
+        recent_search: [],
       })
     } else {
       throw new BadRequestException("The email is not registered")

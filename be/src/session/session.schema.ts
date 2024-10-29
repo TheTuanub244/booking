@@ -28,8 +28,46 @@ export class Session {
     lastViewProperties: ObjectId[];
     lastBooking: Booking;
   };
-  @Prop({})
-  recent_search: string[];
+  @Prop({
+    type: [
+      {
+        province: {
+          type: String,
+        },
+        check_in: {
+          type: Date,
+        },
+        check_out: {
+          type: Date,
+        },
+        capacity: {
+          adults: {
+            type: Number,
+          },
+          childs: {
+            count: {
+              type: Number,
+            },
+            age: {
+              type: Number,
+            },
+          },
+        },
+      },
+    ],
+  })
+  recent_search: {
+    province: string;
+    check_in: Date;
+    check_out: Date;
+    capacity: {
+      adults: number;
+      childs: {
+        age: number;
+        count: number;
+      };
+    };
+  }[];
   @Prop({})
   uid: string;
   @Prop({ type: Date, default: Date.now() })
@@ -44,6 +82,17 @@ export class Session {
   refreshToken: string;
 }
 const SessionSchema = SchemaFactory.createForClass(Session);
+SessionSchema.pre('save', function (next) {
+  if (this.data.lastViewProperties.length > 4) {
+    this.data.lastViewProperties = this.data.lastViewProperties.slice(-4);
+  }
+
+  if (this.recent_search.length > 4) {
+    this.recent_search = this.recent_search.slice(-4);
+  }
+
+  next();
+});
 SessionSchema.index(
   { last_activity: 1 },
   { expireAfterSeconds: 7 * 24 * 60 * 60 },

@@ -8,4 +8,16 @@ export class CreateSessionDto {
         lastViewProperties: ObjectId[];
         lastBooking: ObjectId;
     };
+    recent_search: {
+        province: string;
+        check_in: Date;
+        check_out: Date;
+        capacity: {
+            adults: number;
+            childs: {
+                age: number;
+                count: number;
+            };
+        };
+    }[];
 }

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/createProperty.dto';
+import { ObjectId } from 'mongoose';
 
 @Controller('property')
 export class PropertyController {
@@ -21,12 +22,19 @@ export class PropertyController {
         return this.propertyService.getPropertyWithOwner(owner_id.owner_id)
     }
     @Post('/getPropertyById/:id')
-    async getPropertyById(@Param('id') id: string) {
+    async getPropertyById(@Param('id') id: ObjectId) {
         return this.propertyService.getPropertyById(id)
     }
     @Get('getPropertiesSortedByRate')
     async getPropertiesSortedByRate() {
         return this.propertyService.getPropertiesSortedByRate()
     }
-
+    @Post('getPropertyTypesByPlace')
+    async getPropertyTypesByPlace(@Body() place: any) {
+        return this.propertyService.getPropertyTypesByPlace(place.place)
+    }
+    @Post('getPropertyByTypeAndPlace')
+    async getPropertyByTypeAndPlace(@Body() data: any) {
+        return this.propertyService.getPropertyByTypeAndPlace(data.place, data.type)
+    }
 }

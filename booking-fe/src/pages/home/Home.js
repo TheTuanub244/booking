@@ -12,12 +12,11 @@ import  RecentRearch  from '../../componets/recentResearch/RecentRearch';
 
 
 import { getPropertyByRates } from '../../api/propertyAPI';
-import RecentRearch from '../../componets/recentResearch/RecentRearch';
 
 function Home() {
   const propertyByRates = async () => {
-    const respone = await getPropertyByRates()
-    console.log(respone);
+    // const respone = await getPropertyByRates()
+    // console.log(respone);
     
   }
   useEffect(() => {

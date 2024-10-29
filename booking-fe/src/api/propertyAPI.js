@@ -28,7 +28,8 @@ export const getPropertyByRates = async () => {
         return respone.data
     } catch(error){
         const respone = error.response.data.message 
-
+        console.log(error.response);
+        
         return respone
         
     }

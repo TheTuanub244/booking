@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBed, faCar, faPlane, faTaxi, faCalendarDays,faUser } from '@fortawesome/free-solid-svg-icons'
+import { faBed, faCar, faPlane, faTaxi, faCalendarDays, faUser } from '@fortawesome/free-solid-svg-icons'
 import './header.css'
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -9,7 +9,7 @@ import 'react-date-range/dist/theme/default.css';
 
 
 
-function Header({type}) {
+function Header({ type }) {
 
   const [openDate, setOpenDate] = useState(false);
   const [date, setDate] = useState([
@@ -22,13 +22,13 @@ function Header({type}) {
 
   function formatDate(date) {
     const formattedDate = new Intl.DateTimeFormat('en-GB', {
-        weekday: 'short',
-        day: '2-digit',
-        month: 'short'
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short'
     }).format(date);
 
     return formattedDate.replace(',', ''); // Loại bỏ dấu phẩy
-}
+  }
 
   const [options, setOptions] = useState({
     adult: 2,
@@ -47,8 +47,35 @@ function Header({type}) {
 
   const checkAdults = options.adult > 1 ? 'adults' : 'adult';
   const checkRooms = options.room > 1 ? 'rooms' : 'room';
+  
+  const [province,setProvince] = useState('');
+
+  const handleChangeProvince = (e) => {
+    setProvince(e.target.value);
+  }
 
   const [openOptions, setOpenOptions] = useState(false);
+
+  const [selectedAge,setSelectedAge] = useState('');
+
+  const handleChange = (e) => {
+    setSelectedAge(e.target.value);
+  }
+  const handleClick = (e) => {
+    const data = {
+      place: province,
+      adult: options.adult,
+      check_in: new Date(date[0].startDate).toLocaleDateString('en-GB'),
+      check_out: new Date(date[0].endDate).toLocaleDateString('en-GB'),
+      childs:{
+        count: options.children,
+        age: selectedAge
+      },
+      room: options.room
+    }
+
+    console.log(data);
+  }
   return (
     <div className='header'>
       <div className={type === 'list' ? 'headerContainer listMode' : 'headerContainer'}>
@@ -83,9 +110,11 @@ function Header({type}) {
               Search low prices on hotels, homes and much more...
             </p>
             <div className='headerSearch'>
+
+
               <div className='headerSearchItem iconBed'>
                 <FontAwesomeIcon icon={faBed} className='headerIcon' />
-                <input type='text' placeholder='Where are you going?' className='headerSearchInput' />
+                <input type='text' placeholder='Where are you going?' className='headerSearchInput' value={province} onChange={(e) => handleChangeProvince(e)}/>
               </div>
 
               <div className='headerSearchItem iconCalendar'>
@@ -129,7 +158,29 @@ function Header({type}) {
                       <button onClick={() => handleOption("children", "i")} className='optionCounterButton'>+</button>
                     </div>
                   </div>
-
+                  {options.children !== 0 ? (
+                  <div className='childrenAge'>
+                      <div className='childAge'>
+                        <select className='selectAge' name='age'
+                        onChange={(e) => handleChange(e)}>
+                          <option value="-1" data-key="-1">Age needed</option>
+                          <option value="0" data-key="0">0 years old</option>
+                          <option value="1" data-key="1">1 year old</option>
+                          <option value="2" data-key="2">2 years old</option>
+                          <option value="3" data-key="3">3 years old</option>
+                          <option value="4" data-key="4">4 years old</option>
+                          <option value="5" data-key="5">5 years old</option>
+                          <option value="6" data-key="6">6 years old</option>
+                          <option value="7" data-key="7">7 years old</option>
+                          <option value="8" data-key="8">8 years old</option>
+                          <option value="9" data-key="9">9 years old</option>
+                          <option value="10" data-key="10">10 years old</option>
+                          <option value="11" data-key="11">11 years old</option>
+                          <option value="12" data-key="12">12 years old</option>
+                          <option value="13" data-key="13">13 years old</option>
+                        </select>
+                      </div>  
+                  </div>) : (<div className='childrenAge'></div>) }
                   <div className='optionItem'>
                     <span className='optionText'>
                       Room
@@ -145,7 +196,7 @@ function Header({type}) {
                 </div>}
               </div>
               <div className='headerSearchItem btn'>
-                <button className='headerBtn'>
+                <button className='headerBtn' onClick={(e) => handleClick(e)}>
                   Search
                 </button>
               </div>

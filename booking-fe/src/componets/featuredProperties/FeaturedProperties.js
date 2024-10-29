@@ -1,77 +1,26 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import './featuredProperties.css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation, Pagination } from 'swiper/modules';
+import { getPropertyByRates } from '../../api/propertyAPI';
+
+
+
 
 function FeaturedProperties() {
-  const hotelList = [
-    {
-      id: 1,
-      name: 'Mandarin Boutique Hotel',
-      image:"https://cf.bstatic.com/xdata/images/hotel/square240/594604395.jpg?k=f559cc64f6df6e5bf47a2cd6d34d8cdb844a56c9d1a028b93b912c8cb3bf0f74&o=",
-      location: 'Ho Chi Minh City, VietNam',
-      star: '8.8',
-      numberReviews: '3,250',
-      price: '3,506,999'
-    },
-    {
-      id: 2,
-      name: 'Mandarin Boutique Hotel',
-      image:"https://cf.bstatic.com/xdata/images/hotel/square240/594604395.jpg?k=f559cc64f6df6e5bf47a2cd6d34d8cdb844a56c9d1a028b93b912c8cb3bf0f74&o=",
-      location: 'Ho Chi Minh City, VietNam',
-      star: '8.8',
-      numberReviews: '3,250',
-      price: '3,506,999'
-    },
-    {
-      id: 3,
-      name: 'Mandarin Boutique Hotel',
-      location: 'Ho Chi Minh City, VietNam',
-      image:"https://cf.bstatic.com/xdata/images/hotel/square240/594604395.jpg?k=f559cc64f6df6e5bf47a2cd6d34d8cdb844a56c9d1a028b93b912c8cb3bf0f74&o=",
-      star: '8.8',
-      numberReviews: '3,250',
-      price: '3,506,999'
-    },
-    {
-      id: 4,
-      name: 'Mandarin Boutique Hotel',
-      location: 'Ho Chi Minh City, VietNam',
-      image:"https://cf.bstatic.com/xdata/images/hotel/square240/594604395.jpg?k=f559cc64f6df6e5bf47a2cd6d34d8cdb844a56c9d1a028b93b912c8cb3bf0f74&o=",
-      star: '8.8',
-      numberReviews: '3,250',
-      price: '3,506,999'
-    },
-    {
-      id: 5,
-      name: 'Mandarin Boutique Hotel',
-      location: 'Ho Chi Minh City, VietNam',
-      image:"https://cf.bstatic.com/xdata/images/hotel/square240/594604395.jpg?k=f559cc64f6df6e5bf47a2cd6d34d8cdb844a56c9d1a028b93b912c8cb3bf0f74&o=",
-      star: '8.8',
-      numberReviews: '3,250',
-      price: '3,506,999'
-    },
-    {
-      id: 6,
-      name: 'Mandarin Boutique Hotel',
-      location: 'Ho Chi Minh City, VietNam',
-      image:"https://cf.bstatic.com/xdata/images/hotel/square240/594604395.jpg?k=f559cc64f6df6e5bf47a2cd6d34d8cdb844a56c9d1a028b93b912c8cb3bf0f74&o=",
-      star: '8.8',
-      numberReviews: '3,250',
-      price: '3,506,999'
-    },
-    {
-      id: 7,
-      name: 'Mandarin Boutique Hotel',
-      location: 'Ho Chi Minh City, VietNam',
-      image:"https://cf.bstatic.com/xdata/images/hotel/square240/594604395.jpg?k=f559cc64f6df6e5bf47a2cd6d34d8cdb844a56c9d1a028b93b912c8cb3bf0f74&o=",
-      star: '8.8',
-      numberReviews: '3,250',
-      price: '3,506,999'
-    },
+  const [locationList,setLocationList] = useState([]);
 
-  ]
+  const propertyByRates = async () => {
+    const response = await getPropertyByRates();
+    setLocationList(response);
+  }
+  useEffect(() => {
+    propertyByRates()
+  }, [])
+
+
   return (
     <div className='fp'>
       <Swiper
@@ -81,22 +30,18 @@ function FeaturedProperties() {
         pagination={{ clickable: true }} // Thêm phân trang
         modules={[Navigation, Pagination]} // Thêm các module vào đâyx
       >
-        {hotelList.map((item) => (
-          <SwiperSlide key={item.id}>
+        {locationList.map((item) => (
+          <SwiperSlide key={item._id}>
             <div className='fpItem'>
               <div className='fpItemImg'>
-                <img src={item.image} alt="" className='fpImg' />
+                <img src="https://images.vietnamtourism.gov.vn/vn//images/2021/ho_guom.jpg" alt="" className='fpImg' />
               </div>
               <div className='fpItemContent'>
                 <h3 className='fpName'>{item.name}</h3>
-                <div className='fpCity'>{item.location}</div>
+                <div className='fpCity'>{item.address.province}, {item.address.district}, {item.address.ward}, {item.address.street}</div>
                 <div className='fpRating'>
-                  <div className='star'>{item.star}</div>
-                  <span>Excellent - {item.numberReviews} reviews</span>
-                </div>
-                <div className='fpPrice'>
-                  <span>Starting from</span>
-                  <div className='price'>VND {item.price}</div>
+                  <div className='star'>{item.rate}</div>
+                  <span>Excellent - 800 reviews</span>
                 </div>
               </div>
             </div>

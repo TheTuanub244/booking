@@ -38,7 +38,7 @@
 
 /* Tiêu đề khách sạn hoặc khu nghỉ dưỡng */
 .fpName {
-  font-size: 18px; /* Kích thước chữ cho tên */
+  font-size: 16px; /* Kích thước chữ cho tên */
   font-weight: 700; /* Đậm chữ */
   color: #333; /* Màu chữ */
   margin: 3px 0px 5px 5px;
@@ -47,7 +47,7 @@
 
 /* Tên thành phố */
 .fpCity {
-  font-size: 12px; /* Kích thước chữ cho tên thành phố */
+  font-size: 10px; /* Kích thước chữ cho tên thành phố */
   color: #777; /* Màu chữ nhạt */
   margin-left: 5px;
   margin-bottom: 5px;
@@ -61,7 +61,7 @@
 }
 
 .fpRating .star {
-  padding: 5px 5px; /* Padding cho nút xếp hạng */
+  padding: 4px 10px; /* Padding cho nút xếp hạng */
   background-color: #1d33fc; /* Màu nền cho nút */
   color: white; /* Màu chữ trắng */
   border: none; /* Không viền */

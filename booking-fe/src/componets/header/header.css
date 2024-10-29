@@ -125,6 +125,7 @@
   background-color: white;
   color: gray;
   border-radius: 5px;
+  max-width: 230px;
   -webkit-box-shadow: 0px 0px 10px -5px rgba(0,0,0,0.4);
   box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.4);
 }
@@ -168,3 +169,36 @@
   cursor: not-allowed;
 }
 
+.childrenAge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: 12px;
+  gap:5px;
+}
+
+.childAge {
+  display: flex;
+  align-items: center; /* Căn giữa dọc cho nội dung */
+  justify-content: space-between; /* Căn đều khoảng cách giữa các phần tử */
+}
+
+.selectAge {
+  padding: 5px; /* Thêm khoảng cách bên trong cho dropdown */
+  font-size: 12px; /* Kích thước chữ cho dropdown */
+  border: 1px solid #ccc; /* Đường viền cho dropdown */
+  border-radius: 5px; /* Bo tròn các góc */
+  width: 100%; /* Chiều rộng của dropdown chiếm 100% */
+  max-width: 200px; /* Chiều rộng tối đa cho dropdown */
+  transition: border-color 0.3s; /* Hiệu ứng chuyển đổi cho đường viền */
+}
+
+.selectAge:focus {
+  border-color: #007bff; /* Đổi màu đường viền khi focus */
+  outline: none; /* Bỏ outline mặc định */
+}
+
+/* Đổi màu nền cho option mặc định */
+.selectAge option[value="-1"] {
+  color: #999; /* Màu chữ cho option mặc định */
+}

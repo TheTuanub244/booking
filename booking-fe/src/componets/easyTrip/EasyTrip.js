@@ -210,8 +210,6 @@ function EasyTrip() {
   useEffect(() => {
     const filteredList = locationList.filter(item => item.typeTripId === type);
     setFilteredLocationList(filteredList);
-    console.log(type);
-    console.log(filteredList);
   },[type]);
 
 
@@ -237,7 +235,7 @@ function EasyTrip() {
         modules={[Navigation, Pagination]} // Thêm các module vào đâyx
       >
         {filteredLocationList.map((item) => (
-          <SwiperSlide >
+          <SwiperSlide key={item.id}>
           <div className='locationItem' >
             <div className='locationItemImg'>
               <img src={item.image} alt='' />

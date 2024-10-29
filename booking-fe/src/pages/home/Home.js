@@ -15,9 +15,8 @@ import { getPropertyByRates } from '../../api/propertyAPI';
 
 function Home() {
   const propertyByRates = async () => {
-    // const respone = await getPropertyByRates()
-    // console.log(respone);
-    
+    const response = await getPropertyByRates();
+    return response;
   }
   useEffect(() => {
     propertyByRates()

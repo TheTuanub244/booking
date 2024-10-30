@@ -8,6 +8,7 @@ import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { getProvince } from '../../api/addressAPI';
 const provider = new GoogleAuthProvider();
+
 function SignUp_page() {
   const navigate = useNavigate(); 
 
@@ -34,6 +35,7 @@ function SignUp_page() {
     }
   }
   const initialInputData = {
+    email: '',
     password: '',
     userName: '',
     birthday: '',
@@ -46,6 +48,7 @@ function SignUp_page() {
   };
 
   const [inputData,setInputData] = useState({
+    email: '',
     password: '',
     userName: '',
     birthday: '',
@@ -263,7 +266,7 @@ function handleGoBackToEmail(){
                                 onChange={handleInputChange}
                               />
                               <label>Địa chỉ:</label>
-                              <div class="address-group">
+                              <div className="address-group">
                               <select id="province" name="province" onChange={handleInputChange} required>
                                 <option value="">Tỉnh/Thành phố</option>
                                 {

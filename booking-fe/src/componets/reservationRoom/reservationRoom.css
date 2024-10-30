@@ -1,0 +1,42 @@
+.room-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .room-table th,
+  .room-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .room-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .room-table .price {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .room-table .original-price {
+    text-decoration: line-through;
+    color: #a9a9a9;
+  }
+  
+  .room-table .discounted-price {
+    font-weight: bold;
+  }
+  
+  .room-table .discount {
+    color: green;
+  }
+  
+  .choices li {
+    list-style: none;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  

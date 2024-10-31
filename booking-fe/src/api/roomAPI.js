@@ -26,3 +26,16 @@ export const findRoomByProperty = async (propertyId) => {
         
     }
 }
+export const updateImageForRoom = async (roomId, image) => {
+    try{       
+        
+        const respone = await axios.put("http://localhost:8000/room/updateImageForRoom", {roomId, image})
+        
+        return respone.data
+    } catch(error){
+        const respone = error.response.data.message 
+        
+        return respone
+        
+    }
+}

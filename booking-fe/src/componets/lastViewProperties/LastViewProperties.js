@@ -1,26 +1,16 @@
 import React,{useEffect, useState} from 'react';
-import './featuredProperties.css';
+import './LastViewProperties.css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation, Pagination } from 'swiper/modules';
-import { getPropertyByRates } from '../../api/propertyAPI';
 
 
 
 
-function FeaturedProperties() {
-  const [locationList,setLocationList] = useState([]);
-
-  const propertyByRates = async () => {
-    const response = await getPropertyByRates();
-    setLocationList(response);
-  }
-  useEffect(() => {
-    propertyByRates()
+function LastViewProperties({data}) {
     
-  }, [])
-
+ 
 
   return (
     <div className='fp'>
@@ -31,17 +21,19 @@ function FeaturedProperties() {
         pagination={{ clickable: true }} // Thêm phân trang
         modules={[Navigation, Pagination]} // Thêm các module vào đâyx
       >
-        {locationList.map((item) => (
-          <SwiperSlide key={item.property._id}>
+        {data.map((item) => (
+            
+            
+          <SwiperSlide key={item._id}>
             <div className='fpItem'>
               <div className='fpItemImg'>
-                <img src={item.property.images[0]} alt="" className='fpImg' />
+                <img src={item.images[0]} alt="" className='fpImg' />
               </div>
               <div className='fpItemContent'>
-                <h3 className='fpName'>{item.property.name}</h3>
-                <div className='fpCity'>{item.property.address.province}, {item.property.address.district}, {item.property.address.ward}, {item.property.address.street}</div>
+                <h3 className='fpName'>{item.name}</h3>
+                <div className='fpCity'>{item.address.province}, {item.address.district}, {item.address.ward}, {item.address.street}</div>
                 <div className='fpRating'>
-                  <div className='star'>{item.property.rate}</div>
+                  <div className='star'>{item.rate}</div>
                   <span>Excellent - {item.numberReviews} reviews</span>
                 </div>
               </div>
@@ -53,4 +45,4 @@ function FeaturedProperties() {
   );
 }
 
-export default FeaturedProperties;
+export default LastViewProperties;

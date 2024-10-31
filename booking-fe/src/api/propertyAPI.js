@@ -5,7 +5,7 @@ export const getAllProperty = async () => {
     return respone.data
 }
 export const getPropertyById = async (id) => {
-    const respone = await axios.post(`http://localhost:8000/property//${id}`)
+    const respone = await axios.post(`http://localhost:8000/property/getPropertyById/${id}`)
     return respone.data    
     
 }
@@ -35,4 +35,41 @@ export const getPropertyByRates = async () => {
 export const getAllTypeOfProperties = async () => {
     const response = await axios.get("http://localhost:8000/property/getAllTypeOfProperties")
     return response.data
+}
+export const updateImageForProperty = async (propertyId, image) => {
+    try{       
+        const respone = await axios.put("http://localhost:8000/property/updateImageForProperty", {propertyId, image})
+        
+        return respone.data
+    } catch(error){
+        const respone = error.response.data.message 
+        
+        return respone
+        
+    }
+}
+export const getPropertyNear = async (longitude, latitude) => {
+    try{       
+        const respone = await axios.post("http://localhost:8000/property/getPropertyNear", {longitude, latitude})
+        
+        return respone.data
+    } catch(error){
+        const respone = error.response.data.message 
+        console.log(error.response);
+        
+        return respone
+        
+    }
+}
+export const getPropertyByplace = async (place) => {
+    try{       
+        const respone = await axios.post("http://localhost:8000/property/getPropertyByPlace", {place})
+        
+        return respone.data
+    } catch(error){
+        const respone = error.response.data.message 
+        
+        return respone
+        
+    }
 }

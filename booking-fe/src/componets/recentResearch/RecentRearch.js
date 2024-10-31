@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './recentResearch.css'
 
-function RecentRearch() {
+function RecentRearch({data}) {
+  
   return (
     <div className='recent-research'>
       <div className='title'>
@@ -10,39 +11,31 @@ function RecentRearch() {
 
         <div className='list-recent-research'>
          
+              {
+                (data.length === 0 || !data) ? (
+                  <h1>You have not search anything</h1>) : (
+                      data.map((index) => (
+                        <div className='item'>
+                        <div className='item-img'>
+                          <img src='https://cf.bstatic.com/xdata/images/city/64x64/806042.jpg?k=322608c1687c823ea5d52b4e2ed4a0eaae14b6ef3c9dd6aaedfb4244de91ce3f&o=' alt=''/>
+                        </div>
+      
+                        <div className='item-content'>
+                          <div className='card-title'>{index.province}</div>
+                          <div className='card-subtitle'>{(new Date(index.check_in)).getDate() + ' ' + (new Date(index.check_in)).toLocaleDateString('en', {month: 'short'})}
+                            –
+                            {(new Date(index.check_out)).getDate() + ' ' + (new Date(index.check_out)).toLocaleDateString('en', {month: 'short'}) + ', '}
+                             {(index.capacity.adults + index.capacity.childs.count > 1 ? `${index.capacity.adults + index.capacity.childs.count} peoples, ` : `${index.capacity.adults + index.capacity.childs.count} people, `)}
+                               {index.capacity.room > 1 ? `${index.capacity.room} rooms`: `${index.capacity.room} room`}
+                               
+                               </div>
+                        </div>
+                    </div>
+                      ))
+                )
+              }
 
-              <div className='item'>
-                  <div className='item-img'>
-                    <img src='https://cf.bstatic.com/xdata/images/city/64x64/806042.jpg?k=322608c1687c823ea5d52b4e2ed4a0eaae14b6ef3c9dd6aaedfb4244de91ce3f&o=' alt=''/>
-                  </div>
-
-                  <div className='item-content'>
-                    <div className='card-title'>Quang Ngai</div>
-                    <div className='card-subtitle'>25 Oct–18 Nov, 2 people</div>
-                  </div>
-              </div>
-
-              <div className='item'>
-                  <div className='item-img'>
-                    <img src='https://cf.bstatic.com/xdata/images/city/64x64/806042.jpg?k=322608c1687c823ea5d52b4e2ed4a0eaae14b6ef3c9dd6aaedfb4244de91ce3f&o=' alt=''/>
-                  </div>
-
-                  <div className='item-content'>
-                    <div className='card-title'>Quang Ngai</div>
-                    <div className='card-subtitle'>25 Oct–18 Nov, 2 people</div>
-                  </div>
-              </div>
-
-              <div className='item'>
-                  <div className='item-img'>
-                    <img src='https://cf.bstatic.com/xdata/images/city/64x64/806042.jpg?k=322608c1687c823ea5d52b4e2ed4a0eaae14b6ef3c9dd6aaedfb4244de91ce3f&o=' alt=''/>
-                  </div>
-
-                  <div className='item-content'>
-                    <div className='card-title'>Quang Ngai</div>
-                    <div className='card-subtitle'>25 Oct–18 Nov, 2 people</div>
-                  </div>
-              </div>
+              
          
          
       

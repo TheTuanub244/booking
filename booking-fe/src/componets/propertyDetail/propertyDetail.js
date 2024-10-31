@@ -12,10 +12,12 @@ const PropertyDetail = () => {
     const [propertyData, setPropertyData] = useState(null);
     const [roomData, setRoomData] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    
   
 
     useEffect(() => {
+      console.log(id);
+      
         const fetchData = async () => {
             if (id) {
                  const pId = id.toString();

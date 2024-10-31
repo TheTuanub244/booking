@@ -11,6 +11,6 @@ export class CreatePropertyDto {
         street: string
     }
     property_type: string;
-
+    images: string[];
     rate: number;
 }

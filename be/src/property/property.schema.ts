@@ -79,6 +79,8 @@ export class Property {
             isActive: boolean;
         },
     ];
+    @Prop({ type: [String] })
+    images: string[]
 }
 
 export const PropertySchema = SchemaFactory.createForClass(Property);

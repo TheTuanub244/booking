@@ -46,4 +46,10 @@ export class SessionController {
     async getSessionHistory(@Param('id') id: ObjectId) {
         return this.sessionService.getSessionHistory(id)
     }
+    @Post('/refreshAccessToken/:id')
+    async refreshAccessToken(@Param('id') id: ObjectId, @Body() data: any) {
+        console.log(data);
+
+        return this.sessionService.refreshAccessToken(id, data.accessToken)
+    }
 }

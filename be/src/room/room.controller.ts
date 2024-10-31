@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Put } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { FindRoomDto } from './dto/findRoom.dto';
@@ -31,5 +31,9 @@ export class RoomController {
   @Post('findAvailableRoomWithSearch')
   async findAvailableRoomWithSearch(@Body() data: any) {
     return this.roomService.findAvailableRoomWithSearch(data.userId, data.place, data.check_in, data.check_out, data.capacity)
+  }
+  @Put('updateImageForRoom')
+  async updateImageForRoom(@Body() data: any) {
+    return this.roomService.updateImageForRoom(data.roomId, data.image)
   }
 }

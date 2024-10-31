@@ -17,6 +17,10 @@ import { PaymentModule } from './payment/payment.module';
 import { AmentitesModule } from './amentites/amentites.module';
 import * as admin from 'firebase-admin';
 import * as serviceAccount from './config/booking-app-1edf4-firebase-adminsdk-dwj66-9dfe80f215.json';
+import { JwtModule } from '@nestjs/jwt';
+const jwtConstant = {
+  secret: 'jwtsecret',
+};
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +32,7 @@ import * as serviceAccount from './config/booking-app-1edf4-firebase-adminsdk-dw
     UserModule,
     SessionModule,
     PropertyModule,
+
     RoomModule,
     BookingModule,
     ReviewModule,

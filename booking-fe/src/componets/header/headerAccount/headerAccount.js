@@ -13,6 +13,7 @@ function headerAccount(){
         localStorage.removeItem('userId');
         localStorage.removeItem('userDisplayName');
         localStorage.removeItem('isSignIn');
+        localStorage.removeItem('email');
         await signOut(userId)
         window.location.reload(); // Refresh the page after sign-out
     }

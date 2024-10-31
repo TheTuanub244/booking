@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css'
 import HeaderLogin from '../../componets/header/HeaderLogin';
@@ -7,6 +7,7 @@ import { GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup } from "fir
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { createSessionForLoginWithGoogle } from '../../api/sessionAPI';
+import Error from '../../componets/404/404Page';
 const provider = new GoogleAuthProvider();
 
 function Login() {
@@ -19,7 +20,11 @@ function Login() {
     appId: "1:319720545675:web:0643aa0a2da6034082e38e",
     measurementId: "G-FK4KH759ZB"
 };
-
+  const [userId, setUserId] = useState()
+  useEffect(() => {
+    const userId = localStorage.getItem('userId')
+    setUserId(userId)
+  }, [])
 // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -136,7 +141,10 @@ async function forgotPassword (){
 }
   return (
     <div>
-      <HeaderLogin/>
+      {
+        !userId ? (
+          <>
+             <HeaderLogin/>
     <div className='loginContainer'>
       
       <div className='loginPanel'>
@@ -190,6 +198,11 @@ async function forgotPassword (){
       </div>
 
     </div>
+          </>
+        ): (
+          <Error/>
+        )
+      }
     </div>
   );
 }

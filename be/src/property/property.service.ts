@@ -102,13 +102,33 @@ export class PropertyService {
                 property.location.longitude,
             );
             const roundedNumber = distance.toFixed(1)
+
             if (distance <= 10) {
                 perfectProperties.push({
-                    roundedNumber,
+                    distance: roundedNumber,
                     property,
                 });
             }
         });
         return perfectProperties;
+    }
+    async updateImageForProperty(propertyId: ObjectId, image: string) {
+        return await this.propertySchema.findByIdAndUpdate(propertyId, {
+            $push: {
+                images: {
+                    $each: image
+                }
+            }
+        },
+            {
+                new: true
+            }
+
+        )
+    }
+    async getPropertyByPlace(place: string) {
+        return await this.propertySchema.find({
+            'address.province': place
+        })
     }
 }

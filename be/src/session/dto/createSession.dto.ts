@@ -4,10 +4,8 @@ import { ObjectId } from 'mongoose';
 export class CreateSessionDto {
     userId: string;
     uid: string;
-    data: {
-        lastViewProperties: ObjectId[];
-        lastBooking: ObjectId;
-    };
+    lastViewProperties: ObjectId[];
+    lastBooking: ObjectId;
     recent_search: {
         province: string;
         check_in: Date;

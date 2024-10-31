@@ -9,6 +9,7 @@ import { Model, ObjectId } from 'mongoose';
 import { CreateSessionDto } from './dto/createSession.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/user.schema';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class SessionService {
@@ -21,7 +22,7 @@ export class SessionService {
   ) { }
 
   async createSession(createSessionDto: CreateSessionDto) {
-    const { userId, data } = createSessionDto;
+    const { userId, lastViewProperties, lastBooking } = createSessionDto;
 
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
@@ -33,7 +34,8 @@ export class SessionService {
 
     const newSession = new this.sessionSchema({
       userId: userId,
-      data: data,
+      lastViewProperties: lastViewProperties,
+      lastBooking: lastBooking,
       expires_at: expiresAt,
       refreshToken,
       last_activity: Date.now(),
@@ -94,28 +96,65 @@ export class SessionService {
 
     return this.sessionSchema.findByIdAndDelete(sessionId);
   }
+
   async refreshAccessToken(
-    userId: string,
-    refreshToken: string,
-  ): Promise<string> {
-    const isValid = await this.validationRefreshToken(userId, refreshToken);
+    userId: ObjectId,
+    accessToken: string
+  ) {
+    console.log(accessToken);
+
+    const findSession = await this.sessionSchema.findOne({ userId })
+    const isValid = await this.validationRefreshToken(userId, findSession.refreshToken);
     if (!isValid) {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new UnauthorizedException('Your session has expired');
     }
-    const newAccessToken = this.jwtService.sign(
-      { userId: userId },
-      { expiresIn: '1h' },
-    );
-    return newAccessToken;
+    try {
+      const verifyAccessToken = await this.jwtService.verify(accessToken, { secret: 'jwtsecret' })
+      const issuedAtDate = new Date(verifyAccessToken.iat * 1000);
+      const expirationDate = new Date(verifyAccessToken.exp * 1000);
+      if (issuedAtDate > expirationDate) {
+        const newAccessToken = await this.jwtService.sign(
+          {
+            userId: userId,
+          },
+          { expiresIn: '60m' }
+        )
+        return {
+          accessToken: newAccessToken
+        }
+      }
+    } catch (err) {
+      const verifyAccessToken = await admin.auth().verifyIdToken(accessToken)
+      const issuedAtDate = new Date(verifyAccessToken.iat * 1000);
+      const expirationDate = new Date(verifyAccessToken.exp * 1000);
+      if (issuedAtDate > expirationDate) {
+        throw new BadRequestException('Your session has expired')
+      } else {
+        return {
+          accessToken
+        }
+      }
+    }
+
+    // return newAccessToken;
   }
   async validationRefreshToken(
-    userId: string,
+    userId: ObjectId,
     refreshToken: string,
   ): Promise<boolean> {
     const session = await this.sessionSchema
       .findOne({ userId, refreshToken })
       .exec();
-    return !!session;
+    const verifyRefreshToken = await this.jwtService.verify(session.refreshToken, { secret: 'jwtsecret' })
+    const issuedAtDate = new Date(verifyRefreshToken.iat * 1000);
+    const expirationDate = new Date(verifyRefreshToken.exp * 1000);
+
+
+    if (issuedAtDate > expirationDate) {
+      return false
+    }
+    return true
+
   }
   async signOut(userId: ObjectId) {
     return this.sessionSchema.findOneAndDelete({
@@ -127,16 +166,14 @@ export class SessionService {
     return findSession.recent_search;
   }
   async getSessionHistory(userId: ObjectId) {
-    const lastViewProperties = (
-      await this.sessionSchema.findOne({ userId: userId })
-    ).data.lastViewProperties;
-    const lastBooking = (await this.sessionSchema.findOne({ userId: userId }))
-      .data.lastBooking;
-    const recent_search = await this.getRecentSearch(userId);
+    const session = await this.sessionSchema.findOne({ userId })
+    await session.populate('lastViewProperties');
+    await session.populate('lastBooking')
     return {
-      lastViewProperties,
-      lastBooking,
-      recent_search,
-    };
+      lastViewProperties: session.lastViewProperties,
+      lastBookng: session.lastBooking,
+      recent_search: session.recent_search
+    }
+
   }
 }

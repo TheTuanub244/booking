@@ -5,9 +5,9 @@ export const signUp = async (user) => {
         const respone = await axios.post("http://localhost:8000/user/sign-up-with-email", user)
         return respone.data
     } catch(error){
-        const respone = error.response.data.message 
+        const respone = error.response.data.message
         
-        return "Email alread in use"
+        return respone
         
     }
 }

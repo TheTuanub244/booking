@@ -4,7 +4,6 @@ import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import mongoose from 'mongoose';
 
 async function bootstrap() {
-  mongoose.set('debug', true);
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();

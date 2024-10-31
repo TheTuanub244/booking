@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { ObjectId } from 'mongoose';
 import { Booking } from 'src/booking/booking.schema';
+import { Property } from 'src/property/property.schema';
 import { User } from 'src/user/user.schema';
 
 @Schema()
@@ -12,22 +13,16 @@ export class Session {
   })
   userId: User;
   @Prop({
-    type: {
-      lastViewProperties: {
-        type: [mongoose.Schema.ObjectId],
-        ref: 'Property'
-      },
-      lastBooking: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Booking',
-      },
-    },
-    _id: false,
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Property',
   })
-  data: {
-    lastViewProperties: ObjectId[];
-    lastBooking: Booking;
-  };
+  lastViewProperties: Property[];
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Booking',
+  })
+  lastBooking: Booking;
   @Prop({
     type: [
       {
@@ -88,8 +83,8 @@ export class Session {
 }
 const SessionSchema = SchemaFactory.createForClass(Session);
 SessionSchema.pre('save', function (next) {
-  if (this.data.lastViewProperties.length > 4) {
-    this.data.lastViewProperties = this.data.lastViewProperties.slice(-4);
+  if (this.lastViewProperties.length > 4) {
+    this.lastViewProperties = this.lastViewProperties.slice(-4);
   }
 
   if (this.recent_search.length > 3) {

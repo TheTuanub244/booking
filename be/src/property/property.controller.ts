@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { ObjectId } from 'mongoose';
@@ -45,4 +45,13 @@ export class PropertyController {
     async getPropertyNear(@Body() data: any) {
         return this.propertyService.getPropertyNear(data.longitude, data.latitude)
     }
+    @Put('updateImageForProperty')
+    async updateImageForProperty(@Body() data: any) {
+        return this.propertyService.updateImageForProperty(data.propertyId, data.image)
+    }
+    @Post('getPropertyByPlace')
+    async getPropertyByPlace(@Body() data: any) {
+        return this.propertyService.getPropertyByPlace(data.place)
+    }
+
 }

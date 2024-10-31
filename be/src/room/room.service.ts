@@ -156,4 +156,16 @@ export class RoomService {
 
         return findRoom;
     }
+    async updateImageForRoom(roomId, image) {
+        return await this.roomSchema.findByIdAndUpdate(roomId, {
+            $push: {
+                images: {
+                    $each: image
+                }
+            }
+        },
+            { new: true }
+
+        )
+    }
 }

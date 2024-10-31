@@ -7,6 +7,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { getProvince } from '../../api/addressAPI';
+import Error from '../../componets/404/404Page';
 const provider = new GoogleAuthProvider();
 
 function SignUp_page() {
@@ -169,6 +170,8 @@ async function handleSubmit(event, inputData){
   event.preventDefault();
   const action = event.nativeEvent.submitter.name;
   const respone = await signUp(inputData)
+  console.log(respone);
+  
   if(typeof respone === 'string'){
     setErrorSignUp(respone)
   }
@@ -203,11 +206,18 @@ function handleGoBackToEmail(){
   setEnter(false);
 }
 
-
+const [userId, setUserId] = useState()
+  useEffect(() => {
+    const userId = localStorage.getItem('userId')
+    setUserId(userId)
+  }, [])
 
   return (
     <div>
-      <HeaderLogin/>
+     {
+      !userId ? (
+        <>
+           <HeaderLogin/>
     <div className='signUpContainer'>
       
       <div className='signUpPanel'>
@@ -315,6 +325,11 @@ function handleGoBackToEmail(){
       </div>
 
     </div>
+        </>
+      ) : (
+        <Error/>
+      )
+     }
     </div>
   );
 }

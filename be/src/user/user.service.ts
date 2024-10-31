@@ -151,10 +151,8 @@ export class UserService {
       }
       const newSession = await this.sessionService.createSession({
         userId: existUser._id.toString(),
-        data: {
-          lastViewProperties: [],
-          lastBooking: null
-        },
+        lastViewProperties: [],
+        lastBooking: null,
         recent_search: [],
         uid: null
       });
@@ -169,6 +167,7 @@ export class UserService {
       const existEmail = await this.userSchema.findOne({
         email: userName,
       });
+      console.log(existEmail);
 
       if (!existEmail) {
         throw new UnauthorizedException('Invalid username or password');
@@ -186,10 +185,8 @@ export class UserService {
         await this.sessionService.createSession({
           userId: existEmail._id.toString(),
           uid: null,
-          data: {
-            lastViewProperties: [],
-            lastBooking: null,
-          },
+          lastViewProperties: [],
+          lastBooking: null,
           recent_search: [],
         });
 
@@ -237,7 +234,12 @@ export class UserService {
       if (exist) {
         throw new BadRequestException('Email alread existed');
       }
-      console.log(createUserDto);
+      const existUserName = await this.userSchema.findOne({ userName })
+      if (existUserName) {
+
+        throw new BadRequestException('Username alread existed');
+
+      }
 
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -269,10 +271,9 @@ export class UserService {
 
     if (findEmail) {
       return await this.sessionService.createSession({
-        userId: findEmail._id.toString(), data: {
-          lastViewProperties: [],
-          lastBooking: null,
-        },
+        userId: findEmail._id.toString(),
+        lastViewProperties: [],
+        lastBooking: null,
         uid,
         recent_search: [],
       })

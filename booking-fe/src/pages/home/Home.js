@@ -12,13 +12,15 @@ import  RecentRearch  from '../../componets/recentResearch/RecentRearch';
 
 
 import { getPropertyByplace, getPropertyByRates, getPropertyNear } from '../../api/propertyAPI';
-import { getSessionHistory } from '../../api/sessionAPI';
+import { checkSession, getSessionHistory } from '../../api/sessionAPI';
 import LastViewProperties from '../../componets/lastViewProperties/LastViewProperties';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [sessionHistory, setSessionHistory] = useState()
   const [propertynear, setPropertyNear] = useState()
   const [userId, setUserId] = useState()
+  const navigate = useNavigate()
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
     return response;
@@ -28,6 +30,18 @@ function Home() {
     const data = await getSessionHistory(userId)
     setSessionHistory(data)
   }
+  const checkAccessToken = async (userId, accessToken) => {
+    
+    const respone = await checkSession(userId, accessToken)
+    if(typeof respone === "string"){
+      navigate('/login')
+    }else {
+      localStorage.setItem('accessToken', respone)
+      getHistory(userId)
+    }
+    
+  }
+  
   const getNear = async (lon, lat) => {
     const data = await getPropertyNear(lon, lat)
     setPropertyNear(data)    
@@ -46,8 +60,8 @@ function Home() {
     const userId = localStorage.getItem('userId')
     setUserId(userId)
     if(userId){
-      
-      getHistory(userId)
+      const accessToken = localStorage.getItem('accessToken')
+      checkAccessToken(userId, accessToken)
     }
   }, [])
   return (

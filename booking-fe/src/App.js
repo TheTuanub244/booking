@@ -10,6 +10,7 @@ import SignupPage from './pages/signup/Signup-page'
 import Login from './pages/login/Login'
 import ForgotPassword from './pages/forgotPassword/ForgotPassword'
 import Auth from './pages/auth/Auth'
+import Property from './pages/property/Property'
 
 
 function App() {
@@ -24,6 +25,8 @@ function App() {
         <Route path="/signup" element={<SignupPage/>}></Route>
         <Route path='/forgotPassword' element={<ForgotPassword/>}></Route>
         <Route path='/auth' element={<Auth/>}></Route>
+        <Route path='/property' element={<Property />}></Route>
+        <Route path='/property/:id' element={<Property />}></Route>
       </Routes>
     </BrowserRouter>
 

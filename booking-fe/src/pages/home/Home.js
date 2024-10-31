@@ -19,15 +19,20 @@ function Home() {
     const response = await getPropertyByRates();
     return response;
   }
-  const get = async () => {
-    const userId = localStorage.getItem('userId')
-    const respone = await getSessionHistory(userId)
-    console.log(respone);
-    
-  }
+  
   useEffect(() => {
-    propertyByRates()
-    get()
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        localStorage.setItem('latitude', latitude)
+        localStorage.setItem('longitude', longitude)
+
+      },
+      (error) => {
+        console.error("Error getting location:", error.message);
+      }
+    );
   }, [])
   return (
     <div>

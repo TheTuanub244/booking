@@ -20,7 +20,7 @@ export class ReviewService {
         const newReview = new this.reviewSchema(createReviewDto);
         const savedReview = await newReview.save();
         const findRoom = await this.roomSchema
-            .findById(createReviewDto.room_id)
+            .findById(createReviewDto.roomId)
             .populate('property_id');
         const findProperty = await this.propertySchema.findById(
             findRoom.property_id,

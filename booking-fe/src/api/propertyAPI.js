@@ -5,7 +5,7 @@ export const getAllProperty = async () => {
     return respone.data
 }
 export const getPropertyById = async (id) => {
-    const respone = await axios.post(`http://localhost:8000/property/${id}`)
+    const respone = await axios.post(`http://localhost:8000/property//${id}`)
     return respone.data    
     
 }
@@ -22,6 +22,8 @@ export const getPropertyByTypeAndPlace = async (place, type) => {
 export const getPropertyByRates = async () => {
     try{       
         const respone = await axios.get("http://localhost:8000/property/getPropertiesSortedByRate")
+        console.log(respone.data);
+        
         return respone.data
     } catch(error){
         const respone = error.response.data.message 

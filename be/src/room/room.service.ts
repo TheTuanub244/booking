@@ -26,7 +26,7 @@ export class RoomService {
         const newRoom = new this.roomSchema(createRoomDto);
         return newRoom.save();
     }
-    async getRoomWithProperty(property_id: string) {
+    async getRoomWithProperty(property_id: ObjectId) {
         return this.roomSchema
             .findOne({
                 property_id,

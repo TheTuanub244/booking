@@ -7,9 +7,9 @@ import { Room } from "src/room/room.schema";
 @Schema()
 export class Review {
     @Prop({ require: true, type: mongoose.Schema.ObjectId, ref: 'User' })
-    user_id: User
+    userId: User
     @Prop({ require: true, type: mongoose.Schema.ObjectId, ref: 'Room' })
-    room_id: Room
+    roomId: Room
 
     @Prop({ required: true })
     rating: number

@@ -18,6 +18,7 @@ function FeaturedProperties() {
   }
   useEffect(() => {
     propertyByRates()
+    
   }, [])
 
 
@@ -31,17 +32,17 @@ function FeaturedProperties() {
         modules={[Navigation, Pagination]} // Thêm các module vào đâyx
       >
         {locationList.map((item) => (
-          <SwiperSlide key={item._id}>
+          <SwiperSlide key={item.property._id}>
             <div className='fpItem'>
               <div className='fpItemImg'>
                 <img src="https://images.vietnamtourism.gov.vn/vn//images/2021/ho_guom.jpg" alt="" className='fpImg' />
               </div>
               <div className='fpItemContent'>
-                <h3 className='fpName'>{item.name}</h3>
-                <div className='fpCity'>{item.address.province}, {item.address.district}, {item.address.ward}, {item.address.street}</div>
+                <h3 className='fpName'>{item.property.name}</h3>
+                <div className='fpCity'>{item.property.address.province}, {item.property.address.district}, {item.property.address.ward}, {item.property.address.street}</div>
                 <div className='fpRating'>
-                  <div className='star'>{item.rate}</div>
-                  <span>Excellent - 800 reviews</span>
+                  <div className='star'>{item.property.rate}</div>
+                  <span>Excellent - {item.numberReviews} reviews</span>
                 </div>
               </div>
             </div>

@@ -41,4 +41,8 @@ export class PropertyController {
     async getAllTypeOfProperties() {
         return this.propertyService.getAllTypeOfProperties()
     }
+    @Post('getPropertyNear')
+    async getPropertyNear(@Body() data: any) {
+        return this.propertyService.getPropertyNear(data.longitude, data.latitude)
+    }
 }

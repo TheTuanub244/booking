@@ -2,8 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { User } from 'src/user/user.schema';
 import { TYPE } from './enum/type.enum';
-import { Room } from 'src/room/room.schema';
-import { Amentites } from 'src/amentites/amentities.schema';
+
 
 @Schema()
 export class Property {
@@ -42,7 +41,7 @@ export class Property {
     };
     @Prop({
         type: {
-            longtitude: {
+            longitude: {
                 type: Number,
                 require: true,
             },
@@ -54,7 +53,7 @@ export class Property {
         _id: false,
     })
     location: {
-        longtitude: number;
+        longitude: number;
         latitude: number;
     };
     @Prop({ type: String, enum: TYPE })
@@ -81,4 +80,6 @@ export class Property {
         },
     ];
 }
+
 export const PropertySchema = SchemaFactory.createForClass(Property);
+PropertySchema.index({ location: '2dsphere' });

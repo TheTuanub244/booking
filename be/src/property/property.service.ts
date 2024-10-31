@@ -18,7 +18,7 @@ export class PropertyService {
         private readonly roomService: RoomService,
         @InjectModel(Review.name)
         private readonly reviewSchema: Model<Review>,
-        private readonly reviewService: ReviewService
+        private readonly reviewService: ReviewService,
     ) { }
     async createNewProperty(createPropertyDto: CreatePropertyDto) {
         const newProperty = new this.propertySchema(createPropertyDto);
@@ -39,34 +39,76 @@ export class PropertyService {
         return this.propertySchema.findById(id);
     }
     async getPropertiesSortedByRate() {
-        const properties = await this.propertySchema.find().sort({ rate: -1 }).limit(4);
-        const propertiesWithRate = []
+        const properties = await this.propertySchema
+            .find()
+            .sort({ rate: -1 })
+            .limit(4);
+
+        const propertiesWithRate = [];
         await Promise.all(
             properties.map(async (property) => {
-                const review = await this.reviewService.findReviewWithProperty(property._id)
+                const review = await this.reviewService.findReviewWithProperty(
+                    property._id,
+                );
                 propertiesWithRate.push({
                     property,
-                    numberReviews: review
-                })
+                    numberReviews: review,
+                });
+            }),
+        );
 
-            })
-        )
-
-        return propertiesWithRate
+        return propertiesWithRate;
     }
     async getPropertyTypesByPlace(province: string) {
         return this.propertySchema.distinct('property_type', {
-            'address.province': province
-        })
+            'address.province': province,
+        });
     }
     async getPropertyByTypeAndPlace(place: string, type: string) {
         return this.propertySchema.find({
             'address.province': place,
-            property_type: type
-        })
+            property_type: type,
+        });
     }
     async getAllTypeOfProperties() {
-        return this.propertySchema.distinct('property_type')
+        return this.propertySchema.distinct('property_type');
+    }
+    deg2rad(deg: number): number {
+        return deg * (Math.PI / 180);
+    }
+    calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+        const EARTH_RADIUS = 6371;
+        const dLat = this.deg2rad(lat2 - lat1);
+        const dLon = this.deg2rad(lon2 - lon1);
 
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.deg2rad(lat1)) *
+            Math.cos(this.deg2rad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return EARTH_RADIUS * c;
+    }
+    async getPropertyNear(longitude: number, latitude: number) {
+        const properties = await this.propertySchema.find({});
+        const perfectProperties = [];
+        const nearbyProperties = properties.filter((property) => {
+            const distance = this.calculateDistance(
+                latitude,
+                longitude,
+                property.location.latitude,
+                property.location.longitude,
+            );
+            const roundedNumber = distance.toFixed(1)
+            if (distance <= 10) {
+                perfectProperties.push({
+                    roundedNumber,
+                    property,
+                });
+            }
+        });
+        return perfectProperties;
     }
 }

@@ -48,6 +48,7 @@ function Home() {
         <EasyTrip/>
         <h1 className='homeTitle'>Home guests love</h1>
         <FeaturedProperties/>
+        
         <Footer/>
       </div>
     </div>

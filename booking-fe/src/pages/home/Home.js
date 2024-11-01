@@ -30,18 +30,7 @@ function Home() {
     const data = await getSessionHistory(userId)
     setSessionHistory(data)
   }
-  const checkAccessToken = async (userId, accessToken) => {
-    
-    const respone = await checkSession(userId, accessToken)
-    if(typeof respone === "string"){
-      navigate('/login')
-    }else {
-      localStorage.setItem('accessToken', respone)
-      getHistory(userId)
-    }
-    
-  }
-  
+
   const getNear = async (lon, lat) => {
     const data = await getPropertyNear(lon, lat)
     setPropertyNear(data)    
@@ -60,8 +49,8 @@ function Home() {
     const userId = localStorage.getItem('userId')
     setUserId(userId)
     if(userId){
-      const accessToken = localStorage.getItem('accessToken')
-      checkAccessToken(userId, accessToken)
+      getHistory(userId)
+
     }
   }, [])
   return (

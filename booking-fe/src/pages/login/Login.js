@@ -34,14 +34,13 @@ function Login() {
       const result = await signInWithPopup(auth, provider)
       const user = result.user;
       const respone = await signInWithGoogle(user)
-   
       
       console.log('Signed in user:', user);
       const {userName, accessToken, uid, displayName} = user;
       const userData = {
         userName: userName,
         accessToken: accessToken,
-        id: respone.userId ,
+        id: respone._id ,
         displayName: displayName
       };
       SaveUserDataToLocal(userData);
@@ -102,9 +101,10 @@ function Login() {
 async function handleSubmit(event, inputData){
   event.preventDefault();
   const action = event.nativeEvent.submitter.name;
-  console.log(inputData);
   try {
     const respone = await signIn(inputData);
+    console.log(respone);
+    
     const {userName, accessToken, uid, displayName, _id} = respone;
     const userData = {
       userName: userName,

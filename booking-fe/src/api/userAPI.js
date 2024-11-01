@@ -2,7 +2,9 @@ import axios from "axios"
 export const signUp = async (user) => {
     try{       
                 
-        const respone = await axios.post("http://localhost:8000/user/sign-up-with-email", user)
+        const respone = await axios.post("http://localhost:8000/user/sign-up-with-email", user, {
+            withCredentials: true
+        })
         return respone.data
     } catch(error){
         const respone = error.response.data.message
@@ -17,7 +19,8 @@ export const signUpWithGoogle = async () => {
 export const signIn = async (user) => {
     
     try{       
-        const respone = await axios.post("http://localhost:8000/user/sign-in", user)
+        const respone = await axios.post("http://localhost:8000/user/sign-in", user, {withCredentials: true})
+        
         return respone.data
     } catch(error){
         const respone = error.response.data.message 
@@ -28,7 +31,7 @@ export const signIn = async (user) => {
 }
 export const signInWithGoogle = async (user) => {
     try{       
-        const respone = await axios.post("http://localhost:8000/user/sign-in-with-google", user)
+        const respone = await axios.post("http://localhost:8000/user/sign-in-with-google", user, {withCredentials: true})
         return respone.data
     } catch(error){
         const respone = error.response.data.message 
@@ -40,7 +43,7 @@ export const signInWithGoogle = async (user) => {
 export const signOut = async(userId) => {
     
     try{       
-        const respone = await axios.post("http://localhost:8000/session/sign-out", {userId})
+        const respone = await axios.post("http://localhost:8000/session/sign-out", {userId}, {withCredentials: true})
         return respone.data
     } catch(error){
         const respone = error.response.data.message 

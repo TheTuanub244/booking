@@ -1,8 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    Param,
+    Post,
+    Res,
+} from '@nestjs/common';
 import { SessionService } from './session.service';
 import { CreateSessionDto } from './dto/createSession.dto';
 import { Session } from './session.schema';
 import { ObjectId } from 'mongoose';
+import { Response } from 'express';
 
 @Controller('session')
 export class SessionController {
@@ -17,7 +27,6 @@ export class SessionController {
     }
     @Post('/update/:id')
     async updateSession(@Body() session: any) {
-
         console.log(session);
 
         return this.sessionService.updateSession(session);
@@ -28,28 +37,34 @@ export class SessionController {
     }
     @Get('/getSessionByUser/:id')
     async getSessionByUser(@Param('id') id: string) {
-        return this.sessionService.getSessionByUserId(id)
+        return this.sessionService.getSessionByUserId(id);
     }
     @Post('/:id/lastViewProperties')
-    async updateLastPropertyView(@Param('id') id: ObjectId, @Body() property: any) {
-        return this.sessionService.updateLastPropertyView(id, property.data)
+    async updateLastPropertyView(
+        @Param('id') id: ObjectId,
+        @Body() property: any,
+    ) {
+        return this.sessionService.updateLastPropertyView(id, property.data);
     }
     @Post('/sign-out')
-    async signOut(@Body() data: any) {
-        return this.sessionService.signOut(data.userId)
+    async signOut(@Body() data: any, @Res() response: Response) {
+        response.clearCookie('refreshToken', {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: false,
+        });
+
+        await this.sessionService.signOut(data.userId);
+        return response.status(HttpStatus.OK).json({
+            message: 'Successfully signed out',
+        });
     }
     @Get('/getRecentSearch/:id')
     async getRecentSearch(@Param('id') id: ObjectId) {
-        return this.sessionService.getRecentSearch(id)
+        return this.sessionService.getRecentSearch(id);
     }
     @Get('/getSessionHistory/:id')
     async getSessionHistory(@Param('id') id: ObjectId) {
-        return this.sessionService.getSessionHistory(id)
-    }
-    @Post('/refreshAccessToken/:id')
-    async refreshAccessToken(@Param('id') id: ObjectId, @Body() data: any) {
-        console.log(data);
-
-        return this.sessionService.refreshAccessToken(id, data.accessToken)
+        return this.sessionService.getSessionHistory(id);
     }
 }

@@ -160,7 +160,7 @@ export class UserService {
       return {
         access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
         _id: existUser._id,
-
+        refreshToken: newSession.refreshToken
       };
     } else {
 
@@ -182,7 +182,7 @@ export class UserService {
 
         const idToken = await userCredential.user.getIdToken();
 
-        await this.sessionService.createSession({
+        const newSession = await this.sessionService.createSession({
           userId: existEmail._id.toString(),
           uid: null,
           lastViewProperties: [],
@@ -192,7 +192,9 @@ export class UserService {
 
         return {
           access_token: idToken,
-          _id: existEmail._id
+          _id: existEmail._id,
+          refreshToken: newSession.refreshToken
+
         };
       } catch (err) {
         throw new UnauthorizedException('Invalid username or password');
@@ -270,13 +272,18 @@ export class UserService {
     })
 
     if (findEmail) {
-      return await this.sessionService.createSession({
+      const session = await this.sessionService.createSession({
         userId: findEmail._id.toString(),
         lastViewProperties: [],
         lastBooking: null,
         uid,
         recent_search: [],
       })
+
+      return {
+        _id: findEmail._id,
+        refreshToken: session.refreshToken
+      }
     } else {
       throw new BadRequestException("The email is not registered")
     }

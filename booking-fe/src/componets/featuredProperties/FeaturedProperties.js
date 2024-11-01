@@ -14,6 +14,7 @@ function FeaturedProperties() {
 
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
+    
     setLocationList(response);
   }
   useEffect(() => {

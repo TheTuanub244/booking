@@ -99,62 +99,22 @@ export class SessionService {
 
   async refreshAccessToken(
     userId: ObjectId,
-    accessToken: string
   ) {
-    console.log(accessToken);
 
     const findSession = await this.sessionSchema.findOne({ userId })
-    const isValid = await this.validationRefreshToken(userId, findSession.refreshToken);
-    if (!isValid) {
-      throw new UnauthorizedException('Your session has expired');
-    }
     try {
-      const verifyAccessToken = await this.jwtService.verify(accessToken, { secret: 'jwtsecret' })
-      const issuedAtDate = new Date(verifyAccessToken.iat * 1000);
-      const expirationDate = new Date(verifyAccessToken.exp * 1000);
-      if (issuedAtDate > expirationDate) {
-        const newAccessToken = await this.jwtService.sign(
-          {
-            userId: userId,
-          },
-          { expiresIn: '60m' }
-        )
-        return {
-          accessToken: newAccessToken
+      const payload = await this.jwtService.verify(findSession.refreshToken, { secret: 'jwtsecret' })
+      return this.jwtService.sign(
+        {
+          userId: userId
+        },
+        {
+          expiresIn: '1h', secret: 'jwtsecret'
         }
-      }
+      )
     } catch (err) {
-      const verifyAccessToken = await admin.auth().verifyIdToken(accessToken)
-      const issuedAtDate = new Date(verifyAccessToken.iat * 1000);
-      const expirationDate = new Date(verifyAccessToken.exp * 1000);
-      if (issuedAtDate > expirationDate) {
-        throw new BadRequestException('Your session has expired')
-      } else {
-        return {
-          accessToken
-        }
-      }
+      throw new UnauthorizedException('Invalid Refresh Token or Refresh Token has expired');
     }
-
-    // return newAccessToken;
-  }
-  async validationRefreshToken(
-    userId: ObjectId,
-    refreshToken: string,
-  ): Promise<boolean> {
-    const session = await this.sessionSchema
-      .findOne({ userId, refreshToken })
-      .exec();
-    const verifyRefreshToken = await this.jwtService.verify(session.refreshToken, { secret: 'jwtsecret' })
-    const issuedAtDate = new Date(verifyRefreshToken.iat * 1000);
-    const expirationDate = new Date(verifyRefreshToken.exp * 1000);
-
-
-    if (issuedAtDate > expirationDate) {
-      return false
-    }
-    return true
-
   }
   async signOut(userId: ObjectId) {
     return this.sessionSchema.findOneAndDelete({
@@ -166,6 +126,7 @@ export class SessionService {
     return findSession.recent_search;
   }
   async getSessionHistory(userId: ObjectId) {
+
     const session = await this.sessionSchema.findOne({ userId })
     await session.populate('lastViewProperties');
     await session.populate('lastBooking')

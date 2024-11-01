@@ -93,8 +93,5 @@ SessionSchema.pre('save', function (next) {
 
   next();
 });
-SessionSchema.index(
-  { last_activity: 1 },
-  { expireAfterSeconds: 7 * 24 * 60 * 60 },
-);
+
 export { SessionSchema };

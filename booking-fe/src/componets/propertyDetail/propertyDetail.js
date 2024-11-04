@@ -4,6 +4,7 @@ import ContentLoader from "react-content-loader";
 import './propertyDetail.css'
 import ReservationRoom from "../reservationRoom/reservationRoom";
 import { getPropertyById } from "../../api/propertyAPI";
+import { findRoomByProperty } from "../../api/roomAPI";
 
 
 
@@ -12,12 +13,12 @@ const PropertyDetail = () => {
     const [propertyData, setPropertyData] = useState(null);
     const [roomData, setRoomData] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+
+    const [location, setLocation] = useState('');
+
   
 
     useEffect(() => {
-      console.log(id);
-      
         const fetchData = async () => {
             if (id) {
                  const pId = id.toString();
@@ -27,70 +28,22 @@ const PropertyDetail = () => {
                     const data = await getPropertyById(pId);
 
                     setPropertyData(data);
+                    const {street, district, province} = data.address;
+                    setLocation(`${street}, ${district}, ${province}`);
+
+                    const roomDatas = await findRoomByProperty(id);
+
+                    console.log(roomDatas);
+
+                    console.log(roomDatas[0]._id);
+
+                    setRoomData(roomDatas);
+
+
                     setLoading(false);
-                    setRoomData( [{ //Temporary until have room data
-                        id: 1,
-                        type: 'Superior Queen Room',
-                        description: '1 large double bed',
-                        guests: 2,
-                        originalPrice: 'VND 4,780,000',
-                        discountedPrice: 'VND 3,830,400',
-                        features: [
-                          '22 m²',
-                          'Air conditioning',
-                          'Private bathroom',
-                          'Flat-screen TV',
-                          'Soundproofing',
-                          'Free WiFi'
-                        ],
-                        choices: [
-                          'Very good breakfast included',
-                          'Non-refundable'
-                        ]
-                      },
-                      {
-                        id: 2,
-                        type: 'Deluxe Queen Room',
-                        description: '1 large double bed',
-                        guests: 2,
-                        originalPrice: 'VND 5,130,000',
-                        discountedPrice: 'VND 4,104,000',
-                        features: [
-                          '24 m²',
-                          'View',
-                          'Air conditioning',
-                          'Private bathroom',
-                          'Flat-screen TV',
-                          'Soundproofing',
-                          'Free WiFi'
-                        ],
-                        choices: [
-                          'Very good breakfast included',
-                          'Free cancellation before 31 October 2024',
-                          'No prepayment needed - pay at the property'
-                        ]
-                      },
-                      {
-                        id: 3,
-                        type: 'Deluxe Queen Room',
-                        description: '1 large double bed',
-                        guests: 2,
-                        originalPrice: 'VND 5,643,000',
-                        discountedPrice: 'VND 4,514,400',
-                        features: [
-                          '24 m²',
-                          'Air conditioning',
-                          'Private bathroom',
-                          'Flat-screen TV',
-                          'Soundproofing',
-                          'Free WiFi'
-                        ],
-                        choices: [
-                          'Very good breakfast included',
-                          'Non-refundable'
-                        ]
-                      }
-                    ]);
+
+                    
+                    
                   } catch (e){
                     console.log(e);
                   }
@@ -205,17 +158,22 @@ const PropertyDetail = () => {
                 </ContentLoader>
             ) : (
                 <>
+                  <div className="propertyDetail-box">
                     <div className="propertyDetail-header">
                         <h1>{propertyData.name}</h1>
-                        <p>{propertyData.location}</p>
+                        <p>{location}</p>
                     </div>
                     <div className="propertyDetail-image">
-                        
+                      {propertyData.images.map((src, index) => (
+                        <img key={index} src={src} alt={`Image ${index + 1}`} width="150" />
+                      ))}
                     </div>
                     <div className="propertyDetail-description">
                         <p>{propertyData.description}</p>
                     </div>
-                    <ReservationRoom roomData={roomData}/>
+                  </div>
+                    
+                  <ReservationRoom roomData={roomData}/>
                 </>
             )}
         </div>

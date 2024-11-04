@@ -8,6 +8,17 @@
     margin: 0 auto;
 }
 
+.propertyDetail-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 5px solid;
+}
+
 .propertyDetail-header {
     width: 90%;
     max-width: 800px;
@@ -16,9 +27,10 @@
 .propertyDetail-image {
     display: flex;
     gap: 20px;
-    width: 90%;
-    max-width: 800px;
+    width: 100%;
+    max-width: 100%;
     justify-content: center;
+
 }
 
 .propertyDetail-description {

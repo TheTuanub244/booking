@@ -28,7 +28,7 @@ export class RoomService {
     }
     async getRoomWithProperty(property_id: ObjectId) {
         return this.roomSchema
-            .findOne({
+            .find({
                 property_id,
             })
             .populate('property_id');

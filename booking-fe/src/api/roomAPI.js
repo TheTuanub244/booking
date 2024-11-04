@@ -13,10 +13,10 @@ export const findAvailableRoomWithSearch = async(data) => {
         
     }
 }
-export const findRoomByProperty = async (propertyId) => {
+export const findRoomByProperty = async (property_id) => {
     try{       
         
-        const respone = await axios.post("http://localhost:8000/room/getRoomWithProperty", {propertyId})
+        const respone = await axios.post("http://localhost:8000/room/getRoomWithProperty", {property_id})
         
         return respone.data
     } catch(error){

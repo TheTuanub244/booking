@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './reservationRoom.css';
+import ReservationRoom_item from './reservationRoom_item';
 
 const ReservationRoom = ({ roomData }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -18,6 +19,32 @@ const ReservationRoom = ({ roomData }) => {
     });
   };
 
+  const handleChangeDate = (e) => {
+    let date1, date2;
+    if(e.target.id === "checkIn"){
+      setCheckInDate(e.target.value);
+      date1 = new Date(e.target.value);
+      if(checkOutDate) date2 = new Date(checkOutDate);
+    }
+    if(e.target.id === "checkOut"){
+      
+      date2 = new Date(e.target.value);
+
+      if(checkInDate) date1 = new Date(checkInDate);
+
+      if(date2 - date1 < 0) return;
+
+
+      setCheckOutDate(e.target.value);
+    }
+      console.log(date1);
+      let miliseconds = Math.abs(date2 - date1);
+      let days = miliseconds / (1000 * 60 * 60 * 24);
+
+      if(days) setNumberOfNights(days);
+    
+  }
+
   return (
     <div className="ReservationForm">
       <h2>Reserve Your Room</h2>
@@ -25,56 +52,16 @@ const ReservationRoom = ({ roomData }) => {
         <div className="table-responsive">
           <table className="room-table">
             <thead>
-              <tr>
+              <tr key="0">
                 <th>Room type</th>
+                <th>Rates</th>
                 <th>Number of guests</th>
-                <th>Price for {numberOfNights} nights</th>
-                <th>Your choices</th>
+                <th>Price for {numberOfNights ? numberOfNights : ''} nights</th>
                 <th>Select rooms</th>
               </tr>
             </thead>
             <tbody>
-              {roomData.map((room) => (
-                <tr key={room.id}>
-                  <td>
-                    <strong>{room.type}</strong>
-                    <div>{room.description}</div>
-                    <ul>
-                      {room.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                  </td>
-                  <td>👤 {room.guests}</td>
-                  <td>
-                    <div className="price">
-                      <span className="original-price">
-                        {room.originalPrice}
-                      </span>
-                      <span className="discounted-price">
-                        {room.discountedPrice}
-                      </span>
-                      <span className="discount">20% off</span>
-                    </div>
-                  </td>
-                  <td>
-                    <ul className="choices">
-                      {room.choices.map((choice, index) => (
-                        <li key={index}>{choice}</li>
-                      ))}
-                    </ul>
-                  </td>
-                  <td>
-                    <input
-                      type="radio"
-                      name="selectedRoom"
-                      value={room.id}
-                      checked={selectedRoom === room.id}
-                      onChange={(e) => setSelectedRoom(e.target.value)}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {roomData.map((room) => <ReservationRoom_item key={room._id} room={room} numberOfNights={numberOfNights} setSelectedRoom={setSelectedRoom} />)}
             </tbody>
           </table>
         </div>
@@ -84,7 +71,7 @@ const ReservationRoom = ({ roomData }) => {
             type="date"
             id="checkIn"
             value={checkInDate}
-            onChange={(e) => setCheckInDate(e.target.value)}
+            onChange={(e) => handleChangeDate(e)}
             required
           />
 
@@ -93,7 +80,7 @@ const ReservationRoom = ({ roomData }) => {
             type="date"
             id="checkOut"
             value={checkOutDate}
-            onChange={(e) => setCheckOutDate(e.target.value)}
+            onChange={(e) => handleChangeDate(e)}
             required
           />
 

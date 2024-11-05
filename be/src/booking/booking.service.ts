@@ -33,25 +33,32 @@ export class BookingService {
     await findSession.save();
     return savedBooking;
   }
-  async findAvailableRoom(
+  async findConflictingBookings(
     property: mongoose.Types.ObjectId,
+    roomId: mongoose.Types.ObjectId,
     check_in: Date,
     check_out: Date,
   ) {
-
-    const findRoomForBooking = await this.bookingSchema.find({
+    const conflictingBookings = await this.bookingSchema.find({
       $and: [
         {
           property: property.toString(),
         },
+        { room_id: roomId.toString() },
         {
           $or: [
-            { check_out_date: { $lt: check_in } },
-            { check_in_date: { $gt: check_out } },
+            {
+              check_in_date: { $lte: check_out },
+              check_out_date: { $gte: check_in },
+            },
           ],
         },
       ],
     });
-    return findRoomForBooking;
+    const conflictingRoomIds = conflictingBookings.map((booking) =>
+      booking.room_id.toString(),
+    );
+
+    return conflictingRoomIds;
   }
 }

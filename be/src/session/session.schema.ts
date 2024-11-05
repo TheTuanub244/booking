@@ -47,10 +47,11 @@ export class Session {
               type: Number,
             },
           },
+          room: {
+            type: Number,
+          },
         },
-        room: {
-          type: Number,
-        },
+
       },
     ],
     _id: false,

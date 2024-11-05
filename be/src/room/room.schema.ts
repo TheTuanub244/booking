@@ -45,16 +45,6 @@ export class Room {
     };
     room: number;
   };
-  @Prop({
-    type: {
-      check_in_date: {
-        type: Date,
-      },
-      check_out_date: {
-        type: Date,
-      },
-    },
-  })
   @Prop({ type: [String] })
   facility: string[];
   @Prop({})

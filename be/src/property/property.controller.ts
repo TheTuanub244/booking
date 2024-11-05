@@ -68,4 +68,8 @@ export class PropertyController {
     async getPropertyByPlace(@Body() data: any) {
         return this.propertyService.getPropertyByPlace(data.place);
     }
+    @Get('getDistinctPlace')
+    async getDistinctPlace() {
+        return this.propertyService.getDistinctPlace()
+    }
 }

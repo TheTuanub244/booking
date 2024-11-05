@@ -37,6 +37,7 @@ export class RoomService {
         const existedRoom = await this.roomSchema.find({
             $and: [{ property_id: property_id }, { 'capacity.room': { $gt: 0 } }],
         });
+
         return existedRoom;
     }
     async findAvailableRoomWithSearch(
@@ -49,6 +50,7 @@ export class RoomService {
         const findProperties = await this.propertySchema.find({
             'address.province': place,
         });
+
         const availableRoom = [];
         await Promise.all(
             findProperties.map(async (property) => {
@@ -57,24 +59,24 @@ export class RoomService {
                 );
 
                 await Promise.all(
-                    findAvailableRoom.map(async (index) => {
-                        const finalRespone = await this.findAvailableRoomForBooking(
-                            index._id,
+                    findAvailableRoom.map(async (value) => {
+                        const finalRespone = await this.findConflictingInBookings(
+                            value._id,
                             property._id,
                             check_in,
                             check_out,
-                            capacity,
                         );
 
-                        if (finalRespone.length !== 0) {
-                            finalRespone.forEach((room) => {
-                                availableRoom.push(room);
-                            });
+                        if (finalRespone.length === 0) {
+                            availableRoom.push(value)
                         }
+
                     }),
                 );
             }),
         );
+
+
         await this.sessionSchema.findOneAndUpdate(
             {
                 userId,
@@ -91,37 +93,20 @@ export class RoomService {
         );
         return availableRoom;
     }
-    async findAvailableRoomForBooking(
+    async findConflictingInBookings(
         room_id: mongoose.Types.ObjectId,
         property_id: mongoose.Types.ObjectId,
         check_in: Date,
         check_out: Date,
-        capacity: any,
     ) {
-        const findRoomInBooking = await this.bookingService.findAvailableRoom(
+        const findRoomInBooking = await this.bookingService.findConflictingBookings(
             property_id,
+            room_id,
             check_in,
             check_out,
         );
 
-        if (findRoomInBooking.length == 0) {
-        }
-        const findRoom = await this.roomSchema
-            .find({
-                $and: [
-                    { property_id: property_id },
-                    { _id: room_id },
-                    {
-                        'capacity.adults': { $gte: capacity.adults },
-                    },
-                    { 'capacity.childs.age': { $gte: capacity.childs.age } },
-                    {
-                        'capacity.childs.count': { $gte: capacity.childs.count },
-                    },
-                ],
-            })
-            .populate('property_id');
-        return findRoom;
+        return findRoomInBooking;
     }
     async findRoom(findRoomDto: FindRoomDto) {
         // const findExistBooking = await this.book
@@ -157,15 +142,16 @@ export class RoomService {
         return findRoom;
     }
     async updateImageForRoom(roomId, image) {
-        return await this.roomSchema.findByIdAndUpdate(roomId, {
-            $push: {
-                images: {
-                    $each: image
-                }
-            }
-        },
-            { new: true }
-
-        )
+        return await this.roomSchema.findByIdAndUpdate(
+            roomId,
+            {
+                $push: {
+                    images: {
+                        $each: image,
+                    },
+                },
+            },
+            { new: true },
+        );
     }
 }

@@ -131,4 +131,8 @@ export class PropertyService {
             'address.province': place
         })
     }
+    async getDistinctPlace() {
+        return this.propertySchema.distinct('address.province')
+    }
+
 }

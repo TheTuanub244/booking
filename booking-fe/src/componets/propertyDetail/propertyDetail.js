@@ -2,7 +2,7 @@ import React, { useEffect, useState, } from "react";
 import { useParams } from 'react-router-dom'; 
 import ContentLoader from "react-content-loader";
 import './propertyDetail.css'
-import ReservationRoom from "../reservationRoom/reservationRoom";
+import ReservationRoom from "./reservationRoom/reservationRoom";
 import { getPropertyById } from "../../api/propertyAPI";
 import { findRoomByProperty } from "../../api/roomAPI";
 import { updateLastProperties } from "../../api/sessionAPI";
@@ -169,7 +169,20 @@ const PropertyDetail = () => {
                     </div>
                     <div className="propertyDetail-image">
                       {propertyData.images.map((src, index) => (
-                        <img key={index} src={src} alt={`Image ${index + 1}`} width="150" />
+                        <img 
+                          key={index} 
+                          src={src} 
+                          alt={`Image ${index + 1}`} 
+                          className={index === 0 ? "large" : ""} 
+                        />
+                      ))}
+
+                      {/* Add placeholders if there are fewer than 6 images */}
+                      {Array.from({ length: Math.max(6 - propertyData.images.length, 0) }).map((_, index) => (
+                        <div 
+                          key={`placeholder-${index}`} 
+                          className={`placeholder ${propertyData.images.length === 0 && index === 0 ? "large" : ""}`}
+                        />
                       ))}
                     </div>
                     <div className="propertyDetail-description">

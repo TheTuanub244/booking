@@ -5,6 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation, Pagination } from 'swiper/modules';
 import { getPropertyByRates } from '../../api/propertyAPI';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -21,8 +22,11 @@ function FeaturedProperties() {
     propertyByRates()
     
   }, [])
-
-
+  const navigate = useNavigate()
+  const handleClick = async (id) => {
+    
+    navigate(`/property/${id}`)
+  }
   return (
     <div className='fp'>
       <Swiper
@@ -33,7 +37,7 @@ function FeaturedProperties() {
         modules={[Navigation, Pagination]} // Thêm các module vào đâyx
       >
         {locationList.map((item) => (
-          <SwiperSlide key={item.property._id}>
+          <SwiperSlide key={item.property._id} onClick={() => handleClick(item.property._id)}>
             <div className='fpItem'>
               <div className='fpItemImg'>
                 <img src={item.property.images[0]} alt="" className='fpImg' />

@@ -82,11 +82,13 @@ export class SessionService {
       throw new BadRequestException('Session does not exist or has expired');
     }
   }
-  async updateLastPropertyView(session: ObjectId, property: ObjectId) {
-    return await this.sessionSchema.findByIdAndUpdate(
-      session,
+  async updateLastPropertyView(userId: ObjectId, property: ObjectId) {
+    return await this.sessionSchema.findOneAndUpdate(
       {
-        $addToSet: { 'data.lastViewProperties': property },
+        userId: userId
+      },
+      {
+        $addToSet: { 'lastViewProperties': property },
       },
       { new: true },
     );

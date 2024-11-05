@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed, faCar, faPlane, faTaxi, faCalendarDays, faUser } from '@fortawesome/free-solid-svg-icons'
 import './header.css'
@@ -6,11 +6,11 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { findAvailableRoomWithSearch } from '../../api/roomAPI';
+import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 
 
-
-function Header({ type }) {
+function Header({ type, places, getHistory }) {
 
   const [openDate, setOpenDate] = useState(false);
   const [date, setDate] = useState([
@@ -81,7 +81,14 @@ function Header({ type }) {
     }
     
     const respone = await findAvailableRoomWithSearch(data)
+    console.log(respone);
+    getHistory(userId)
   }
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const handleSelectSuggestion = async (province) => {
+    setProvince(province)
+  }
+ 
   return (
     <div className='header'>
       <div className={type === 'list' ? 'headerContainer listMode' : 'headerContainer'}>
@@ -118,14 +125,39 @@ function Header({ type }) {
             <div className='headerSearch'>
 
 
-              <div className='headerSearchItem iconBed'>
+              <div className='headerSearchItem iconBed' onFocus={() => {
+                setShowSuggestions(true)
+                setOpenDate(false)
+                setOpenOptions(false)
+              }} onBlur={() => setShowSuggestions(false)}>
                 <FontAwesomeIcon icon={faBed} className='headerIcon' />
-                <input type='text' placeholder='Where are you going?' className='headerSearchInput' value={province} onChange={(e) => handleChangeProvince(e)}/>
+                <input type='text' placeholder='Where are you going?' className='headerSearchInput' value={province} onChange={(e) => handleChangeProvince(e)} />
+                
               </div>
-
+              {(showSuggestions && places) && (
+              <div className="suggestionsDropdown">
+                <div className="suggestionsTitle">Popular destinations nearby</div>
+                {places.map((place, index) => (
+                  <div
+                    key={index}
+                    className="suggestionItem"
+                    onMouseDown={() => handleSelectSuggestion(place)}
+                  >
+                    <FontAwesomeIcon icon={faMapMarkerAlt} className="suggestionIcon" />
+                    <div className="suggestionText">
+                      <div className="suggestionName">{place}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
               <div className='headerSearchItem iconCalendar'>
                 <FontAwesomeIcon icon={faCalendarDays} className='headerIcon' />
-                <span onClick={() => setOpenDate(!openDate)} className='headerSearchText'>{`${formatDate(date[0].startDate)} - ${formatDate(date[0].endDate)}`}</span>
+                <span onClick={() => {
+                  setShowSuggestions(false)
+                  setOpenDate(!openDate)
+                  setOpenOptions(false)
+                }} className='headerSearchText'>{`${formatDate(date[0].startDate)} - ${formatDate(date[0].endDate)}`}</span>
                 {openDate && <DateRange
                   editableDateInputs={true}
                   onChange={item => setDate([item.selection])}
@@ -137,7 +169,11 @@ function Header({ type }) {
 
               <div className='headerSearchItem iconUser'>
                 <FontAwesomeIcon icon={faUser} className='headerIcon' />
-                <span onClick={() => setOpenOptions(!openOptions)} className='headerSearchText'>{`${options.adult} ${checkAdults} · ${options.children} children · ${options.room} ${checkRooms}`}</span>
+                <span onClick={() => {
+                  setShowSuggestions(false)
+                  setOpenDate(false)
+                  setOpenOptions(!openOptions)
+                }} className='headerSearchText'>{`${options.adult} ${checkAdults} · ${options.children} children · ${options.room} ${checkRooms}`}</span>
                 {openOptions && <div className='options'>
                   <div className='optionItem'>
                     <span className='optionText'>

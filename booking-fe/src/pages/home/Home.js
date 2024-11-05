@@ -11,28 +11,38 @@ import TredingDestination from '../../componets/tredingDestination/TredingDestin
 import  RecentRearch  from '../../componets/recentResearch/RecentRearch';
 
 
-import { getPropertyByplace, getPropertyByRates, getPropertyNear } from '../../api/propertyAPI';
+import { getAllProperty, getAllProvince, getAllTypeOfProperties, getDistinctPlace, getPropertyByplace, getPropertyByRates, getPropertyNear } from '../../api/propertyAPI';
 import { checkSession, getSessionHistory } from '../../api/sessionAPI';
 import LastViewProperties from '../../componets/lastViewProperties/LastViewProperties';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [sessionHistory, setSessionHistory] = useState()
-  const [propertynear, setPropertyNear] = useState()
+  const [propertyNear, setPropertyNear] = useState()
+  const [allPlace, setAllPlace] = useState()
   const [userId, setUserId] = useState()
+  const [propertyType, setPropertyType] = useState()
   const navigate = useNavigate()
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
     return response;
+  }
+  const getPropertyType = async () => {
+    const respone = await getAllTypeOfProperties()
+    setPropertyType(respone)
   }
   const getHistory = async (userId) => {
     
     const data = await getSessionHistory(userId)
     setSessionHistory(data)
   }
-
+  const handleGetAllProperty = async () => {
+    const respone = await getDistinctPlace()
+    setAllPlace(respone)
+  }
   const getNear = async (lon, lat) => {
     const data = await getPropertyNear(lon, lat)
+    
     setPropertyNear(data)    
   }
   useEffect(() => {
@@ -48,15 +58,17 @@ function Home() {
     );
     const userId = localStorage.getItem('userId')
     setUserId(userId)
+    getPropertyType()
+    handleGetAllProperty()
     if(userId){
       getHistory(userId)
-
     }
   }, [])
+ 
   return (
     <div>
       <Navbar/>
-      <Header/>
+      <Header places={allPlace} getHistory={getHistory}/>
       <div className='homeContainer'>
         {(userId && sessionHistory ) && <RecentRearch data={sessionHistory.recent_search}/>}
         {
@@ -68,10 +80,10 @@ function Home() {
         <h1 className='homeTitle'>Trending destinations</h1>
         <TredingDestination/>
         <h1 className='homeTitle'>Browse by property type</h1>
-        <PropertyList />
+        <PropertyList propertyType={propertyType}/>
         <h1 className='homeTitle'>Quick and easy trip planner</h1>
-        <EasyTrip/>
-        <h1 className='homeTitle'>Home guests love</h1>
+        <EasyTrip propertyNear={propertyNear}/>
+        <h1 className='homeTitle' >Home guests love</h1>
         <FeaturedProperties/>
         
         <Footer/>

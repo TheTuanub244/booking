@@ -6,6 +6,7 @@ import {
     HttpStatus,
     Param,
     Post,
+    Put,
     Res,
 } from '@nestjs/common';
 import { SessionService } from './session.service';
@@ -25,11 +26,10 @@ export class SessionController {
     async getSession(@Body() id: any): Promise<Session | null> {
         return this.sessionService.getSession(id);
     }
-    @Post('/update/:id')
-    async updateSession(@Body() session: any) {
-        console.log(session);
+    @Put('/updateLastProperties/:id')
+    async updateLastProperties(@Body() session: any, @Param('id') id: ObjectId) {
 
-        return this.sessionService.updateSession(session);
+        return this.sessionService.updateLastPropertyView(id, session.propertyId);
     }
     @Delete(':id')
     async deleteSession(@Body() session: any) {

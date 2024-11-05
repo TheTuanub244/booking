@@ -33,9 +33,17 @@
   padding: 10px;
   border-radius: 20px;
 }
-
+.headerTitle{
+  font-weight: 800;
+  list-style: 62px;
+  font-size: 48px;
+}
 .headerDesc {
   margin: 20px 0;
+  font-size: 24px;
+  font-weight: 400px;
+  line-height: 32px;
+  color: white;
 }
 
 .headerBtn {
@@ -48,7 +56,6 @@
   width: 100%;
   height: 100%;
   display: block;
-  border-radius: 5px;
   border: none;
 }
 
@@ -81,6 +88,7 @@
   padding-left:10px;
   padding-right:80px;
   border-right: 5px solid #febb02;
+  height: 40px;
   
 }
 
@@ -90,17 +98,23 @@
   padding-right: 20px;
   border-right: 5px solid #febb02;
   width: 280px;
+  height: 40px;
+
 }
 
 .headerSearch .iconUser {
   padding-left: 10px;
   padding-right: 20px;
   border-right: 5px solid #febb02;
+  height: 40px;
   width: 280px;
 }
 
 .headerSearch .btn {
   width: 108px;
+  padding: 0;
+  
+  
 }
 .headerSearchInput {
   border:none ;
@@ -108,7 +122,10 @@
 }
 
 .headerSearchText {
-  color: lightgray;
+  font-size: 14px;
+  
+  font-weight: bold;
+  color: #333;
   cursor: pointer;
 }
 
@@ -201,4 +218,80 @@
 /* Đổi màu nền cho option mặc định */
 .selectAge option[value="-1"] {
   color: #999; /* Màu chữ cho option mặc định */
+}
+.headerSearchContainer {
+  position: relative;
+  width: 300px;
+}
+
+.headerSearchItem {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 8px;
+  
+}
+
+.headerIcon {
+  margin-right: 8px;
+}
+
+.headerSearchInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.suggestionsDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 32%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  z-index: 100;
+  
+  /* Thêm chiều cao tối đa và cuộn dọc */
+  max-height: 200px; /* Chiều cao tối đa cho dropdown */
+  overflow-y: auto;  /* Kích hoạt cuộn khi nội dung vượt quá chiều cao */
+}
+
+.suggestionsTitle {
+  font-weight: bold;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestionItem:hover {
+  background-color: #f0f0f0;
+}
+
+.suggestionIcon {
+  margin-right: 10px;
+  color: #333;
+}
+
+.suggestionText {
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestionName {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
 }

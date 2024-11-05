@@ -5,7 +5,9 @@ export const getAllProperty = async () => {
     return respone.data
 }
 export const getPropertyById = async (id) => {
+    
     const respone = await axios.get(`http://localhost:8000/property/getPropertyById/${id}`, {withCredentials: true})
+    
     return respone.data    
     
 }
@@ -71,4 +73,8 @@ export const getPropertyByplace = async (place) => {
         return respone
         
     }
+}
+export const getDistinctPlace = async () => {
+    const respone = await axios.get("http://localhost:8000/property/getDistinctPlace")
+    return respone.data
 }

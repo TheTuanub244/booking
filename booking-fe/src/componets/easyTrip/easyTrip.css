@@ -40,15 +40,21 @@
 .locationList {
   display: flex;                     /* Sử dụng Flexbox để sắp xếp các phần tử */
   justify-content: space-between;    /* Căn chỉnh các phần tử giữa các hàng */
-  gap: 15px;                        /* Thêm khoảng cách giữa các item */
+  gap: 15px; 
+}
+.swiper{
+  width: 100%;
 }
 
 .locationItem {
-  background-color: #f9f9f9;        /* Màu nền cho từng item */
-  border-radius: 8px;               /* Bo góc cho item */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho item */
-  overflow: hidden;                  /* Ẩn phần ngoài bo góc */
-  width: 100%;
+  width: 100%; /* Đặt chiều rộng 100% để hiển thị đầy đủ trên màn hình nhỏ */
+  margin-bottom: 20px; /* Khoảng cách dưới mỗi mục */
+  background-color: #ffffff; /* Màu nền trắng cho các mục */
+  border-radius: 8px; /* Bo góc cho mục */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho mục */
+  overflow: hidden; /* Ẩn phần thừa ra ngoài khung */
+  padding-bottom: 10px;
+  height: 95%;
 }
 
 .locationItemImg img {

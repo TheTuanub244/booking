@@ -5,6 +5,7 @@ import './propertyDetail.css'
 import ReservationRoom from "../reservationRoom/reservationRoom";
 import { getPropertyById } from "../../api/propertyAPI";
 import { findRoomByProperty } from "../../api/roomAPI";
+import { updateLastProperties } from "../../api/sessionAPI";
 
 
 
@@ -13,11 +14,14 @@ const PropertyDetail = () => {
     const [propertyData, setPropertyData] = useState(null);
     const [roomData, setRoomData] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const userId = localStorage.getItem('userId')
     const [location, setLocation] = useState('');
-
-  
-
+    const handleUpdateViewProperties = async () => {
+      await updateLastProperties(userId, id)
+    }
+    useEffect(() => {
+      handleUpdateViewProperties()
+    }, [])
     useEffect(() => {
         const fetchData = async () => {
             if (id) {
@@ -26,7 +30,7 @@ const PropertyDetail = () => {
                 
                     try{
                     const data = await getPropertyById(pId);
-
+                      
                     setPropertyData(data);
                     const {street, district, province} = data.address;
                     setLocation(`${street}, ${district}, ${province}`);

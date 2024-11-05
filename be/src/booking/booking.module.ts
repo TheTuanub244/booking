@@ -16,13 +16,14 @@ import { PromotionModule } from 'src/promotion/promotion.module';
 import { Room, RoomSchema } from 'src/room/room.schema';
 import { RoomModule } from 'src/room/room.module';
 import { SessionModule } from 'src/session/session.module';
+import { PromotionService } from 'src/promotion/promotion.service';
 
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [BookingController],
-  providers: [BookingService, JwtAuthGuard, SessionService, UserService],
+  providers: [BookingService, JwtAuthGuard, SessionService, UserService, PromotionService],
   exports: [BookingService],
   imports: [
     MongooseModule.forFeature([

@@ -13,6 +13,9 @@ import { CreatePropertyDto } from './dto/createProperty.dto';
 import { ObjectId } from 'mongoose';
 import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 import { Request } from 'express';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { ROLE } from 'src/user/enum/role.enum';
 
 @Controller('property')
 export class PropertyController {
@@ -57,6 +60,8 @@ export class PropertyController {
 
         return this.propertyService.getPropertyNear(data.longitude, data.latitude);
     }
+    @UseGuards(RolesGuard, ValidateTokenGuard)
+    @Roles(ROLE.SELLER, ROLE.ADMIN)
     @Put('updateImageForProperty')
     async updateImageForProperty(@Body() data: any) {
         return this.propertyService.updateImageForProperty(

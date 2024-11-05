@@ -20,11 +20,12 @@ export class Room {
   @Prop({ required: true })
   name: string;
   @Prop({
-
-    required: true, _id: false, type: {
+    required: true,
+    _id: false,
+    type: {
       weekday: Number,
       weekend: Number,
-    }
+    },
   })
   price_per_night: {
     weekday: number;

@@ -17,7 +17,9 @@ const PropertyDetail = () => {
     const userId = localStorage.getItem('userId')
     const [location, setLocation] = useState('');
     const handleUpdateViewProperties = async () => {
-      await updateLastProperties(userId, id)
+      if(userId){
+        await updateLastProperties(userId, id)
+      }
     }
     useEffect(() => {
       handleUpdateViewProperties()

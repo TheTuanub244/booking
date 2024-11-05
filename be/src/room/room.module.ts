@@ -19,12 +19,13 @@ import { User, UserSchema } from 'src/user/user.schema';
 import { UserService } from 'src/user/user.service';
 import { Promotion, PromotionSchema } from 'src/promotion/promotion.schema';
 import { PromotionModule } from 'src/promotion/promotion.module';
+import { PromotionService } from 'src/promotion/promotion.service';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [RoomController],
-  providers: [RoomService, BookingService, SessionService, UserService],
+  providers: [RoomService, BookingService, SessionService, UserService, PromotionService],
   exports: [RoomService], // Ensure to export services needed by other modules
   imports: [
     MongooseModule.forFeature([

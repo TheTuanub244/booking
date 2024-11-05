@@ -21,8 +21,6 @@ export class Promotion {
     @Prop({ type: Date, required: true })
     endDate: Date;
 
-
-
     @Prop({
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'Property',
@@ -34,10 +32,6 @@ export class Promotion {
         ref: 'Room',
     })
     roomId: Room[];
-    @Prop({
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Booking',
-    })
-    bookingId: Booking[];
+
 }
 export const PromotionSchema = SchemaFactory.createForClass(Promotion);

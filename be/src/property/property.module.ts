@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PropertyController } from './property.controller';
 import { PropertyService } from './property.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -19,6 +19,8 @@ import { Review, ReviewSchema } from 'src/review/review.schema';
 import { User, UserSchema } from 'src/user/user.schema';
 import { UserModule } from 'src/user/user.module';
 import { ReviewService } from 'src/review/review.service';
+import { Promotion, PromotionSchema } from 'src/promotion/promotion.schema';
+import { PromotionModule } from 'src/promotion/promotion.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -30,6 +32,10 @@ const jwtConstant = {
       {
         name: Property.name,
         schema: PropertySchema,
+      },
+      {
+        name: Promotion.name,
+        schema: PromotionSchema
       },
       {
         name: Booking.name,
@@ -46,11 +52,12 @@ const jwtConstant = {
         schema: UserSchema,
       },
     ]),
-    BookingModule,
-    SessionModule,
-    RoomModule,
+    forwardRef(() => BookingModule),
+    forwardRef(() => SessionModule),
+    forwardRef(() => RoomModule),
     ReviewModule,
     UserModule,
+    PromotionModule,
     JwtModule.register({
       secret: jwtConstant.secret,
 

@@ -41,7 +41,6 @@ const PropertyList = ({ propertyType }) => {
         {propertyType && propertyType.map((type, index) => {
           // Tìm hình ảnh trùng khớp với type
           const matchedImage = images.find(image => image.type === type);
-          console.log(matchedImage);
           
           return (
             <SwiperSlide key={index}>

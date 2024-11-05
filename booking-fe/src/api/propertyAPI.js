@@ -21,6 +21,10 @@ export const getPropertyByTypeAndPlace = async (place, type) => {
     
     return respone.data
 }
+export const getPropertyByPlace = async (place) => {
+    const respone = await axios.post('http://localhost:8000/property/getPropertyByPlace', {place}, {withCredentials: true})
+    return respone.data
+}
 export const getPropertyByRates = async () => {
     try{       
         const respone = await axios.get("http://localhost:8000/property/getPropertiesSortedByRate", {withCredentials: true})

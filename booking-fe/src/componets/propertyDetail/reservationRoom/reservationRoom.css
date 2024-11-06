@@ -1,0 +1,106 @@
+.room-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .room-table th,
+  .room-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .room-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  
+  .choices li {
+    list-style: none;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .ReservationForm {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reservation-details {
+    display: flex; /* Use flexbox for layout */
+    flex-direction: row; /* Align items in a row */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Center items vertically */
+    max-width: 100%; /* Set a max width for the form */
+    margin: 0 auto; /* Center the form */
+    padding: 10px; /* Add padding inside the form */
+    background-color: #f9f9f9; /* Light background color */
+    border-radius: 8px; /* Rounded corners */
+    margin-bottom: 10px;
+}
+
+.reservation-details label {
+    margin-right: 10px; /* Space between label and input */
+    font-weight: bold; /* Bold text for labels */
+    color: #333; /* Dark gray color for text */
+}
+
+.reservation-details input[type="date"],
+.reservation-details input[type="number"] {
+    flex: 1; /* Allow inputs to take available space */
+    padding: 8px; /* Padding inside inputs */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Slightly rounded corners */
+    margin-right: 15px; /* Space between inputs */
+    font-size: 16px; /* Larger font size for readability */
+}
+
+.reservation-details input[type="date"]:last-of-type,
+.reservation-details input[type="number"]:last-of-type {
+    margin-right: 0; /* Remove margin from the last input */
+}
+
+.reservation-details .update {
+    padding: 10px 20px; /* Padding inside button */
+    background-color: #007BFF; /* Primary button color */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Slightly rounded corners */
+    font-size: 16px; /* Larger font size for button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+    flex: 0 0 auto; /* Prevent button from stretching */
+    margin-left: 10px;
+
+}
+
+.reserveButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.ReservationForm .reserve {
+  padding: 10px 20px; /* Padding inside button */
+  background-color: #007BFF; /* Primary button color */
+  color: white; /* White text */
+  border: none; /* No border */
+  border-radius: 4px; /* Slightly rounded corners */
+  font-size: 16px; /* Larger font size for button */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition */
+
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+button[type="submit"]:active {
+    background-color: #004080; /* Even darker shade when clicked */
+}

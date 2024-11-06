@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import './reservationRoom.css';
 import ReservationRoom_item from './reservationRoom_item';
+import RoomModal from './roomModal';
 
 const ReservationRoom = ({ roomData }) => {
-  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [selectedRoom, setSelectedRoom] = useState([]);
+  
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
   const [numberOfGuests, setNumberOfGuests] = useState(1);
   const [numberOfNights, setNumberOfNights] = useState(3);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [modalRoom, setModalRoom] = useState(null);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalRoom(null);
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -49,23 +60,7 @@ const ReservationRoom = ({ roomData }) => {
     <div className="ReservationForm">
       <h2>Reserve Your Room</h2>
       <form onSubmit={handleSubmit}>
-        <div className="table-responsive">
-          <table className="room-table">
-            <thead>
-              <tr key="0">
-                <th>Room type</th>
-                <th>Rates</th>
-                <th>Number of guests</th>
-                <th>Price for {numberOfNights ? numberOfNights : ''} nights</th>
-                <th>Select rooms</th>
-              </tr>
-            </thead>
-            <tbody>
-              {roomData.map((room) => <ReservationRoom_item key={room._id} room={room} numberOfNights={numberOfNights} setSelectedRoom={setSelectedRoom} />)}
-            </tbody>
-          </table>
-        </div>
-        <div className="reservation-details">
+      <div className="reservation-details">
           <label htmlFor="checkIn">Check-In Date:</label>
           <input
             type="date"
@@ -93,9 +88,37 @@ const ReservationRoom = ({ roomData }) => {
             onChange={(e) => setNumberOfGuests(e.target.value)}
             required
           />
+          <button type="button" className='update'>Update</button>
+      </div>
+        
+        <div className="table-responsive">
+          <table className="room-table">
+            <thead>
+              <tr key="0">
+                <th>Room type</th>
+                <th>Rates</th>
+                <th>Number of guests</th>
+                <th>Price for {numberOfNights ? numberOfNights : ''} nights</th>
+                <th>Select rooms</th>
+              </tr>
+            </thead>
+            <tbody>
+              {roomData.map((room) => <ReservationRoom_item key={room._id} room={room} numberOfNights={numberOfNights} 
+                                                            setSelectedRoom={setSelectedRoom} 
+                                                            setIsModalOpen={setIsModalOpen} 
+                                                            setModalRoom={setModalRoom} />)}
+            </tbody>
+          </table>
         </div>
-        <button type="submit">Reserve Now</button>
+        <div className="reserveButton">
+          <button className="reserve" type="submit">Reserve Now</button>
+        </div>
+        
+        
       </form>
+      <RoomModal isOpen={isModalOpen} 
+                onClose={closeModal} 
+                room={modalRoom} />
     </div>
   );
 };

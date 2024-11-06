@@ -48,8 +48,8 @@ function Header({ type, places, getHistory }) {
 
   const checkAdults = options.adult > 1 ? 'adults' : 'adult';
   const checkRooms = options.room > 1 ? 'rooms' : 'room';
-  
-  const [province,setProvince] = useState('');
+
+  const [province, setProvince] = useState('');
 
   const handleChangeProvince = (e) => {
     setProvince(e.target.value);
@@ -57,7 +57,7 @@ function Header({ type, places, getHistory }) {
 
   const [openOptions, setOpenOptions] = useState(false);
 
-  const [selectedAge,setSelectedAge] = useState('');
+  const [selectedAge, setSelectedAge] = useState('');
 
   const handleChange = (e) => {
     setSelectedAge(e.target.value);
@@ -67,11 +67,11 @@ function Header({ type, places, getHistory }) {
     const data = {
       userId,
       place: province,
-      check_in: new Date(date[0].startDate).toISOString().split('T')[0], 
+      check_in: new Date(date[0].startDate).toISOString().split('T')[0],
       check_out: new Date(date[0].endDate).toISOString().split('T')[0],
       capacity: {
         adults: options.adult,
-        childs:{
+        childs: {
           count: options.children,
           age: parseInt(selectedAge)
         },
@@ -79,7 +79,7 @@ function Header({ type, places, getHistory }) {
 
       }
     }
-    
+
     const respone = await findAvailableRoomWithSearch(data)
     console.log(respone);
     getHistory(userId)
@@ -88,7 +88,7 @@ function Header({ type, places, getHistory }) {
   const handleSelectSuggestion = async (province) => {
     setProvince(province)
   }
- 
+
   return (
     <div className='header'>
       <div className={type === 'list' ? 'headerContainer listMode' : 'headerContainer'}>
@@ -122,128 +122,129 @@ function Header({ type, places, getHistory }) {
             <p className='headerDesc'>
               Search low prices on hotels, homes and much more...
             </p>
-            <div className='headerSearch'>
-
-
-              <div className='headerSearchItem iconBed' onFocus={() => {
-                setShowSuggestions(true)
-                setOpenDate(false)
-                setOpenOptions(false)
-              }} onBlur={() => setShowSuggestions(false)}>
-                <FontAwesomeIcon icon={faBed} className='headerIcon' />
-                <input type='text' placeholder='Where are you going?' className='headerSearchInput' value={province} onChange={(e) => handleChangeProvince(e)} />
-                
-              </div>
-              {(showSuggestions && places) && (
-              <div className="suggestionsDropdown">
-                <div className="suggestionsTitle">Popular destinations nearby</div>
-                {places.map((place, index) => (
-                  <div
-                    key={index}
-                    className="suggestionItem"
-                    onMouseDown={() => handleSelectSuggestion(place)}
-                  >
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="suggestionIcon" />
-                    <div className="suggestionText">
-                      <div className="suggestionName">{place}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-              <div className='headerSearchItem iconCalendar'>
-                <FontAwesomeIcon icon={faCalendarDays} className='headerIcon' />
-                <span onClick={() => {
-                  setShowSuggestions(false)
-                  setOpenDate(!openDate)
-                  setOpenOptions(false)
-                }} className='headerSearchText'>{`${formatDate(date[0].startDate)} - ${formatDate(date[0].endDate)}`}</span>
-                {openDate && <DateRange
-                  editableDateInputs={true}
-                  onChange={item => setDate([item.selection])}
-                  moveRangeOnFirstSelection={false}
-                  ranges={date}
-                  className='date'
-                />}
-              </div>
-
-              <div className='headerSearchItem iconUser'>
-                <FontAwesomeIcon icon={faUser} className='headerIcon' />
-                <span onClick={() => {
-                  setShowSuggestions(false)
-                  setOpenDate(false)
-                  setOpenOptions(!openOptions)
-                }} className='headerSearchText'>{`${options.adult} ${checkAdults} · ${options.children} children · ${options.room} ${checkRooms}`}</span>
-                {openOptions && <div className='options'>
-                  <div className='optionItem'>
-                    <span className='optionText'>
-                      Adult
-                    </span>
-                    <div className='optionCounter'>
-                      <button
-                        disabled={options.adult <= 1}
-                        className='optionCounterButton' onClick={() => handleOption("adult", "d")}>-</button>
-                      <span className='optionCounterNumber'>{options.adult}</span>
-                      <button className='optionCounterButton' onClick={() => handleOption("adult", "i")}>+</button>
-                    </div>
-                  </div>
-
-                  <div className='optionItem'>
-                    <span className='optionText'>
-                      Children
-                    </span>
-                    <div className='optionCounter'>
-                      <button
-                        disabled={options.children <= 0}
-                        onClick={() => handleOption("children", "d")} className='optionCounterButton'>-</button>
-                      <span className='optionCounterNumber'>{options.children}</span>
-                      <button onClick={() => handleOption("children", "i")} className='optionCounterButton'>+</button>
-                    </div>
-                  </div>
-                  {options.children !== 0 ? (
-                  <div className='childrenAge'>
-                      <div className='childAge'>
-                        <select className='selectAge' name='age'
-                        onChange={(e) => handleChange(e)}>
-                          <option value="-1" data-key="-1">Age needed</option>
-                          <option value="0" data-key="0">0 years old</option>
-                          <option value="1" data-key="1">1 year old</option>
-                          <option value="2" data-key="2">2 years old</option>
-                          <option value="3" data-key="3">3 years old</option>
-                          <option value="4" data-key="4">4 years old</option>
-                          <option value="5" data-key="5">5 years old</option>
-                          <option value="6" data-key="6">6 years old</option>
-                          <option value="7" data-key="7">7 years old</option>
-                          <option value="8" data-key="8">8 years old</option>
-                          <option value="9" data-key="9">9 years old</option>
-                          <option value="10" data-key="10">10 years old</option>
-                          <option value="11" data-key="11">11 years old</option>
-                          <option value="12" data-key="12">12 years old</option>
-                          <option value="13" data-key="13">13 years old</option>
-                        </select>
-                      </div>  
-                  </div>) : (<div className='childrenAge'></div>) }
-                  <div className='optionItem'>
-                    <span className='optionText'>
-                      Room
-                    </span>
-                    <div className='optionCounter'>
-                      <button
-                        disabled={options.room <= 1}
-                        className='optionCounterButton' onClick={() => handleOption("room", "d")}>-</button>
-                      <span className='optionCounterNumber'>{options.room}</span>
-                      <button className='optionCounterButton' onClick={() => handleOption("room", "i")}>+</button>
-                    </div>
-                  </div>
-                </div>}
-              </div>
-              <div className='headerSearchItem btn'>
-                <button className='headerBtn' onClick={(e) => handleClick(e)}>
-                  Search
-                </button>
-              </div>
-            </div>
           </>}
+        <div className='headerSearch'>
+
+
+          <div className='headerSearchItem iconBed' onFocus={() => {
+            setShowSuggestions(true)
+            setOpenDate(false)
+            setOpenOptions(false)
+          }} onBlur={() => setShowSuggestions(false)}>
+            <FontAwesomeIcon icon={faBed} className='headerIcon' />
+            <input type='text' placeholder='Where are you going?' className='headerSearchInput' value={province} onChange={(e) => handleChangeProvince(e)} />
+
+          </div>
+          {(showSuggestions && places) && (
+            <div className="suggestionsDropdown">
+              <div className="suggestionsTitle">Popular destinations nearby</div>
+              {places.map((place, index) => (
+                <div
+                  key={index}
+                  className="suggestionItem"
+                  onMouseDown={() => handleSelectSuggestion(place)}
+                >
+                  <FontAwesomeIcon icon={faMapMarkerAlt} className="suggestionIcon" />
+                  <div className="suggestionText">
+                    <div className="suggestionName">{place}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className='headerSearchItem iconCalendar'>
+            <FontAwesomeIcon icon={faCalendarDays} className='headerIcon' />
+            <span onClick={() => {
+              setShowSuggestions(false)
+              setOpenDate(!openDate)
+              setOpenOptions(false)
+            }} className='headerSearchText'>{`${formatDate(date[0].startDate)} - ${formatDate(date[0].endDate)}`}</span>
+            {openDate && <DateRange
+              editableDateInputs={true}
+              onChange={item => setDate([item.selection])}
+              moveRangeOnFirstSelection={false}
+              ranges={date}
+              className='date'
+            />}
+          </div>
+
+          <div className='headerSearchItem iconUser'>
+            <FontAwesomeIcon icon={faUser} className='headerIcon' />
+            <span onClick={() => {
+              setShowSuggestions(false)
+              setOpenDate(false)
+              setOpenOptions(!openOptions)
+            }} className='headerSearchText'>{`${options.adult} ${checkAdults} · ${options.children} children · ${options.room} ${checkRooms}`}</span>
+            {openOptions && <div className='options'>
+              <div className='optionItem'>
+                <span className='optionText'>
+                  Adult
+                </span>
+                <div className='optionCounter'>
+                  <button
+                    disabled={options.adult <= 1}
+                    className='optionCounterButton' onClick={() => handleOption("adult", "d")}>-</button>
+                  <span className='optionCounterNumber'>{options.adult}</span>
+                  <button className='optionCounterButton' onClick={() => handleOption("adult", "i")}>+</button>
+                </div>
+              </div>
+
+              <div className='optionItem'>
+                <span className='optionText'>
+                  Children
+                </span>
+                <div className='optionCounter'>
+                  <button
+                    disabled={options.children <= 0}
+                    onClick={() => handleOption("children", "d")} className='optionCounterButton'>-</button>
+                  <span className='optionCounterNumber'>{options.children}</span>
+                  <button onClick={() => handleOption("children", "i")} className='optionCounterButton'>+</button>
+                </div>
+              </div>
+              {options.children !== 0 ? (
+                <div className='childrenAge'>
+                  <div className='childAge'>
+                    <select className='selectAge' name='age'
+                      onChange={(e) => handleChange(e)}>
+                      <option value="-1" data-key="-1">Age needed</option>
+                      <option value="0" data-key="0">0 years old</option>
+                      <option value="1" data-key="1">1 year old</option>
+                      <option value="2" data-key="2">2 years old</option>
+                      <option value="3" data-key="3">3 years old</option>
+                      <option value="4" data-key="4">4 years old</option>
+                      <option value="5" data-key="5">5 years old</option>
+                      <option value="6" data-key="6">6 years old</option>
+                      <option value="7" data-key="7">7 years old</option>
+                      <option value="8" data-key="8">8 years old</option>
+                      <option value="9" data-key="9">9 years old</option>
+                      <option value="10" data-key="10">10 years old</option>
+                      <option value="11" data-key="11">11 years old</option>
+                      <option value="12" data-key="12">12 years old</option>
+                      <option value="13" data-key="13">13 years old</option>
+                    </select>
+                  </div>
+                </div>) : (<div className='childrenAge'></div>)}
+              <div className='optionItem'>
+                <span className='optionText'>
+                  Room
+                </span>
+                <div className='optionCounter'>
+                  <button
+                    disabled={options.room <= 1}
+                    className='optionCounterButton' onClick={() => handleOption("room", "d")}>-</button>
+                  <span className='optionCounterNumber'>{options.room}</span>
+                  <button className='optionCounterButton' onClick={() => handleOption("room", "i")}>+</button>
+                </div>
+              </div>
+            </div>}
+          </div>
+          <div className='headerSearchItem btn'>
+            <button className='headerBtn' onClick={(e) => handleClick(e)}>
+              Search
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );

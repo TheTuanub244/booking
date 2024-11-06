@@ -21,7 +21,7 @@ export class ValidateTokenGuard implements CanActivate {
         const token = request.cookies.refreshToken
 
         if (!token) {
-            throw new UnauthorizedException('Please sign in');
+            throw new UnauthorizedException('Sign In Required');
         }
         try {
             this.jwtService.verify(token, { secret: process.env.secret });
@@ -30,7 +30,7 @@ export class ValidateTokenGuard implements CanActivate {
             if (err.name === 'TokenExpiredError') {
                 const refreshToken = request.cookies['refreshToken'];
                 if (!refreshToken) {
-                    throw new UnauthorizedException('Please sign in');
+                    throw new UnauthorizedException('Sign In Required');
                 }
 
                 const newAccessToken =
@@ -38,7 +38,7 @@ export class ValidateTokenGuard implements CanActivate {
                 response.setHeader('Authorization', `Bearer ${newAccessToken}`);
                 return true;
             }
-            throw new UnauthorizedException('Please sign in');
+            throw new UnauthorizedException('Sign In Required');
         }
     }
 

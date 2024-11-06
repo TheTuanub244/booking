@@ -21,6 +21,7 @@ function headerAccount(){
     return(
         
             <div className='headerAccountContainer'>
+                    <span className='listProperty'>List your property</span>
                     <span className='userName-account'>{'Hello, ' + userName}</span>
                     <button onClick={handleSignOut} className='signOutButton'>Sign Out</button>
             </div>

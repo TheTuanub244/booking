@@ -9,7 +9,6 @@ import { Model, ObjectId } from 'mongoose';
 import { CreateSessionDto } from './dto/createSession.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/user.schema';
-import * as admin from 'firebase-admin';
 
 @Injectable()
 export class SessionService {
@@ -103,17 +102,20 @@ export class SessionService {
     const findSession = await this.sessionSchema.findOne({ userId });
     try {
       const payload = await this.jwtService.verify(findSession.refreshToken, {
-        secret: 'jwtsecret',
+        secret: process.env.secret,
       });
-      return this.jwtService.sign(
-        {
-          userId: userId,
-        },
-        {
-          expiresIn: '1h',
-          secret: 'jwtsecret',
-        },
-      );
+      const findUser = await this.userSchema.findById(userId);
+      const signInfo = {
+        userName: findUser.userName,
+        role: findUser.role,
+      };
+      return {
+        _id: userId,
+        access_token: this.jwtService.sign(
+          { signInfo },
+          { expiresIn: '1h', secret: process.env.secret },
+        ),
+      };
     } catch (err) {
       throw new UnauthorizedException(
         'Invalid Refresh Token or Refresh Token has expired',

@@ -31,13 +31,12 @@ export class UserService {
     private sessionService: SessionService,
   ) { }
   async checkEmail(email: string) {
-
-    const existEmail = await this.userSchema.findOne({ email: email })
+    const existEmail = await this.userSchema.findOne({ email: email });
 
     if (existEmail) {
-      return false
+      return false;
     }
-    return true
+    return true;
   }
   async createUser(createUserDto: CreateUserDto) {
     const { userName, password, dob, email, address, phoneNumber } =
@@ -66,14 +65,17 @@ export class UserService {
     return newUser.save();
   }
   async updatePassword(password: string, email: string) {
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
-    await this.userSchema.findOneAndUpdate({
-      email: email
-    }, {
-      password: hashedPassword
-    })
-    return true
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    await this.userSchema.findOneAndUpdate(
+      {
+        email: email,
+      },
+      {
+        password: hashedPassword,
+      },
+    );
+    return true;
   }
   async deleteUser(id: string) {
     const objectId = new Types.ObjectId(id);
@@ -98,7 +100,6 @@ export class UserService {
     return user;
   }
   async signUp(createUserDto: CreateUserDto) {
-
     const { userName, password, dob, email, address, phoneNumber } =
       createUserDto;
 
@@ -154,16 +155,15 @@ export class UserService {
         lastViewProperties: [],
         lastBooking: null,
         recent_search: [],
-        uid: null
+        uid: null,
       });
       const signInfo = { userName, role: existUser.role };
       return {
         access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
         _id: existUser._id,
-        refreshToken: newSession.refreshToken
+        refreshToken: newSession.refreshToken,
       };
     } else {
-
       const existEmail = await this.userSchema.findOne({
         email: userName,
       });
@@ -193,8 +193,7 @@ export class UserService {
         return {
           access_token: idToken,
           _id: existEmail._id,
-          refreshToken: newSession.refreshToken
-
+          refreshToken: newSession.refreshToken,
         };
       } catch (err) {
         throw new UnauthorizedException('Invalid username or password');
@@ -236,11 +235,9 @@ export class UserService {
       if (exist) {
         throw new BadRequestException('Email alread existed');
       }
-      const existUserName = await this.userSchema.findOne({ userName })
+      const existUserName = await this.userSchema.findOne({ userName });
       if (existUserName) {
-
         throw new BadRequestException('Username alread existed');
-
       }
 
       const userCredential = await createUserWithEmailAndPassword(
@@ -266,10 +263,10 @@ export class UserService {
     }
   }
   async signInWithGoggle(user: any) {
-    const { email, uid } = user
+    const { email, uid } = user;
     const findEmail = await this.userSchema.findOne({
-      email: email
-    })
+      email: email,
+    });
 
     if (findEmail) {
       const session = await this.sessionService.createSession({
@@ -278,14 +275,14 @@ export class UserService {
         lastBooking: null,
         uid,
         recent_search: [],
-      })
+      });
 
       return {
         _id: findEmail._id,
-        refreshToken: session.refreshToken
-      }
+        refreshToken: session.refreshToken,
+      };
     } else {
-      throw new BadRequestException("The email is not registered")
+      throw new BadRequestException('The email is not registered');
     }
   }
   async resetPassword(resetPassword: any) {
@@ -294,7 +291,7 @@ export class UserService {
 
     const findUser = await this.userSchema
       .findOne({
-        email
+        email,
       })
       .select('+password')
       .exec();
@@ -321,7 +318,5 @@ export class UserService {
           },
         );
       });
-
   }
-
 }

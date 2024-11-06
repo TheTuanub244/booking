@@ -1,0 +1,58 @@
+.container{
+    
+}
+.dashboard-text{
+    margin: 5% calc(23% + 5px);
+}
+.big-text{
+    font-family: "Avenir Next", BlinkMacSystemFont, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    color: white;
+}
+/* PartnerDashboard.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.dashboard-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.big-text {
+    font-size: 3rem;
+    margin: 0;
+}
+
+/* Transition effect for changing words */
+.transition-text {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    animation: fade 5s ease-in-out infinite;
+}
+
+@keyframes fade {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}

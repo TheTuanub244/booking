@@ -18,7 +18,9 @@
   .choices li {
     list-style: none;
   }
-  
+  .reserveButton .reserve:hover{
+    background-color: #003b95;
+  }
   .table-responsive {
     overflow-x: auto;
   }
@@ -96,7 +98,9 @@
   transition: background-color 0.3s; /* Smooth transition */
 
 }
-
+.update:hover{
+  background-color: #003b95;
+}
 button[type="submit"]:hover {
     background-color: #0056b3; /* Darker shade on hover */
 }

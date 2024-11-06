@@ -11,6 +11,7 @@ import Login from './pages/login/Login'
 import ForgotPassword from './pages/forgotPassword/ForgotPassword'
 import Auth from './pages/auth/Auth'
 import Property from './pages/property/Property'
+import PartnerDashboard from './pages/partner/partnerDashboard/partnerDashboard'
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path='/auth' element={<Auth/>}></Route>
         <Route path='/property' element={<Property />}></Route>
         <Route path='/property/:id' element={<Property />}></Route>
+        <Route path='/partner/partnerDashboard' element={<PartnerDashboard/>}/>
       </Routes>
     </BrowserRouter>
 

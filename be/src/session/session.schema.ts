@@ -51,7 +51,6 @@ export class Session {
             type: Number,
           },
         },
-
       },
     ],
     _id: false,

@@ -22,6 +22,7 @@ import {
 import { auth } from '../../firebase-config';
 import { SessionService } from 'src/session/session.service';
 import admin from 'firebase-admin';
+import { ROLE } from './enum/role.enum';
 @Injectable()
 export class UserService {
   constructor(
@@ -34,7 +35,7 @@ export class UserService {
     const existEmail = await this.userSchema.findOne({ email: email });
 
     if (existEmail) {
-      return false;
+      return existEmail;
     }
     return true;
   }
@@ -319,4 +320,28 @@ export class UserService {
         );
       });
   }
+  async updatePartnerAccount(partner: any) {
+    const findUser = await this.userSchema.findOneAndUpdate(
+      { email: partner.email },
+      {
+        'partnerInfo.businessName': partner.businessName,
+        'partnerInfo.propertyType': partner.propertyType,
+        'partnerInfo.numberOfProperties': parseInt(partner.numberOfProperties),
+        'partnerInfo.businessAddress.province': partner.province,
+        'partnerInfo.businessAddress.district': partner.district,
+        'partnerInfo.businessAddress.ward': partner.ward,
+        'partnerInfo.businessAddress.street': partner.street,
+
+        $addToSet: {
+          role: ROLE.PARTNER,
+        },
+      },
+      { new: true },
+    );
+    return findUser;
+  }
+  // async partnerRegistration(partner: any){
+
+  // }
+  // The registration will be sent to admin, create manage partner accounts in admin dashboard before create this function
 }

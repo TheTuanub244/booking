@@ -80,4 +80,8 @@ export class UserController {
   async resetPassword(@Body() resetPassword: any) {
     return this.userService.resetPassword(resetPassword);
   }
+  @Post('updatePartnerAccount')
+  async updatePartnerAccount(@Body() partner: any) {
+    return this.userService.updatePartnerAccount(partner.partner)
+  }
 }

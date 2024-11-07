@@ -1,9 +1,10 @@
 .navbar{
     padding-top: 20px;
-    height: 50px;
+    height: 80px;
     display: flex;
     justify-content: center;
     width: 100%;
+    margin-top: -20px;
   }
   
   .navContainer{
@@ -41,5 +42,5 @@
 }
 
 .navButton:hover {
-    background-color: #4a90e2;
+  background-color: #4a90e2;
 }

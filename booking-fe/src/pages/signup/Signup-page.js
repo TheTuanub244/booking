@@ -128,42 +128,37 @@ const getWard = async(code) => {
 useEffect(() => {
   handleGetAddress()
 }, [])
+const handleChangeOptions = async (e) => {
+  const { name, value } = e.target;
+    const selectedOptions = e.target.options[e.target.selectedIndex];
+    const code = selectedOptions.getAttribute('data-code')
+    
+    if (name === 'province') {
+        await getDistrict(code)
+        setInputData((prev) => ({
+          ...prev,
+            [name]: value,
+        }));
+      }else if(name === 'district'){
+        await getWard(code)
+        setInputData((prev) => ({
+          ...prev,
+            [name]: value,
+        }));
+      }else if(name === 'ward'){
+        setInputData((prev) => ({
+          ...prev,
+            [name]: value,
+        }));
+}
+}
 const handleInputChange = async (e) => {
 
   const { name, value } = e.target;
-
-  if (name === 'province') {
-    await getDistrict(value)
-    setInputData((prev) => ({
-      ...prev,
-      address: {
-        ...prev.address,
-        [name]: value,
-      },
-    }));
-  }else if(name === 'district'){
-    await getWard(value)
-    setInputData((prev) => ({
-      ...prev,
-      address: {
-        ...prev.address,
-        [name]: value,
-      },
-    }));
-  }else if(name === 'ward'){
-    setInputData((prev) => ({
-      ...prev,
-      address: {
-        ...prev.address,
-        [name]: value,
-      },
-    }));
-  } else {
     setInputData({
       ...inputData,
       [name]: value,
     });
-  }
 };
 
 async function handleSubmit(event, inputData){
@@ -277,30 +272,30 @@ const [userId, setUserId] = useState()
                               />
                               <label>Địa chỉ:</label>
                               <div className="address-group">
-                              <select id="province" name="province" onChange={handleInputChange} required>
+                              <select id="province" name="province" onChange={handleChangeOptions} required>
                                 <option value="">Tỉnh/Thành phố</option>
                                 {
                                   address.map((index) => (
-                                    <option value={index.code}>{index.name}</option>
+                                    <option value={index.name} data-code={index.code}>{index.name}</option>
                                   ))
                                 }
                               </select>
 
 
-                              <select id="district" name="district" onChange={handleInputChange}>
+                              <select id="district" name="district" onChange={handleChangeOptions}>
                                 <option value="">Quận/Huyện</option>
                                 {
                                   district?.map((index) => (
-                                    <option value={index.code}>{index.name}</option>
+                                    <option value={index.name} data-code={index.code}>{index.name}</option>
                                   ))
                                 }
                               </select>
 
-                              <select id="ward" name="ward" onChange={handleInputChange}>
+                              <select id="ward" name="ward" onChange={handleChangeOptions}>
                                 <option value="">Phường/Xã</option>
                                 {
                                   ward?.map((index) => (
-                                    <option value={index.code}>{index.name}</option>
+                                    <option value={index.name} data-code={index.code}>{index.name}</option>
                                   ))
                                 }
                               </select>

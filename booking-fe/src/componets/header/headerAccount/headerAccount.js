@@ -1,11 +1,15 @@
 import React from 'react';
 import './headerAccount.css';
 import { signOut } from '../../../api/userAPI';
+import { useNavigate } from 'react-router-dom';
 
 function headerAccount(){
     const isSignIn = localStorage.getItem('isSignIn');
     const userName = localStorage.getItem('userDisplayName');
     const userId = localStorage.getItem('userId')
+    const handleNavigate = () => {
+        
+    }
     const handleSignOut = async () =>{
         
         localStorage.removeItem('userName');
@@ -21,7 +25,7 @@ function headerAccount(){
     return(
         
             <div className='headerAccountContainer'>
-                    <span className='listProperty'>List your property</span>
+                    <span className='listProperty' onClick={handleNavigate}>List your property</span>
                     <span className='userName-account'>{'Hello, ' + userName}</span>
                     <button onClick={handleSignOut} className='signOutButton'>Sign Out</button>
             </div>

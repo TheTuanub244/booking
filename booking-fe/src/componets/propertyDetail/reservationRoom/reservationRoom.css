@@ -50,18 +50,48 @@
     color: #333; /* Dark gray color for text */
 }
 
+.guestInput {
+  position: relative;
+  width: 25%;
+  height: 25%;
+}
+
+.numberOfGuestInput {
+  position: absolute;
+  z-index: 101;
+  background-color: white;
+  padding: 20px;
+  border: 1px solid;
+  border-radius: 10px;
+}
+
+.blockInput {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* Full width of the viewport */
+  height: 100vh; /* Full height of the viewport */
+  z-index: 100;
+}
+
+
 .reservation-details input[type="date"],
-.reservation-details input[type="number"] {
+.reservation-details input[type="number"],
+.reservation-details input[type="text"],
+.guestInput {
     flex: 1; /* Allow inputs to take available space */
     padding: 8px; /* Padding inside inputs */
     border: 1px solid #ccc; /* Light gray border */
     border-radius: 4px; /* Slightly rounded corners */
     margin-right: 15px; /* Space between inputs */
     font-size: 16px; /* Larger font size for readability */
+    background-color: white;
 }
 
 .reservation-details input[type="date"]:last-of-type,
-.reservation-details input[type="number"]:last-of-type {
+.reservation-details input[type="number"],
+.reservation-details input[type="text"],
+.guestInput :last-of-type {
     margin-right: 0; /* Remove margin from the last input */
 }
 

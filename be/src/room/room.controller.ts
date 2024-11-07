@@ -1,11 +1,17 @@
-import { Body, Controller, Post, Put } from '@nestjs/common';
+import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { FindRoomDto } from './dto/findRoom.dto';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { ROLE } from 'src/user/enum/role.enum';
+import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 
 @Controller('room')
 export class RoomController {
   constructor(private readonly roomService: RoomService) { }
+  @UseGuards(RolesGuard, ValidateTokenGuard)
+  @Roles(ROLE.SELLER, ROLE.ADMIN)
   @Post('createRoom')
   async createRoom(@Body() createRoomDto: CreateRoomDto) {
     return this.roomService.createRoom(createRoomDto);
@@ -32,6 +38,8 @@ export class RoomController {
   async findAvailableRoomWithSearch(@Body() data: any) {
     return this.roomService.findAvailableRoomWithSearch(data.userId, data.place, data.check_in, data.check_out, data.capacity)
   }
+  @UseGuards(RolesGuard, ValidateTokenGuard)
+  @Roles(ROLE.SELLER, ROLE.ADMIN)
   @Put('updateImageForRoom')
   async updateImageForRoom(@Body() data: any) {
     return this.roomService.updateImageForRoom(data.roomId, data.image)

@@ -61,24 +61,6 @@ export class Property {
 
     @Prop({ required: true })
     rate: number;
-    @Prop([
-        {
-            dealName: String,
-            discount: Number,
-            startDate: Date,
-            endDate: Date,
-            isActive: { type: Boolean, default: true },
-        },
-    ])
-    promotions: [
-        {
-            dealName: string;
-            discount: number;
-            startDate: Date;
-            endDate: Date;
-            isActive: boolean;
-        },
-    ];
     @Prop({ type: [String] })
     images: string[]
 }

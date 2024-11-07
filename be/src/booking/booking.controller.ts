@@ -7,13 +7,13 @@ import { ROLE } from 'src/user/enum/role.enum';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('booking')
-@UseGuards(RolesGuard)
+// @UseGuards(RolesGuard)
 export class BookingController {
     constructor(
         private readonly bookingService: BookingService
     ) { }
     @Post('createBooking')
-    @Roles(ROLE.MEMBER)
+    // @Roles(ROLE.MEMBER)
     async createBooking(@Body() createBookingDto: CreateBookingDto) {
         return this.bookingService.createBooking(createBookingDto)
     }

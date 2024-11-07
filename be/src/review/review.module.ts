@@ -20,6 +20,8 @@ import { Session, SessionSchema } from 'src/session/session.schema';
 import { SessionService } from 'src/session/session.service';
 import { UserModule } from 'src/user/user.module';
 import { User, UserSchema } from 'src/user/user.schema';
+import { Promotion, PromotionSchema } from 'src/promotion/promotion.schema';
+import { PromotionModule } from 'src/promotion/promotion.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -37,6 +39,9 @@ const jwtConstant = {
       { name: Booking.name, schema: BookingSchema },
       { name: Session.name, schema: SessionSchema },
       { name: User.name, schema: UserSchema },
+      {
+        name: Promotion.name, schema: PromotionSchema
+      }
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -48,8 +53,10 @@ const jwtConstant = {
     forwardRef(() => BookingModule),
     forwardRef(() => SessionModule),
     forwardRef(() => UserModule),
+    forwardRef(() => PromotionModule),
 
-    RoomModule,
+
+    forwardRef(() => RoomModule),
   ],
 })
 export class ReviewModule { }

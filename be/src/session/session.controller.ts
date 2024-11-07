@@ -26,6 +26,7 @@ export class SessionController {
     async getSession(@Body() id: any): Promise<Session | null> {
         return this.sessionService.getSession(id);
     }
+
     @Put('/updateLastProperties/:id')
     async updateLastProperties(@Body() session: any, @Param('id') id: ObjectId) {
 

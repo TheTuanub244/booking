@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { RoomController } from './room.controller';
 import { RoomService } from './room.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -17,47 +17,35 @@ import { Property, PropertySchema } from 'src/property/property.schema';
 import { UserModule } from 'src/user/user.module';
 import { User, UserSchema } from 'src/user/user.schema';
 import { UserService } from 'src/user/user.service';
+import { Promotion, PromotionSchema } from 'src/promotion/promotion.schema';
+import { PromotionModule } from 'src/promotion/promotion.module';
+import { PromotionService } from 'src/promotion/promotion.service';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [RoomController],
-  providers: [RoomService, BookingService, SessionService, UserService],
+  providers: [RoomService, BookingService, SessionService, UserService, PromotionService],
+  exports: [RoomService], // Ensure to export services needed by other modules
   imports: [
     MongooseModule.forFeature([
-      {
-        name: Room.name,
-        schema: RoomSchema,
-      },
-      {
-        name: Review.name,
-        schema: ReviewSchema,
-      },
-      {
-        name: Booking.name,
-        schema: BookingSchema,
-      },
-      {
-        name: Session.name,
-        schema: SessionSchema,
-      },
-      {
-        name: Property.name,
-        schema: PropertySchema,
-      },
-      {
-        name: User.name,
-        schema: UserSchema
-      }
+      { name: Room.name, schema: RoomSchema },
+      { name: Review.name, schema: ReviewSchema },
+      { name: Booking.name, schema: BookingSchema },
+      { name: Promotion.name, schema: PromotionSchema },
+      { name: Session.name, schema: SessionSchema },
+      { name: Property.name, schema: PropertySchema },
+      { name: User.name, schema: UserSchema }
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
-
       signOptions: { expiresIn: '60m' },
     }),
-    BookingModule,
-    SessionModule,
-    UserModule
+    forwardRef(() => SessionModule),
+    forwardRef(() => BookingModule),
+    forwardRef(() => UserModule),
+    forwardRef(() => PromotionModule),
+    PropertyModule,
   ],
 })
 export class RoomModule { }

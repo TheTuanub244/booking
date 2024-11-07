@@ -85,10 +85,10 @@ export class SessionService {
   async updateLastPropertyView(userId: ObjectId, property: ObjectId) {
     return await this.sessionSchema.findOneAndUpdate(
       {
-        userId: userId
+        userId: userId,
       },
       {
-        $addToSet: { 'lastViewProperties': property },
+        $addToSet: { lastViewProperties: property },
       },
       { new: true },
     );
@@ -99,23 +99,25 @@ export class SessionService {
     return this.sessionSchema.findByIdAndDelete(sessionId);
   }
 
-  async refreshAccessToken(
-    userId: ObjectId,
-  ) {
-
-    const findSession = await this.sessionSchema.findOne({ userId })
+  async refreshAccessToken(userId: ObjectId) {
+    const findSession = await this.sessionSchema.findOne({ userId });
     try {
-      const payload = await this.jwtService.verify(findSession.refreshToken, { secret: 'jwtsecret' })
+      const payload = await this.jwtService.verify(findSession.refreshToken, {
+        secret: 'jwtsecret',
+      });
       return this.jwtService.sign(
         {
-          userId: userId
+          userId: userId,
         },
         {
-          expiresIn: '1h', secret: 'jwtsecret'
-        }
-      )
+          expiresIn: '1h',
+          secret: 'jwtsecret',
+        },
+      );
     } catch (err) {
-      throw new UnauthorizedException('Invalid Refresh Token or Refresh Token has expired');
+      throw new UnauthorizedException(
+        'Invalid Refresh Token or Refresh Token has expired',
+      );
     }
   }
   async signOut(userId: ObjectId) {
@@ -128,15 +130,13 @@ export class SessionService {
     return findSession.recent_search;
   }
   async getSessionHistory(userId: ObjectId) {
-
-    const session = await this.sessionSchema.findOne({ userId })
+    const session = await this.sessionSchema.findOne({ userId });
     await session.populate('lastViewProperties');
-    await session.populate('lastBooking')
+    await session.populate('lastBooking');
     return {
       lastViewProperties: session.lastViewProperties,
       lastBookng: session.lastBooking,
-      recent_search: session.recent_search
-    }
-
+      recent_search: session.recent_search,
+    };
   }
 }

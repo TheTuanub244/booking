@@ -81,8 +81,9 @@ function Header({ type, places, getHistory }) {
     }
 
     const respone = await findAvailableRoomWithSearch(data)
-    console.log(respone);
-    getHistory(userId)
+    if(userId){
+      getHistory(userId)
+    }
   }
   const [showSuggestions, setShowSuggestions] = useState(false)
   const handleSelectSuggestion = async (province) => {

@@ -2,18 +2,28 @@ import React, { useState } from 'react';
 import './reservationRoom.css';
 import ReservationRoom_item from './reservationRoom_item';
 import RoomModal from './roomModal';
+import { checkRoomDateBooking } from '../../../function/searchRoomInProperty';
 
 const ReservationRoom = ({ roomData }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
   
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
-  const [numberOfGuests, setNumberOfGuests] = useState(1);
+  const [numberOfGuests, setNumberOfGuests] = useState({
+    adults: 0,
+    child: []
+  });
   const [numberOfNights, setNumberOfNights] = useState(3);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [modalRoom, setModalRoom] = useState(null);
+
+  const [isSearchRoom, setIsSearchRoom] = useState(false);
+
+  const [roomSearch, setRoomSearch] = useState(null);
+
+  const [numberOfGuestInput, setNumberOfGuestInput] = useState(false);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -29,6 +39,30 @@ const ReservationRoom = ({ roomData }) => {
       numberOfGuests,
     });
   };
+
+  const handleChangeNumberOfGuest = (e) => {
+    e.stopPropagation();
+    const {name, value} = e.target;
+    if(value < 0) return;
+    setNumberOfGuests(prev => {
+      if(e.target.name === 'adults'){
+        return {
+          ...prev,
+          [name]: value
+        }
+      } else if(name === 'child'){
+        if(e.target.value < prev.child.length){
+          prev.child.pop()
+        } else{
+          prev.child.push({
+            index: prev.child.length,
+            age: 0
+          })
+        }
+        return {...prev};
+      }
+    })
+  }
 
   const handleChangeDate = (e) => {
     let date1, date2;
@@ -56,6 +90,16 @@ const ReservationRoom = ({ roomData }) => {
     
   }
 
+  const searchRoom = () => {
+    let dateSearch = {
+      check_in_date: new Date(checkInDate),
+      check_out_date: new Date(checkOutDate)
+    }
+    
+    setRoomSearch(roomData.filter(room => checkRoomDateBooking(dateSearch, room.availability)))
+    setIsSearchRoom(true);
+  }
+
   return (
     <div className="ReservationForm">
       <h2>Reserve Your Room</h2>
@@ -80,15 +124,45 @@ const ReservationRoom = ({ roomData }) => {
           />
 
           <label htmlFor="guests">Number of Guests:</label>
-          <input
-            type="number"
-            id="guests"
-            value={numberOfGuests}
-            min="1"
-            onChange={(e) => setNumberOfGuests(e.target.value)}
-            required
-          />
-          <button type="button" className='update'>Update</button>
+          <div 
+          className="guestInput"
+          onClick={(e) => {e.preventDefault(); setNumberOfGuestInput(true)}}>
+            {numberOfGuests && `${numberOfGuests.child.length} + ${numberOfGuests.adults}`}
+            {numberOfGuestInput && (
+            <>
+              <div className="blockInput" onClick={(e) => {e.stopPropagation()
+                                                          setNumberOfGuestInput(false);
+                                                  }}>
+                
+              </div>
+              
+              <div className="numberOfGuestInput" >
+                  <label>Adults: </label><input type="number" 
+                                          name="adults"
+                                          value={numberOfGuests.adults} 
+                                          onChange={(e) => handleChangeNumberOfGuest(e)}/>
+                  <label>Childs: </label><input type="number" 
+                                          name="child"
+                                          value={numberOfGuests.child.length} 
+                                          onChange={(e) => handleChangeNumberOfGuest(e)}/>
+                  {numberOfGuests.child.length > 0 && (
+                    <>
+                    <label>Childs Age: </label>
+                    <div className="childAgeInput">
+                      {numberOfGuests.child.map((child) => <input type="number"
+                                            key= {`childAge ${child.index}`}
+                                            name={`childAge ${child.index}`}
+                                            value={child.age} 
+                                            onChange={(e) => {}}/>)}
+                    </div>
+                    </>
+                  )}
+              </div>
+                                  
+            </>)}
+          </div>
+          
+          <button type="button" className='update' onClick={searchRoom}>Update</button>
       </div>
         
         <div className="table-responsive">
@@ -103,10 +177,16 @@ const ReservationRoom = ({ roomData }) => {
               </tr>
             </thead>
             <tbody>
-              {roomData.map((room) => <ReservationRoom_item key={room._id} room={room} numberOfNights={numberOfNights} 
-                                                            setSelectedRoom={setSelectedRoom} 
-                                                            setIsModalOpen={setIsModalOpen} 
-                                                            setModalRoom={setModalRoom} />)}
+              {!isSearchRoom ? (roomData.map((room) => <ReservationRoom_item key={room._id} room={room} numberOfNights={numberOfNights} 
+                                                                                  setSelectedRoom={setSelectedRoom} 
+                                                                                  setIsModalOpen={setIsModalOpen} 
+                                                                                  setModalRoom={setModalRoom} />))
+                                :
+                                (roomSearch.map((room) => <ReservationRoom_item key={room._id} room={room} numberOfNights={numberOfNights} 
+                                                                                  setSelectedRoom={setSelectedRoom} 
+                                                                                  setIsModalOpen={setIsModalOpen} 
+                                                                                  setModalRoom={setModalRoom} />))
+              }
             </tbody>
           </table>
         </div>

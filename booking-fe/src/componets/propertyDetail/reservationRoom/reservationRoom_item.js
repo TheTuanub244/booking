@@ -52,7 +52,7 @@ function ReservationRoom_item({ room, numberOfNights, setSelectedRoom, setIsModa
                         {room.originalPrice}
                       </span>
                       <span className="discounted-price">
-                        {room.price_per_night * numberOfNights}
+                        {room.price_per_night && (room.price_per_night * numberOfNights)}
                       </span>
                     </div>
                   </td>

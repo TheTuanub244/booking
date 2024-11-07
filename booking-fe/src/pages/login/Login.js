@@ -103,7 +103,6 @@ async function handleSubmit(event, inputData){
   const action = event.nativeEvent.submitter.name;
   try {
     const respone = await signIn(inputData);
-    console.log(respone);
     
     const {userName, accessToken, uid, displayName, _id} = respone;
     const userData = {
@@ -114,7 +113,13 @@ async function handleSubmit(event, inputData){
       displayName: displayName
     };
     SaveUserDataToLocal(userData);
-    navigate("/");
+    const redirectPath = localStorage.getItem('redirectPath')
+    if(redirectPath){
+      navigate(redirectPath);
+    }
+    else {
+      navigate("/");
+    }
   } catch (e) {
     console.error('Error during sign-in:', e);
     setErrorLogIn(e.toString());

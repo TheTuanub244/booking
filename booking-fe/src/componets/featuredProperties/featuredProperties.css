@@ -16,6 +16,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho mục */
   overflow: hidden; /* Ẩn phần thừa ra ngoài khung */
   padding-bottom: 10px;
+  cursor: pointer;
 }
 
 /* Hiệu ứng hover cho mục */

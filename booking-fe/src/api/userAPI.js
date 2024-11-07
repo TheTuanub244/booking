@@ -76,3 +76,7 @@ export const checkEmail = async (email) => {
         
     }
 }
+export const updatePartnerAccount = async (partner) => {
+    const respone = await axios.post("http://localhost:8000/user/updatePartnerAccount", {partner})
+    return respone.data
+}

@@ -55,6 +55,7 @@
   overflow: hidden; /* Ẩn phần thừa ra ngoài khung */
   padding-bottom: 10px;
   height: 95%;
+  cursor: pointer;
 }
 
 .locationItemImg img {

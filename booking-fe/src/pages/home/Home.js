@@ -70,7 +70,7 @@ function Home() {
       <Navbar/>
       <Header places={allPlace} getHistory={getHistory}/>
       <div className='homeContainer'>
-        {(userId && sessionHistory ) && <RecentRearch data={sessionHistory.recent_search}/>}
+        {(userId && sessionHistory ) && <RecentRearch data={sessionHistory.recent_search} getHistory={getHistory}/>}
         {
           (userId && sessionHistory ) && (<>
             <h1 className='homeTitle'>Still interested in these properties?</h1>

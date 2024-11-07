@@ -27,9 +27,9 @@ export class PropertyService {
     async getAllProperty() {
         return this.propertySchema.find();
     }
-    async getPropertyWithOwner(owner_id: string) {
+    async getPropertyWithOwner(owner_id: ObjectId) {
         return this.propertySchema
-            .findOne({
+            .find({
                 owner_id: owner_id,
             })
             .populate('owner_id')
@@ -101,7 +101,7 @@ export class PropertyService {
                 property.location.latitude,
                 property.location.longitude,
             );
-            const roundedNumber = distance.toFixed(1)
+            const roundedNumber = distance.toFixed(1);
 
             if (distance <= 10) {
                 perfectProperties.push({
@@ -113,26 +113,26 @@ export class PropertyService {
         return perfectProperties;
     }
     async updateImageForProperty(propertyId: ObjectId, image: string) {
-        return await this.propertySchema.findByIdAndUpdate(propertyId, {
-            $push: {
-                images: {
-                    $each: image
-                }
-            }
-        },
+        return await this.propertySchema.findByIdAndUpdate(
+            propertyId,
             {
-                new: true
-            }
-
-        )
+                $push: {
+                    images: {
+                        $each: image,
+                    },
+                },
+            },
+            {
+                new: true,
+            },
+        );
     }
     async getPropertyByPlace(place: string) {
         return await this.propertySchema.find({
-            'address.province': place
-        })
+            'address.province': place,
+        });
     }
     async getDistinctPlace() {
-        return this.propertySchema.distinct('address.province')
+        return this.propertySchema.distinct('address.province');
     }
-
 }

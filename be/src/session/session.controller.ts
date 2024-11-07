@@ -29,7 +29,6 @@ export class SessionController {
 
     @Put('/updateLastProperties/:id')
     async updateLastProperties(@Body() session: any, @Param('id') id: ObjectId) {
-
         return this.sessionService.updateLastPropertyView(id, session.propertyId);
     }
     @Delete(':id')
@@ -39,13 +38,6 @@ export class SessionController {
     @Get('/getSessionByUser/:id')
     async getSessionByUser(@Param('id') id: string) {
         return this.sessionService.getSessionByUserId(id);
-    }
-    @Post('/:id/lastViewProperties')
-    async updateLastPropertyView(
-        @Param('id') id: ObjectId,
-        @Body() property: any,
-    ) {
-        return this.sessionService.updateLastPropertyView(id, property.data);
     }
     @Post('/sign-out')
     async signOut(@Body() data: any, @Res() response: Response) {

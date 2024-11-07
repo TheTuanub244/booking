@@ -1,4 +1,4 @@
-import React, { useEffect, useState, } from "react";
+import React, { useEffect, useRef, useState, } from "react";
 import { useParams } from 'react-router-dom'; 
 import ContentLoader from "react-content-loader";
 import './propertyDetail.css'
@@ -6,6 +6,8 @@ import ReservationRoom from "./reservationRoom/reservationRoom";
 import { getPropertyById } from "../../api/propertyAPI";
 import { findRoomByProperty } from "../../api/roomAPI";
 import { updateLastProperties } from "../../api/sessionAPI";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocationDot, faPlane } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -16,6 +18,9 @@ const PropertyDetail = () => {
     const [loading, setLoading] = useState(true);
     const userId = localStorage.getItem('userId')
     const [location, setLocation] = useState('');
+    const [selectedTab, setSelectedTab] = useState(1)
+    const infoPrices = useRef(null)
+    const overView = useRef(null)
     const handleUpdateViewProperties = async () => {
       if(userId){
         await updateLastProperties(userId, id)
@@ -136,7 +141,14 @@ const PropertyDetail = () => {
         fetchData();
     }, [id]); // Dependency on id
 
-
+    const handleTabClick = (tabNumber) => {
+      setSelectedTab(tabNumber);
+      if (tabNumber === 2 && infoPrices.current) {
+        infoPrices.current.scrollIntoView({ behavior: 'smooth' });
+      }else if (tabNumber === 1 && overView.current){
+        overView.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
     return (
         <div className="propertyDetail-container">
             {loading ? (
@@ -165,9 +177,22 @@ const PropertyDetail = () => {
             ) : (
                 <>
                   <div className="propertyDetail-box">
+                    <div className="propertyDetail-navigateBar">
+                      <button className={selectedTab === 1 ? "navigate-button selectedTab" : "navigate-button"} onClick={() => handleTabClick(1)}>Overview</button>
+                      <button className={selectedTab === 2 ? "navigate-button selectedTab" : "navigate-button"} onClick={() => handleTabClick(2)}>Info & prices</button>
+                      <button className={selectedTab === 3 ? "navigate-button selectedTab" : "navigate-button"} >Facilities</button>
+                      <button className={selectedTab === 4 ? "navigate-button selectedTab" : "navigate-button"} >Guest review</button>
+
+
+                    </div>
                     <div className="propertyDetail-header">
-                        <h1>{propertyData.name}</h1>
-                        <p>{location}</p>
+
+                    
+                        <div className="propertyDetail-name">
+                          <h1> {propertyData.name} </h1>
+                          <button onClick={() => infoPrices.current.scrollIntoView({ behavior: 'smooth' })}>Reserve</button>
+                        </div>
+                        <p> <FontAwesomeIcon icon={faLocationDot} className="icon"/>  {location}</p>
                     </div>
                     <div className="propertyDetail-image">
                       {propertyData.images.map((src, index) => (
@@ -192,7 +217,10 @@ const PropertyDetail = () => {
                     </div>
                   </div>
                     
-                  <ReservationRoom roomData={roomData}/>
+                  <div ref={infoPrices}>
+                    <ReservationRoom roomData={roomData}/>
+                  </div>
+
                 </>
             )}
         </div>

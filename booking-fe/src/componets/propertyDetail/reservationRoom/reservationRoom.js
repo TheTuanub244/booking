@@ -3,6 +3,9 @@ import './reservationRoom.css';
 import ReservationRoom_item from './reservationRoom_item';
 import RoomModal from './roomModal';
 import { checkRoomDateBooking } from '../../../function/searchRoomInProperty';
+=======
+import SignInPopup from './signInPopup';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ReservationRoom = ({ roomData }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
@@ -16,7 +19,8 @@ const ReservationRoom = ({ roomData }) => {
   const [numberOfNights, setNumberOfNights] = useState(3);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const [modalRoom, setModalRoom] = useState(null);
 
   const [isSearchRoom, setIsSearchRoom] = useState(false);
@@ -25,6 +29,8 @@ const ReservationRoom = ({ roomData }) => {
 
   const [numberOfGuestInput, setNumberOfGuestInput] = useState(false);
 
+=======
+  const userId = localStorage.getItem('userId')
   const closeModal = () => {
     setIsModalOpen(false);
     setModalRoom(null);
@@ -89,6 +95,14 @@ const ReservationRoom = ({ roomData }) => {
       if(days) setNumberOfNights(days);
     
   }
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleReserveClick = () => {
+    if(!userId){
+      setIsPopupOpen(true)
+    }
+  };
+
 
   const searchRoom = () => {
     let dateSearch = {
@@ -99,6 +113,17 @@ const ReservationRoom = ({ roomData }) => {
     setRoomSearch(roomData.filter(room => checkRoomDateBooking(dateSearch, room.availability)))
     setIsSearchRoom(true);
   }
+
+=======
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handleSignIn = () => {
+    setIsPopupOpen(false);
+    localStorage.setItem('redirectPath', location.pathname)
+    navigate('/login')
+  };
 
   return (
     <div className="ReservationForm">
@@ -191,14 +216,15 @@ const ReservationRoom = ({ roomData }) => {
           </table>
         </div>
         <div className="reserveButton">
-          <button className="reserve" type="submit">Reserve Now</button>
+          <button className="reserve" onClick={handleReserveClick}>Reserve Now</button>
         </div>
         
-        
+
       </form>
       <RoomModal isOpen={isModalOpen} 
                 onClose={closeModal} 
                 room={modalRoom} />
+      <SignInPopup isOpen={isPopupOpen} onClose={handleClosePopup} onSignIn={handleSignIn}/>
     </div>
   );
 };

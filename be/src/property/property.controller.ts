@@ -32,6 +32,7 @@ export class PropertyController {
     async getPropetyWithOwner(@Body() owner_id: any) {
         return this.propertyService.getPropertyWithOwner(owner_id.owner_id);
     }
+    @UseGuards(ValidateTokenGuard)
     @Get('/getPropertyById/:id')
     async getPropertyById(@Param('id') id: ObjectId) {
         return this.propertyService.getPropertyById(id);
@@ -61,7 +62,7 @@ export class PropertyController {
         return this.propertyService.getPropertyNear(data.longitude, data.latitude);
     }
     @UseGuards(RolesGuard, ValidateTokenGuard)
-    @Roles(ROLE.SELLER, ROLE.ADMIN)
+    @Roles(ROLE.PARTNER, ROLE.ADMIN)
     @Put('updateImageForProperty')
     async updateImageForProperty(@Body() data: any) {
         return this.propertyService.updateImageForProperty(

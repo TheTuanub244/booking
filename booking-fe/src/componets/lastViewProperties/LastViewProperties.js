@@ -4,14 +4,18 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation, Pagination } from 'swiper/modules';
+import { useNavigate } from 'react-router-dom';
 
 
 
 
 function LastViewProperties({data}) {
     
- 
-
+ const navigate = useNavigate()
+  useEffect(() => {
+    console.log(data);
+    
+  }, [data])
   return (
     <div className='fp'>
       <Swiper
@@ -25,7 +29,7 @@ function LastViewProperties({data}) {
             
             
           <SwiperSlide key={item._id}>
-            <div className='fpItem'>
+            <div className='fpItem' onClick={() => navigate(`/property/${item._id}`)}>
               <div className='fpItemImg'>
                 <img src={item.images[0]} alt="" className='fpImg' />
               </div>

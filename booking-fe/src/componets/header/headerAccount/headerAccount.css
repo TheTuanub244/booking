@@ -11,7 +11,17 @@
     font-weight: bold;
     margin-right: 20px;
 }
-
+.listProperty{
+    font-weight: 700;
+    font-size: 15px;
+    margin-right: 30px;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.listProperty:hover{
+    background-color: rgba(255, 255, 255, 0.06);
+}
 .signOutButton {
     background-color: #ff4d4d;
     color: white;

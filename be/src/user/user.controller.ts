@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -17,7 +25,6 @@ export class UserController {
   }
   @Post('/sign-up')
   async signUp(@Body() createUserDto: CreateUserDto) {
-
     return this.userService.signUp(createUserDto);
   }
   @Post('/sign-up-with-email')
@@ -42,12 +49,11 @@ export class UserController {
   }
   @Post('/check-email')
   async checkEmail(@Body() email: any) {
-
-    return this.userService.checkEmail(email.data)
+    return this.userService.checkEmail(email.data);
   }
   @Post('update-password')
   async updatePassword(@Body() password: any) {
-    return this.userService.updatePassword(password.password, password.email)
+    return this.userService.updatePassword(password.password, password.email);
   }
   @Post('/sign-in-with-google')
   async signInWithEmail(@Body() user: any, @Res() response: Response) {
@@ -57,7 +63,7 @@ export class UserController {
       sameSite: 'lax',
       secure: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
+    });
 
     return response.status(HttpStatus.OK).json({
       _id: data._id,
@@ -69,13 +75,13 @@ export class UserController {
   async updateUser(@Body() user: any) {
     return this.userService.updateUser(user);
   }
-  @Get('find-user')
-  @UseGuards(JwtAuthGuard)
-  async findUser(@Body() user: any) {
-    return 'help'
-  }
+
   @Post('reset-password')
   async resetPassword(@Body() resetPassword: any) {
     return this.userService.resetPassword(resetPassword);
+  }
+  @Post('updatePartnerAccount')
+  async updatePartnerAccount(@Body() partner: any) {
+    return this.userService.updatePartnerAccount(partner.partner)
   }
 }

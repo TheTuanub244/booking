@@ -28,6 +28,7 @@
   transition: transform 0.2s, box-shadow 0.2s;
   justify-content: flex-start;
   width: 100%;
+  cursor: pointer;
 }
 
 

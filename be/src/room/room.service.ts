@@ -40,6 +40,35 @@ export class RoomService {
 
         return existedRoom;
     }
+    async isDuplicateSearch(
+        recentSearch: any[],
+        newSearch: any,
+    ): Promise<boolean> {
+        return recentSearch.some((search) => {
+
+            // Check if date fields are defined before calling .getTime()
+            const isSameCheckIn =
+                search.check_in && newSearch.checkIn
+                    ? search.check_in.getTime() === newSearch.checkIn.getTime()
+                    : false;
+
+            const isSameCheckOut =
+                search.check_out && newSearch.checkOut
+                    ? search.check_out.getTime() === newSearch.checkOut.getTime()
+                    : false;
+
+
+            return (
+                search.province === newSearch.place &&
+                isSameCheckIn &&
+                isSameCheckOut &&
+                search.capacity.adults === newSearch.capacity.adults &&
+                search.capacity.childs.count === newSearch.capacity.childs.count &&
+                search.capacity.childs.age === newSearch.capacity.childs.age &&
+                search.capacity.room === newSearch.capacity.room
+            );
+        });
+    }
     async findAvailableRoomWithSearch(
         userId,
         place,
@@ -68,29 +97,40 @@ export class RoomService {
                         );
 
                         if (finalRespone.length === 0) {
-                            availableRoom.push(value)
+                            availableRoom.push(value);
                         }
-
                     }),
                 );
             }),
         );
+        const session = await this.sessionSchema.findOne({ userId });
+        if (!session) throw new Error('Session not found');
 
+        // Use the custom comparison function
+        const isDuplicate = await this.isDuplicateSearch(session.recent_search, {
+            place,
+            capacity,
+            checkIn: new Date(check_in),
+            checkOut: new Date(check_out),
+        });
 
-        await this.sessionSchema.findOneAndUpdate(
-            {
-                userId,
-            },
-            {
-                $push: {
-                    recent_search: {
-                        $each: [{ province: place, check_in, check_out, capacity }],
-                        $slice: -3,
+        if (!isDuplicate) {
+            await this.sessionSchema.findOneAndUpdate(
+                {
+                    userId,
+                },
+                {
+                    $push: {
+                        recent_search: {
+                            $each: [{ province: place, check_in, check_out, capacity }],
+                            $slice: -3,
+                        },
                     },
                 },
-            },
-            { new: true },
-        );
+                { new: true },
+            );
+        }
+
         return availableRoom;
     }
     async findConflictingInBookings(

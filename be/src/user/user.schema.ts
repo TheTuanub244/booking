@@ -13,20 +13,20 @@ export class User {
   @Prop()
   gender: boolean;
   @Prop()
-  uid: string
+  uid: string;
   @Prop({
     type: {
       province: {
         type: String,
-        require: true,
+        require: false,
       },
       district: {
         type: String,
-        require: true,
+        require: false,
       },
       ward: {
         type: String,
-        require: true,
+        require: false,
       },
     },
     _id: false,
@@ -46,5 +46,45 @@ export class User {
   role: ROLE[];
   @Prop({ required: true, default: false })
   isAdmin: boolean;
+  @Prop({
+    type: {
+      businessName: { type: String, required: false },
+      propertyType: { type: String, required: false },
+      numberOfProperties: { type: Number, required: false },
+      businessAddress: {
+        type: {
+          province: {
+            type: String,
+            require: false,
+          },
+          district: {
+            type: String,
+            require: false,
+          },
+          ward: {
+            type: String,
+            require: false,
+          },
+          street: {
+            type: String,
+            require: false,
+          },
+        },
+        _id: false,
+      },
+    },
+    _id: false,
+  })
+  partnerInfo?: {
+    businessName: string;
+    propertyType: string;
+    numberOfProperties: number;
+    businessAddress: {
+      province: string;
+      district: string;
+      ward: string;
+      street: string;
+    };
+  };
 }
 export const UserSchema = SchemaFactory.createForClass(User);

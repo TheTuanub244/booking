@@ -10,12 +10,14 @@ import { ROLE } from 'src/user/enum/role.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { JwtService } from '@nestjs/jwt';
 import * as admin from 'firebase-admin';
+import { SessionService } from 'src/session/session.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(
         private readonly jwtService: JwtService,
         private readonly reflector: Reflector,
+        private readonly sessionService: SessionService,
     ) { }
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const requiredRoles = this.reflector.getAllAndOverride<ROLE[]>(ROLES_KEY, [
@@ -29,26 +31,44 @@ export class RolesGuard implements CanActivate {
         }
 
         const request = context.switchToHttp().getRequest();
+        const response = context.switchToHttp().getResponse();
         const token = this.extractTokenFromHeader(request);
 
         if (!token) {
             throw new UnauthorizedException('Token not found');
         }
-
         let payload;
         try {
             payload = this.jwtService.verify(token);
+            console.log(payload);
         } catch (error) {
-            payload = await admin.auth().verifyIdToken(token);
+            if (error.name === 'TokenExpiredError') {
+                const refreshToken = request.cookies['refreshToken'];
+                if (!refreshToken) {
+                    throw new UnauthorizedException('Refresh token not found');
+                }
+                try {
+                    // Gọi hàm refreshAccessToken với refreshToken để tạo access token mới
+                    const { access_token: newAccessToken } =
+                        await this.sessionService.refreshAccessToken(refreshToken);
+                    response.setHeader('authorization', `Bearer ${newAccessToken}`);
+
+                    // Xác thực lại với access token mới
+                    payload = this.jwtService.verify(newAccessToken, {
+                        secret: process.env.secret,
+                    });
+                } catch (refreshError) {
+                    throw new UnauthorizedException('Failed to refresh access token');
+                }
+            } else {
+                payload = await admin.auth().verifyIdToken(token);
+            }
         }
 
         request.user = payload;
-
-        // Now check if the user has the required roles
-
         if (!payload.signInfo) {
             if (payload.uid) {
-                return true
+                return true;
             }
         }
         if (payload.signInfo.role === ROLE.GUEST) {

@@ -4,6 +4,7 @@ export class CreateRoomDto {
     property_id: ObjectId;
     price_per_night: number;
     name: string;
+    size;
     capactity: {
         adults: number;
         childs: {
@@ -11,5 +12,6 @@ export class CreateRoomDto {
             age: number;
         };
     };
-    facility: string[];
+    type: string;
+    images: string[];
 }

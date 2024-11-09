@@ -18,7 +18,7 @@ export class ValidateTokenGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<Request>();
         const response = context.switchToHttp().getResponse<Response>();
-        const token = request.cookies.refreshToken
+        const token = request.cookies.refreshToken;
 
         if (!token) {
             throw new UnauthorizedException('Sign In Required');
@@ -35,17 +35,10 @@ export class ValidateTokenGuard implements CanActivate {
 
                 const newAccessToken =
                     await this.sessionService.refreshAccessToken(refreshToken);
-                response.setHeader('Authorization', `Bearer ${newAccessToken}`);
+                response.setHeader('authorization', `Bearer ${newAccessToken}`);
                 return true;
             }
             throw new UnauthorizedException('Sign In Required');
         }
-    }
-
-    private extractTokenFromHeader(request: Request): string | null {
-        const authHeader = request.headers.authorization;
-        return authHeader && authHeader.startsWith('Bearer ')
-            ? authHeader.split(' ')[1]
-            : null;
     }
 }

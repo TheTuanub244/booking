@@ -1,7 +1,8 @@
 import axios from "axios"
 export const signUp = async (user) => {
     try{       
-                
+        console.log(user);
+        
         const respone = await axios.post("http://localhost:8000/user/sign-up-with-email", user, {
             withCredentials: true
         })

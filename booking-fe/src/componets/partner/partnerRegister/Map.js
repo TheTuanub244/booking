@@ -51,9 +51,9 @@ const Map = ({ onLocationSelect, initialLocation }) => {
         useMapEvents({
             click(e) {
                 const { lat, lng } = e.latlng;
-                setPosition({ lat, lng });
+                setPosition({ lat: parseFloat(lat), lng: parseFloat(lng) });
                 if (onLocationSelect) {
-                    onLocationSelect({ lat, lng });
+                    onLocationSelect({ lat: parseFloat(lat), lng: parseFloat(lng) });
                 }
             },
         });

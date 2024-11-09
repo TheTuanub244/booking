@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { User } from 'src/user/user.schema';
 import { TYPE } from './enum/type.enum';
 
-
 @Schema()
 export class Property {
     @Prop({ require: true, type: mongoose.Schema.ObjectId, ref: 'User' })
@@ -59,10 +58,10 @@ export class Property {
     @Prop({ type: String, enum: TYPE })
     property_type: TYPE;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     rate: number;
     @Prop({ type: [String] })
-    images: string[]
+    images: string[];
 }
 
 export const PropertySchema = SchemaFactory.createForClass(Property);

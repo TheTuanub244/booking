@@ -8,7 +8,13 @@ import { BookingService } from 'src/booking/booking.service';
 import { RoomService } from 'src/room/room.service';
 import { Review } from 'src/review/review.schema';
 import { ReviewService } from 'src/review/review.service';
-
+import { v2 as cloudinary } from 'cloudinary';
+import * as fs from 'fs';
+cloudinary.config({
+    cloud_name: 'du4fzcfok',
+    api_key: '428412499929535',
+    api_secret: 'Wa3YxNkGg5sr5poKRILhGcIk9XU',
+});
 @Injectable()
 export class PropertyService {
     constructor(
@@ -20,10 +26,44 @@ export class PropertyService {
         private readonly reviewSchema: Model<Review>,
         private readonly reviewService: ReviewService,
     ) { }
-    async createNewProperty(createPropertyDto: CreatePropertyDto) {
-        const newProperty = new this.propertySchema(createPropertyDto);
+
+    async uploadImageToCloudinary(filePath: string): Promise<string> {
+        try {
+            const result = await cloudinary.uploader.upload(filePath, {
+                folder: 'booking_images',
+            });
+            return result.secure_url;
+        } catch (error) {
+            throw new Error(`Failed to upload image to Cloudinary: ${error.message}`);
+        }
+    }
+
+    async createNewProperty(property: any) {
+        const propertyImageUrl = property.image
+            ? await this.uploadImageToCloudinary(property.image)
+            : null;
+
+        // Upload room images
+        const roomImageUrls = await Promise.all(
+            property.roomImages.map((imagePath) =>
+                this.uploadImageToCloudinary(imagePath.path),
+            ),
+        );
+
+        const propertyData = {
+            ...property,
+            image: propertyImageUrl,
+            rooms: property.rooms.map((room, index) => ({
+                ...room,
+                image: roomImageUrls[index] || null, // URL của ảnh từng phòng
+            })),
+        };
+        console.log(propertyData);
+
+        const newProperty = new this.propertySchema(propertyData);
         return newProperty.save();
     }
+
     async getAllProperty() {
         return this.propertySchema.find();
     }

@@ -98,19 +98,19 @@ export class SessionService {
     return this.sessionSchema.findByIdAndDelete(sessionId);
   }
 
-  async refreshAccessToken(userId: ObjectId) {
-    const findSession = await this.sessionSchema.findOne({ userId });
+  async refreshAccessToken(refreshToken: string) {
+    const findSession = await this.sessionSchema.findOne({ refreshToken });
     try {
-      const payload = await this.jwtService.verify(findSession.refreshToken, {
+      await this.jwtService.verify(refreshToken, {
         secret: process.env.secret,
       });
-      const findUser = await this.userSchema.findById(userId);
+      const findUser = await this.userSchema.findById(findSession.userId);
       const signInfo = {
         userName: findUser.userName,
         role: findUser.role,
       };
       return {
-        _id: userId,
+        _id: findUser._id,
         access_token: this.jwtService.sign(
           { signInfo },
           { expiresIn: '1h', secret: process.env.secret },

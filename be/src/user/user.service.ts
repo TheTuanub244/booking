@@ -149,6 +149,7 @@ export class UserService {
       );
 
       if (!isPasswordValid) {
+
         throw new UnauthorizedException('Invalid username or password');
       }
       const newSession = await this.sessionService.createSession({
@@ -159,6 +160,7 @@ export class UserService {
         uid: null,
       });
       const signInfo = { userName, role: existUser.role };
+
       return {
         access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
         _id: existUser._id,
@@ -168,9 +170,9 @@ export class UserService {
       const existEmail = await this.userSchema.findOne({
         email: userName,
       });
-      console.log(existEmail);
 
       if (!existEmail) {
+
         throw new UnauthorizedException('Invalid username or password');
       }
 
@@ -180,8 +182,18 @@ export class UserService {
           userName,
           password,
         );
+        const signInfo = { userName, role: existEmail.role };
 
-        const idToken = await userCredential.user.getIdToken();
+        await admin
+          .auth()
+          .createCustomToken(userCredential.user.uid, {
+            signInfo,
+          });
+
+        const jwtToken = this.jwtSerivce.sign(
+          { uid: userCredential.user.uid, signInfo },
+          { expiresIn: '1h' },
+        );
 
         const newSession = await this.sessionService.createSession({
           userId: existEmail._id.toString(),
@@ -190,14 +202,15 @@ export class UserService {
           lastBooking: null,
           recent_search: [],
         });
+        console.log(newSession);
 
         return {
-          access_token: idToken,
+          access_token: jwtToken,
           _id: existEmail._id,
           refreshToken: newSession.refreshToken,
         };
       } catch (err) {
-        throw new UnauthorizedException('Invalid username or password');
+        throw err;
       }
     }
   }
@@ -247,6 +260,7 @@ export class UserService {
         password,
       );
       const salt = await bcrypt.genSalt(10);
+
       const hashedPassword = await bcrypt.hash(password, salt);
       const newUser = new this.userSchema({
         userName,
@@ -257,6 +271,7 @@ export class UserService {
         phoneNumber,
         uid: userCredential.user.uid,
       });
+
       await sendEmailVerification(userCredential.user);
       return newUser.save();
     } catch (err) {

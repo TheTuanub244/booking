@@ -54,8 +54,6 @@ export class UserModule {
       .apply(ResetPasswordMiddleware)
       .forRoutes(
         { path: '/user/reset-password', method: RequestMethod.POST },
-        { path: '/user/sign-up', method: RequestMethod.POST },
-        { path: '/user/sign-up-with-email', method: RequestMethod.POST }
 
       )
 

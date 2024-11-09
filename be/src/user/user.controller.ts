@@ -29,6 +29,8 @@ export class UserController {
   }
   @Post('/sign-up-with-email')
   async signUpWithEmail(@Body() signup: any) {
+    console.log(signup);
+
     return this.userService.signUpWithEmail(signup);
   }
   @Post('/sign-in')

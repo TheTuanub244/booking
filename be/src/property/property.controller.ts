@@ -6,7 +6,10 @@ import {
     Post,
     Put,
     Req,
+    UploadedFile,
+    UploadedFiles,
     UseGuards,
+    UseInterceptors,
 } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/createProperty.dto';
@@ -16,13 +19,56 @@ import { Request } from 'express';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from 'src/user/enum/role.enum';
-
+import { AnyFilesInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 @Controller('property')
 export class PropertyController {
     constructor(private readonly propertyService: PropertyService) { }
-    @Post('/createProperty')
-    async createNewProperty(@Body() createPropertyDto: CreatePropertyDto) {
-        return this.propertyService.createNewProperty(createPropertyDto);
+    @Post('/createPropertyWithPartner')
+    @UseGuards(ValidateTokenGuard, RolesGuard)
+    @Roles(ROLE.ADMIN, ROLE.PARTNER)
+    @Post('createPropertyWithPartner')
+    @Post('/createPropertyWithPartner')
+    @UseGuards(ValidateTokenGuard, RolesGuard)
+    @Roles(ROLE.ADMIN, ROLE.PARTNER)
+    @UseInterceptors(
+        AnyFilesInterceptor({
+            storage: diskStorage({
+                destination: './uploads',
+                filename: (req, file, callback) => {
+                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                    const ext = path.extname(file.originalname);
+                    const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+                    callback(null, filename);
+                },
+            }),
+        }),
+    )
+    async createPropertyWithPartner(
+        @Body() data: any,
+        @UploadedFiles() files: Express.Multer.File[],
+    ) {
+        // Lấy file ảnh chính của property
+        const propertyImage = files.find(file => file.fieldname === 'image');
+
+        // Lấy file ảnh cho từng room dựa vào tên field bắt đầu bằng `rooms`
+        const roomImages = files.filter(file => file.fieldname.startsWith('rooms'));
+
+        const propertyData = {
+            ...data,
+            image: propertyImage ? propertyImage.path : null,
+            address: JSON.parse(data.address),
+            location: JSON.parse(data.location),
+            rooms: typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
+            roomImages: roomImages.map(file => ({
+                path: file.path,
+                fieldname: file.fieldname,
+            })),
+        };
+
+        return this.propertyService.createNewProperty(propertyData);
     }
     @Get('/getAllProperty')
     async getAllProperty() {
@@ -58,7 +104,6 @@ export class PropertyController {
     }
     @Post('getPropertyNear')
     async getPropertyNear(@Body() data: any, @Req() req: Request) {
-
         return this.propertyService.getPropertyNear(data.longitude, data.latitude);
     }
     @UseGuards(RolesGuard, ValidateTokenGuard)
@@ -76,6 +121,6 @@ export class PropertyController {
     }
     @Get('getDistinctPlace')
     async getDistinctPlace() {
-        return this.propertyService.getDistinctPlace()
+        return this.propertyService.getDistinctPlace();
     }
 }

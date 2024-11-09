@@ -53,7 +53,6 @@ export class Room {
       count: number;
       age: number;
     };
-    room: number;
   };
   @Prop({ type: [String] })
   facility: string[];

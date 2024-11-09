@@ -12,5 +12,7 @@ export class CreatePropertyDto {
     }
     property_type: string;
     images: string[];
-    rate: number;
+    longitude: number;
+    latitude: number;
+    rooms: Object[];
 }

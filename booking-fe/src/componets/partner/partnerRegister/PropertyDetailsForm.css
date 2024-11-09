@@ -13,7 +13,7 @@
     border-radius: 12px;
     width: 20%;
     margin-top: 30px;
-    max-height: 700px;
+    max-height: auto;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
     padding: 20px;
 
@@ -31,9 +31,7 @@
     width: 100%;
 
 }
-.container-right{
 
-}
 .property-details-form {
 
     background-color: #fff;
@@ -137,7 +135,7 @@ input{
 .room-section .form-sectionn{
     display: flex;
     flex-direction: row;
-    height: 600px;
+    height: 410px;
 
 }
 
@@ -165,6 +163,23 @@ input{
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+.add-property-button{
+    margin-left: 27%;
+    width: 46%;
+    margin-top: 10px;
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.add-property-button:hover {
+    background-color: #218838;
 }
 
 .add-room-button:hover {
@@ -259,6 +274,16 @@ input{
     outline: none; /* Remove outline on focus */
 }
 
+.image-preview {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
 
+.image-preview img {
+    width: 100%; /* Ensure it fills the container */
+    height: auto;
+}
 
 

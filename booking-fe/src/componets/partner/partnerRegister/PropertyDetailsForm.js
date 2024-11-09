@@ -2,34 +2,42 @@ import React, { useEffect, useState } from 'react';
 import Map from './Map'; // Import the Map component for Google Maps or OpenStreetMap
 import "./PropertyDetailsForm.css";
 import { getProvince } from '../../../api/addressAPI';
+import {  createPropertyWithPartner } from '../../../api/propertyAPI';
 
 const PropertyDetailsForm = ({owner, longitude, latitude}) => {
 
     const [propertyData, setPropertyData] = useState({
         name: '',
         description: '',
+        address: {
             province: '',
-            district: '',
-            ward: '',
-            street: '',
-        pricePerNight: {
-            weekday: 0,
-            weekend: 0
+        district: '',
+        ward: '',
+        street: '',
         },
+        type: '',
+        images: [],
+
+
         location: { lat: latitude, lng: longitude },
         rooms: []
     });
-    useEffect(() => {
-        console.log(propertyData.rooms);
-        
-    }, [propertyData])
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setPropertyData({ ...propertyData, [name]: value });
-    };
     const [address, setAddress] = useState();
     const [district, setDistrict] = useState();
     const [ward, setWard] = useState();
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if(name === "street"){
+            setPropertyData({ ...propertyData, address: {
+                ...propertyData.address,
+                [name]: value
+            } });
+        }else {
+            setPropertyData({ ...propertyData, [name]: value });
+        }
+    };
+    
 
     const handleGetAddress = async () => {
         const respone = await getProvince()
@@ -44,7 +52,6 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
       }
       const getWard = async(code) => {
         const findWard = district.find(index => index.code === parseInt(code))
-        console.log(findWard);
         
         setWard(findWard?.wards)
       }
@@ -60,27 +67,35 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
               await getDistrict(code)
               setPropertyData((prev) => ({
                 ...prev,
-                  [name]: value,
+                address: {
+                    ...prev.address,
+                    [name]: value
+                }
               }));
             }else if(name === 'district'){
               await getWard(code)
               setPropertyData((prev) => ({
                 ...prev,
-                  [name]: value,
+                  address: {
+                    ...prev.address,
+                    [name]: value
+                }
               }));
             }else if(name === 'ward'){
                 setPropertyData((prev) => ({
                 ...prev,
-                  [name]: value,
+                  address: {
+                    ...prev.address,
+                    [name]: value
+                }
               }));
       }
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Property Data Submitted:", propertyData);
-    };
-
+    useEffect(() => {
+        console.log(propertyData);
+        
+    }, [propertyData])
 
     const removeRoom = (index) => {
         const updatedRooms = propertyData.rooms.filter((_, i) => i !== index);
@@ -94,38 +109,93 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
         setIsMapOpen(false); 
     };
     
-    useEffect(() => {
-        console.log(propertyData.location);
-        
-    }, [propertyData])
+
     const [isMapOpen, setIsMapOpen] = useState(false)
-    const handleRoomChange = (index, field, value) => {
-        const updatedRooms = [...propertyData.rooms];
-        updatedRooms[index] = { ...updatedRooms[index], [field]: value };
-        setPropertyData({ ...propertyData, rooms: updatedRooms });
+    const handleRoomChange = (index, e) => {
+        
+         if(e.target.name === "weekday" || e.target.name === "weekend"){
+            
+            const updatedRooms = [...propertyData.rooms];
+            updatedRooms[index] = { ...updatedRooms[index], pricePerNight: {
+                ...updatedRooms[index].pricePerNight,
+                [e.target.name]: parseInt(e.target.value)
+            }};
+            setPropertyData({ ...propertyData, rooms: updatedRooms });
+        }else if(e.target.name !== 'images'){
+            const updatedRooms = [...propertyData.rooms];
+            updatedRooms[index] = { ...updatedRooms[index], [e.target.name]: e.target.name === 'size' ? parseInt(e.target.value) : e.target.value};
+            setPropertyData({ ...propertyData, rooms: updatedRooms });
+        } 
     };
 
+    const handleRoomImageChange = (index, e) => {
+        const file = e.target.files[0];
+        const updatedRooms = [...propertyData.rooms];
+
+        updatedRooms[index].image = file
+
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onloadend = () => {
+                const updatedRooms = [...propertyData.rooms];
+                updatedRooms[index] = {
+                    ...updatedRooms[index],
+                    images:  reader.result
+                };
+
+                setPropertyData({
+                    ...propertyData,
+                    rooms: updatedRooms
+                });
+                
+            };
+            reader.readAsDataURL(file)
+
+        }
+        
+    };
+    const handlePropertyImageChange = (e) => {
+        const file = e.target.files[0];
+        propertyData.image = file;
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPropertyData({ ...propertyData, 'images': reader.result });
+
+            };
+            reader.readAsDataURL(file); 
+        }
+    };
+   
     const handleRoomCapacityChange = (index, field, value) => {
+    
+        
         const updatedRooms = [...propertyData.rooms];
-        updatedRooms[index] = {
-            ...updatedRooms[index],
-            capacity: {
-                ...updatedRooms[index].capacity,
-                [field]: field === 'adults' ? parseInt(value) : value,
-            },
-        };
+        if(field === 'adults'){
+            updatedRooms[index] = {
+                ...updatedRooms[index],
+                capacity: {
+                    ...updatedRooms[index].capacity,
+                    [field]: parseInt(value)
+                },
+            };
+        }else {
+            updatedRooms[index] = {
+                ...updatedRooms[index],
+                capacity: {
+                    ...updatedRooms[index].capacity,
+                    childs: {
+                    ...updatedRooms[index].capacity.childs,
+
+                        [field]: parseInt(value)
+                    }
+                },
+            };
+        }
         setPropertyData({ ...propertyData, rooms: updatedRooms });
     };
-
-    const handleChildAgeChange = (roomIndex, value) => {
-        const updatedRooms = [...propertyData.rooms];
-        const childAges = updatedRooms[roomIndex].capacity.childs.age || [];
-        updatedRooms[roomIndex].capacity.childs.age = childAges;
-        setPropertyData({ ...propertyData, rooms: updatedRooms });
-    };
-    const handlePriceChange = () => {
-
-    }
 
     const addRoom = () => {
         setPropertyData({
@@ -135,12 +205,57 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
                 {
                     name: '',
                     type: '',
-                    rate: '',
+                    size: 0,
+                    images: [],
+                    image: '',
                     capacity: { adults: 0, childs: { count: 0, age: 0 } },
                     pricePerNight: { weekday: '', weekend: '' },
                 }
             ]
         });
+    };
+    const addProperty = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+        const userId = localStorage.getItem('userId');
+        propertyData.owner_id = userId; // Add owner ID to data
+    
+        // Prepare FormData
+        const formData = new FormData();
+        
+        // Add general property information
+        formData.append('name', propertyData.name);
+        formData.append('description', propertyData.description);
+        formData.append('type', propertyData.type);
+        formData.append('location', JSON.stringify(propertyData.location));
+        formData.append('address', JSON.stringify(propertyData.address));
+    
+        // Add main property image if available
+        if (propertyData.image) {
+            formData.append('image', propertyData.image);
+        }
+    
+        // Add room details, including each room’s image
+        propertyData.rooms.forEach((room, index) => {
+            // Append individual room fields
+            formData.append(`rooms[${index}][name]`, room.name);
+            formData.append(`rooms[${index}][type]`, room.type);
+            formData.append(`rooms[${index}][size]`, room.size);
+            formData.append(`rooms[${index}][capacity]`, JSON.stringify(room.capacity));
+            formData.append(`rooms[${index}][pricePerNight]`, JSON.stringify(room.pricePerNight));
+    
+            // Append room image if available
+            if (room.image) {
+                formData.append(`rooms[${index}][image]`, room.image);
+            }
+        });
+    
+        // Send FormData to backend
+        try {
+            const response = await createPropertyWithPartner(formData, accessToken);
+            console.log(response);
+        } catch (error) {
+            console.error("Failed to add property:", error);
+        }
     };
     return (
         <>
@@ -149,7 +264,7 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
             <div className="property-details-container">
             <div className="property-details-form">
                 <h2>Add Property Details</h2>
-                <form onSubmit={handleSubmit} className="form-sectionn">
+                <form  className="form-sectionn">
                    <div className='container-left'>
                     <label>Property Name</label>
                         <input
@@ -162,15 +277,15 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
                         <label>Property Image</label>
                         <input
                             type="file"
-                            name="image"
-                            onChange={handleChange}
+                            name="images"
+                            onChange={(e) => handlePropertyImageChange(e)}
                             required
                         />
                         <label>Street</label>
                         <input
                             type="text"
                             name="street"
-                            value={propertyData.street}
+                            value={propertyData.address.street}
                             onChange={handleChange}
                             required
                         />
@@ -224,17 +339,15 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
                         required
                     />
                 </div>
-                <div>
-                <label>Amentities</label>
-                    
-                </div>
 
                 <div className="room-section">
-                        <h3>Rooms</h3>
                         {propertyData.rooms.map((room, index) => (
                             <>
+
                                 <div key={index} className="form-sectionn">
                                 <div className='container-left'>
+                                    <h3>Rooms</h3>
+
                                     <label>Room Name</label>
                                     <input
                                         type="text"
@@ -254,65 +367,64 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
                                     />
                                     <label>Room Size</label>
                                     <input
-                                        type="text"
+                                        type="number"
                                         name="size"
-                                        value={room.type}
+                                        value={room.size}
                                         onChange={(e) => handleRoomChange(index, e)}
                                     />
-                                        <label>Age of Child</label>
-                                        <input
-                                            type="number"
-                                            onChange={(e) => handleChildAgeChange(index, e.target.value)}
-                                        />
-                                        <label>Number of Child</label>
-                                        <input
-                                            type="number"
-                                            onChange={(e) => handleChildAgeChange(index, e.target.value)}
-                                        />
-                                        <label>Room Image</label>
-                                        <input
-                                            type="file"
-                                            onChange={(e) => handleChildAgeChange(index, e.target.value)}
-                                        />
                                         
+                                        <label>Number of Adults</label>
+                                        <input
+                                            type="number"
+                                            name='adults'
+                                            onChange={(e) => handleRoomCapacityChange(index, e.target.name, e.target.value)}
+                                        />
+                                    
                               
                                     
                                 </div>
                                 <div className='container-right'>
-                                    <label>Room Name</label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={room.name}
-                                        onChange={(e) => handleRoomChange(index, e)}
-                                        required
-                                    />
-
-                                    <label>Room Type</label>
-                                    <input
-                                        type="text"
-                                        name="type"
-                                        value={room.type}
-                                        onChange={(e) => handleRoomChange(index, e)}
-                                        required
-                                    />
                                      <h3 style={{
-                                        marginTop: '40px'
                                      }}>Price Per Night</h3>
                                     <label>Weekday Price</label>
-                                    <input type="number" name="weekday" value={propertyData.pricePerNight.weekday} onChange={handlePriceChange} required />
+                                    <input type="number" name="weekday" value={propertyData.rooms[index].pricePerNight.weekday} onChange={(e) => handleRoomChange(index, e)} required />
 
                                     <label>Weekend Price</label>
-                                    <input type="number" name="weekend" value={propertyData.pricePerNight.weekend} onChange={handlePriceChange} required />
-                                    <label>Room Amentities</label>
+                                    <input type="number" name="weekend" value={propertyData.rooms[index].pricePerNight.weekend} onChange={(e) => handleRoomChange(index, e)} required />
+                                    <label>Age of Child</label>
                                         <input
-                                            type="text"
-                                            onChange={(e) => handleChildAgeChange(index, e.target.value)}
+                                            type="number"
+                                            name='age'
+                                            onChange={(e) => handleRoomCapacityChange(index, e.target.name, e.target.value)}
+                                        />
+                                        <label>Number of Child</label>
+                                        <input
+                                            type="number"
+                                            name='count'
+
+                                            onChange={(e) => handleRoomCapacityChange(index, e.target.name, e.target.value)}
                                         />
                                 </div>
                                 
                             </div>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column'
+                            }}>
+                                <label>Room Image</label>
+                                            <input
+                                                type="file"
+                                                onChange={(e) => handleRoomImageChange(index, e)}
+                                />
+                            </div>
+                            {propertyData.rooms[index].images  && (
+                                <div className="image-preview">
+                                    <img src={propertyData.rooms[index].images} alt="Selected property preview" style={{ width: '100%', height: 'auto' }} />
+                                </div>
+                            )}
+                
                             <button type='button' className='remove-room-button' onClick={() => removeRoom(index)}>Remove Room</button>
+
 
                             </>
                             
@@ -323,17 +435,27 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
                         </button>
                         
                     </div>
+                    <button type="button" className="add-property-button" onClick={addProperty}>
+                            Add Property
+                        </button>
             </div>
             
             {/* Container for Map and Property Summary */}
             <div className="container-map">
             <h3>Property Summary</h3>
                 <p><strong>Name:</strong> {propertyData.name}</p>
-                <p><strong>Location:</strong> {`${propertyData.street}, ${propertyData.ward}, ${propertyData.district}, ${propertyData.province}`}</p>
+                <p><strong>Address:</strong> {`${propertyData.address.street}, ${propertyData.address.ward}, ${propertyData.address.district}, ${propertyData.address.province}`}</p>
                 <p><strong>Description:</strong> {propertyData.description}</p>
                 <p><strong>Latitude:</strong> {propertyData.location.lat}</p>
                 <p><strong>Longitude:</strong> {propertyData.location.lng}</p>
+                <p><strong>Property's Image:</strong></p>
 
+                {propertyData.images  && (
+                                <div className="image-preview">
+                                    <img src={propertyData.images} alt="Selected property preview" style={{ width: '100%', height: 'auto' }} />
+                                </div>
+                            )}
+                
                 <div className="mini-map">
                     <Map key={`${propertyData.location.lat}-${propertyData.location.lng}`} onLocationSelect={() => {}} initialLocation={propertyData.location} />
                 </div>

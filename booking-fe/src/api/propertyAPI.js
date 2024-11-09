@@ -1,5 +1,19 @@
 import axios from "axios"
-
+export const createPropertyWithPartner = async (formData, token) => {
+    try {
+        const response = await axios.post("http://localhost:8000/property/createPropertyWithPartner", formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating property:", error);
+        throw error;
+    }
+};
 export const getAllProperty = async () => {
     const respone = await axios.get("http://localhost:8000/property/getAllProperty", {withCredentials: true})
     return respone.data
@@ -28,7 +42,6 @@ export const getPropertyByPlace = async (place) => {
 export const getPropertyByRates = async () => {
     try{       
         const respone = await axios.get("http://localhost:8000/property/getPropertiesSortedByRate", {withCredentials: true})
-        console.log(respone.data);
         
         return respone.data
     } catch(error){

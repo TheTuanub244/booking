@@ -3,7 +3,6 @@ import './reservationRoom.css';
 import ReservationRoom_item from './reservationRoom_item';
 import RoomModal from './roomModal';
 import { checkRoomDateBooking } from '../../../function/searchRoomInProperty';
-=======
 import SignInPopup from './signInPopup';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -16,6 +15,7 @@ const ReservationRoom = ({ roomData }) => {
     adults: 0,
     child: []
   });
+
   const [numberOfNights, setNumberOfNights] = useState(3);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,7 +29,6 @@ const ReservationRoom = ({ roomData }) => {
 
   const [numberOfGuestInput, setNumberOfGuestInput] = useState(false);
 
-=======
   const userId = localStorage.getItem('userId')
   const closeModal = () => {
     setIsModalOpen(false);
@@ -68,6 +67,17 @@ const ReservationRoom = ({ roomData }) => {
         return {...prev};
       }
     })
+  }
+
+  const handleChangeAgeOfChilds = (e, i) => {
+    e.stopPropagation();
+    const {value} = e.target;
+    setNumberOfGuests(prev => ({
+      ...prev,
+      child: prev.child.map(child => 
+        child.index === i ? {...child, age: Number(value)} : child
+      ),
+    }))
   }
 
   const handleChangeDate = (e) => {
@@ -114,7 +124,34 @@ const ReservationRoom = ({ roomData }) => {
     setIsSearchRoom(true);
   }
 
-=======
+  const handleSearchRoom = async (e) => {
+    e.preventDefault();
+
+    const availability = {
+      check_in_date: new Date(checkInDate),
+      check_out_date: new Date(checkOutDate)
+    }
+
+    const maxAge = numberOfGuests.child.reduce((max, current) => {
+      if(max < current.age) 
+        return max < current.age ? current.age : max;
+    }, 0);
+    const capacity = {
+      adults: numberOfGuests.adults,
+      child: {
+        age: maxAge,
+        count: numberOfGuests.child.length
+      }
+    }
+
+    //const rooms = await searchRoom(capacity, availability);
+    //setRoomSearch(rooms);
+    //setIsSearchRoom(true);
+    console.log(numberOfGuests);
+    console.log(availability, capacity);
+
+  }
+
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
@@ -128,8 +165,7 @@ const ReservationRoom = ({ roomData }) => {
   return (
     <div className="ReservationForm">
       <h2>Reserve Your Room</h2>
-      <form onSubmit={handleSubmit}>
-      <div className="reservation-details">
+      <form className="reservation-details" onSubmit={handleSearchRoom}>
           <label htmlFor="checkIn">Check-In Date:</label>
           <input
             type="date"
@@ -152,7 +188,7 @@ const ReservationRoom = ({ roomData }) => {
           <div 
           className="guestInput"
           onClick={(e) => {e.preventDefault(); setNumberOfGuestInput(true)}}>
-            {numberOfGuests && `${numberOfGuests.child.length} + ${numberOfGuests.adults}`}
+            {numberOfGuests && `${numberOfGuests.adults} Adults + ${numberOfGuests.child.length} Childs`}
             {numberOfGuestInput && (
             <>
               <div className="blockInput" onClick={(e) => {e.stopPropagation()
@@ -175,10 +211,10 @@ const ReservationRoom = ({ roomData }) => {
                     <label>Childs Age: </label>
                     <div className="childAgeInput">
                       {numberOfGuests.child.map((child) => <input type="number"
-                                            key= {`childAge ${child.index}`}
+                                            key= {child.index}
                                             name={`childAge ${child.index}`}
                                             value={child.age} 
-                                            onChange={(e) => {}}/>)}
+                                            onChange={(e) => {handleChangeAgeOfChilds(e, child.index)}}/>)}
                     </div>
                     </>
                   )}
@@ -187,8 +223,10 @@ const ReservationRoom = ({ roomData }) => {
             </>)}
           </div>
           
-          <button type="button" className='update' onClick={searchRoom}>Update</button>
-      </div>
+          <button type="submit" className='update'>Update</button>
+      </form>
+      <form onSubmit={handleSubmit}>
+      
         
         <div className="table-responsive">
           <table className="room-table">

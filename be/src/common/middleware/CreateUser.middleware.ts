@@ -29,7 +29,7 @@ export class CreateUserMiddleware implements NestMiddleware {
       throw new BadRequestException({
         message: errors.map((error) => error.message),
         field: errors.map((error) => error.field),
-      })
+      });
     }
     next();
   }

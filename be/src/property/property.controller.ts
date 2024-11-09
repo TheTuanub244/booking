@@ -1,126 +1,124 @@
 import {
-    Body,
-    Controller,
-    Get,
-    Param,
-    Post,
-    Put,
-    Req,
-    UploadedFile,
-    UploadedFiles,
-    UseGuards,
-    UseInterceptors,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PropertyService } from './property.service';
-import { CreatePropertyDto } from './dto/createProperty.dto';
 import { ObjectId } from 'mongoose';
 import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
-import { Request } from 'express';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from 'src/user/enum/role.enum';
-import { AnyFilesInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 @Controller('property')
 export class PropertyController {
-    constructor(private readonly propertyService: PropertyService) { }
-    @Post('/createPropertyWithPartner')
-    @UseGuards(ValidateTokenGuard, RolesGuard)
-    @Roles(ROLE.ADMIN, ROLE.PARTNER)
-    @Post('createPropertyWithPartner')
-    @Post('/createPropertyWithPartner')
-    @UseGuards(ValidateTokenGuard, RolesGuard)
-    @Roles(ROLE.ADMIN, ROLE.PARTNER)
-    @UseInterceptors(
-        AnyFilesInterceptor({
-            storage: diskStorage({
-                destination: './uploads',
-                filename: (req, file, callback) => {
-                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                    const ext = path.extname(file.originalname);
-                    const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
-                    callback(null, filename);
-                },
-            }),
-        }),
-    )
-    async createPropertyWithPartner(
-        @Body() data: any,
-        @UploadedFiles() files: Express.Multer.File[],
-    ) {
-        // Lấy file ảnh chính của property
-        const propertyImage = files.find(file => file.fieldname === 'image');
+  constructor(private readonly propertyService: PropertyService) {}
+  @Post('/createPropertyWithPartner')
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN, ROLE.PARTNER)
+  @Post('createPropertyWithPartner')
+  @Post('/createPropertyWithPartner')
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN, ROLE.PARTNER)
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
+  async createPropertyWithPartner(
+    @Body() data: any,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    const propertyImage = files.find((file) => file.fieldname === 'image');
 
-        // Lấy file ảnh cho từng room dựa vào tên field bắt đầu bằng `rooms`
-        const roomImages = files.filter(file => file.fieldname.startsWith('rooms'));
+    const roomImages = files.filter((file) =>
+      file.fieldname.startsWith('rooms'),
+    );
 
-        const propertyData = {
-            ...data,
-            image: propertyImage ? propertyImage.path : null,
-            address: JSON.parse(data.address),
-            location: JSON.parse(data.location),
-            rooms: typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
-            roomImages: roomImages.map(file => ({
-                path: file.path,
-                fieldname: file.fieldname,
-            })),
-        };
+    const propertyData = {
+      ...data,
+      image: propertyImage ? propertyImage.path : null,
+      address: JSON.parse(data.address),
+      location: JSON.parse(data.location),
+      rooms:
+        typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
+      roomImages: roomImages.map((file) => ({
+        path: file.path,
+        fieldname: file.fieldname,
+      })),
+    };
 
-        return this.propertyService.createNewProperty(propertyData);
-    }
-    @Get('/getAllProperty')
-    async getAllProperty() {
-        return this.propertyService.getAllProperty();
-    }
-    @Post('/getPropetyWithOwner')
-    async getPropetyWithOwner(@Body() owner_id: any) {
-        return this.propertyService.getPropertyWithOwner(owner_id.owner_id);
-    }
-    @UseGuards(ValidateTokenGuard)
-    @Get('/getPropertyById/:id')
-    async getPropertyById(@Param('id') id: ObjectId) {
-        return this.propertyService.getPropertyById(id);
-    }
-    @Get('getPropertiesSortedByRate')
-    async getPropertiesSortedByRate() {
-        return this.propertyService.getPropertiesSortedByRate();
-    }
-    @Post('getPropertyTypesByPlace')
-    async getPropertyTypesByPlace(@Body() place: any) {
-        return this.propertyService.getPropertyTypesByPlace(place.place);
-    }
-    @Post('getPropertyByTypeAndPlace')
-    async getPropertyByTypeAndPlace(@Body() data: any) {
-        return this.propertyService.getPropertyByTypeAndPlace(
-            data.place,
-            data.type,
-        );
-    }
-    @Get('getAllTypeOfProperties')
-    async getAllTypeOfProperties() {
-        return this.propertyService.getAllTypeOfProperties();
-    }
-    @Post('getPropertyNear')
-    async getPropertyNear(@Body() data: any, @Req() req: Request) {
-        return this.propertyService.getPropertyNear(data.longitude, data.latitude);
-    }
-    @UseGuards(RolesGuard, ValidateTokenGuard)
-    @Roles(ROLE.PARTNER, ROLE.ADMIN)
-    @Put('updateImageForProperty')
-    async updateImageForProperty(@Body() data: any) {
-        return this.propertyService.updateImageForProperty(
-            data.propertyId,
-            data.image,
-        );
-    }
-    @Post('getPropertyByPlace')
-    async getPropertyByPlace(@Body() data: any) {
-        return this.propertyService.getPropertyByPlace(data.place);
-    }
-    @Get('getDistinctPlace')
-    async getDistinctPlace() {
-        return this.propertyService.getDistinctPlace();
-    }
+    return this.propertyService.createNewProperty(propertyData);
+  }
+  @Get('/getAllProperty')
+  async getAllProperty() {
+    return this.propertyService.getAllProperty();
+  }
+  @Post('/getPropetyWithOwner')
+  async getPropetyWithOwner(@Body() owner_id: any) {
+    return this.propertyService.getPropertyWithOwner(owner_id.owner_id);
+  }
+  @UseGuards(ValidateTokenGuard)
+  @Get('/getPropertyById/:id')
+  async getPropertyById(@Param('id') id: ObjectId) {
+    return this.propertyService.getPropertyById(id);
+  }
+  @Get('getPropertiesSortedByRate')
+  async getPropertiesSortedByRate() {
+    return this.propertyService.getPropertiesSortedByRate();
+  }
+  @Post('getPropertyTypesByPlace')
+  async getPropertyTypesByPlace(@Body() place: any) {
+    return this.propertyService.getPropertyTypesByPlace(place.place);
+  }
+  @Post('getPropertyByTypeAndPlace')
+  async getPropertyByTypeAndPlace(@Body() data: any) {
+    return this.propertyService.getPropertyByTypeAndPlace(
+      data.place,
+      data.type,
+    );
+  }
+  @Get('getAllTypeOfProperties')
+  async getAllTypeOfProperties() {
+    return this.propertyService.getAllTypeOfProperties();
+  }
+  @Post('getPropertyNear')
+  async getPropertyNear(@Body() data: any) {
+    return this.propertyService.getPropertyNear(data.longitude, data.latitude);
+  }
+  @UseGuards(RolesGuard, ValidateTokenGuard)
+  @Roles(ROLE.PARTNER, ROLE.ADMIN)
+  @Put('updateImageForProperty')
+  async updateImageForProperty(@Body() data: any) {
+    return this.propertyService.updateImageForProperty(
+      data.propertyId,
+      data.image,
+    );
+  }
+  @Post('getPropertyByPlace')
+  async getPropertyByPlace(@Body() data: any) {
+    return this.propertyService.getPropertyByPlace(data.place);
+  }
+  @Get('getDistinctPlace')
+  async getDistinctPlace() {
+    return this.propertyService.getDistinctPlace();
+  }
 }

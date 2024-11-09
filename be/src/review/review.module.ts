@@ -27,7 +27,13 @@ const jwtConstant = {
 };
 @Module({
   controllers: [ReviewController, PropertyController],
-  providers: [ReviewService, PropertyService, BookingService, RoomService, SessionService],
+  providers: [
+    ReviewService,
+    PropertyService,
+    BookingService,
+    RoomService,
+    SessionService,
+  ],
   imports: [
     MongooseModule.forFeature([
       {
@@ -40,8 +46,9 @@ const jwtConstant = {
       { name: Session.name, schema: SessionSchema },
       { name: User.name, schema: UserSchema },
       {
-        name: Promotion.name, schema: PromotionSchema
-      }
+        name: Promotion.name,
+        schema: PromotionSchema,
+      },
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -55,8 +62,7 @@ const jwtConstant = {
     forwardRef(() => UserModule),
     forwardRef(() => PromotionModule),
 
-
     forwardRef(() => RoomModule),
   ],
 })
-export class ReviewModule { }
+export class ReviewModule {}

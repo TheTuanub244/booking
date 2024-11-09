@@ -26,7 +26,13 @@ const jwtConstant = {
 };
 @Module({
   controllers: [PropertyController],
-  providers: [PropertyService, BookingService, SessionService, RoomService, ReviewService],
+  providers: [
+    PropertyService,
+    BookingService,
+    SessionService,
+    RoomService,
+    ReviewService,
+  ],
   imports: [
     MongooseModule.forFeature([
       {
@@ -35,7 +41,7 @@ const jwtConstant = {
       },
       {
         name: Promotion.name,
-        schema: PromotionSchema
+        schema: PromotionSchema,
       },
       {
         name: Booking.name,
@@ -65,4 +71,4 @@ const jwtConstant = {
     }),
   ],
 })
-export class PropertyModule { }
+export class PropertyModule {}

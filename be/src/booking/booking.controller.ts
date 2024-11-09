@@ -9,12 +9,10 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 @Controller('booking')
 // @UseGuards(RolesGuard)
 export class BookingController {
-    constructor(
-        private readonly bookingService: BookingService
-    ) { }
-    @Post('createBooking')
-    // @Roles(ROLE.MEMBER)
-    async createBooking(@Body() createBookingDto: CreateBookingDto) {
-        return this.bookingService.createBooking(createBookingDto)
-    }
+  constructor(private readonly bookingService: BookingService) {}
+  @Post('createBooking')
+  // @Roles(ROLE.MEMBER)
+  async createBooking(@Body() createBookingDto: CreateBookingDto) {
+    return this.bookingService.createBooking(createBookingDto);
+  }
 }

@@ -52,10 +52,6 @@ export class UserModule {
         { path: '/user/update-user', method: RequestMethod.POST },
       )
       .apply(ResetPasswordMiddleware)
-      .forRoutes(
-        { path: '/user/reset-password', method: RequestMethod.POST },
-
-      )
-
+      .forRoutes({ path: '/user/reset-password', method: RequestMethod.POST });
   }
 }

@@ -3,7 +3,6 @@ import './reservationRoom.css';
 import ReservationRoom_item from './reservationRoom_item';
 import RoomModal from './roomModal';
 import { checkRoomDateBooking } from '../../../function/searchRoomInProperty';
-=======
 import SignInPopup from './signInPopup';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -29,7 +28,6 @@ const ReservationRoom = ({ roomData }) => {
 
   const [numberOfGuestInput, setNumberOfGuestInput] = useState(false);
 
-=======
   const userId = localStorage.getItem('userId')
   const closeModal = () => {
     setIsModalOpen(false);
@@ -114,7 +112,6 @@ const ReservationRoom = ({ roomData }) => {
     setIsSearchRoom(true);
   }
 
-=======
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };

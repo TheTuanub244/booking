@@ -4,9 +4,9 @@ import { ROLE } from 'src/user/enum/role.enum';
 
 @Injectable()
 export class DefaultRoleMiddleware implements NestMiddleware {
-    use(req: Request, res: Response, next: NextFunction) {
-        // console.log(user);
+  use(req: Request, res: Response, next: NextFunction) {
+    // console.log(user);
 
-        next();
-    }
+    next();
+  }
 }

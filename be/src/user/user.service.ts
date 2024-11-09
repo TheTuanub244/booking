@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -8,15 +7,13 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
-import { Model, ObjectId, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
-  sendPasswordResetEmail,
-  sendSignInLinkToEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { auth } from '../../firebase-config';
@@ -30,7 +27,7 @@ export class UserService {
     private userSchema: Model<User>,
     private jwtSerivce: JwtService,
     private sessionService: SessionService,
-  ) { }
+  ) {}
   async checkEmail(email: string) {
     const existEmail = await this.userSchema.findOne({ email: email });
 
@@ -149,7 +146,6 @@ export class UserService {
       );
 
       if (!isPasswordValid) {
-
         throw new UnauthorizedException('Invalid username or password');
       }
       const newSession = await this.sessionService.createSession({
@@ -172,7 +168,6 @@ export class UserService {
       });
 
       if (!existEmail) {
-
         throw new UnauthorizedException('Invalid username or password');
       }
 
@@ -184,11 +179,9 @@ export class UserService {
         );
         const signInfo = { userName, role: existEmail.role };
 
-        await admin
-          .auth()
-          .createCustomToken(userCredential.user.uid, {
-            signInfo,
-          });
+        await admin.auth().createCustomToken(userCredential.user.uid, {
+          signInfo,
+        });
 
         const jwtToken = this.jwtSerivce.sign(
           { uid: userCredential.user.uid, signInfo },
@@ -359,4 +352,15 @@ export class UserService {
 
   // }
   // The registration will be sent to admin, create manage partner accounts in admin dashboard before create this function
+  async updateInformationForGoogle(user: any) {
+    const newUser = new this.userSchema(user)
+    const savedUser = await newUser.save()
+    const newSession = await this.sessionService.createSession({uid: user.uid, userId: savedUser._id.toString(), lastBooking: null, lastViewProperties: [], recent_search: []})
+    const signInfo = {userName: savedUser.email, role: savedUser.role}
+    return {
+      access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
+        _id: savedUser._id,
+        refreshToken: newSession.refreshToken,
+    } 
+  }
 }

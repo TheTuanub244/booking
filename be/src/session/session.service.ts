@@ -18,7 +18,7 @@ export class SessionService {
     private readonly jwtService: JwtService,
     @InjectModel(User.name)
     private readonly userSchema: Model<User>,
-  ) { }
+  ) {}
 
   async createSession(createSessionDto: CreateSessionDto) {
     const { userId, lastViewProperties, lastBooking } = createSessionDto;

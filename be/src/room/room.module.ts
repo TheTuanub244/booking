@@ -25,7 +25,13 @@ const jwtConstant = {
 };
 @Module({
   controllers: [RoomController],
-  providers: [RoomService, BookingService, SessionService, UserService, PromotionService],
+  providers: [
+    RoomService,
+    BookingService,
+    SessionService,
+    UserService,
+    PromotionService,
+  ],
   exports: [RoomService], // Ensure to export services needed by other modules
   imports: [
     MongooseModule.forFeature([
@@ -35,7 +41,7 @@ const jwtConstant = {
       { name: Promotion.name, schema: PromotionSchema },
       { name: Session.name, schema: SessionSchema },
       { name: Property.name, schema: PropertySchema },
-      { name: User.name, schema: UserSchema }
+      { name: User.name, schema: UserSchema },
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -48,4 +54,4 @@ const jwtConstant = {
     PropertyModule,
   ],
 })
-export class RoomModule { }
+export class RoomModule {}

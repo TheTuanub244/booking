@@ -44,7 +44,7 @@ function FeaturedProperties() {
               </div>
               <div className='fpItemContent'>
                 <h3 className='fpName'>{item.property.name}</h3>
-                <div className='fpCity'>{item.property.address.province}, {item.property.address.district}, {item.property.address.ward}, {item.property.address.street}</div>
+                <div className='fpCity'>{item.property.address.street}, {item.property.address.ward}, {item.property.address.district}, {item.property.address.province} </div>
                 <div className='fpRating'>
                   <div className='star'>{item.property.rate}</div>
                   <span>Excellent - {item.numberReviews} reviews</span>

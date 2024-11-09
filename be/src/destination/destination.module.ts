@@ -8,10 +8,12 @@ import { Destination, DestinationSchema } from './destination.schema';
   controllers: [DestinationController],
   providers: [DestinationService],
   imports: [
-    MongooseModule.forFeature([{
-      name: Destination.name,
-      schema: DestinationSchema,
-    }]),
+    MongooseModule.forFeature([
+      {
+        name: Destination.name,
+        schema: DestinationSchema,
+      },
+    ]),
   ],
 })
-export class DestinationModule { }
+export class DestinationModule {}

@@ -35,7 +35,7 @@ function LastViewProperties({data}) {
               </div>
               <div className='fpItemContent'>
                 <h3 className='fpName'>{item.name}</h3>
-                <div className='fpCity'>{item.address.province}, {item.address.district}, {item.address.ward}, {item.address.street}</div>
+                <div className='fpCity'>{item.address.street}, {item.address.ward}, {item.address.district}, {item.address.province}</div>
                 <div className='fpRating'>
                   <div className='star'>{item.rate}</div>
                   <span>Excellent - {item.numberReviews} reviews</span>

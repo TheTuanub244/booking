@@ -1,5 +1,5 @@
 export enum TYPE {
-    SINGLE = 'single',
-    DOUBLE = 'double',
-    SUITE = 'suite'
+  SINGLE = 'single',
+  DOUBLE = 'double',
+  SUITE = 'suite',
 }

@@ -22,7 +22,7 @@ export class BookingService {
     @InjectModel(Room.name)
     private readonly roomSchema: Model<Room>,
     private readonly promotionService: PromotionService,
-  ) { } // TODO: calculate the total price
+  ) {} // TODO: calculate the total price
 
   async calculateTotalNightPrice(booking: any) {
     const findRoomPromotion =

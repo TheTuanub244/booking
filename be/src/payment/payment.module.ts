@@ -14,6 +14,6 @@ import { Payment, PaymentSchema } from './payment.schema';
         schema: PaymentSchema,
       },
     ]),
-  ]
+  ],
 })
-export class PaymentModule { }
+export class PaymentModule {}

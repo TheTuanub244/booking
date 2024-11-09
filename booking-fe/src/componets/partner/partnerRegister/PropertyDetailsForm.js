@@ -217,13 +217,16 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
     const addProperty = async () => {
         const accessToken = localStorage.getItem('accessToken');
         const userId = localStorage.getItem('userId');
-        propertyData.owner_id = userId; // Add owner ID to data
-    
-        // Prepare FormData
+        propertyData.owner_id = userId; 
+        propertyData.location.longitude = propertyData.location.lng
+        propertyData.location.latitude = propertyData.location.lat
+
         const formData = new FormData();
         
         // Add general property information
         formData.append('name', propertyData.name);
+        formData.append('owner_id', propertyData.owner_id);
+
         formData.append('description', propertyData.description);
         formData.append('type', propertyData.type);
         formData.append('location', JSON.stringify(propertyData.location));
@@ -256,7 +259,9 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
         } catch (error) {
             console.error("Failed to add property:", error);
         }
+
     };
+    
     return (
         <>
             {
@@ -417,7 +422,7 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
                                                 onChange={(e) => handleRoomImageChange(index, e)}
                                 />
                             </div>
-                            {propertyData.rooms[index].images  && (
+                            {propertyData.rooms[index].images.length !== 0  && (
                                 <div className="image-preview">
                                     <img src={propertyData.rooms[index].images} alt="Selected property preview" style={{ width: '100%', height: 'auto' }} />
                                 </div>
@@ -450,7 +455,7 @@ const PropertyDetailsForm = ({owner, longitude, latitude}) => {
                 <p><strong>Longitude:</strong> {propertyData.location.lng}</p>
                 <p><strong>Property's Image:</strong></p>
 
-                {propertyData.images  && (
+                {propertyData.images.length !== 0  && (
                                 <div className="image-preview">
                                     <img src={propertyData.images} alt="Selected property preview" style={{ width: '100%', height: 'auto' }} />
                                 </div>

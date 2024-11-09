@@ -4,15 +4,13 @@ import { CreatePromotionDto } from './dto/createPromotion.dto';
 
 @Controller('promotion')
 export class PromotionController {
-    constructor(
-        private readonly promotionService: PromotionService
-    ) { }
-    @Post('/createPromotion')
-    async createPromotion(@Body() createPromotionDto: CreatePromotionDto) {
-        return this.promotionService.createPromotion(createPromotionDto)
-    }
-    @Get('/getAllPromotion')
-    async getAllPromotion() {
-        return this.promotionService.getAllPromotion()
-    }
+  constructor(private readonly promotionService: PromotionService) {}
+  @Post('/createPromotion')
+  async createPromotion(@Body() createPromotionDto: CreatePromotionDto) {
+    return this.promotionService.createPromotion(createPromotionDto);
+  }
+  @Get('/getAllPromotion')
+  async getAllPromotion() {
+    return this.promotionService.getAllPromotion();
+  }
 }

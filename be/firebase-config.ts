@@ -1,15 +1,15 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 
 // Your Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDCraTEdoU1uNk8xAeftbYSfEs-eiCsD3U",
-    authDomain: "booking-app-1edf4.firebaseapp.com",
-    projectId: "booking-app-1edf4",
-    storageBucket: "booking-app-1edf4.appspot.com",
-    messagingSenderId: "319720545675",
-    appId: "1:319720545675:web:0643aa0a2da6034082e38e",
-    measurementId: "G-FK4KH759ZB"
+  apiKey: 'AIzaSyDCraTEdoU1uNk8xAeftbYSfEs-eiCsD3U',
+  authDomain: 'booking-app-1edf4.firebaseapp.com',
+  projectId: 'booking-app-1edf4',
+  storageBucket: 'booking-app-1edf4.appspot.com',
+  messagingSenderId: '319720545675',
+  appId: '1:319720545675:web:0643aa0a2da6034082e38e',
+  measurementId: 'G-FK4KH759ZB',
 };
 
 // Initialize Firebase

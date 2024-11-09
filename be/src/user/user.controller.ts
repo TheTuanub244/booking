@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpStatus,
   Post,
   Res,
@@ -13,10 +12,10 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from './enum/role.enum';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Response } from 'express';
+import { response, Response } from 'express';
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
   @Post('/create-user')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
@@ -29,8 +28,6 @@ export class UserController {
   }
   @Post('/sign-up-with-email')
   async signUpWithEmail(@Body() signup: any) {
-    console.log(signup);
-
     return this.userService.signUpWithEmail(signup);
   }
   @Post('/sign-in')
@@ -84,6 +81,22 @@ export class UserController {
   }
   @Post('updatePartnerAccount')
   async updatePartnerAccount(@Body() partner: any) {
-    return this.userService.updatePartnerAccount(partner.partner)
+    return this.userService.updatePartnerAccount(partner.partner);
+  }
+  @Post('updateInformationForGoogle')
+  async updateInformationForGoogle(@Body() user: any, @Res() response: Response){
+    const data =  await this.userService.updateInformationForGoogle(user.user)
+    response.cookie('refreshToken', data.refreshToken, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return response.status(HttpStatus.OK).json({
+      _id: data._id,
+      accessToken: data.access_token,
+      refreshToken: data.refreshToken,
+      message: 'Login successful',
+    });
   }
 }

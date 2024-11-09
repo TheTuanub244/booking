@@ -9,7 +9,7 @@ import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 
 @Controller('room')
 export class RoomController {
-  constructor(private readonly roomService: RoomService) { }
+  constructor(private readonly roomService: RoomService) {}
   @UseGuards(RolesGuard, ValidateTokenGuard)
   @Roles(ROLE.PARTNER, ROLE.ADMIN)
   @Post('createRoom')
@@ -36,12 +36,18 @@ export class RoomController {
   // }
   @Post('findAvailableRoomWithSearch')
   async findAvailableRoomWithSearch(@Body() data: any) {
-    return this.roomService.findAvailableRoomWithSearch(data.userId, data.place || data.province, data.check_in, data.check_out, data.capacity)
+    return this.roomService.findAvailableRoomWithSearch(
+      data.userId,
+      data.place || data.province,
+      data.check_in,
+      data.check_out,
+      data.capacity,
+    );
   }
   @UseGuards(RolesGuard, ValidateTokenGuard)
   @Roles(ROLE.PARTNER, ROLE.ADMIN)
   @Put('updateImageForRoom')
   async updateImageForRoom(@Body() data: any) {
-    return this.roomService.updateImageForRoom(data.roomId, data.image)
+    return this.roomService.updateImageForRoom(data.roomId, data.image);
   }
 }

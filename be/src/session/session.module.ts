@@ -15,7 +15,13 @@ const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
-  providers: [SessionService, JwtService, UserService, JwtStrategy, JwtAuthGuard],
+  providers: [
+    SessionService,
+    JwtService,
+    UserService,
+    JwtStrategy,
+    JwtAuthGuard,
+  ],
   controllers: [SessionController],
   exports: [JwtModule, JwtAuthGuard, SessionService, UserService],
   imports: [
@@ -32,4 +38,4 @@ const jwtConstant = {
     PassportModule,
   ],
 })
-export class SessionModule { }
+export class SessionModule {}

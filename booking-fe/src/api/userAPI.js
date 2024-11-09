@@ -25,8 +25,8 @@ export const signIn = async (user) => {
         return respone.data
     } catch(error){
         const respone = error.response.data.message 
-
-        throw new Error(error.response ? error.response.data.message : 'Sign-in failed');
+        
+        return respone
         
     }
 }
@@ -37,7 +37,7 @@ export const signInWithGoogle = async (user) => {
     } catch(error){
         const respone = error.response.data.message 
 
-        throw new Error(error.response ? error.response.data.message : 'Sign-in failed');
+        return respone
         
     }
 }
@@ -79,5 +79,11 @@ export const checkEmail = async (email) => {
 }
 export const updatePartnerAccount = async (partner) => {
     const respone = await axios.post("http://localhost:8000/user/updatePartnerAccount", {partner})
+    return respone.data
+}
+export const updateInformationForGoogle = async (user) => {
+    const respone = await axios.post("http://localhost:8000/user/updateInformationForGoogle", {user}, {
+        withCredentials: true
+    })
     return respone.data
 }

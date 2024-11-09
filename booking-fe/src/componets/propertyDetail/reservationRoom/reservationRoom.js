@@ -15,6 +15,7 @@ const ReservationRoom = ({ roomData }) => {
     adults: 0,
     child: []
   });
+
   const [numberOfNights, setNumberOfNights] = useState(3);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,6 +69,17 @@ const ReservationRoom = ({ roomData }) => {
     })
   }
 
+  const handleChangeAgeOfChilds = (e, i) => {
+    e.stopPropagation();
+    const {value} = e.target;
+    setNumberOfGuests(prev => ({
+      ...prev,
+      child: prev.child.map(child => 
+        child.index === i ? {...child, age: Number(value)} : child
+      ),
+    }))
+  }
+
   const handleChangeDate = (e) => {
     let date1, date2;
     if(e.target.id === "checkIn"){
@@ -112,6 +124,7 @@ const ReservationRoom = ({ roomData }) => {
     setIsSearchRoom(true);
   }
 
+=======
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
@@ -125,8 +138,7 @@ const ReservationRoom = ({ roomData }) => {
   return (
     <div className="ReservationForm">
       <h2>Reserve Your Room</h2>
-      <form onSubmit={handleSubmit}>
-      <div className="reservation-details">
+      <form className="reservation-details" onSubmit={handleSearchRoom}>
           <label htmlFor="checkIn">Check-In Date:</label>
           <input
             type="date"
@@ -149,7 +161,7 @@ const ReservationRoom = ({ roomData }) => {
           <div 
           className="guestInput"
           onClick={(e) => {e.preventDefault(); setNumberOfGuestInput(true)}}>
-            {numberOfGuests && `${numberOfGuests.child.length} + ${numberOfGuests.adults}`}
+            {numberOfGuests && `${numberOfGuests.adults} Adults + ${numberOfGuests.child.length} Childs`}
             {numberOfGuestInput && (
             <>
               <div className="blockInput" onClick={(e) => {e.stopPropagation()
@@ -172,10 +184,10 @@ const ReservationRoom = ({ roomData }) => {
                     <label>Childs Age: </label>
                     <div className="childAgeInput">
                       {numberOfGuests.child.map((child) => <input type="number"
-                                            key= {`childAge ${child.index}`}
+                                            key= {child.index}
                                             name={`childAge ${child.index}`}
                                             value={child.age} 
-                                            onChange={(e) => {}}/>)}
+                                            onChange={(e) => {handleChangeAgeOfChilds(e, child.index)}}/>)}
                     </div>
                     </>
                   )}
@@ -184,8 +196,10 @@ const ReservationRoom = ({ roomData }) => {
             </>)}
           </div>
           
-          <button type="button" className='update' onClick={searchRoom}>Update</button>
-      </div>
+          <button type="submit" className='update'>Update</button>
+      </form>
+      <form onSubmit={handleSubmit}>
+      
         
         <div className="table-responsive">
           <table className="room-table">

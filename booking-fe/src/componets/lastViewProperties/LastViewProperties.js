@@ -1,23 +1,18 @@
-import React,{useEffect, useState} from 'react';
-import './LastViewProperties.css';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { Navigation, Pagination } from 'swiper/modules';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import "./LastViewProperties.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation, Pagination } from "swiper/modules";
+import { useNavigate } from "react-router-dom";
 
-
-
-
-function LastViewProperties({data}) {
-    
- const navigate = useNavigate()
+function LastViewProperties({ data }) {
+  const navigate = useNavigate();
   useEffect(() => {
     console.log(data);
-    
-  }, [data])
+  }, [data]);
   return (
-    <div className='fp'>
+    <div className="fp">
       <Swiper
         spaceBetween={15} // Khoảng cách giữa các slide
         slidesPerView={4} // Số slide hiển thị một lúc
@@ -26,18 +21,22 @@ function LastViewProperties({data}) {
         modules={[Navigation, Pagination]} // Thêm các module vào đâyx
       >
         {data.map((item) => (
-            
-            
           <SwiperSlide key={item._id}>
-            <div className='fpItem' onClick={() => navigate(`/property/${item._id}`)}>
-              <div className='fpItemImg'>
-                <img src={item.images[0]} alt="" className='fpImg' />
+            <div
+              className="fpItem"
+              onClick={() => navigate(`/property/${item._id}`)}
+            >
+              <div className="fpItemImg">
+                <img src={item.images[0]} alt="" className="fpImg" />
               </div>
-              <div className='fpItemContent'>
-                <h3 className='fpName'>{item.name}</h3>
-                <div className='fpCity'>{item.address.street}, {item.address.ward}, {item.address.district}, {item.address.province}</div>
-                <div className='fpRating'>
-                  <div className='star'>{item.rate}</div>
+              <div className="fpItemContent">
+                <h3 className="fpName">{item.name}</h3>
+                <div className="fpCity">
+                  {item.address.street}, {item.address.ward},{" "}
+                  {item.address.district}, {item.address.province}
+                </div>
+                <div className="fpRating">
+                  <div className="star">{item.rate}</div>
                   <span>Excellent - {item.numberReviews} reviews</span>
                 </div>
               </div>

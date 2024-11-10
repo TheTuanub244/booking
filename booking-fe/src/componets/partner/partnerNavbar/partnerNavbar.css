@@ -1,45 +1,45 @@
-.navbar{
-    padding-top: 20px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-  
-  .navContainer{
-    width: 100%;
-    max-width: 1024px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-items: center;
-    justify-content: space-between;
-  }
-  
-  .logo {
-    font-weight: 500;
-  }
-  .navItems{
-    width: 30%;
-  }
-  .navItems span{
-    font-weight: 700;
-  }
-  .navButton {
-    margin-left: 20px;
-    border: 1px solid white;
-    font-weight: 700;
-    border-radius: 4px;
-    padding: 5px 10px;
-    font-size: 15px;
-    cursor: pointer;
-    color: white;
-    width: 40%;
-    height: 40px;
-    background-color: transparent;
-    transition: background-color 0.3s ease; 
+.navbar {
+  padding-top: 20px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.navContainer {
+  width: 100%;
+  max-width: 1024px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 500;
+}
+.navItems {
+  width: 30%;
+}
+.navItems span {
+  font-weight: 700;
+}
+.navButton {
+  margin-left: 20px;
+  border: 1px solid white;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 15px;
+  cursor: pointer;
+  color: white;
+  width: 40%;
+  height: 40px;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
 }
 
 .navButton:hover {
-    background-color: #4a90e2;
+  background-color: #4a90e2;
 }

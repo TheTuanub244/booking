@@ -12,7 +12,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from './enum/role.enum';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { response, Response } from 'express';
+import { Response } from 'express';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -84,8 +84,11 @@ export class UserController {
     return this.userService.updatePartnerAccount(partner.partner);
   }
   @Post('updateInformationForGoogle')
-  async updateInformationForGoogle(@Body() user: any, @Res() response: Response){
-    const data =  await this.userService.updateInformationForGoogle(user.user)
+  async updateInformationForGoogle(
+    @Body() user: any,
+    @Res() response: Response,
+  ) {
+    const data = await this.userService.updateInformationForGoogle(user.user);
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
       sameSite: 'lax',

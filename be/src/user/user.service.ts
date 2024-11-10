@@ -353,14 +353,20 @@ export class UserService {
   // }
   // The registration will be sent to admin, create manage partner accounts in admin dashboard before create this function
   async updateInformationForGoogle(user: any) {
-    const newUser = new this.userSchema(user)
-    const savedUser = await newUser.save()
-    const newSession = await this.sessionService.createSession({uid: user.uid, userId: savedUser._id.toString(), lastBooking: null, lastViewProperties: [], recent_search: []})
-    const signInfo = {userName: savedUser.email, role: savedUser.role}
+    const newUser = new this.userSchema(user);
+    const savedUser = await newUser.save();
+    const newSession = await this.sessionService.createSession({
+      uid: user.uid,
+      userId: savedUser._id.toString(),
+      lastBooking: null,
+      lastViewProperties: [],
+      recent_search: [],
+    });
+    const signInfo = { userName: savedUser.email, role: savedUser.role };
     return {
       access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
-        _id: savedUser._id,
-        refreshToken: newSession.refreshToken,
-    } 
+      _id: savedUser._id,
+      refreshToken: newSession.refreshToken,
+    };
   }
 }

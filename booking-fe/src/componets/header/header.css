@@ -33,7 +33,7 @@
   padding: 10px;
   border-radius: 20px;
 }
-.headerTitle{
+.headerTitle {
   font-weight: 800;
   list-style: 62px;
   font-size: 48px;
@@ -62,7 +62,7 @@
 .headerSearch {
   height: 50px;
   background-color: white;
-  border: 5px solid #febb02 ;
+  border: 5px solid #febb02;
   display: flex;
   align-items: center;
   border-radius: 5px;
@@ -85,13 +85,11 @@
 }
 
 .headerSearchItem.iconBed {
-  padding-left:10px;
-  padding-right:80px;
+  padding-left: 10px;
+  padding-right: 80px;
   border-right: 5px solid #febb02;
   height: 40px;
-  
 }
-
 
 .headerSearch .iconCalendar {
   padding-left: 10px;
@@ -99,7 +97,6 @@
   border-right: 5px solid #febb02;
   width: 280px;
   height: 40px;
-
 }
 
 .headerSearch .iconUser {
@@ -113,17 +110,15 @@
 .headerSearch .btn {
   width: 108px;
   padding: 0;
-  
-  
 }
 .headerSearchInput {
-  border:none ;
+  border: none;
   outline: none;
 }
 
 .headerSearchText {
   font-size: 14px;
-  
+
   font-weight: bold;
   color: #333;
   cursor: pointer;
@@ -143,11 +138,11 @@
   color: gray;
   border-radius: 5px;
   max-width: 230px;
-  -webkit-box-shadow: 0px 0px 10px -5px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.4);
   box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.4);
 }
 
-.optionItem{
+.optionItem {
   width: 200px;
   display: flex;
   justify-content: space-between;
@@ -158,8 +153,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size:12px;
-  color:black;
+  font-size: 12px;
+  color: black;
   border: 2px solid #868686;
   border-radius: 4px;
 }
@@ -171,7 +166,7 @@
   background-color: white;
   border: none;
   font-size: 16px;
-  color:#65a5ff
+  color: #65a5ff;
 }
 
 .optionCounterButton:hover {
@@ -191,7 +186,7 @@
   flex-wrap: wrap;
   align-items: center;
   margin-left: 12px;
-  gap:5px;
+  gap: 5px;
 }
 
 .childAge {
@@ -229,7 +224,6 @@
   align-items: center;
   border-radius: 4px;
   padding: 8px;
-  
 }
 
 .headerIcon {
@@ -256,10 +250,10 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   margin-top: 5px;
   z-index: 100;
-  
+
   /* Thêm chiều cao tối đa và cuộn dọc */
   max-height: 200px; /* Chiều cao tối đa cho dropdown */
-  overflow-y: auto;  /* Kích hoạt cuộn khi nội dung vượt quá chiều cao */
+  overflow-y: auto; /* Kích hoạt cuộn khi nội dung vượt quá chiều cao */
 }
 
 .suggestionsTitle {

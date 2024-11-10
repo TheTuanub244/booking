@@ -1,9 +1,9 @@
 .treding-destination {
   width: 100%;
-  max-width: 1024px;  
+  max-width: 1024px;
   display: flex;
   flex-direction: column;
-  gap:15px  ;
+  gap: 15px;
 }
 
 .destination-firstrow {
@@ -21,13 +21,14 @@
   height: 100%;
   border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Thêm box-shadow */
   position: relative;
   z-index: 1;
   cursor: pointer;
 }
-
 
 .destination-item:hover {
   transform: translateY(-5px);
@@ -35,7 +36,7 @@
 
 .item-body {
   position: relative;
-  width: 100%;  
+  width: 100%;
 }
 
 .item-body img {
@@ -54,8 +55,8 @@
 
 .item-title {
   position: absolute;
-  top:0px;
-  left:0px;
+  top: 0px;
+  left: 0px;
   color: #ffffff;
   padding: 2px 12px;
   border-radius: 4px;
@@ -65,7 +66,11 @@
   z-index: 2;
   width: 100%;
   text-shadow: 1px 1px 1px #1a1a1a;
-  background: linear-gradient(180deg,rgba(0,27,65,.65) 0,rgba(0,27,65,0)); 
+  background: linear-gradient(
+    180deg,
+    rgba(0, 27, 65, 0.65) 0,
+    rgba(0, 27, 65, 0)
+  );
 }
 
 .item-title h3 {

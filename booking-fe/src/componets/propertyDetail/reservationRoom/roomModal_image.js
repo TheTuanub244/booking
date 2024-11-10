@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import './roomModal_image.css'
+import React, { useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import "./roomModal_image.css";
 
 const RoomModal_image = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : images.length - 1));
+    setCurrentIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : images.length - 1,
+    );
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex < images.length - 1 ? prevIndex + 1 : 0));
+    setCurrentIndex((prevIndex) =>
+      prevIndex < images.length - 1 ? prevIndex + 1 : 0,
+    );
   };
 
   return (
@@ -19,15 +23,14 @@ const RoomModal_image = ({ images }) => {
       <div className="main-image">
         <img src={images[currentIndex]} alt={`Slide ${currentIndex}`} />
         <button className="nav-button left" onClick={handlePrev}>
-            <FaChevronLeft />
+          <FaChevronLeft />
         </button>
         <button className="nav-button right" onClick={handleNext}>
-            <FaChevronRight />
+          <FaChevronRight />
         </button>
       </div>
 
       {/* Navigation */}
-      
 
       {/* Thumbnail Images */}
       <div className="thumbnail-container">
@@ -36,7 +39,7 @@ const RoomModal_image = ({ images }) => {
             key={index}
             src={image}
             alt={`Thumbnail ${index}`}
-            className={`thumbnail ${index === currentIndex ? 'active' : ''}`}
+            className={`thumbnail ${index === currentIndex ? "active" : ""}`}
             onClick={() => setCurrentIndex(index)}
           />
         ))}

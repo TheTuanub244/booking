@@ -4,7 +4,6 @@
   margin-top: 50px;
 }
 
-
 .listWrapper {
   width: 100%;
   max-width: 1024px;
@@ -12,14 +11,13 @@
   gap: 12px;
 }
 
-.listSearch{
-  flex:1;
+.listSearch {
+  flex: 1;
   padding: 2px;
   border-radius: 10px;
   top: 10px;
   height: max-content;
 }
-
 
 .searchMap {
   position: relative;
@@ -59,7 +57,7 @@
 }
 
 .mapShow {
-  font-size:13px ;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -70,10 +68,10 @@
 }
 
 .ftTitle {
-  padding:8px 8px;
+  padding: 8px 8px;
 }
 
-.ftTitle>h2 {
+.ftTitle > h2 {
   margin: 0;
   font-size: 16px;
   font-weight: bold;
@@ -86,5 +84,6 @@ hr {
   height: 1px;
 }
 
-.listResult{flex:3}
-
+.listResult {
+  flex: 3;
+}

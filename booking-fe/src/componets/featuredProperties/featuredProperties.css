@@ -4,7 +4,7 @@
   justify-content: space-between; /* Căn giữa các mục trong hàng */
   width: 100%;
   max-width: 1024px;
-  gap:20px;
+  gap: 20px;
 }
 
 /* Kiểu cho từng mục `fpItem` */
@@ -21,7 +21,6 @@
 
 /* Hiệu ứng hover cho mục */
 
-
 /* Vùng hình ảnh bên trong `fpItem` */
 .fpItemImg {
   width: 100%;
@@ -35,15 +34,12 @@
   object-fit: cover; /* Đảm bảo ảnh bao phủ toàn bộ khung hình */
 }
 
-
-
 /* Tiêu đề khách sạn hoặc khu nghỉ dưỡng */
 .fpName {
   font-size: 16px; /* Kích thước chữ cho tên */
   font-weight: 700; /* Đậm chữ */
   color: #333; /* Màu chữ */
   margin: 3px 0px 5px 5px;
-
 }
 
 /* Tên thành phố */
@@ -82,7 +78,7 @@
   justify-content: end;
   align-items: center;
   margin-right: 8px;
-  margin-top:20px;
+  margin-top: 20px;
   color: #000; /* Màu chữ đen */
 }
 

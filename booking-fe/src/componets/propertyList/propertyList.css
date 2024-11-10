@@ -1,5 +1,5 @@
 .pList {
-  padding: 10px; 
+  padding: 10px;
   width: 100%;
   max-width: 1024px;
 }
@@ -7,13 +7,12 @@
 .pListItem {
   width: 100%;
   height: auto;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
-
 .pListImg {
-  width: 100%; 
-  height: auto; 
+  width: 100%;
+  height: auto;
   overflow: hidden;
   border-radius: 10px;
 }
@@ -26,13 +25,13 @@
 }
 
 .pListTitles {
-  padding: 10px; 
+  padding: 10px;
   text-align: start;
 }
 
 .pListTitles h1 {
-  font-size: 18px; 
-  margin: 0; 
+  font-size: 18px;
+  margin: 0;
   color: #333;
 }
 
@@ -73,7 +72,8 @@
 }
 
 /* Tùy chọn: Di chuyển nút mũi tên ra ngoài khung slide */
-.swiper-button-next, .swiper-button-prev {
+.swiper-button-next,
+.swiper-button-prev {
   top: 50%; /* Căn giữa theo chiều dọc */
   transform: translateY(-50%);
 }
@@ -87,7 +87,3 @@
   font-size: 16px;
   font-weight: 800;
 }
-
-
-
-

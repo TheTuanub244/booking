@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
   padding-top: 20px;
   height: 50px;
   background-color: #003580;
@@ -6,7 +6,7 @@
   justify-content: center;
 }
 
-.navContainer{
+.navContainer {
   width: 100%;
   max-width: 1024px;
   color: white;
@@ -19,10 +19,10 @@
 .logo {
   font-weight: 500;
 }
-.navItems{
+.navItems {
   width: 20%;
 }
-.navButton{
+.navButton {
   margin-left: 20px;
   border: none;
   border-radius: 4px;
@@ -32,5 +32,4 @@
   color: #006ce4;
   width: 40%;
   height: 40px;
-  
 }

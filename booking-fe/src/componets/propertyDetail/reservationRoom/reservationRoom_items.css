@@ -1,10 +1,9 @@
 .roomName {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
 }
 
 .roomName .name {
-    font-weight: bold;
-
+  font-weight: bold;
 }

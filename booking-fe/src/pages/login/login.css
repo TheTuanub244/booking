@@ -94,8 +94,7 @@ p {
   align-items: center;
 }
 
-.formLogin input{
-  
+.formLogin input {
   width: 98%;
   height: 40px;
   margin-bottom: 15px;
@@ -103,7 +102,6 @@ p {
   border-radius: 4px;
   font-size: 16px;
 }
-
 
 .address-group {
   display: flex;
@@ -133,18 +131,16 @@ p {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  
 }
 
-.buttonGroup button[type='button'] {
-  background-color: #6c757d; 
+.buttonGroup button[type="button"] {
+  background-color: #6c757d;
   width: 100%;
-  
 }
 
-.buttonGroup button[type='submit'] {
-  background-color: #28a745; 
-  width: 100%
+.buttonGroup button[type="submit"] {
+  background-color: #28a745;
+  width: 100%;
 }
 
 .buttonGroup button:hover {
@@ -170,4 +166,3 @@ p {
   border: 1px solid red; /* Red border to emphasize the error */
   border-radius: 5px; /* Rounded corners */
 }
-

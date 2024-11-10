@@ -36,13 +36,12 @@
   color: rgb(41, 153, 244);
 }
 
-
 .locationList {
-  display: flex;                     /* Sử dụng Flexbox để sắp xếp các phần tử */
-  justify-content: space-between;    /* Căn chỉnh các phần tử giữa các hàng */
-  gap: 15px; 
+  display: flex; /* Sử dụng Flexbox để sắp xếp các phần tử */
+  justify-content: space-between; /* Căn chỉnh các phần tử giữa các hàng */
+  gap: 15px;
 }
-.swiper{
+.swiper {
   width: 100%;
 }
 
@@ -59,24 +58,24 @@
 }
 
 .locationItemImg img {
-  width: 100%;                       /* Đảm bảo hình ảnh chiếm hết chiều rộng */
-  height: auto;                      /* Đảm bảo tỷ lệ hình ảnh */
+  width: 100%; /* Đảm bảo hình ảnh chiếm hết chiều rộng */
+  height: auto; /* Đảm bảo tỷ lệ hình ảnh */
 }
 
 .locationItemTitle {
-  padding: 10px;                    /* Thêm khoảng cách bên trong */
-  text-align: center;                /* Căn giữa tiêu đề */
+  padding: 10px; /* Thêm khoảng cách bên trong */
+  text-align: center; /* Căn giữa tiêu đề */
 }
 
 .locationItemTitle h3 {
-  margin: 0;                        /* Xóa margin mặc định */
-  font-size: 15px;                  /* Kích thước font cho tiêu đề */
-  color: #333;                      /* Màu sắc cho tiêu đề */
+  margin: 0; /* Xóa margin mặc định */
+  font-size: 15px; /* Kích thước font cho tiêu đề */
+  color: #333; /* Màu sắc cho tiêu đề */
 }
 
 .locationItemTitle div {
-  font-size: 12px;                  /* Kích thước font cho khoảng cách */
-  color: #777;                      /* Màu sắc cho khoảng cách */
+  font-size: 12px; /* Kích thước font cho khoảng cách */
+  color: #777; /* Màu sắc cho khoảng cách */
 }
 
 .swiper-slide {

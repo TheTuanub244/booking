@@ -3,7 +3,7 @@ import axios from "axios";
 export const findAvailableRoomWithSearch = async (data) => {
   try {
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/room/findAvailableRoomWithSearch",
+      "http://localhost:8000/room/findAvailableRoomWithSearch",
       data,
     );
 
@@ -17,7 +17,7 @@ export const findAvailableRoomWithSearch = async (data) => {
 export const findRoomByProperty = async (property_id) => {
   try {
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/room/getRoomWithProperty",
+      "http://localhost:8000/room/getRoomWithProperty",
       { property_id },
     );
 
@@ -31,7 +31,7 @@ export const findRoomByProperty = async (property_id) => {
 export const updateImageForRoom = async (roomId, image) => {
   try {
     const respone = await axios.put(
-      "https://booking-2-l4nk.onrender.com/room/updateImageForRoom",
+      "http://localhost:8000/room/updateImageForRoom",
       { roomId, image },
     );
 

@@ -4,7 +4,7 @@ export const signUp = async (user) => {
     console.log(user);
 
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/user/sign-up-with-email",
+      "http://localhost:8000/user/sign-up-with-email",
       user,
       {
         withCredentials: true,
@@ -21,7 +21,7 @@ export const signUpWithGoogle = async () => {};
 export const signIn = async (user) => {
   try {
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/user/sign-in",
+      "http://localhost:8000/user/sign-in",
       user,
       { withCredentials: true },
     );
@@ -36,7 +36,7 @@ export const signIn = async (user) => {
 export const signInWithGoogle = async (user) => {
   try {
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/user/sign-in-with-google",
+      "http://localhost:8000/user/sign-in-with-google",
       user,
       { withCredentials: true },
     );
@@ -50,7 +50,7 @@ export const signInWithGoogle = async (user) => {
 export const signOut = async (userId) => {
   try {
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/session/sign-out",
+      "http://localhost:8000/session/sign-out",
       { userId },
       { withCredentials: true },
     );
@@ -64,7 +64,7 @@ export const signOut = async (userId) => {
 export const resetPassword = async (user) => {
   try {
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/user/reset-password",
+      "http://localhost:8000/user/reset-password",
       user,
     );
     console.log(respone);
@@ -78,7 +78,7 @@ export const resetPassword = async (user) => {
 };
 export const checkEmail = async (email) => {
   try {
-    const respone = await axios.post("https://booking-2-l4nk.onrender.com/user/check-email", {
+    const respone = await axios.post("http://localhost:8000/user/check-email", {
       data: email,
     });
     return respone.data;
@@ -90,14 +90,14 @@ export const checkEmail = async (email) => {
 };
 export const updatePartnerAccount = async (partner) => {
   const respone = await axios.post(
-    "https://booking-2-l4nk.onrender.com/user/updatePartnerAccount",
+    "http://localhost:8000/user/updatePartnerAccount",
     { partner },
   );
   return respone.data;
 };
 export const updateInformationForGoogle = async (user) => {
   const respone = await axios.post(
-    "https://booking-2-l4nk.onrender.com/user/updateInformationForGoogle",
+    "http://localhost:8000/user/updateInformationForGoogle",
     { user },
     {
       withCredentials: true,

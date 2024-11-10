@@ -2,7 +2,7 @@ import axios from "axios";
 export const createPropertyWithPartner = async (formData, token) => {
   try {
     const response = await axios.post(
-      "https://booking-2-l4nk.onrender.com/property/createPropertyWithPartner",
+      "http://localhost:8000/property/createPropertyWithPartner",
       formData,
       {
         headers: {
@@ -20,14 +20,14 @@ export const createPropertyWithPartner = async (formData, token) => {
 };
 export const getAllProperty = async () => {
   const respone = await axios.get(
-    "https://booking-2-l4nk.onrender.com/property/getAllProperty",
+    "http://localhost:8000/property/getAllProperty",
     { withCredentials: true },
   );
   return respone.data;
 };
 export const getPropertyById = async (id) => {
   const respone = await axios.get(
-    `https://booking-2-l4nk.onrender.com/property/getPropertyById/${id}`,
+    `http://localhost:8000/property/getPropertyById/${id}`,
     { withCredentials: true },
   );
 
@@ -35,7 +35,7 @@ export const getPropertyById = async (id) => {
 };
 export const getPropertyTypesByPlace = async (place) => {
   const respone = await axios.post(
-    "https://booking-2-l4nk.onrender.com/property/getPropertyTypesByPlace",
+    "http://localhost:8000/property/getPropertyTypesByPlace",
     { place },
     { withCredentials: true },
   );
@@ -44,7 +44,7 @@ export const getPropertyTypesByPlace = async (place) => {
 };
 export const getPropertyByTypeAndPlace = async (place, type) => {
   const respone = await axios.post(
-    "https://booking-2-l4nk.onrender.com/property/getPropertyByTypeAndPlace",
+    "http://localhost:8000/property/getPropertyByTypeAndPlace",
     { place, type },
     { withCredentials: true },
   );
@@ -53,7 +53,7 @@ export const getPropertyByTypeAndPlace = async (place, type) => {
 };
 export const getPropertyByPlace = async (place) => {
   const respone = await axios.post(
-    "https://booking-2-l4nk.onrender.com/property/getPropertyByPlace",
+    "http://localhost:8000/property/getPropertyByPlace",
     { place },
     { withCredentials: true },
   );
@@ -62,7 +62,7 @@ export const getPropertyByPlace = async (place) => {
 export const getPropertyByRates = async () => {
   try {
     const respone = await axios.get(
-      "https://booking-2-l4nk.onrender.com/property/getPropertiesSortedByRate",
+      "http://localhost:8000/property/getPropertiesSortedByRate",
       { withCredentials: true },
     );
 
@@ -75,7 +75,7 @@ export const getPropertyByRates = async () => {
 };
 export const getAllTypeOfProperties = async () => {
   const response = await axios.get(
-    "https://booking-2-l4nk.onrender.com/property/getAllTypeOfProperties",
+    "http://localhost:8000/property/getAllTypeOfProperties",
     { withCredentials: true },
   );
   return response.data;
@@ -83,7 +83,7 @@ export const getAllTypeOfProperties = async () => {
 export const updateImageForProperty = async (propertyId, image) => {
   try {
     const respone = await axios.put(
-      "https://booking-2-l4nk.onrender.com/property/updateImageForProperty",
+      "http://localhost:8000/property/updateImageForProperty",
       { propertyId, image },
       { withCredentials: true },
     );
@@ -98,7 +98,7 @@ export const updateImageForProperty = async (propertyId, image) => {
 export const getPropertyNear = async (longitude, latitude) => {
   try {
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/property/getPropertyNear",
+      "http://localhost:8000/property/getPropertyNear",
       { longitude, latitude },
       { withCredentials: true },
     );
@@ -113,7 +113,7 @@ export const getPropertyNear = async (longitude, latitude) => {
 export const getPropertyByplace = async (place) => {
   try {
     const respone = await axios.post(
-      "https://booking-2-l4nk.onrender.com/property/getPropertyByPlace",
+      "http://localhost:8000/property/getPropertyByPlace",
       { place },
     );
 
@@ -126,7 +126,7 @@ export const getPropertyByplace = async (place) => {
 };
 export const getDistinctPlace = async () => {
   const respone = await axios.get(
-    "https://booking-2-l4nk.onrender.com/property/getDistinctPlace",
+    "http://localhost:8000/property/getDistinctPlace",
   );
   return respone.data;
 };

@@ -19,7 +19,8 @@ export class ValidateTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
     const token = request.cookies.refreshToken;
-
+    console.log(request.cookies);
+    
     if (!token) {
       throw new UnauthorizedException('Sign In Required');
     }

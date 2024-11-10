@@ -52,9 +52,7 @@ const PropertyDetail = () => {
 
           const roomDatas = await findRoomByProperty(id);
 
-          console.log(roomDatas);
 
-          console.log(roomDatas[0]._id);
 
           setRoomData(roomDatas);
 

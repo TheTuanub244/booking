@@ -148,6 +148,7 @@ function Header({ type, places, getHistory }) {
               className="headerSearchInput"
               value={province}
               onChange={(e) => handleChangeProvince(e)}
+              required
             />
           </div>
           {showSuggestions && places && (

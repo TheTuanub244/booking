@@ -2,26 +2,26 @@ import axios from "axios";
 
 export const getSessionByUser = async (id) => {
   const respone = await axios.get(
-    `https://booking-2-l4nk.onrender.com/session/getSessionByUser/${id}`,
+    `http://localhost:8000/session/getSessionByUser/${id}`,
   );
   return respone.data;
 };
 export const getSessionHistory = async (userId) => {
   const respone = await axios.get(
-    `https://booking-2-l4nk.onrender.com/session/getSessionHistory/${userId}`,
+    `http://localhost:8000/session/getSessionHistory/${userId}`,
   );
   return respone.data;
 };
 export const checkSession = async (userId, accessToken) => {
   const respone = await axios.post(
-    `https://booking-2-l4nk.onrender.com/session/refreshAccessToken/${userId}`,
+    `http://localhost:8000/session/refreshAccessToken/${userId}`,
     { accessToken },
   );
   return respone.data;
 };
 export const updateLastProperties = async (userId, propertyId) => {
   const respone = await axios.put(
-    `https://booking-2-l4nk.onrender.com/session/updateLastProperties/${userId}`,
+    `http://localhost:8000/session/updateLastProperties/${userId}`,
     { propertyId },
   );
   return respone.data;

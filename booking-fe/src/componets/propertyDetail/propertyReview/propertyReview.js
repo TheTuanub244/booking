@@ -3,6 +3,7 @@ import './propertyReview.css';
 import { useEffect, useState } from "react";
 import RatingProgressBar from "./ratingProgressBar/ratingProgressBar";
 import ReviewComment from "./reviewComment/reviewComment";
+import ReviewDetail from "./reviewDetail/reviewDetail";
 
 const PropertyReview = ({property_id}) => {
 
@@ -15,6 +16,8 @@ const PropertyReview = ({property_id}) => {
         location: 0,
         freewifi: 0
     })
+
+    const [allReviewPopUp, setAllReviewPopUp] = useState(true);
 
     useEffect(() => {
 
@@ -34,24 +37,74 @@ const PropertyReview = ({property_id}) => {
                     <h4>9999 Reviews</h4>
                 </div>
             </div>
-            <h4>Rating</h4>
-            <div class="rating-categories">
-                <RatingProgressBar point={9.0} />
-                <RatingProgressBar point={9.0} />
-                <RatingProgressBar point={9.0} />
-                <RatingProgressBar point={9.0} />
-                <RatingProgressBar point={9.0} />
-                <RatingProgressBar point={9.0} />
-                <RatingProgressBar point={9.0} />
-                <RatingProgressBar point={9.0} />
-                <RatingProgressBar point={9.0} />
+            <div className="review-rating-container">
+                <h4>Rating</h4>
+                <div class="rating-categories">
+                    <RatingProgressBar categorize={'good'} point={9.0} />
+                    <RatingProgressBar point={9.0} />
+                    <RatingProgressBar point={9.0} />
+                    <RatingProgressBar point={9.0} />
+                    <RatingProgressBar point={9.0} />
+                    <RatingProgressBar point={9.0} />
+                    <RatingProgressBar point={9.0} />
+                    <RatingProgressBar point={9.0} />
+                    <RatingProgressBar point={9.0} />
+                </div>
             </div>
-            <h4>Comment</h4>
-            <div className="review-comment">
-                <ReviewComment />
-                <ReviewComment />
-                <ReviewComment />
+            
+            <div className="review-comment-container">
+                <h4>Comment</h4>
+                <div className="review-comment">
+                    <ReviewComment />
+                    <ReviewComment />
+                    <ReviewComment />
+                </div>
             </div>
+
+            <button className="view-all-review-button" onClick= {(e) => {e.preventDefault();
+                                                                        setAllReviewPopUp(true)}}>
+                View all reviews
+            </button>
+            {allReviewPopUp &&
+                (<>
+                <div className="blockInput" onClick= {(e) => {e.preventDefault();
+                                                            setAllReviewPopUp(false)}}></div>
+                <div className="all-reviews">
+                    <ReviewDetail />
+                    <hr></hr>
+                    <ReviewDetail />
+                    <hr></hr>
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail /><ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                    <ReviewDetail />
+                </div>
+                </>
+                    )
+            }
         </div>
     )
 }

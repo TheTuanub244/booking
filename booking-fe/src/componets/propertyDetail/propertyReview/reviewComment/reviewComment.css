@@ -2,4 +2,46 @@
     height: 200px;
     border: 1px solid;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.reviewer-profile {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    margin: 10px;
+    
+}
+
+.reviewer-comment {
+    flex: 5;
+    margin: 10px;
+    background-color: gray;
+}
+
+.reviewer-image {
+    flex: 1;
+    
+}
+
+.reviewer-image .img {
+    background-color: gray;
+    aspect-ratio: 1;
+}
+
+.reviewer-name-nationality{
+    flex: 8;
+    margin-left: 10px;
+}
+
+.reviewer-name {
+    background-color: gray;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.reviewer-nationality {
+    background-color: gray;
+    width: 100%;
 }

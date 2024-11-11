@@ -6,7 +6,7 @@ const RatingProgressBar = ({categorize, point}) => {
     return (
         <div className='progressBar-container'>
             <div className="categorize-point">
-                <p>good</p>
+                <p>{categorize}</p>
                 <p>{point}</p>
             </div>
             <div className="progress-bar">

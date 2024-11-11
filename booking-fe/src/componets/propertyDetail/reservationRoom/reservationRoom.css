@@ -36,7 +36,6 @@
   justify-content: space-between; /* Space between items */
   align-items: center; /* Center items vertically */
   max-width: 100%; /* Set a max width for the form */
-  margin: 0 auto; /* Center the form */
   padding: 10px; /* Add padding inside the form */
   background-color: #f9f9f9; /* Light background color */
   border-radius: 8px; /* Rounded corners */

@@ -9,6 +9,7 @@ import { updateLastProperties } from "../../api/sessionAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faPlane } from "@fortawesome/free-solid-svg-icons";
 import Map from "../partner/partnerRegister/Map";
+import PropertyReview from "./propertyReview/propertyReview";
 
 const PropertyDetail = () => {
   const { id } = useParams(); // Extract the id from URL parameters
@@ -37,6 +38,7 @@ const PropertyDetail = () => {
   useEffect(() => {
     handleUpdateViewProperties();
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
@@ -295,8 +297,11 @@ const PropertyDetail = () => {
             )}
           </div>
 
-          <div ref={infoPrices}>
+          <div ref={infoPrices} className="reservation-room">
             <ReservationRoom roomData={roomData} />
+          </div>
+          <div className="property-review">
+              <PropertyReview property_id={id} />
           </div>
         </>
       )}

@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import Map from "./Map"; // Import the Map component for Google Maps or OpenStreetMap
 import "./PropertyDetailsForm.css";
 import { getProvince } from "../../../api/addressAPI";
-import { createPropertyWithPartner } from "../../../api/propertyAPI";
+import {
+  createPropertyWithPartner,
+  getPropertyByOwner,
+} from "../../../api/propertyAPI";
+import { useNavigate } from "react-router-dom";
 
-const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
+const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
   const [propertyData, setPropertyData] = useState({
     name: "",
     description: "",
@@ -20,10 +24,24 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
     location: { lat: latitude, lng: longitude },
     rooms: [],
   });
+  const getAllPropetyByOwner = async (userId) => {
+    const data = await getPropertyByOwner(userId);
+    setPropertyData(data);
+  };
+  if (initialData) {
+    setPropertyData(initialData);
+  }
+  const navigate = useNavigate();
   const [address, setAddress] = useState();
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
-
+  const formatCurrency = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "street") {
@@ -109,12 +127,14 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
   const [isMapOpen, setIsMapOpen] = useState(false);
   const handleRoomChange = (index, e) => {
     if (e.target.name === "weekday" || e.target.name === "weekend") {
+      const rawValue = e.target.value.replace(/,/g, "");
+      if (isNaN(rawValue)) return;
       const updatedRooms = [...propertyData.rooms];
       updatedRooms[index] = {
         ...updatedRooms[index],
         pricePerNight: {
           ...updatedRooms[index].pricePerNight,
-          [e.target.name]: parseInt(e.target.value),
+          [e.target.name]: rawValue,
         },
       };
       setPropertyData({ ...propertyData, rooms: updatedRooms });
@@ -165,7 +185,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
       reader.readAsDataURL(file);
     }
   };
-
+  useEffect(() => {});
   const handleRoomCapacityChange = (index, field, value) => {
     const updatedRooms = [...propertyData.rooms];
     if (field === "adults") {
@@ -205,6 +225,10 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
           image: "",
           capacity: { adults: 0, childs: { count: 0, age: 0 } },
           pricePerNight: { weekday: "", weekend: "" },
+          rawPricePerNight: {
+            weekday: "",
+            weekend: "",
+          },
         },
       ],
     });
@@ -215,7 +239,16 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
     propertyData.owner_id = userId;
     propertyData.location.longitude = propertyData.location.lng;
     propertyData.location.latitude = propertyData.location.lat;
-
+    setPropertyData({
+      ...propertyData,
+      rooms: propertyData.rooms.map((room) => ({
+        ...room,
+        pricePerNight: {
+          weekday: room.pricePerNight.weekday,
+          weekend: room.pricePerNight.weekend,
+        },
+      })),
+    });
     const formData = new FormData();
 
     // Add general property information
@@ -255,8 +288,11 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
 
     // Send FormData to backend
     try {
-      const response = await createPropertyWithPartner(formData, accessToken);
-      console.log(response);
+      const respone = await createPropertyWithPartner(formData, accessToken);
+      if (respone) {
+        getAllPropetyByOwner(userId);
+        navigate(`property/propertyList/${userId}`);
+      }
     } catch (error) {
       console.error("Failed to add property:", error);
     }
@@ -406,7 +442,11 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
                     </div>
                     <div className="container-right">
                       <h3 style={{}}>Price Per Night</h3>
-                      <label>Weekday Price</label>
+                      <label>
+                        Weekday Price:{" "}
+                        {formatCurrency(room.pricePerNight.weekday)}
+                      </label>
+
                       <input
                         type="number"
                         name="weekday"
@@ -415,7 +455,11 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
                         required
                       />
 
-                      <label>Weekend Price</label>
+                      <label>
+                        Weekend Price:{" "}
+                        {formatCurrency(room.pricePerNight.weekend)}
+                      </label>
+
                       <input
                         type="number"
                         name="weekend"
@@ -531,7 +575,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
               </div>
             )}
 
-            <div className="mini-map">
+            <div className="mini-mapp">
               <Map
                 key={`${propertyData.location.lat}-${propertyData.location.lng}`}
                 onLocationSelect={() => {}}

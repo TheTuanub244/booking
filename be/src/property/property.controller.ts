@@ -72,9 +72,9 @@ export class PropertyController {
   async getAllProperty() {
     return this.propertyService.getAllProperty();
   }
-  @Post('/getPropetyWithOwner')
-  async getPropetyWithOwner(@Body() owner_id: any) {
-    return this.propertyService.getPropertyWithOwner(owner_id.owner_id);
+  @Get('/getPropetyWithOwner/:id')
+  async getPropetyWithOwner(@Param('id') id: ObjectId) {
+    return this.propertyService.getPropertyWithOwner(id);
   }
   @UseGuards(ValidateTokenGuard)
   @Get('/getPropertyById/:id')

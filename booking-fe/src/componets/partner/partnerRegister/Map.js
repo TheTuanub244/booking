@@ -41,6 +41,8 @@ const createPropertyMarkerIcon = () => {
   });
 };
 const Map = ({ onLocationSelect, initialLocation, disableClick }) => {
+  console.log(initialLocation);
+
   const [properties, setProperties] = useState();
   const getProperties = async () => {
     const respone = await getAllProperty();

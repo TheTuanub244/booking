@@ -95,6 +95,13 @@ export const updateImageForProperty = async (propertyId, image) => {
     return respone;
   }
 };
+export const getPropertyByOwner = async (id) => {
+  const respone = await axios.get(
+    `http://localhost:8000/property/getPropetyWithOwner/${id}`,
+    { withCredentials: true },
+  );
+  return respone.data;
+};
 export const getPropertyNear = async (longitude, latitude) => {
   try {
     const respone = await axios.post(

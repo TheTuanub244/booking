@@ -129,6 +129,8 @@ export class UserService {
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(userName)) {
+      console.log(2);
+
       const existUser = await this.userSchema
         .findOne({
           userName: userName,
@@ -163,6 +165,8 @@ export class UserService {
         refreshToken: newSession.refreshToken,
       };
     } else {
+      console.log(1);
+
       const existEmail = await this.userSchema.findOne({
         email: userName,
       });
@@ -170,6 +174,7 @@ export class UserService {
       if (!existEmail) {
         throw new UnauthorizedException('Invalid username or password');
       }
+      console.log(auth);
 
       try {
         const userCredential = await signInWithEmailAndPassword(
@@ -177,6 +182,7 @@ export class UserService {
           userName,
           password,
         );
+
         const signInfo = { userName, role: existEmail.role };
 
         await admin.auth().createCustomToken(userCredential.user.uid, {
@@ -195,7 +201,6 @@ export class UserService {
           lastBooking: null,
           recent_search: [],
         });
-        console.log(newSession);
 
         return {
           access_token: jwtToken,
@@ -203,6 +208,9 @@ export class UserService {
           refreshToken: newSession.refreshToken,
         };
       } catch (err) {
+        console.log(err.message);
+        console.log(err.errorName);
+
         throw err;
       }
     }
@@ -285,10 +293,20 @@ export class UserService {
         uid,
         recent_search: [],
       });
+      const signInfo = { email, role: findEmail.role };
 
+      await admin.auth().createCustomToken(uid, {
+        signInfo,
+      });
+
+      const jwtToken = this.jwtSerivce.sign(
+        { uid: uid, signInfo },
+        { expiresIn: '1h' },
+      );
       return {
         _id: findEmail._id,
         refreshToken: session.refreshToken,
+        access_token: jwtToken,
       };
     } else {
       throw new BadRequestException('The email is not registered');

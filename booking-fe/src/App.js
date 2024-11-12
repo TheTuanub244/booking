@@ -9,6 +9,7 @@ import Auth from "./pages/auth/Auth";
 import Property from "./pages/property/Property";
 import PartnerDashboard from "./pages/partner/partnerDashboard/partnerDashboard";
 import PartnerRegister from "./pages/partner/partnerRegister/partnerRegister";
+import ProperyList from "./pages/partner/propertylist/PropertyList";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           element={<PartnerDashboard />}
         />
         <Route path="/partner/partnerRegister" element={<PartnerRegister />} />
+        <Route path="/partner/propertyList/:id" element={<ProperyList />} />
       </Routes>
     </BrowserRouter>
   );

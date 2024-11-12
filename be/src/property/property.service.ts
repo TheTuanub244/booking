@@ -85,13 +85,37 @@ export class PropertyService {
   async getAllProperty() {
     return this.propertySchema.find();
   }
-  async getPropertyWithOwner(owner_id: ObjectId) {
-    return this.propertySchema
+  async getPropertyWithOwner(owner_id: ObjectId, page: number, limit: number) {
+    const properties = [];
+    const skip = (page - 1) * limit;
+    const findProperty = await this.propertySchema
       .find({
         owner_id: owner_id,
       })
+      .limit(limit)
+      .skip(skip)
       .populate('owner_id')
       .exec();
+    const total = await this.propertySchema.countDocuments({
+      owner_id: owner_id,
+    });
+    const totalPages = Math.ceil(total / limit);
+    await Promise.all(
+      findProperty.map(async (property) => {
+        const totalRoom = await this.roomService.countRoomWithPropety(
+          property._id,
+        );
+        properties.push({
+          totalRoom,
+          property,
+        });
+      }),
+    );
+    return {
+      properties,
+      totalPages,
+      currentPage: page,
+    };
   }
   async getPropertyById(id: ObjectId) {
     return this.propertySchema.findById(id);

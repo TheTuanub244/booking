@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -73,8 +74,12 @@ export class PropertyController {
     return this.propertyService.getAllProperty();
   }
   @Get('/getPropetyWithOwner/:id')
-  async getPropetyWithOwner(@Param('id') id: ObjectId) {
-    return this.propertyService.getPropertyWithOwner(id);
+  async getPropetyWithOwner(
+    @Param('id') id: ObjectId,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 5,
+  ) {
+    return this.propertyService.getPropertyWithOwner(id, page, limit);
   }
   @UseGuards(ValidateTokenGuard)
   @Get('/getPropertyById/:id')

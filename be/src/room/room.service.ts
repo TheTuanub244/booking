@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room } from './room.schema';
-import mongoose, { Model, ObjectId } from 'mongoose';
+import mongoose, { Model, ObjectId, Types } from 'mongoose';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { FindRoomDto } from './dto/findRoom.dto';
 import { Review } from 'src/review/review.schema';
 import { BookingService } from 'src/booking/booking.service';
 import { Property } from 'src/property/property.schema';
 import { Session } from 'src/session/session.schema';
+import { Booking } from 'src/booking/booking.schema';
+import moment from 'moment';
 
 @Injectable()
 export class RoomService {
@@ -21,10 +23,15 @@ export class RoomService {
     private readonly bookingService: BookingService,
     @InjectModel(Session.name)
     private readonly sessionSchema: Model<Session>,
+    @InjectModel(Booking.name)
+    private readonly bookingSchema: Model<Booking>,
   ) {}
   async createRoom(createRoomDto: CreateRoomDto) {
     const newRoom = new this.roomSchema(createRoomDto);
     return newRoom.save();
+  }
+  async countRoomWithPropety(property_id: mongoose.Types.ObjectId) {
+    return await this.roomSchema.countDocuments({ property_id });
   }
   async getRoomWithProperty(property_id: ObjectId) {
     return this.roomSchema
@@ -191,5 +198,115 @@ export class RoomService {
       },
       { new: true },
     );
+  }
+  async getMonthlyOccupancyRatesByOwner(
+    ownerId: Types.ObjectId,
+    year: number,
+  ): Promise<{ month: number; occupancyRate: number }[]> {
+    const occupancyRates = [];
+    ownerId = new Types.ObjectId(ownerId);
+
+    console.log(
+      'Gọi hàm getMonthlyOccupancyRatesByOwner với owner_id:',
+      ownerId,
+    );
+
+    for (let month = 1; month <= 12; month++) {
+      const daysInMonth = moment(`${year}-${month}`, 'YYYY-MM').daysInMonth();
+      const monthStartDate = new Date(year, month - 1, 1);
+      const monthEndDate = new Date(year, month - 1, daysInMonth);
+
+      const result = await this.bookingSchema.aggregate([
+        {
+          $lookup: {
+            from: 'properties',
+            localField: 'property',
+            foreignField: '_id',
+            as: 'propertyDetails',
+          },
+        },
+        { $unwind: '$propertyDetails' },
+        {
+          $match: {
+            booking_status: 'completed',
+            'propertyDetails.owner_id': ownerId,
+            check_in_date: { $lte: monthEndDate },
+            check_out_date: { $gte: monthStartDate },
+          },
+        },
+        {
+          $project: {
+            room_id: 1,
+            property_id: '$propertyDetails._id',
+            startDate: {
+              $cond: {
+                if: { $lt: ['$check_in_date', monthStartDate] },
+                then: monthStartDate,
+                else: '$check_in_date',
+              },
+            },
+            endDate: {
+              $cond: {
+                if: { $gt: ['$check_out_date', monthEndDate] },
+                then: monthEndDate,
+                else: '$check_out_date',
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            property_id: 1,
+            nightsBooked: {
+              $dateDiff: {
+                startDate: '$startDate',
+                endDate: '$endDate',
+                unit: 'day',
+              },
+            },
+          },
+        },
+        {
+          $group: {
+            _id: '$property_id',
+            totalNightsBooked: { $sum: '$nightsBooked' },
+          },
+        },
+      ]);
+
+      console.log(`Tháng ${month}: Kết quả truy vấn`, result);
+
+      const totalRooms = await this.roomSchema
+        .find({
+          property_id: { $in: result.map((r) => r._id) },
+        })
+        .exec();
+
+      const totalAvailableNights = totalRooms.reduce(
+        (sum, room) => sum + room.capacity.room * daysInMonth,
+        0,
+      );
+
+      const totalNightsBooked = result.reduce(
+        (sum, r) => sum + r.totalNightsBooked,
+        0,
+      );
+
+      console.log(
+        `Tháng ${month} - Total Nights Booked: ${totalNightsBooked}, Total Available Nights: ${totalAvailableNights}`,
+      );
+
+      const occupancyRate = totalAvailableNights
+        ? (totalNightsBooked / totalAvailableNights) * 100
+        : 0;
+
+      occupancyRates.push({
+        month,
+        occupancyRate: Number(occupancyRate.toFixed(4)), // Tăng độ chính xác
+      });
+    }
+
+    console.log('Tổng kết tỷ lệ lấp đầy:', occupancyRates);
+    return occupancyRates;
   }
 }

@@ -31,6 +31,9 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
   if (initialData) {
     setPropertyData(initialData);
   }
+  useEffect(() => {
+    console.log(initialData);
+  }, [initialData]);
   const navigate = useNavigate();
   const [address, setAddress] = useState();
   const [district, setDistrict] = useState();

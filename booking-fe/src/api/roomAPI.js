@@ -42,3 +42,10 @@ export const updateImageForRoom = async (roomId, image) => {
     return respone;
   }
 };
+export const getMonthlyOccupancyRatesByOwner = async (id) => {
+  const respone = await axios.get(
+    `http://localhost:8000/room/getMonthlyOccupancyRatesByOwner/${id}`,
+  );
+
+  return respone.data;
+};

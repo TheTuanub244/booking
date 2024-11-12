@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Booking } from './booking.schema';
-import mongoose, { Model, ObjectId } from 'mongoose';
+import mongoose, { Model, ObjectId, Types } from 'mongoose';
 import { CreateBookingDto } from './dto/createBooking.dto';
 import { Session } from 'src/session/session.schema';
 import { SessionService } from 'src/session/session.service';
@@ -36,7 +36,6 @@ export class BookingService {
 
     const checkInDate = new Date(booking.check_in_date);
     const checkOutDate = new Date(booking.check_out_date);
-    console.log(checkOutDate);
 
     await Promise.all(
       booking.room_id.map(async (roomId) => {
@@ -144,5 +143,103 @@ export class BookingService {
     );
 
     return conflictingRoomIds;
+  }
+
+  async getMonthlyRevenueByOwner(owner_id: string): Promise<any[]> {
+    const objectIdOwnerId = new Types.ObjectId(owner_id);
+
+    const result = await this.bookingSchema.aggregate([
+      {
+        $match: {
+          booking_status: 'completed',
+        },
+      },
+      {
+        $lookup: {
+          from: 'properties',
+          localField: 'property',
+          foreignField: '_id',
+          as: 'propertyDetails',
+        },
+      },
+      { $unwind: '$propertyDetails' },
+      {
+        $match: {
+          'propertyDetails.owner_id': objectIdOwnerId,
+        },
+      },
+      {
+        $project: {
+          owner_id: '$propertyDetails.owner_id',
+          check_in_date: 1,
+          check_out_date: 1,
+          total_price: 1,
+          duration: {
+            $divide: [
+              { $subtract: ['$check_out_date', '$check_in_date'] },
+              1000 * 60 * 60 * 24,
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          dailyRevenue: { $divide: ['$total_price', '$duration'] },
+        },
+      },
+      {
+        $project: {
+          owner_id: 1,
+          days: { $range: [0, { $toInt: '$duration' }] },
+          check_in_date: 1,
+          dailyRevenue: 1,
+        },
+      },
+      { $unwind: '$days' },
+      {
+        $group: {
+          _id: {
+            owner_id: '$owner_id',
+            year: {
+              $year: {
+                $add: [
+                  '$check_in_date',
+                  { $multiply: ['$days', 1000 * 60 * 60 * 24] },
+                ],
+              },
+            },
+            month: {
+              $month: {
+                $add: [
+                  '$check_in_date',
+                  { $multiply: ['$days', 1000 * 60 * 60 * 24] },
+                ],
+              },
+            },
+          },
+          monthlyRevenue: { $sum: '$dailyRevenue' },
+        },
+      },
+      {
+        $group: {
+          _id: { owner_id: '$_id.owner_id', year: '$_id.year' },
+          monthlyRevenues: {
+            $push: {
+              month: '$_id.month',
+              revenue: '$monthlyRevenue',
+            },
+          },
+          yearlyRevenue: { $sum: '$monthlyRevenue' },
+        },
+      },
+      { $sort: { '_id.year': 1 } },
+    ]);
+
+    return result.map((item) => ({
+      owner_id: item._id.owner_id,
+      year: item._id.year,
+      monthlyRevenues: item.monthlyRevenues,
+      yearlyRevenue: item.yearlyRevenue,
+    }));
   }
 }

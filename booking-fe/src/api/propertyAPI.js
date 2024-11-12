@@ -95,9 +95,9 @@ export const updateImageForProperty = async (propertyId, image) => {
     return respone;
   }
 };
-export const getPropertyByOwner = async (id) => {
+export const getPropertyByOwner = async (id, currentPage, propertiesPage) => {
   const respone = await axios.get(
-    `http://localhost:8000/property/getPropetyWithOwner/${id}`,
+    `http://localhost:8000/property/getPropetyWithOwner/${id}?page=${currentPage}&limit=${propertiesPage}`,
     { withCredentials: true },
   );
   return respone.data;

@@ -11,6 +11,7 @@ import PartnerDashboard from "./pages/partner/partnerDashboard/partnerDashboard"
 import PartnerRegister from "./pages/partner/partnerRegister/partnerRegister";
 import ProperyList from "./pages/partner/propertylist/PropertyList";
 import InformationDashboard from "./pages/partner/informationDashboard/InformationDashboard";
+import Payment from "./pages/payment/Payment";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           path="/partner/informationDashboard/:id"
           element={<InformationDashboard />}
         />
+        <Route path="/payment" element={<Payment />}></Route>
       </Routes>
     </BrowserRouter>
   );

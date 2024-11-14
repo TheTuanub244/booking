@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
-import { getMonthlyRevenue } from "../../../api/bookingAPI";
+import { getMonthlyRevenue, getMonthlyRevenueByProperty } from "../../../api/bookingAPI";
 Chart.register(...registerables);
-const RevenueChart = ({ setTotalRevenue }) => {
-  const userId = localStorage.getItem("userId");
+const RevenueChart = ({ setTotalRevenue, type, property }) => {
   const [monthlyRevenue, setMonthlyRevenue] = useState(new Array(12).fill(0));
   const handleGetMonthlyRevenue = async () => {
-    const data = await getMonthlyRevenue(userId);
-
+      let data;
+    if(type === "property"){
+       data = await getMonthlyRevenueByProperty(property._id)
+       
+      
+    } else {
+      const userId = localStorage.getItem("userId");
+       data = await getMonthlyRevenue(userId);
+    }
     const result = await data;
-    const revenueData = new Array(12).fill(0);
-    result[0].monthlyRevenues.forEach((item) => {
-      revenueData[item.month - 1] = item.revenue;
-    });
-    setMonthlyRevenue(revenueData);
-    setTotalRevenue(result[0].yearlyRevenue);
+      const revenueData = new Array(12).fill(0);
+      
+      result[0].monthlyRevenues.forEach((item) => {
+        revenueData[item.month - 1] = item.revenue;
+      });
+      setMonthlyRevenue(revenueData);
+      setTotalRevenue(result[0].yearlyRevenue);
+    
   };
   useEffect(() => {
     handleGetMonthlyRevenue();

@@ -20,4 +20,8 @@ export class BookingController {
   async getMonthlyRevenue(@Param('id') id: string) {
     return this.bookingService.getMonthlyRevenueByOwner(id);
   }
+  @Get(`/getMonthlyRevenueByProperty/:id`)
+  async getMonthlyRevenueByProperty(@Param('id') id: string) {
+    return this.bookingService.getMonthlyRevenueByProperty(id);
+  }
 }

@@ -39,8 +39,15 @@ export class Room {
         type: Number,
       },
       childs: {
-        count: Number,
-        age: Number,
+        count: {
+          type: Number,
+        },
+        age: {
+          type: Number,
+        },
+      },
+      room: {
+        type: Number,
       },
     },
   })

@@ -4,11 +4,14 @@ import "./PropertyDetailsForm.css";
 import { getProvince } from "../../../api/addressAPI";
 import {
   createPropertyWithPartner,
+  getPropertyById,
   getPropertyByOwner,
 } from "../../../api/propertyAPI";
 import { useNavigate } from "react-router-dom";
+import { findRoomByProperty } from "../../../api/roomAPI";
 
-const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
+const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) => {
+  
   const [propertyData, setPropertyData] = useState({
     name: "",
     description: "",
@@ -24,16 +27,36 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
     location: { lat: latitude, lng: longitude },
     rooms: [],
   });
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const getAllPropetyByOwner = async (userId) => {
     const data = await getPropertyByOwner(userId);
     setPropertyData(data);
   };
+  const handleGetPropertyById = async () => {
+    const property = JSON.parse(localStorage.getItem('property'))
+    const rooms = await findRoomByProperty(property._id)
+
+    const data = await getPropertyById(property._id)
+    if(data){
+      data.rooms = rooms
+      data.location.lat = data.location.latitude
+      data.location.lng = data.location.longitude      
+
+    }
+    console.log(data);
+    
+    setPropertyData(data)
+    setIsDataLoaded(true);
+  }
   if (initialData) {
     setPropertyData(initialData);
   }
   useEffect(() => {
-    console.log(initialData);
-  }, [initialData]);
+    if (type === "update" && !isDataLoaded) {
+      handleGetPropertyById();
+    }
+    
+  }, [type, isDataLoaded]);
   const navigate = useNavigate();
   const [address, setAddress] = useState();
   const [district, setDistrict] = useState();
@@ -111,9 +134,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
     }
   };
 
-  useEffect(() => {
-    console.log(propertyData);
-  }, [propertyData]);
+
 
   const removeRoom = (index) => {
     const updatedRooms = propertyData.rooms.filter((_, i) => i !== index);
@@ -188,7 +209,6 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
       reader.readAsDataURL(file);
     }
   };
-  useEffect(() => {});
   const handleRoomCapacityChange = (index, field, value) => {
     const updatedRooms = [...propertyData.rooms];
     if (field === "adults") {
@@ -303,7 +323,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
 
   return (
     <>
-      {address && (
+      {(address && propertyData && propertyData.rooms) && (
         <div className="property-details-container">
           <div className="property-details-form">
             <h2>Add Property Details</h2>
@@ -434,6 +454,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
                       <input
                         type="number"
                         name="adults"
+                        value={room.capacity.childs.count}
                         onChange={(e) =>
                           handleRoomCapacityChange(
                             index,
@@ -447,26 +468,26 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
                       <h3 style={{}}>Price Per Night</h3>
                       <label>
                         Weekday Price:{" "}
-                        {formatCurrency(room.pricePerNight.weekday)}
+                        {formatCurrency(room.price_per_night.weekday)}
                       </label>
 
                       <input
                         type="number"
                         name="weekday"
-                        value={propertyData.rooms[index].pricePerNight.weekday}
+                        value={propertyData.rooms[index].price_per_night.weekday}
                         onChange={(e) => handleRoomChange(index, e)}
                         required
                       />
 
                       <label>
                         Weekend Price:{" "}
-                        {formatCurrency(room.pricePerNight.weekend)}
+                        {formatCurrency(room.price_per_night.weekend)}
                       </label>
 
                       <input
                         type="number"
                         name="weekend"
-                        value={propertyData.rooms[index].pricePerNight.weekend}
+                        value={propertyData.rooms[index].price_per_night.weekend}
                         onChange={(e) => handleRoomChange(index, e)}
                         required
                       />
@@ -474,6 +495,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
                       <input
                         type="number"
                         name="age"
+                        value={room.capacity.childs.age}
                         onChange={(e) =>
                           handleRoomCapacityChange(
                             index,
@@ -486,6 +508,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
                       <input
                         type="number"
                         name="count"
+                        value={room.capacity.childs.count}
                         onChange={(e) =>
                           handleRoomCapacityChange(
                             index,
@@ -511,7 +534,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
                   {propertyData.rooms[index].images.length !== 0 && (
                     <div className="image-preview">
                       <img
-                        src={propertyData.rooms[index].images}
+                        src={!propertyData.rooms[index].images ? propertyData.rooms[index].images[0] : propertyData.rooms[index].images}
                         alt="Selected property preview"
                         style={{ width: "100%", height: "auto" }}
                       />
@@ -571,7 +594,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData }) => {
             {propertyData.images.length !== 0 && (
               <div className="image-preview">
                 <img
-                  src={propertyData.images}
+                  src={propertyData.images.length === 0 ? propertyData.images[0] : propertyData.images}
                   alt="Selected property preview"
                   style={{ width: "100%", height: "auto" }}
                 />

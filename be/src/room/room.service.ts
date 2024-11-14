@@ -199,114 +199,109 @@ export class RoomService {
       { new: true },
     );
   }
-  async getMonthlyOccupancyRatesByOwner(
-    ownerId: Types.ObjectId,
-    year: number,
-  ): Promise<{ month: number; occupancyRate: number }[]> {
-    const occupancyRates = [];
-    ownerId = new Types.ObjectId(ownerId);
+  async getMonthlyOccupancyRatesByOwner(ownerId: Types.ObjectId, year: number) {
+    const rooms = await this.roomSchema
+      .find()
+      .populate({
+        path: 'property_id',
+        match: { owner_id: new mongoose.Types.ObjectId(ownerId) },
+      })
+      .exec();
+      console.log(rooms);
+      
+    const validRooms = rooms.filter((room) => room.property_id !== null);
 
-    console.log(
-      'Gọi hàm getMonthlyOccupancyRatesByOwner với owner_id:',
-      ownerId,
-    );
+    const totalRooms = validRooms.reduce((sum, room) => {
+      return sum + (room.capacity.room || 0);
+    }, 0);
+    const bookings = await this.bookingSchema
+      .find({
+        booking_status: 'completed',
+      })
+      .populate({
+        path: 'property',
+        match: { owner_id: new mongoose.Types.ObjectId(ownerId) },
+      })
+      .exec();
 
-    for (let month = 1; month <= 12; month++) {
-      const daysInMonth = moment(`${year}-${month}`, 'YYYY-MM').daysInMonth();
-      const monthStartDate = new Date(year, month - 1, 1);
-      const monthEndDate = new Date(year, month - 1, daysInMonth);
+    const monthlyBookings = Array(12).fill(0);
 
-      const result = await this.bookingSchema.aggregate([
-        {
-          $lookup: {
-            from: 'properties',
-            localField: 'property',
-            foreignField: '_id',
-            as: 'propertyDetails',
-          },
-        },
-        { $unwind: '$propertyDetails' },
-        {
-          $match: {
-            booking_status: 'completed',
-            'propertyDetails.owner_id': ownerId,
-            check_in_date: { $lte: monthEndDate },
-            check_out_date: { $gte: monthStartDate },
-          },
-        },
-        {
-          $project: {
-            room_id: 1,
-            property_id: '$propertyDetails._id',
-            startDate: {
-              $cond: {
-                if: { $lt: ['$check_in_date', monthStartDate] },
-                then: monthStartDate,
-                else: '$check_in_date',
-              },
-            },
-            endDate: {
-              $cond: {
-                if: { $gt: ['$check_out_date', monthEndDate] },
-                then: monthEndDate,
-                else: '$check_out_date',
-              },
-            },
-          },
-        },
-        {
-          $project: {
-            property_id: 1,
-            nightsBooked: {
-              $dateDiff: {
-                startDate: '$startDate',
-                endDate: '$endDate',
-                unit: 'day',
-              },
-            },
-          },
-        },
-        {
-          $group: {
-            _id: '$property_id',
-            totalNightsBooked: { $sum: '$nightsBooked' },
-          },
-        },
-      ]);
+    // Xử lý từng booking
+    bookings.forEach((booking) => {
+      const checkInMonth = booking.check_in_date.getMonth(); 
+      const checkOutMonth = booking.check_out_date.getMonth();
 
-      console.log(`Tháng ${month}: Kết quả truy vấn`, result);
+      // Tăng số phòng đặt cho tháng check_in
+      monthlyBookings[checkInMonth] += 1;
 
-      const totalRooms = await this.roomSchema
-        .find({
-          property_id: { $in: result.map((r) => r._id) },
-        })
-        .exec();
+      if (checkOutMonth !== checkInMonth) {
+        for (let month = checkInMonth + 1; month <= checkOutMonth; month++) {
+          monthlyBookings[month] += 1;
+        }
+      }
+    });
+    
+    const occupancyRates = monthlyBookings.map((count, index) => {
+      
+      const occupancyRate = (count / totalRooms) * 100;
+      return {
+        month: index + 1, 
+        occupancyRate: parseFloat(occupancyRate.toFixed(2)), 
+      };
+    });
+    
+    return occupancyRates;
+  }
+  async getMonthlyOccupancyRatesByProperty(property_id: Types.ObjectId, year: number) {
+    const rooms = await this.roomSchema
+      .find()
+      .populate({
+        path: 'property_id',
+        match: { _id: new mongoose.Types.ObjectId(property_id) },
+      })
+      .exec();
 
-      const totalAvailableNights = totalRooms.reduce(
-        (sum, room) => sum + room.capacity.room * daysInMonth,
-        0,
-      );
+    const validRooms = rooms.filter((room) => room.property_id !== null);
 
-      const totalNightsBooked = result.reduce(
-        (sum, r) => sum + r.totalNightsBooked,
-        0,
-      );
+    const totalRooms = validRooms.reduce((sum, room) => {
+      return sum + (room.capacity.room || 0);
+    }, 0);
+    const bookings = await this.bookingSchema
+      .find({
+        booking_status: 'completed',
+      })
+      .populate({
+        path: 'property',
+        match: { _id: new mongoose.Types.ObjectId(property_id) },
+      })
+      .exec();
+      
+    const monthlyBookings = Array(12).fill(0);
 
-      console.log(
-        `Tháng ${month} - Total Nights Booked: ${totalNightsBooked}, Total Available Nights: ${totalAvailableNights}`,
-      );
+    // Xử lý từng booking
+    bookings.forEach((booking) => {
+      const checkInMonth = booking.check_in_date.getMonth(); 
+      const checkOutMonth = booking.check_out_date.getMonth();
 
-      const occupancyRate = totalAvailableNights
-        ? (totalNightsBooked / totalAvailableNights) * 100
-        : 0;
+      // Tăng số phòng đặt cho tháng check_in
+      monthlyBookings[checkInMonth] += 1;
 
-      occupancyRates.push({
-        month,
-        occupancyRate: Number(occupancyRate.toFixed(4)), // Tăng độ chính xác
-      });
-    }
+      if (checkOutMonth !== checkInMonth) {
+        for (let month = checkInMonth + 1; month <= checkOutMonth; month++) {
+          monthlyBookings[month] += 1;
+        }
+      }
+    });
 
-    console.log('Tổng kết tỷ lệ lấp đầy:', occupancyRates);
+    const occupancyRates = monthlyBookings.map((count, index) => {
+      
+      const occupancyRate = (count / totalRooms) * 100;
+      return {
+        month: index + 1, 
+        occupancyRate: parseFloat(occupancyRate.toFixed(2)), 
+      };
+    });
+    
     return occupancyRates;
   }
 }

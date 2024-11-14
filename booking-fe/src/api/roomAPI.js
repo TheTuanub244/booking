@@ -49,3 +49,11 @@ export const getMonthlyOccupancyRatesByOwner = async (id) => {
 
   return respone.data;
 };
+export const getMonthlyOccupancyRatesByProperty = async (id) => {
+  const respone = await axios.get(
+    `http://localhost:8000/room/getMonthlyOccupancyRatesByProperty/${id}`,
+  );
+
+  return respone.data;
+};
+

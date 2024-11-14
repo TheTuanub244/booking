@@ -11,6 +11,7 @@ import PartnerDashboard from "./pages/partner/partnerDashboard/partnerDashboard"
 import PartnerRegister from "./pages/partner/partnerRegister/partnerRegister";
 import ProperyList from "./pages/partner/propertylist/PropertyList";
 import InformationDashboard from "./pages/partner/informationDashboard/InformationDashboard";
+import PartnerPropertyDetailPage from "./pages/partner/propertyDetail/PartnerPropertyDetailPage";
 
 function App() {
   return (
@@ -35,6 +36,10 @@ function App() {
         <Route
           path="/partner/informationDashboard/:id"
           element={<InformationDashboard />}
+        />
+        <Route
+          path="/partner/partnerPropertyDetailPage/:id"
+          element={<PartnerPropertyDetailPage />}
         />
       </Routes>
     </BrowserRouter>

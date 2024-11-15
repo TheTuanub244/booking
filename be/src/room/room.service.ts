@@ -30,6 +30,10 @@ export class RoomService {
     const newRoom = new this.roomSchema(createRoomDto);
     return newRoom.save();
   }
+  async updateRoom(room: any) {
+    const savedUpdateRoom = await this.roomSchema.findByIdAndUpdate(room._id, room);
+    return savedUpdateRoom;
+  }
   async countRoomWithPropety(property_id: mongoose.Types.ObjectId) {
     return await this.roomSchema.countDocuments({ property_id });
   }
@@ -207,8 +211,8 @@ export class RoomService {
         match: { owner_id: new mongoose.Types.ObjectId(ownerId) },
       })
       .exec();
-      console.log(rooms);
-      
+    console.log(rooms);
+
     const validRooms = rooms.filter((room) => room.property_id !== null);
 
     const totalRooms = validRooms.reduce((sum, room) => {
@@ -228,7 +232,7 @@ export class RoomService {
 
     // Xử lý từng booking
     bookings.forEach((booking) => {
-      const checkInMonth = booking.check_in_date.getMonth(); 
+      const checkInMonth = booking.check_in_date.getMonth();
       const checkOutMonth = booking.check_out_date.getMonth();
 
       // Tăng số phòng đặt cho tháng check_in
@@ -240,19 +244,21 @@ export class RoomService {
         }
       }
     });
-    
+
     const occupancyRates = monthlyBookings.map((count, index) => {
-      
       const occupancyRate = (count / totalRooms) * 100;
       return {
-        month: index + 1, 
-        occupancyRate: parseFloat(occupancyRate.toFixed(2)), 
+        month: index + 1,
+        occupancyRate: parseFloat(occupancyRate.toFixed(2)),
       };
     });
-    
+
     return occupancyRates;
   }
-  async getMonthlyOccupancyRatesByProperty(property_id: Types.ObjectId, year: number) {
+  async getMonthlyOccupancyRatesByProperty(
+    property_id: Types.ObjectId,
+    year: number,
+  ) {
     const rooms = await this.roomSchema
       .find()
       .populate({
@@ -275,12 +281,12 @@ export class RoomService {
         match: { _id: new mongoose.Types.ObjectId(property_id) },
       })
       .exec();
-      
+
     const monthlyBookings = Array(12).fill(0);
 
     // Xử lý từng booking
     bookings.forEach((booking) => {
-      const checkInMonth = booking.check_in_date.getMonth(); 
+      const checkInMonth = booking.check_in_date.getMonth();
       const checkOutMonth = booking.check_out_date.getMonth();
 
       // Tăng số phòng đặt cho tháng check_in
@@ -294,14 +300,13 @@ export class RoomService {
     });
 
     const occupancyRates = monthlyBookings.map((count, index) => {
-      
       const occupancyRate = (count / totalRooms) * 100;
       return {
-        month: index + 1, 
-        occupancyRate: parseFloat(occupancyRate.toFixed(2)), 
+        month: index + 1,
+        occupancyRate: parseFloat(occupancyRate.toFixed(2)),
       };
     });
-    
+
     return occupancyRates;
   }
 }

@@ -1,5 +1,28 @@
 import axios from "axios";
+export const updatePropertyWithPartner = async (formData, token) => {
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/property/updatePropertyWithPartner",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating property:", error);
+    throw error;
+  }
+}
 export const createPropertyWithPartner = async (formData, token) => {
+
   try {
     const response = await axios.post(
       "http://localhost:8000/property/createPropertyWithPartner",

@@ -20,13 +20,10 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
+import { log } from 'console';
 @Controller('property')
 export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
-  @Post('/createPropertyWithPartner')
-  @UseGuards(ValidateTokenGuard, RolesGuard)
-  @Roles(ROLE.ADMIN, ROLE.PARTNER)
-  @Post('createPropertyWithPartner')
   @Post('/createPropertyWithPartner')
   @UseGuards(ValidateTokenGuard, RolesGuard)
   @Roles(ROLE.ADMIN, ROLE.PARTNER)
@@ -68,6 +65,72 @@ export class PropertyController {
     };
 
     return this.propertyService.createNewProperty(propertyData);
+  }
+  @Post('/updatePropertyWithPartner')
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN, ROLE.PARTNER)
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
+  async updatePropertyWithPartner(
+    @Body() data: any,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    const propertyImage = files.filter(
+      (file, idx) => file.fieldname === `image[${idx}]`,
+    );
+
+    const roomImages = files.filter((file) =>
+      file.fieldname.startsWith('rooms'),
+    );
+
+    if (propertyImage.length !== 0) {
+      const propertyData = {
+        ...data,
+        image: propertyImage.map((image) => image.path),
+        address: JSON.parse(data.address),
+        location: JSON.parse(data.location),
+        rooms:
+          typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
+      };
+      propertyData.rooms = propertyData.rooms.map((room, index) => {
+        const imagesForRoom = roomImages
+          .filter(
+            (file, idx) => file.fieldname === `rooms[${index}]image[${idx}]`,
+          )
+          .map((file) => ({
+            path: file.path,
+            fieldname: file.fieldname,
+          }));
+
+        return {
+          ...room,
+          image: imagesForRoom, // Gắn mảng ảnh vào room
+        };
+      });
+
+      return this.propertyService.updateProperty(propertyData);
+    } else {
+      const propertyData = {
+        ...data,
+        address: JSON.parse(data.address),
+        location: JSON.parse(data.location),
+        rooms:
+          typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
+      };
+      return this.propertyService.updateProperty(propertyData);
+    }
   }
   @Get('/getAllProperty')
   async getAllProperty() {

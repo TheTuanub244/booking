@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Map from "./Map"; // Import the Map component for Google Maps or OpenStreetMap
 import "./PropertyDetailsForm.css";
+import Slider from "react-slick";
 import { getProvince } from "../../../api/addressAPI";
 import {
   createPropertyWithPartner,
   getPropertyById,
   getPropertyByOwner,
+  updatePropertyWithPartner,
 } from "../../../api/propertyAPI";
 import { useNavigate } from "react-router-dom";
 import { findRoomByProperty } from "../../../api/roomAPI";
 
-const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) => {
+const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, setTab }) => {
   
   const [propertyData, setPropertyData] = useState({
     name: "",
@@ -23,7 +25,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
     },
     type: "",
     images: [],
-
+    image: [],
     location: { lat: latitude, lng: longitude },
     rooms: [],
   });
@@ -43,7 +45,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
       data.location.lng = data.location.longitude      
 
     }
-    console.log(data);
+    console.log(data.rooms[0].images);
     
     setPropertyData(data)
     setIsDataLoaded(true);
@@ -172,9 +174,42 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
       setPropertyData({ ...propertyData, rooms: updatedRooms });
     }
   };
-
+  
   const handleRoomImageChange = (index, e) => {
-    const file = e.target.files[0];
+    if(type === "update"){
+
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      const newImage = []
+      files.forEach((file) => {
+        const reader = new FileReader();
+    
+        reader.onloadend = () => {
+          newImages.push(reader.result);
+          newImage.push(file)
+          
+          if (newImages.length === files.length) {
+            setPropertyData((prevData) => {
+              const updatedRooms = [...prevData.rooms];
+              updatedRooms[index] = {
+                ...updatedRooms[index],
+                images: [...(updatedRooms[index].images || []), ...newImages],
+                image: [...(updatedRooms[index].image || []), ...newImage],
+              };
+    
+              return {
+                ...prevData,
+                rooms: updatedRooms,
+              };
+            });
+          }
+        };
+    
+        reader.readAsDataURL(file);
+      });
+    }else {
+      
+      const file = e.target.files[0];
     const updatedRooms = [...propertyData.rooms];
 
     updatedRooms[index].image = file;
@@ -196,19 +231,78 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
       };
       reader.readAsDataURL(file);
     }
-  };
-  const handlePropertyImageChange = (e) => {
-    const file = e.target.files[0];
-    propertyData.image = file;
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPropertyData({ ...propertyData, images: reader.result });
-      };
-      reader.readAsDataURL(file);
     }
   };
+  useEffect(() => {
+    console.log(propertyData);
+    
+  }, [propertyData])
+  const handleRemovePropertyImage = (index) => {
+    const updatedImages = propertyData.images.filter((_, i) => i !== index); // Lọc bỏ ảnh theo index
+    setPropertyData({
+      ...propertyData,
+      images: updatedImages,
+    });
+  };
+  const handleRemoveRoomImage = (roomIndex, imageIndex) => {
+  setPropertyData((prevData) => {
+    const updatedRooms = [...prevData.rooms];
+    
+    // Lọc bỏ ảnh theo index cho room tương ứng
+    const updatedImages = updatedRooms[roomIndex].images.filter((_, i) => i !== imageIndex);
+    
+    // Cập nhật lại mảng images của room
+    updatedRooms[roomIndex] = {
+      ...updatedRooms[roomIndex],
+      images: updatedImages,
+    };
+    
+    // Cập nhật propertyData với danh sách rooms mới
+    return {
+      ...prevData,
+      rooms: updatedRooms,
+    };
+  });
+};
+  const handlePropertyImageChange = (e) => {
+    
+    if (type === "update") {
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      const newImage = []
+      files.forEach((file) => {
+        const reader = new FileReader();
+          
+        reader.onloadend = () => {
+          newImages.push(reader.result);
+          newImage.push(file)
+          if (newImages.length === files.length) {
+            setPropertyData({
+              ...propertyData,
+              images: [...(propertyData.images || []), ...newImages],
+              image: [...(propertyData.image || []), ...newImage],
+
+            });
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    } else {
+      const file = e.target.files[0];
+      propertyData.image = file
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPropertyData({
+            ...propertyData,
+            images: [reader.result], // Reset lại mảng images nếu chỉ muốn một ảnh
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
   const handleRoomCapacityChange = (index, field, value) => {
     const updatedRooms = [...propertyData.rooms];
     if (field === "adults") {
@@ -245,7 +339,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
           type: "",
           size: 0,
           images: [],
-          image: "",
+          image: [],
           capacity: { adults: 0, childs: { count: 0, age: 0 } },
           pricePerNight: { weekday: "", weekend: "" },
           rawPricePerNight: {
@@ -256,6 +350,92 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
       ],
     });
   };
+  const updateProperty = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const userId = localStorage.getItem("userId");
+    propertyData.owner_id = userId;
+    propertyData.location.longitude = propertyData.location.lng;
+    propertyData.location.latitude = propertyData.location.lat;
+    
+    setPropertyData({
+      ...propertyData,
+      rooms: propertyData.rooms.map((room) => ({
+        ...room,
+        pricePerNight: {
+          weekday: room.price_per_night.weekday,
+          weekend: room.price_per_night.weekend,
+        },
+      })),
+    });
+    const formData = new FormData();
+
+    // Add general property information
+    formData.append("_id", propertyData._id);
+
+    formData.append("name", propertyData.name);
+    formData.append("owner_id", propertyData.owner_id);
+
+    formData.append("description", propertyData.description);
+    formData.append("type", propertyData.type);
+    formData.append("location", JSON.stringify(propertyData.location));
+    formData.append("address", JSON.stringify(propertyData.address));
+
+    if (Array.isArray(propertyData.images)) {
+      propertyData.images.forEach((image, idx) => {
+        formData.append(`images[${idx}]`, image);
+      });
+    } else if (propertyData.images) {
+      // Nếu chỉ có một ảnh (trong trường hợp không phải mảng)
+      formData.append("images[0]", propertyData.images);
+    }
+    if (Array.isArray(propertyData.image)) {
+      propertyData.image.forEach((imageFile, idx) => {
+        formData.append(`image[${idx}]`, imageFile); 
+      });
+    }
+    // Add room details, including each room’s image
+    propertyData.rooms.forEach((room, index) => {
+      
+      // Append individual room fields
+    formData.append(`rooms[${index}][_id]`, room._id);
+
+      formData.append(`rooms[${index}][name]`, room.name);
+      formData.append(`rooms[${index}][type]`, room.type);
+      formData.append(`rooms[${index}][size]`, room.size);
+      formData.append(
+        `rooms[${index}][capacity]`,
+        JSON.stringify(room.capacity),
+      );
+      formData.append(
+        `rooms[${index}][pricePerNight]`,
+        JSON.stringify(room.pricePerNight),
+      );
+
+      // Append room image if available
+      if (Array.isArray(room.images)) {
+        room.images.forEach((image, imgIdx) => {
+          formData.append(`rooms[${index}][images][${imgIdx}]`, image);
+        });
+      } else if (room.images) {
+        // Nếu chỉ có một ảnh (không phải mảng)
+        formData.append(`rooms[${index}][images][0]`, room.images);
+      }
+      if (Array.isArray(room.image)) {
+        room.image.forEach((image, imgIdx) => {
+          formData.append(`rooms[${index}]image[${imgIdx}]`, image);
+        });
+      }
+    });
+    try {
+      const respone = await updatePropertyWithPartner(formData, accessToken);
+      if(respone){
+        setTab("info")
+      }
+      
+    } catch (error) {
+      console.error("Failed to add property:", error);
+    }
+  }
   const addProperty = async () => {
     const accessToken = localStorage.getItem("accessToken");
     const userId = localStorage.getItem("userId");
@@ -274,7 +454,8 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
     });
     const formData = new FormData();
 
-    // Add general property information
+    formData.append("_id", propertyData._id);
+
     formData.append("name", propertyData.name);
     formData.append("owner_id", propertyData.owner_id);
 
@@ -284,6 +465,9 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
     formData.append("address", JSON.stringify(propertyData.address));
 
     // Add main property image if available
+    if (propertyData.images) {
+      formData.append("images", propertyData.images);
+    }
     if (propertyData.image) {
       formData.append("image", propertyData.image);
     }
@@ -304,6 +488,9 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
       );
 
       // Append room image if available
+      if (room.images) {
+        formData.append(`rooms[${index}][images]`, room.images);
+      }
       if (room.image) {
         formData.append(`rooms[${index}][image]`, room.image);
       }
@@ -341,6 +528,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
                 <input
                   type="file"
                   name="images"
+                  multiple 
                   onChange={(e) => handlePropertyImageChange(e)}
                   required
                 />
@@ -528,18 +716,52 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
                     <label>Room Image</label>
                     <input
                       type="file"
+                      multiple 
                       onChange={(e) => handleRoomImageChange(index, e)}
                     />
                   </div>
-                  {propertyData.rooms[index].images.length !== 0 && (
-                    <div className="image-preview">
-                      <img
-                        src={!propertyData.rooms[index].images ? propertyData.rooms[index].images[0] : propertyData.rooms[index].images}
-                        alt="Selected property preview"
-                        style={{ width: "100%", height: "auto" }}
-                      />
-                    </div>
-                  )}
+                  {propertyData.rooms.length !== 0 && (
+                  
+                    <>
+                        <div key={index}>
+                          <h3>Room {index + 1}</h3>
+                        <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1}>
+                        {
+                          room.images.map((image, imgidx) => (
+                          <div key={index} style={{ position: "relative", overflow: "visible" }}>
+                              <img src={image} alt={`Room ${index + 1} preview ${imgidx}`} style={{ width: "100%", height: "auto" }} />
+                             <button
+                          onClick={() => handleRemoveRoomImage(index, imgidx)}
+                          style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                            backgroundColor: "rgba(255, 0, 0, 0.8)",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "50%",
+                            width: "30px",
+                            height: "30px",
+                            fontSize: "16px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                            zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
+                          }}
+                        >
+                          &times; {/* Dấu x */}
+                        </button>
+                          </div>
+                            
+                          ))
+                        }
+                        </Slider>
+                        </div>
+                        
+                    </>
+                )}
 
                   <button
                     type="button"
@@ -562,7 +784,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
             <button
               type="button"
               className="add-property-button"
-              onClick={addProperty}
+              onClick={type === "update" ? updateProperty : addProperty}
             >
               Add Property
             </button>
@@ -592,14 +814,49 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type }) 
             </p>
 
             {propertyData.images.length !== 0 && (
-              <div className="image-preview">
-                <img
-                  src={propertyData.images.length === 0 ? propertyData.images[0] : propertyData.images}
-                  alt="Selected property preview"
-                  style={{ width: "100%", height: "auto" }}
-                />
-              </div>
-            )}
+                  <div className="image-slider" style={{ overflow: "visible", position: "relative" }}>
+                    <Slider
+                      dots={true}
+                      infinite={true}
+                      speed={500}
+                      slidesToShow={1}
+                      slidesToScroll={1}
+                    >
+                      {propertyData.images.map((image, idx) => (
+                        <div key={idx}>
+                          <img
+                            src={image}
+                            alt={`Property preview ${idx}`}
+                            style={{ width: "100%", height: "auto" }}
+                          />
+                          <button
+                          onClick={() => handleRemovePropertyImage(idx)}
+                          style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                            backgroundColor: "rgba(255, 0, 0, 0.8)",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "50%",
+                            width: "30px",
+                            height: "30px",
+                            fontSize: "16px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                            zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
+                          }}
+                        >
+                          &times; {/* Dấu x */}
+                        </button>
+                        </div>
+                      ))}
+                    </Slider>
+                  </div>
+                )}
 
             <div className="mini-mapp">
               <Map

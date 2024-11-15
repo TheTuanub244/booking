@@ -6,7 +6,7 @@ import Slider from 'react-slick';
 import { findRoomByProperty } from '../../../api/roomAPI';
 import DashboardPage from '../partnerDashboard/DashboardPage';
 import PropertyDetailsForm from '../partnerRegister/PropertyDetailsForm';
-const PropertyDetail = ({ propertyId, tab }) => {
+const PropertyDetail = ({ propertyId, tab, setTab }) => {
   const [property, setProperty] = useState(null);
   const longitude = localStorage.getItem('longitude')
   const latitude = localStorage.getItem('latitude')
@@ -95,7 +95,7 @@ const PropertyDetail = ({ propertyId, tab }) => {
         ) : (
             
               tab === "update" ? (
-                <PropertyDetailsForm longitude={longitude} latitude={latitude} type={"update"}/>
+                <PropertyDetailsForm longitude={longitude} latitude={latitude} type={"update"} setTab={setTab} />
               ) : (
                 <DashboardPage type={"property"} property={property}/>
               )

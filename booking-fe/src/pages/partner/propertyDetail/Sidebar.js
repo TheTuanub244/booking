@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom'; // Import NavLink và useLocation
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'; // Import NavLink và useLocation
 import "./Sidebar.css";
 
 const Sidebar = ({setTab, tab}) => {
-  const location = useLocation(); // Lấy đường dẫn hiện tại
+  const location = useLocation(); 
+  const userId = localStorage.getItem('userId')
+  const navigate = useNavigate()
   const handleChangeTab = (value) => {
     setTab(value)
   }
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
-      <a href="/" className="brand-link">
+      <a href={`partner/propertyList${userId}`} className="brand-link">
         <span className="brand-text font-weight-light">Admin Dashboard</span>
       </a>
       <div className="sidebar">

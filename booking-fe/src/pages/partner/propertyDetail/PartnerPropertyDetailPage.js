@@ -14,7 +14,7 @@ const PartnerPropertyDetailPage = () => {
             <PartnerNavbar/>
             <div className="wrapper">
             <Sidebar setTab={setTab} tab={tab}/>
-            <PropertyDetail propertyId={params.id} tab={tab}/>
+            <PropertyDetail propertyId={params.id} tab={tab} setTab={setTab}/>
         </div>
         </>
     )

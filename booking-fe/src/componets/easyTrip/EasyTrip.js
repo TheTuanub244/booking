@@ -244,6 +244,7 @@ function EasyTrip({ propertyNear }) {
   const handleNavigate = async (id) => {
     navigate(`/property/${id}`);
   };
+
   return (
     <div className="easyTrip">
       <div className="typeTripList">

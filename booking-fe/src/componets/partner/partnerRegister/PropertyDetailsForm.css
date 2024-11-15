@@ -18,7 +18,7 @@
 }
 .mini-mapp {
   height: 300px;
-  margin-top: 15px;
+  margin-top: 30px;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -180,7 +180,7 @@ input {
 }
 
 .remove-room-button {
-  margin-top: 10px;
+  margin-top: 30px;
   margin-bottom: 10px;
   width: 50%;
   margin-left: 25%;
@@ -261,12 +261,12 @@ input {
 }
 
 .circle-close-button:hover {
-  background-color: #f0f0f0; /* Light gray on hover */
-  transform: scale(1.1); /* Slightly enlarge on hover */
+  background-color: #f0f0f0; 
+  transform: scale(1.1); 
 }
 
 .circle-close-button:focus {
-  outline: none; /* Remove outline on focus */
+  outline: none; 
 }
 
 .image-preview {
@@ -277,6 +277,10 @@ input {
 }
 
 .image-preview img {
-  width: 100%; /* Ensure it fills the container */
+  width: 100%; 
   height: auto;
+}
+.slick-slide {
+  overflow: visible !important; /* Cho phép phần tử con hiển thị */
+  position: relative; /* Đảm bảo nút xóa hiển thị trên ảnh */
 }

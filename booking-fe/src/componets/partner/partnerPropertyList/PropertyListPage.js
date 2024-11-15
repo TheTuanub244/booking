@@ -147,7 +147,7 @@ const PropertyListPage = () => {
                         padding: "32px 10px",
                       }}
                     >
-                      <button className="view-details-button">
+                      <button className="view-details-button" onClick={() => navigate(`/partner/partnerPropertyDetailPage/${property.property._id}`)}>
                         Xem Chi Tiết
                       </button>
                       <button
@@ -195,7 +195,9 @@ const PropertyListPage = () => {
                         padding: "32px 10px",
                       }}
                     >
-                      <button className="view-details-button">
+                      <button className="view-details-button" onClick={() => {
+                        navigate(`/partner/partnerPropertyDetailPage/${property.property._id}`)
+                      }}>
                         Xem Chi Tiết
                       </button>
                       <button
@@ -262,7 +264,7 @@ const PropertyListPage = () => {
           Thêm Mới
         </button>
       </div>
-      {activeTab === "info" && <DashboardPage />}
+      {activeTab === "info" && <DashboardPage/>}
 
       {activeTab === "list" && renderListTab()}
       {activeTab === "add" && renderAddTab()}

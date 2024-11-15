@@ -6,4 +6,9 @@ export const getMonthlyRevenue = async (id) => {
   );
   return respone.data;
 };
-export const getTotalRevenue = async (id) => {};
+export const getMonthlyRevenueByProperty = async (id) => {
+  const respone = await axios.get(
+    `http://localhost:8000/booking/getMonthlyRevenueByProperty/${id}`,
+  );
+  return respone.data;
+};

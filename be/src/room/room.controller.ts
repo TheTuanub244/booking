@@ -63,4 +63,9 @@ export class RoomController {
   async getMonthlyOccupancyRatesByOwner(@Param('id') id: any) {
     return this.roomService.getMonthlyOccupancyRatesByOwner(id, 2024);
   }
+  @Get('getMonthlyOccupancyRatesByProperty/:id')
+  async getMonthlyOccupancyRatesByProperty(@Param('id') id: any) {
+    return this.roomService.getMonthlyOccupancyRatesByProperty(id, 2024);
+  }
+  
 }

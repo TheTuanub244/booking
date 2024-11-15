@@ -4,22 +4,10 @@ import OccupancyRateChart from "../components/OccupancyRateChart";
 import RevenueChart from "../components/RevenueChart";
 import AverageRatingChart from "../components/AverageRatingChart";
 
-const DashboardPage = () => {
+const DashboardPage = ({type, property}) => {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [occupancyRate, setOccupancyRate] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
-
-  useEffect(() => {
-    // Fetch dữ liệu từ API hoặc lấy dữ liệu mẫu
-    const fetchData = async () => {
-      // Tạo dữ liệu mẫu
-      setOccupancyRate(75);
-      setAverageRating(4.3);
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <div className="dashboard">
       <h2>Dashboard - Tổng quan tài chính</h2>
@@ -39,10 +27,10 @@ const DashboardPage = () => {
       </div>
 
       <div className="dashboard-charts">
-        <RevenueChart setTotalRevenue={setTotalRevenue} />
-        <OccupancyRateChart />
+        <RevenueChart setTotalRevenue={setTotalRevenue} type={type} property={property}/>
+        <OccupancyRateChart setTotalOccupancyRate={setOccupancyRate} type={type}  property={property}/>
         {/* <Mont /> */}
-        <AverageRatingChart />
+        <AverageRatingChart setAverageRating={setAverageRating} type={type} property={property}/>
       </div>
     </div>
   );

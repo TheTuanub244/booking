@@ -242,4 +242,102 @@ export class BookingService {
       yearlyRevenue: item.yearlyRevenue,
     }));
   }
+  async getMonthlyRevenueByProperty(propety_id: string): Promise<any[]> {
+    const objectIdPropertyId = new Types.ObjectId(propety_id);
+    console.log(objectIdPropertyId);
+    
+    const result = await this.bookingSchema.aggregate([
+      {
+        $match: {
+          booking_status: 'completed',
+        },
+      },
+      {
+        $lookup: {
+          from: 'properties',
+          localField: 'property',
+          foreignField: '_id',
+          as: 'propertyDetails',
+        },
+      },
+      { $unwind: '$propertyDetails' },
+      {
+        $match: {
+          'propertyDetails._id': objectIdPropertyId, // Thay đổi ở đây
+        },
+      },
+      {
+        $project: {
+          property_id: '$propertyDetails._id', // Thay đổi ở đây
+          check_in_date: 1,
+          check_out_date: 1,
+          total_price: 1,
+          duration: {
+            $divide: [
+              { $subtract: ['$check_out_date', '$check_in_date'] },
+              1000 * 60 * 60 * 24,
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          dailyRevenue: { $divide: ['$total_price', '$duration'] },
+        },
+      },
+      {
+        $project: {
+          property_id: 1, // Thay đổi ở đây
+          days: { $range: [0, { $toInt: '$duration' }] },
+          check_in_date: 1,
+          dailyRevenue: 1,
+        },
+      },
+      { $unwind: '$days' },
+      {
+        $group: {
+          _id: {
+            property_id: '$property_id', // Thay đổi ở đây
+            year: {
+              $year: {
+                $add: [
+                  '$check_in_date',
+                  { $multiply: ['$days', 1000 * 60 * 60 * 24] },
+                ],
+              },
+            },
+            month: {
+              $month: {
+                $add: [
+                  '$check_in_date',
+                  { $multiply: ['$days', 1000 * 60 * 60 * 24] },
+                ],
+              },
+            },
+          },
+          monthlyRevenue: { $sum: '$dailyRevenue' },
+        },
+      },
+      {
+        $group: {
+          _id: { property_id: '$_id.property_id', year: '$_id.year' }, // Thay đổi ở đây
+          monthlyRevenues: {
+            $push: {
+              month: '$_id.month',
+              revenue: '$monthlyRevenue',
+            },
+          },
+          yearlyRevenue: { $sum: '$monthlyRevenue' },
+        },
+      },
+      { $sort: { '_id.year': 1 } },
+    ]);
+    
+    return result.map((item) => ({
+      owner_id: item._id.owner_id,
+      year: item._id.year,
+      monthlyRevenues: item.monthlyRevenues,
+      yearlyRevenue: item.yearlyRevenue,
+    }));
+  }
 }

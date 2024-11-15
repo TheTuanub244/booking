@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Property } from 'src/property/property.schema';
-import { TYPE } from './enum/type.enum';
 
 @Schema()
 export class Room {
@@ -11,8 +10,6 @@ export class Room {
     ref: 'Property',
   })
   property_id: Property;
-  @Prop({ required: true, enum: TYPE })
-  type: TYPE;
   @Prop({ type: [String] })
   images: string[];
   @Prop({ required: true })
@@ -39,8 +36,15 @@ export class Room {
         type: Number,
       },
       childs: {
-        count: Number,
-        age: Number,
+        count: {
+          type: Number,
+        },
+        age: {
+          type: Number,
+        },
+      },
+      room: {
+        type: Number,
       },
     },
   })

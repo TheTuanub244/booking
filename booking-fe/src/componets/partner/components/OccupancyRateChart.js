@@ -1,23 +1,52 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
-import { getMonthlyOccupancyRatesByOwner } from "../../../api/roomAPI";
+import { getMonthlyOccupancyRatesByOwner, getMonthlyOccupancyRatesByProperty } from "../../../api/roomAPI";
 Chart.register(...registerables);
-const OccupancyRateChart = () => {
+const OccupancyRateChart = ({setTotalOccupancyRate, property, type}) => {
   const userId = localStorage.getItem("userId");
+  const [occupancyRate, setOccupancyRate] = useState(new Array(12).fill(0))
+  
   const getOccupancyRate = async () => {
-    const respone = await getMonthlyOccupancyRatesByOwner(userId);
-    console.log(respone);
+    const occupancyData = new Array(12).fill(0);
+    let respone;
+    if(type === "property"){
+      respone = await getMonthlyOccupancyRatesByProperty(property._id)
+
+    }else {
+     respone = await getMonthlyOccupancyRatesByOwner(userId);
+    
+    }
+    respone.forEach((item) => {
+      occupancyData[item.month - 1] = item.occupancyRate
+    });
+    setOccupancyRate(occupancyData)
+    const totalOccupacyRate = respone.reduce((sum, occupancy) => {
+      return sum + occupancy.occupancyRate
+    }, 0)
+    setTotalOccupancyRate(totalOccupacyRate)
   };
   useEffect(() => {
     getOccupancyRate();
   }, []);
   const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: ["Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     datasets: [
       {
         label: "Tỷ Lệ Lấp Đầy (%)",
-        data: [80, 75, 85, 78, 82, 90],
+        data: occupancyRate,
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,

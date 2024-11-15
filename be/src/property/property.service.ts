@@ -29,9 +29,7 @@ export class PropertyService {
 
   async uploadImageToCloudinary(filePath: string): Promise<string> {
     try {
-      const result = await cloudinary.uploader.upload(filePath, {
-        folder: 'booking_images',
-      });
+      const result = await cloudinary.uploader.upload(filePath);
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error('Failed to delete local file:', err.message);
@@ -39,12 +37,164 @@ export class PropertyService {
           console.log('Successfully deleted local file:', filePath);
         }
       });
+
       return result.secure_url;
     } catch (error) {
       throw new Error(`Failed to upload image to Cloudinary: ${error.message}`);
     }
   }
+  async getPublicIdFromUrl(url: string) {
+    const parts = url.split('/');
+    const fileWithExtension = parts[parts.length - 1];
+    return fileWithExtension.split('.')[0];
+  }
 
+  async checkImageExistsOnCloudinary(url: string) {
+    const publicId = await this.getPublicIdFromUrl(url);
+    try {
+      await cloudinary.api.resource(publicId);
+      return true;
+    } catch (error: any) {
+      if (error.http_code === 404) {
+        return false;
+      } else {
+        throw error;
+      }
+    }
+  }
+  async appendImageFile(images, newImages) {
+    const validImages = []; // Mảng để lưu ảnh hợp lệ sau khi kiểm tra
+
+    if (images) {
+      await Promise.all(
+        images.map(async (image) => {
+          try {
+            const isValidImage = await this.checkImageExistsOnCloudinary(image);
+            if (isValidImage) {
+              validImages.push(image); // Chỉ thêm ảnh vào validImages nếu ảnh hợp lệ
+            }
+          } catch (err) {}
+        }),
+      );
+    }
+
+    // Thêm các ảnh từ newImages vào validImages
+    if (newImages && newImages.length !== 0) {
+      if (newImages[0]?.path) {
+        newImages.forEach((image) => {
+          validImages.push(image.path);
+        });
+      } else {
+        newImages.forEach((image) => {
+          validImages.push(image);
+        });
+      }
+    }
+
+    return validImages; // Trả về mảng các ảnh hợp lệ
+  }
+  async updateProperty(property: any) {
+    if (property.image) {
+      const propertyImageUrls = await Promise.all(
+        property.image.map((imagePath) => {
+          if (imagePath) {
+            return this.uploadImageToCloudinary(imagePath);
+          }
+        }),
+      );
+
+      const roomImageUrls = await Promise.all(
+        property.rooms.map(async (room) => {
+          const roomImages = await Promise.all(
+            room.image.map((imagePath) => {
+              if (imagePath) {
+                return this.uploadImageToCloudinary(imagePath.path);
+              }
+            }),
+          );
+          return {
+            ...room,
+            image: roomImages, // Lưu URL của ảnh sau khi upload
+          };
+        }),
+      );
+      const newImages = await this.appendImageFile(
+        property.images,
+        propertyImageUrls,
+      );
+      property.images = newImages;
+
+      await Promise.all(
+        property.rooms.map(async (room, index) => {
+          const newImage = await this.appendImageFile(
+            room.images,
+            roomImageUrls[index].image,
+          );
+          room.images = newImage;
+        }),
+      );
+      const propertyData = {
+        ...property,
+        images: property.images,
+        rooms: property.rooms.map((room) => ({
+          ...room,
+          images: room.images || null,
+        })),
+      };
+
+      const savedProperty = await this.propertySchema.findByIdAndUpdate(
+        propertyData._id,
+        propertyData,
+        {
+          new: true,
+        },
+      );
+
+      propertyData.rooms.map(async (value) => {
+        value.capacity = JSON.parse(value.capacity);
+        value.pricePerNight = JSON.parse(value.pricePerNight);
+        value.size = parseInt(value.size);
+        value.images = Array.isArray(value.images)
+          ? value.images
+          : [value.images];
+        value.price_per_night = value.pricePerNight;
+        value.property_id = savedProperty._id;
+
+        await this.roomService.updateRoom(value);
+      });
+    } else {
+      const propertyData = {
+        ...property,
+        images: property.images,
+        rooms: property.rooms.map((room) => ({
+          ...room,
+          images: room.images || null,
+        })),
+      };
+      console.log(propertyData);
+
+      const savedProperty = await this.propertySchema.findByIdAndUpdate(
+        propertyData._id,
+        propertyData,
+        {
+          new: true,
+        },
+      );
+      propertyData.rooms.map(async (value) => {
+        value.capacity = JSON.parse(value.capacity);
+        value.pricePerNight = JSON.parse(value.pricePerNight);
+        value.size = parseInt(value.size);
+        value.images = Array.isArray(value.images)
+          ? value.images
+          : [value.images];
+        value.price_per_night = value.pricePerNight;
+        value.property_id = savedProperty._id;
+
+        await this.roomService.updateRoom(value);
+      });
+      return savedProperty;
+    }
+  }
   async createNewProperty(property: any) {
     const propertyImageUrl = property.image
       ? await this.uploadImageToCloudinary(property.image)
@@ -57,35 +207,51 @@ export class PropertyService {
       ),
     );
 
-    const propertyData = {
-      ...property,
-      images: propertyImageUrl,
-      rooms: property.rooms.map((room, index) => ({
-        ...room,
-        images: roomImageUrls[index] || null,
-      })),
-    };
-    const newProperty = new this.propertySchema(propertyData);
+    if (property.rooms) {
+      const propertyData = {
+        ...property,
+        images: propertyImageUrl,
+        rooms: property.rooms.map((room, index) => ({
+          ...room,
+          images: roomImageUrls[index] || null,
+        })),
+      };
+      const newProperty = new this.propertySchema(propertyData);
 
-    const savedProperty = await newProperty.save();
+      const savedProperty = await newProperty.save();
 
-    propertyData.rooms.map(async (value) => {
-      value.capacity = JSON.parse(value.capacity);
-      value.pricePerNight = JSON.parse(value.pricePerNight);
-      value.size = parseInt(value.size);
-      value.images = [value.images];
-      value.price_per_night = value.pricePerNight;
-      value.property_id = savedProperty._id;
+      propertyData.rooms.map(async (value) => {
+        value.capacity = JSON.parse(value.capacity);
+        value.pricePerNight = JSON.parse(value.pricePerNight);
+        value.size = parseInt(value.size);
+        value.images = [value.images];
+        value.price_per_night = value.pricePerNight;
+        value.property_id = savedProperty._id;
 
-      await this.roomService.createRoom(value);
-    });
-    return savedProperty;
+        await this.roomService.createRoom(value);
+      });
+      return savedProperty;
+    } else {
+      const propertyData = {
+        ...property,
+        images: propertyImageUrl,
+        rooms: [],
+      };
+      const newProperty = new this.propertySchema(propertyData);
+
+      const savedProperty = await newProperty.save();
+      return savedProperty;
+    }
   }
 
   async getAllProperty() {
     return this.propertySchema.find();
   }
-  async getPropertyWithOwner(owner_id: ObjectId, page: number, limit: number) {
+  async getPropertyWithOwner(
+    owner_id: ObjectId,
+    page: number,
+    limit: number = 5,
+  ) {
     const properties = [];
     const skip = (page - 1) * limit;
     const findProperty = await this.propertySchema

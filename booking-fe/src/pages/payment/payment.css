@@ -1,0 +1,233 @@
+.payment {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.paymentContainer {
+  width: 100%;
+  max-width: 1024px;
+  display: flex;
+  gap: 15px;
+}
+
+
+.leftContent {
+  flex: 3;
+  padding: 2px;
+  border-radius: 10px;
+  top: 10px;
+  height: max-content;
+}
+
+.bookingInformation {
+  padding: 10px;
+  border: 1px solid #e7e7e7;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.bookingInformation h3 {
+  margin: 0px;
+  margin-bottom: 10px;
+  font-size: 17px;
+
+}
+
+.address {
+  font-size: 14px;
+}
+
+.bookingInformation > span {
+  color: #008234;
+  font-size: 13px;
+}
+
+.infoEvaluation {
+  margin:5px 0px;
+  display: flex;
+  align-items: center;
+}
+
+.infoRating {
+  display: flex;
+  flex-direction: column;
+  margin-left: 8px;
+}
+
+.infoComment {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.infoReview {
+  font-size: 13px;
+  color: gray;
+  
+}
+
+.infoScore {
+  background-color: #003b95;
+  padding: 2px 4px;
+  color: white;
+  font-size: 17px;
+  font-weight: 500;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: baseline;
+  width: 28px;
+  height: 28px;
+
+}
+
+.infoExtra {
+  display: flex;
+  flex-direction: column;
+  gap:3px;
+}
+
+.iconWifi {
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.wifi > span {
+  font-size: 12px;
+}
+
+.iconPlane {
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.airport > span {
+  font-size: 12px;
+}
+
+.bookingDetails {
+  padding: 10px;
+  border: 1px solid #e7e7e7;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.bookingDetails h3 {
+  font-size: 18px;
+  margin:8px 0px;
+
+}
+
+.timeBooking {
+  display: flex;
+  gap:8px;
+  margin-top: 15px;
+  margin-bottom: 18px;
+}
+
+.checkInTime, .checkOutTime {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 5px 0px;
+}
+
+.checkIn {
+  padding-right: 5px;
+  border-right: 1px solid #e7e7e7;
+}
+
+.checkInFrom , .checkOutUntil {
+  font-size: 15px;
+  font-weight: 200;
+}
+
+.lengthStay {
+  margin-top: 8px;
+}
+
+.lengthStayTitle {
+  font-size:14px;
+  margin-bottom: 3px;
+}
+
+.lengthStay > .totalNight {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e7e7e7;
+  padding-bottom: 10px;
+}
+
+.selectedTitle {
+  font-size: 15px;
+}
+
+.mySelected {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 5px 0px;
+}
+
+.changeSelection {
+  margin-top: 30px;
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 15px;
+  color: #006ce4;
+  border-radius:8px;
+  transition: all 0.3s ease;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 600; 
+}
+
+
+
+.changeSelection:hover {
+  background-color: #d8e7fc;
+}
+
+.priceSummary {
+  padding: 10px 0px;
+  border: 1px solid #e7e7e7;
+  border-radius: 8px;
+  margin: 10px 0px;
+}
+
+.priceSummary > h3 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  margin-left: 10px;
+}
+
+
+.totalPrice {  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ebf3fe;
+  padding: 30px 8px;
+
+}
+
+.textLeft , .textRight {
+  font-size: 22px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+
+
+
+
+
+
+.rightContent {
+  flex: 7;
+}

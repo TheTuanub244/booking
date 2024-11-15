@@ -20,9 +20,8 @@ export const updatePropertyWithPartner = async (formData, token) => {
     console.error("Error creating property:", error);
     throw error;
   }
-}
+};
 export const createPropertyWithPartner = async (formData, token) => {
-
   try {
     const response = await axios.post(
       "http://localhost:8000/property/createPropertyWithPartner",

@@ -108,7 +108,7 @@ export class ReviewService {
     };
 
     validReviews.forEach((review) => {
-      const roundedRating = Math.ceil(review.rating); 
+      const roundedRating = Math.ceil(review.rating);
       ratingCounts[roundedRating] = (ratingCounts[roundedRating] || 0) + 1;
     });
 
@@ -139,11 +139,10 @@ export class ReviewService {
     };
 
     validReviews.forEach((review) => {
-      const roundedRating = Math.ceil(review.rating); 
+      const roundedRating = Math.ceil(review.rating);
       ratingCounts[roundedRating] = (ratingCounts[roundedRating] || 0) + 1;
     });
 
-    
     return ratingCounts;
   }
 }

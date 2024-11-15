@@ -10,10 +10,16 @@ import {
   updatePropertyWithPartner,
 } from "../../../api/propertyAPI";
 import { useNavigate } from "react-router-dom";
-import { findRoomByProperty } from "../../../api/roomAPI";
+import { deleteRoomById, findRoomByProperty } from "../../../api/roomAPI";
 
-const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, setTab }) => {
-  
+const PropertyDetailsForm = ({
+  owner,
+  longitude,
+  latitude,
+  initialData,
+  type,
+  setTab,
+}) => {
   const [propertyData, setPropertyData] = useState({
     name: "",
     description: "",
@@ -35,21 +41,20 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
     setPropertyData(data);
   };
   const handleGetPropertyById = async () => {
-    const property = JSON.parse(localStorage.getItem('property'))
-    const rooms = await findRoomByProperty(property._id)
+    const property = JSON.parse(localStorage.getItem("property"));
+    const rooms = await findRoomByProperty(property._id);
 
-    const data = await getPropertyById(property._id)
-    if(data){
-      data.rooms = rooms
-      data.location.lat = data.location.latitude
-      data.location.lng = data.location.longitude      
-
+    const data = await getPropertyById(property._id);
+    if (data) {
+      data.rooms = rooms;
+      data.location.lat = data.location.latitude;
+      data.location.lng = data.location.longitude;
     }
     console.log(data.rooms[0].images);
-    
-    setPropertyData(data)
+
+    setPropertyData(data);
     setIsDataLoaded(true);
-  }
+  };
   if (initialData) {
     setPropertyData(initialData);
   }
@@ -57,7 +62,6 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
     if (type === "update" && !isDataLoaded) {
       handleGetPropertyById();
     }
-    
   }, [type, isDataLoaded]);
   const navigate = useNavigate();
   const [address, setAddress] = useState();
@@ -136,11 +140,12 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
     }
   };
 
-
-
-  const removeRoom = (index) => {
+  const removeRoom = async (index, room) => {
     const updatedRooms = propertyData.rooms.filter((_, i) => i !== index);
     setPropertyData({ ...propertyData, rooms: updatedRooms });
+    if (room._id) {
+      await deleteRoomById(room._id);
+    }
   };
   const handleLocationSelect = (location) => {
     setPropertyData((prevData) => ({
@@ -158,8 +163,8 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
       const updatedRooms = [...propertyData.rooms];
       updatedRooms[index] = {
         ...updatedRooms[index],
-        pricePerNight: {
-          ...updatedRooms[index].pricePerNight,
+        price_per_night: {
+          ...updatedRooms[index].price_per_night,
           [e.target.name]: rawValue,
         },
       };
@@ -174,29 +179,31 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
       setPropertyData({ ...propertyData, rooms: updatedRooms });
     }
   };
-  
-  const handleRoomImageChange = (index, e) => {
-    if(type === "update"){
 
+  const handleRoomImageChange = (index, e) => {
+    if (type === "update") {
       const files = Array.from(e.target.files);
       const newImages = [];
-      const newImage = []
+      const newImage = [];
+      console.log(files);
+
       files.forEach((file) => {
         const reader = new FileReader();
-    
+
         reader.onloadend = () => {
           newImages.push(reader.result);
-          newImage.push(file)
-          
+          newImage.push(file);
+
           if (newImages.length === files.length) {
             setPropertyData((prevData) => {
               const updatedRooms = [...prevData.rooms];
+
               updatedRooms[index] = {
                 ...updatedRooms[index],
-                images: [...(updatedRooms[index].images || []), ...newImages],
-                image: [...(updatedRooms[index].image || []), ...newImage],
+                images: [...newImages],
+                image: [...newImage],
               };
-    
+
               return {
                 ...prevData,
                 rooms: updatedRooms,
@@ -204,39 +211,37 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
             });
           }
         };
-    
+
         reader.readAsDataURL(file);
       });
-    }else {
-      
+    } else {
       const file = e.target.files[0];
-    const updatedRooms = [...propertyData.rooms];
+      const updatedRooms = [...propertyData.rooms];
 
-    updatedRooms[index].image = file;
+      updatedRooms[index].image = file;
 
-    if (file) {
-      const reader = new FileReader();
+      if (file) {
+        const reader = new FileReader();
 
-      reader.onloadend = () => {
-        const updatedRooms = [...propertyData.rooms];
-        updatedRooms[index] = {
-          ...updatedRooms[index],
-          images: reader.result,
+        reader.onloadend = () => {
+          const updatedRooms = [...propertyData.rooms];
+          updatedRooms[index] = {
+            ...updatedRooms[index],
+            images: reader.result,
+          };
+
+          setPropertyData({
+            ...propertyData,
+            rooms: updatedRooms,
+          });
         };
-
-        setPropertyData({
-          ...propertyData,
-          rooms: updatedRooms,
-        });
-      };
-      reader.readAsDataURL(file);
-    }
+        reader.readAsDataURL(file);
+      }
     }
   };
   useEffect(() => {
     console.log(propertyData);
-    
-  }, [propertyData])
+  }, [propertyData]);
   const handleRemovePropertyImage = (index) => {
     const updatedImages = propertyData.images.filter((_, i) => i !== index); // Lọc bỏ ảnh theo index
     setPropertyData({
@@ -245,43 +250,43 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
     });
   };
   const handleRemoveRoomImage = (roomIndex, imageIndex) => {
-  setPropertyData((prevData) => {
-    const updatedRooms = [...prevData.rooms];
-    
-    // Lọc bỏ ảnh theo index cho room tương ứng
-    const updatedImages = updatedRooms[roomIndex].images.filter((_, i) => i !== imageIndex);
-    
-    // Cập nhật lại mảng images của room
-    updatedRooms[roomIndex] = {
-      ...updatedRooms[roomIndex],
-      images: updatedImages,
-    };
-    
-    // Cập nhật propertyData với danh sách rooms mới
-    return {
-      ...prevData,
-      rooms: updatedRooms,
-    };
-  });
-};
+    setPropertyData((prevData) => {
+      const updatedRooms = [...prevData.rooms];
+
+      // Lọc bỏ ảnh theo index cho room tương ứng
+      const updatedImages = updatedRooms[roomIndex].images.filter(
+        (_, i) => i !== imageIndex,
+      );
+
+      // Cập nhật lại mảng images của room
+      updatedRooms[roomIndex] = {
+        ...updatedRooms[roomIndex],
+        images: updatedImages,
+      };
+
+      // Cập nhật propertyData với danh sách rooms mới
+      return {
+        ...prevData,
+        rooms: updatedRooms,
+      };
+    });
+  };
   const handlePropertyImageChange = (e) => {
-    
     if (type === "update") {
       const files = Array.from(e.target.files);
       const newImages = [];
-      const newImage = []
+      const newImage = [];
       files.forEach((file) => {
         const reader = new FileReader();
-          
+
         reader.onloadend = () => {
           newImages.push(reader.result);
-          newImage.push(file)
+          newImage.push(file);
           if (newImages.length === files.length) {
             setPropertyData({
               ...propertyData,
               images: [...(propertyData.images || []), ...newImages],
               image: [...(propertyData.image || []), ...newImage],
-
             });
           }
         };
@@ -289,7 +294,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
       });
     } else {
       const file = e.target.files[0];
-      propertyData.image = file
+      propertyData.image = file;
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -341,7 +346,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
           images: [],
           image: [],
           capacity: { adults: 0, childs: { count: 0, age: 0 } },
-          pricePerNight: { weekday: "", weekend: "" },
+          price_per_night: { weekday: "", weekend: "" },
           rawPricePerNight: {
             weekday: "",
             weekend: "",
@@ -356,12 +361,12 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
     propertyData.owner_id = userId;
     propertyData.location.longitude = propertyData.location.lng;
     propertyData.location.latitude = propertyData.location.lat;
-    
+
     setPropertyData({
       ...propertyData,
       rooms: propertyData.rooms.map((room) => ({
         ...room,
-        pricePerNight: {
+        price_per_night: {
           weekday: room.price_per_night.weekday,
           weekend: room.price_per_night.weekend,
         },
@@ -390,14 +395,13 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
     }
     if (Array.isArray(propertyData.image)) {
       propertyData.image.forEach((imageFile, idx) => {
-        formData.append(`image[${idx}]`, imageFile); 
+        formData.append(`image[${idx}]`, imageFile);
       });
     }
     // Add room details, including each room’s image
     propertyData.rooms.forEach((room, index) => {
-      
       // Append individual room fields
-    formData.append(`rooms[${index}][_id]`, room._id);
+      formData.append(`rooms[${index}][_id]`, room._id);
 
       formData.append(`rooms[${index}][name]`, room.name);
       formData.append(`rooms[${index}][type]`, room.type);
@@ -407,8 +411,8 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
         JSON.stringify(room.capacity),
       );
       formData.append(
-        `rooms[${index}][pricePerNight]`,
-        JSON.stringify(room.pricePerNight),
+        `rooms[${index}][price_per_night]`,
+        JSON.stringify(room.price_per_night),
       );
 
       // Append room image if available
@@ -428,14 +432,13 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
     });
     try {
       const respone = await updatePropertyWithPartner(formData, accessToken);
-      if(respone){
-        setTab("info")
+      if (respone) {
+        setTab("info");
       }
-      
     } catch (error) {
       console.error("Failed to add property:", error);
     }
-  }
+  };
   const addProperty = async () => {
     const accessToken = localStorage.getItem("accessToken");
     const userId = localStorage.getItem("userId");
@@ -446,9 +449,9 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
       ...propertyData,
       rooms: propertyData.rooms.map((room) => ({
         ...room,
-        pricePerNight: {
-          weekday: room.pricePerNight.weekday,
-          weekend: room.pricePerNight.weekend,
+        price_per_night: {
+          weekday: room.price_per_night.weekday,
+          weekend: room.price_per_night.weekend,
         },
       })),
     });
@@ -483,8 +486,8 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
         JSON.stringify(room.capacity),
       );
       formData.append(
-        `rooms[${index}][pricePerNight]`,
-        JSON.stringify(room.pricePerNight),
+        `rooms[${index}][price_per_night]`,
+        JSON.stringify(room.price_per_night),
       );
 
       // Append room image if available
@@ -510,7 +513,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
 
   return (
     <>
-      {(address && propertyData && propertyData.rooms) && (
+      {address && propertyData && propertyData.rooms && (
         <div className="property-details-container">
           <div className="property-details-form">
             <h2>Add Property Details</h2>
@@ -528,7 +531,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
                 <input
                   type="file"
                   name="images"
-                  multiple 
+                  multiple
                   onChange={(e) => handlePropertyImageChange(e)}
                   required
                 />
@@ -662,7 +665,9 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
                       <input
                         type="number"
                         name="weekday"
-                        value={propertyData.rooms[index].price_per_night.weekday}
+                        value={
+                          propertyData.rooms[index].price_per_night.weekday
+                        }
                         onChange={(e) => handleRoomChange(index, e)}
                         required
                       />
@@ -675,7 +680,9 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
                       <input
                         type="number"
                         name="weekend"
-                        value={propertyData.rooms[index].price_per_night.weekend}
+                        value={
+                          propertyData.rooms[index].price_per_night.weekend
+                        }
                         onChange={(e) => handleRoomChange(index, e)}
                         required
                       />
@@ -716,57 +723,107 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
                     <label>Room Image</label>
                     <input
                       type="file"
-                      multiple 
+                      multiple
                       onChange={(e) => handleRoomImageChange(index, e)}
                     />
                   </div>
                   {propertyData.rooms.length !== 0 && (
-                  
                     <>
-                        <div key={index}>
-                          <h3>Room {index + 1}</h3>
-                        <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1}>
-                        {
-                          room.images.map((image, imgidx) => (
-                          <div key={index} style={{ position: "relative", overflow: "visible" }}>
-                              <img src={image} alt={`Room ${index + 1} preview ${imgidx}`} style={{ width: "100%", height: "auto" }} />
-                             <button
-                          onClick={() => handleRemoveRoomImage(index, imgidx)}
-                          style={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "10px",
-                            backgroundColor: "rgba(255, 0, 0, 0.8)",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "50%",
-                            width: "30px",
-                            height: "30px",
-                            fontSize: "16px",
-                            cursor: "pointer",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
-                            zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
-                          }}
-                        >
-                          &times; {/* Dấu x */}
-                        </button>
-                          </div>
-                            
-                          ))
-                        }
-                        </Slider>
-                        </div>
-                        
+                      <div key={index}>
+                        <h3>Room {index + 1}</h3>
+                        {room.images &&
+                          room.images.length > 0 &&
+                          (room.images.length > 1 ? (
+                            // Nếu có hơn 1 ảnh, hiển thị slider
+                            <Slider
+                              dots={true}
+                              infinite={true}
+                              speed={500}
+                              slidesToShow={1}
+                              slidesToScroll={1}
+                            >
+                              {room.images.map((image, imgidx) => (
+                                <div
+                                  key={`${index}-${imgidx}`}
+                                  style={{
+                                    position: "relative",
+                                    overflow: "visible",
+                                  }}
+                                >
+                                  <img
+                                    src={image}
+                                    alt={`Room ${index + 1} preview ${imgidx}`}
+                                    style={{ width: "100%", height: "auto" }}
+                                  />
+                                  <button
+                                    onClick={() =>
+                                      handleRemoveRoomImage(index, imgidx)
+                                    }
+                                    style={{
+                                      position: "absolute",
+                                      top: "10px",
+                                      right: "10px",
+                                      backgroundColor: "rgba(255, 0, 0, 0.8)",
+                                      color: "white",
+                                      border: "none",
+                                      borderRadius: "50%",
+                                      width: "30px",
+                                      height: "30px",
+                                      fontSize: "16px",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                                      zIndex: 10000,
+                                    }}
+                                  >
+                                    &times;
+                                  </button>
+                                </div>
+                              ))}
+                            </Slider>
+                          ) : (
+                            // Nếu chỉ có 1 ảnh, hiển thị ảnh đơn giản
+                            <div style={{ position: "relative" }}>
+                              <img
+                                src={room.images[0]}
+                                alt={`Room ${index + 1} preview`}
+                                style={{ width: "100%", height: "auto" }}
+                              />
+                              <button
+                                onClick={() => handleRemoveRoomImage(index, 0)}
+                                style={{
+                                  position: "absolute",
+                                  top: "10px",
+                                  right: "10px",
+                                  backgroundColor: "rgba(255, 0, 0, 0.8)",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "50%",
+                                  width: "30px",
+                                  height: "30px",
+                                  fontSize: "16px",
+                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                                  zIndex: 10000,
+                                }}
+                              >
+                                &times;
+                              </button>
+                            </div>
+                          ))}
+                      </div>
                     </>
-                )}
+                  )}
 
                   <button
                     type="button"
                     className="remove-room-button"
-                    onClick={() => removeRoom(index)}
+                    onClick={() => removeRoom(index, room)}
                   >
                     Remove Room
                   </button>
@@ -814,49 +871,52 @@ const PropertyDetailsForm = ({ owner, longitude, latitude, initialData, type, se
             </p>
 
             {propertyData.images.length !== 0 && (
-                  <div className="image-slider" style={{ overflow: "visible", position: "relative" }}>
-                    <Slider
-                      dots={true}
-                      infinite={true}
-                      speed={500}
-                      slidesToShow={1}
-                      slidesToScroll={1}
-                    >
-                      {propertyData.images.map((image, idx) => (
-                        <div key={idx}>
-                          <img
-                            src={image}
-                            alt={`Property preview ${idx}`}
-                            style={{ width: "100%", height: "auto" }}
-                          />
-                          <button
-                          onClick={() => handleRemovePropertyImage(idx)}
-                          style={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "10px",
-                            backgroundColor: "rgba(255, 0, 0, 0.8)",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "50%",
-                            width: "30px",
-                            height: "30px",
-                            fontSize: "16px",
-                            cursor: "pointer",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
-                            zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
-                          }}
-                        >
-                          &times; {/* Dấu x */}
-                        </button>
-                        </div>
-                      ))}
-                    </Slider>
-                  </div>
-                )}
+              <div
+                className="image-slider"
+                style={{ overflow: "visible", position: "relative" }}
+              >
+                <Slider
+                  dots={true}
+                  infinite={true}
+                  speed={500}
+                  slidesToShow={1}
+                  slidesToScroll={1}
+                >
+                  {propertyData.images.map((image, idx) => (
+                    <div key={idx}>
+                      <img
+                        src={image}
+                        alt={`Property preview ${idx}`}
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                      <button
+                        onClick={() => handleRemovePropertyImage(idx)}
+                        style={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          backgroundColor: "rgba(255, 0, 0, 0.8)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "30px",
+                          height: "30px",
+                          fontSize: "16px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                          zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
+                        }}
+                      >
+                        &times; {/* Dấu x */}
+                      </button>
+                    </div>
+                  ))}
+                </Slider>
+              </div>
+            )}
 
             <div className="mini-mapp">
               <Map

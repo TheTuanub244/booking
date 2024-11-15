@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { getPropertyById } from '../../../api/propertyAPI';
-import "./PartnerPropertyDetail.css"
-import Slider from 'react-slick';
-import { findRoomByProperty } from '../../../api/roomAPI';
-import DashboardPage from '../partnerDashboard/DashboardPage';
-import PropertyDetailsForm from '../partnerRegister/PropertyDetailsForm';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { getPropertyById } from "../../../api/propertyAPI";
+import "./PartnerPropertyDetail.css";
+import Slider from "react-slick";
+import { findRoomByProperty } from "../../../api/roomAPI";
+import DashboardPage from "../partnerDashboard/DashboardPage";
+import PropertyDetailsForm from "../partnerRegister/PropertyDetailsForm";
 const PropertyDetail = ({ propertyId, tab, setTab }) => {
   const [property, setProperty] = useState(null);
-  const longitude = localStorage.getItem('longitude')
-  const latitude = localStorage.getItem('latitude')
-    const [rooms, setRooms] = useState()
+  const longitude = localStorage.getItem("longitude");
+  const latitude = localStorage.getItem("latitude");
+  const [rooms, setRooms] = useState();
   useEffect(() => {
     const getProperty = async () => {
-        const respone = await getPropertyById(propertyId)
-        setProperty(respone)
-        
-        if(respone){
-            localStorage.setItem('property', JSON.stringify(respone))
-            const findRoom = await findRoomByProperty(respone._id)
-            
-            if(findRoom){
-                setRooms(findRoom)
-            }
+      const respone = await getPropertyById(propertyId);
+      setProperty(respone);
+
+      if (respone) {
+        localStorage.setItem("property", JSON.stringify(respone));
+        const findRoom = await findRoomByProperty(respone._id);
+
+        if (findRoom) {
+          setRooms(findRoom);
         }
-    }
-    getProperty()
-  }, [propertyId]);
+      }
+    };
+    getProperty();
+  }, [propertyId, tab]);
 
   const settings = {
     dots: true,
@@ -36,99 +36,134 @@ const PropertyDetail = ({ propertyId, tab, setTab }) => {
     slidesToScroll: 1,
     arrows: true,
     nextArrow: <CustomNextArrow />,
-    prevArrow: <CustomPrevArrow />
+    prevArrow: <CustomPrevArrow />,
   };
   return (
     <>
-        {   
-        tab === 'info'? (
-            (property && rooms) && (
-                <div className="content-wrapper">
-                <section className="content-header">
-                  <h1>Property Details</h1>
-                </section>
-                <section className="content">
-                  <div className="card card-primary mx-auto">
-                    <div className="card-header">{property.name}</div>
-                    <div className="card-body">
-                      <p><strong>Description:</strong> {property.description}</p>
-                      <p><strong>Address:</strong> {`${property.address.street}, ${property.address.ward}, ${property.address.district}, ${property.address.province}`}</p>
-                      <p><strong>Property Type:</strong> {property.property_type}</p>
-                      <p><strong>Rating:</strong> {property.rate}</p>
-          
-                      <div>
-                        <h4>Images:</h4>
-                        <Slider {...settings}>
-                          {property.images.map((image, index) => (
-                            <div key={index} className="carousel-image">
-                              <img src={image} alt={`Property ${index + 1}`} className="img-thumbnail" />
-                            </div>
-                          ))}
-                        </Slider>
-                      </div>
-          
-                      <div className="rooms-section">
-                        <h3>Rooms</h3>
-                        {rooms.map((room, index) => (
-                          <div className="room-card" key={index}>
-                            <p className="room-info-title">{room.name}</p>
-                            <p className="room-detail"><strong>Type:</strong> {room.type}</p>
-                            <p className="room-detail"><strong>Size:</strong> {room.size} sqm</p>
-                            <p className="room-detail"><strong>Rating:</strong> {room.rating}/5</p>
-    
-                            {/* <p className="room-detail"><strong>Price per night:</strong> Weekday: ${room.price_per_night.weekday}, Weekend: ${room.price_per_night.weekend}</p> */}
-                            <p className="room-detail"><strong>Capacity:</strong> {room.capacity.adults} adults, {room.capacity.childs.count} children</p>
-                            <div className="room-facility-list">
-                                {room.facility.map((facility, idx) => (
-                                <span key={idx} className="room-facility-item">{facility}</span>
-                                ))}
-                            </div>
-    
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+      {tab === "info" ? (
+        property &&
+        rooms && (
+          <div className="content-wrapper">
+            <section className="content-header">
+              <h1>Property Details</h1>
+            </section>
+            <section className="content">
+              <div className="card card-primary mx-auto">
+                <div className="card-header">{property.name}</div>
+                <div className="card-body">
+                  <p>
+                    <strong>Description:</strong> {property.description}
+                  </p>
+                  <p>
+                    <strong>Address:</strong>{" "}
+                    {`${property.address.street}, ${property.address.ward}, ${property.address.district}, ${property.address.province}`}
+                  </p>
+                  <p>
+                    <strong>Property Type:</strong> {property.property_type}
+                  </p>
+                  <p>
+                    <strong>Rating:</strong> {property.rate}
+                  </p>
+
+                  <div>
+                    <h4>Images:</h4>
+                    <Slider {...settings}>
+                      {property.images.map((image, index) => (
+                        <div key={index} className="carousel-image">
+                          <img
+                            src={image}
+                            alt={`Property ${index + 1}`}
+                            className="img-thumbnail"
+                          />
+                        </div>
+                      ))}
+                    </Slider>
                   </div>
-                </section>
+
+                  <div className="rooms-section">
+                    <h3>Rooms</h3>
+                    {rooms.map((room, index) => (
+                      <div className="room-card" key={index}>
+                        <p className="room-info-title">{room.name}</p>
+                        <p className="room-detail">
+                          <strong>Type:</strong> {room.type}
+                        </p>
+                        <p className="room-detail">
+                          <strong>Size:</strong> {room.size} sqm
+                        </p>
+                        <p className="room-detail">
+                          <strong>Rating:</strong> {room.rating}/5
+                        </p>
+
+                        {/* <p className="room-detail"><strong>Price per night:</strong> Weekday: ${room.price_per_night.weekday}, Weekend: ${room.price_per_night.weekend}</p> */}
+                        <p className="room-detail">
+                          <strong>Capacity:</strong> {room.capacity.adults}{" "}
+                          adults, {room.capacity.childs.count} children
+                        </p>
+                        <div className="room-facility-list">
+                          {room.facility.map((facility, idx) => (
+                            <span key={idx} className="room-facility-item">
+                              {facility}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            )
-        ) : (
-            
-              tab === "update" ? (
-                <PropertyDetailsForm longitude={longitude} latitude={latitude} type={"update"} setTab={setTab} />
-              ) : (
-                <DashboardPage type={"property"} property={property}/>
-              )
-            
+            </section>
+          </div>
         )
-    }
+      ) : tab === "update" ? (
+        <PropertyDetailsForm
+          longitude={longitude}
+          latitude={latitude}
+          type={"update"}
+          setTab={setTab}
+        />
+      ) : (
+        <DashboardPage type={"property"} property={property} />
+      )}
     </>
   );
 };
 const CustomNextArrow = (props) => {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={className}
-        style={{ ...style, display: "block", fontSize: "24px", right: "-30px", color: "blue" }}
-        onClick={onClick}
-      >
-        <i className="fas fa-arrow-right"></i>
-      </div>
-    );
-  };
-  
-  const CustomPrevArrow = (props) => {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={className}
-        style={{ ...style, display: "block", fontSize: "24px", left: "-30px", color: "blue" }}
-        onClick={onClick}
-      >
-        <i className="fas fa-arrow-left"></i>
-      </div>
-    );
-  };
-  
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: "block",
+        fontSize: "24px",
+        right: "-30px",
+        color: "blue",
+      }}
+      onClick={onClick}
+    >
+      <i className="fas fa-arrow-right"></i>
+    </div>
+  );
+};
+
+const CustomPrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: "block",
+        fontSize: "24px",
+        left: "-30px",
+        color: "blue",
+      }}
+      onClick={onClick}
+    >
+      <i className="fas fa-arrow-left"></i>
+    </div>
+  );
+};
+
 export default PropertyDetail;

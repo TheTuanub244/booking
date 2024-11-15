@@ -245,7 +245,7 @@ export class BookingService {
   async getMonthlyRevenueByProperty(propety_id: string): Promise<any[]> {
     const objectIdPropertyId = new Types.ObjectId(propety_id);
     console.log(objectIdPropertyId);
-    
+
     const result = await this.bookingSchema.aggregate([
       {
         $match: {
@@ -332,7 +332,7 @@ export class BookingService {
       },
       { $sort: { '_id.year': 1 } },
     ]);
-    
+
     return result.map((item) => ({
       owner_id: item._id.owner_id,
       year: item._id.year,

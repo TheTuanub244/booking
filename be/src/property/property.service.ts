@@ -152,12 +152,12 @@ export class PropertyService {
 
       propertyData.rooms.map(async (value) => {
         value.capacity = JSON.parse(value.capacity);
-        value.pricePerNight = JSON.parse(value.pricePerNight);
+        value.price_per_night = JSON.parse(value.price_per_night);
         value.size = parseInt(value.size);
         value.images = Array.isArray(value.images)
           ? value.images
           : [value.images];
-        value.price_per_night = value.pricePerNight;
+        value.price_per_night = value.price_per_night;
         value.property_id = savedProperty._id;
 
         await this.roomService.updateRoom(value);
@@ -182,12 +182,12 @@ export class PropertyService {
       );
       propertyData.rooms.map(async (value) => {
         value.capacity = JSON.parse(value.capacity);
-        value.pricePerNight = JSON.parse(value.pricePerNight);
+        value.price_per_night = JSON.parse(value.price_per_night);
         value.size = parseInt(value.size);
         value.images = Array.isArray(value.images)
           ? value.images
           : [value.images];
-        value.price_per_night = value.pricePerNight;
+        value.price_per_night = value.price_per_night;
         value.property_id = savedProperty._id;
 
         await this.roomService.updateRoom(value);
@@ -222,10 +222,10 @@ export class PropertyService {
 
       propertyData.rooms.map(async (value) => {
         value.capacity = JSON.parse(value.capacity);
-        value.pricePerNight = JSON.parse(value.pricePerNight);
+        value.price_per_night = JSON.parse(value.price_per_night);
         value.size = parseInt(value.size);
         value.images = [value.images];
-        value.price_per_night = value.pricePerNight;
+        value.price_per_night = value.price_per_night;
         value.property_id = savedProperty._id;
 
         await this.roomService.createRoom(value);

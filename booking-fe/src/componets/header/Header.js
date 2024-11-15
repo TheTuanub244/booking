@@ -14,6 +14,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { findAvailableRoomWithSearch } from "../../api/roomAPI";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 function Header({ type, places, getHistory }) {
   const [openDate, setOpenDate] = useState(false);
@@ -52,7 +53,7 @@ function Header({ type, places, getHistory }) {
 
   const checkAdults = options.adult > 1 ? "adults" : "adult";
   const checkRooms = options.room > 1 ? "rooms" : "room";
-
+  const navigate = useNavigate()
   const [province, setProvince] = useState("");
 
   const handleChangeProvince = (e) => {
@@ -82,11 +83,11 @@ function Header({ type, places, getHistory }) {
         room: options.room,
       },
     };
-
-    const respone = await findAvailableRoomWithSearch(data);
+    localStorage.setItem('option', JSON.stringify(data))
     if (userId) {
       getHistory(userId);
     }
+    navigate('/searchResult')
   };
   const [showSuggestions, setShowSuggestions] = useState(false);
   const handleSelectSuggestion = async (province) => {

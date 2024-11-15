@@ -18,11 +18,11 @@ export class ReviewController {
     return this.reviewService.findReviewWithProperty(property_id.property_id);
   }
   @Get('getMonthlyRating/:id')
-  async getMonthlyRating(@Param('id') id: any){
-    return this.reviewService.getMonthlyRating(id)
+  async getMonthlyRating(@Param('id') id: any) {
+    return this.reviewService.getMonthlyRating(id);
   }
   @Get('getMonthlyRatingByProperty/:id')
-  async getMonthlyRatingByProperty(@Param('id') id: any){
-    return this.reviewService.getMonthlyRatingByProperty(id)
+  async getMonthlyRatingByProperty(@Param('id') id: any) {
+    return this.reviewService.getMonthlyRatingByProperty(id);
   }
 }

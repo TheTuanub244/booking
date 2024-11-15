@@ -13,6 +13,7 @@ import ProperyList from "./pages/partner/propertylist/PropertyList";
 import InformationDashboard from "./pages/partner/informationDashboard/InformationDashboard";
 import Payment from "./pages/payment/Payment";
 import PartnerPropertyDetailPage from "./pages/partner/propertyDetail/PartnerPropertyDetailPage";
+import SearchResult from "./pages/searchResult/SearchResult";
 
 function App() {
   return (
@@ -43,7 +44,10 @@ function App() {
           path="/partner/partnerPropertyDetailPage/:id"
           element={<PartnerPropertyDetailPage />}
         />
-
+        <Route
+          path="/searchResult"
+          element={<SearchResult />}
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -11,7 +11,6 @@
   gap: 15px;
 }
 
-
 .leftContent {
   flex: 3;
   padding: 2px;
@@ -31,7 +30,6 @@
   margin: 0px;
   margin-bottom: 10px;
   font-size: 17px;
-
 }
 
 .address {
@@ -44,7 +42,7 @@
 }
 
 .infoEvaluation {
-  margin:5px 0px;
+  margin: 5px 0px;
   display: flex;
   align-items: center;
 }
@@ -63,7 +61,6 @@
 .infoReview {
   font-size: 13px;
   color: gray;
-  
 }
 
 .infoScore {
@@ -81,13 +78,12 @@
   vertical-align: baseline;
   width: 28px;
   height: 28px;
-
 }
 
 .infoExtra {
   display: flex;
   flex-direction: column;
-  gap:3px;
+  gap: 3px;
 }
 
 .iconWifi {
@@ -117,18 +113,18 @@
 
 .bookingDetails h3 {
   font-size: 18px;
-  margin:8px 0px;
-
+  margin: 8px 0px;
 }
 
 .timeBooking {
   display: flex;
-  gap:8px;
+  gap: 8px;
   margin-top: 15px;
   margin-bottom: 18px;
 }
 
-.checkInTime, .checkOutTime {
+.checkInTime,
+.checkOutTime {
   font-size: 16px;
   font-weight: bold;
   margin: 5px 0px;
@@ -139,7 +135,8 @@
   border-right: 1px solid #e7e7e7;
 }
 
-.checkInFrom , .checkOutUntil {
+.checkInFrom,
+.checkOutUntil {
   font-size: 15px;
   font-weight: 200;
 }
@@ -149,7 +146,7 @@
 }
 
 .lengthStayTitle {
-  font-size:14px;
+  font-size: 14px;
   margin-bottom: 3px;
 }
 
@@ -177,14 +174,12 @@
   background-color: rgba(0, 0, 0, 0);
   font-size: 15px;
   color: #006ce4;
-  border-radius:8px;
+  border-radius: 8px;
   transition: all 0.3s ease;
   padding: 8px 10px;
   cursor: pointer;
-  font-weight: 600; 
+  font-weight: 600;
 }
-
-
 
 .changeSelection:hover {
   background-color: #d8e7fc;
@@ -204,29 +199,20 @@
   margin-left: 10px;
 }
 
-
-.totalPrice {  
+.totalPrice {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #ebf3fe;
   padding: 30px 8px;
-
 }
 
-.textLeft , .textRight {
+.textLeft,
+.textRight {
   font-size: 22px;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
 }
-
-
-
-
-
-
-
-
 
 .rightContent {
   flex: 7;

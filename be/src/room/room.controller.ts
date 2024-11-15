@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -67,5 +68,10 @@ export class RoomController {
   async getMonthlyOccupancyRatesByProperty(@Param('id') id: any) {
     return this.roomService.getMonthlyOccupancyRatesByProperty(id, 2024);
   }
-  
+  @Delete(`deleteRoomById/:id`)
+  async deleteRoomById(@Param('id') id: ObjectId) {
+    console.log(id);
+
+    return this.roomService.deleteRoom(id);
+  }
 }

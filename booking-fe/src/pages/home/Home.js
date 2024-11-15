@@ -48,7 +48,7 @@ function Home() {
   };
   const getNear = async (lon, lat) => {
     const data = await getPropertyNear(lon, lat);
-    
+
     setPropertyNear(data);
   };
   useEffect(() => {
@@ -93,9 +93,7 @@ function Home() {
         <h1 className="homeTitle">Browse by property type</h1>
         <PropertyList propertyType={propertyType} />
         <h1 className="homeTitle">Quick and easy trip planner</h1>
-        {
-          propertyNear && <EasyTrip propertyNear={propertyNear} />
-        }
+        {propertyNear && <EasyTrip propertyNear={propertyNear} />}
         <h1 className="homeTitle">Home guests love</h1>
         <FeaturedProperties />
 

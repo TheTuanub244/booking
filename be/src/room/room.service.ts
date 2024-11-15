@@ -31,8 +31,26 @@ export class RoomService {
     return newRoom.save();
   }
   async updateRoom(room: any) {
-    const savedUpdateRoom = await this.roomSchema.findByIdAndUpdate(room._id, room);
-    return savedUpdateRoom;
+    if (!room._id || room._id === 'undefined') {
+      delete room._id;
+    }
+
+    if (room._id) {
+      const findRoom = await this.roomSchema.findById(room._id);
+
+      if (!findRoom) {
+        throw new Error('Room not found');
+      }
+
+      return await findRoom.updateOne(room);
+    } else {
+      const newRoom = new this.roomSchema(room);
+      const savedRoom = await newRoom.save();
+      return savedRoom;
+    }
+  }
+  async deleteRoom(id: ObjectId) {
+    return await this.roomSchema.findByIdAndDelete(id);
   }
   async countRoomWithPropety(property_id: mongoose.Types.ObjectId) {
     return await this.roomSchema.countDocuments({ property_id });
@@ -45,10 +63,11 @@ export class RoomService {
       .populate('property_id');
   }
   async findAvailableRoomWithProperty(property_id: mongoose.Types.ObjectId) {
-    const existedRoom = await this.roomSchema.find({
-      $and: [{ property_id: property_id }, { 'capacity.room': { $gt: 0 } }],
-    });
-
+    const existedRoom = await this.roomSchema
+      .find({
+        $and: [{ property_id: property_id }, { 'capacity.room': { $gt: 0 } }],
+      })
+      .populate('property_id');
     return existedRoom;
   }
   async isDuplicateSearch(

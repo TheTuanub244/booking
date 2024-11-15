@@ -1,0 +1,110 @@
+
+
+.search-result-container {
+    display: flex;
+    padding: 20px;
+    flex-direction: row;
+}
+
+.map-container {
+    width: 30%;
+    height: 200px;
+    background-color: #f0f0f0;
+    margin-right: 20px;
+    /* Thêm các thuộc tính cho bản đồ ở đây */
+}
+
+.main-content {
+    width: 70%;
+}
+
+.header-search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-search h1 {
+    font-size: 24px;
+}
+
+.sort-button {
+    background-color: #ffcc00;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.filter-section {
+    width: 90%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fafafa;
+    margin-right: 20px;
+}
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group h4 {
+    margin-bottom: 5px;
+}
+
+.results-list {
+    width: 100%;
+}
+
+
+
+
+.room-details {
+    list-style: none;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.green-text {
+    color: green;
+}
+
+.price-info {
+    font-size: 16px;
+    color: #333;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.discounted-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.availability-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+
+
+
+.reviews {
+    color: #555;
+}
+
+.review-count {
+    font-size: 12px;
+    color: #888;
+}

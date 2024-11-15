@@ -4,7 +4,7 @@ import OccupancyRateChart from "../components/OccupancyRateChart";
 import RevenueChart from "../components/RevenueChart";
 import AverageRatingChart from "../components/AverageRatingChart";
 
-const DashboardPage = ({type, property}) => {
+const DashboardPage = ({ type, property }) => {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [occupancyRate, setOccupancyRate] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
@@ -27,10 +27,22 @@ const DashboardPage = ({type, property}) => {
       </div>
 
       <div className="dashboard-charts">
-        <RevenueChart setTotalRevenue={setTotalRevenue} type={type} property={property}/>
-        <OccupancyRateChart setTotalOccupancyRate={setOccupancyRate} type={type}  property={property}/>
+        <RevenueChart
+          setTotalRevenue={setTotalRevenue}
+          type={type}
+          property={property}
+        />
+        <OccupancyRateChart
+          setTotalOccupancyRate={setOccupancyRate}
+          type={type}
+          property={property}
+        />
         {/* <Mont /> */}
-        <AverageRatingChart setAverageRating={setAverageRating} type={type} property={property}/>
+        <AverageRatingChart
+          setAverageRating={setAverageRating}
+          type={type}
+          property={property}
+        />
       </div>
     </div>
   );

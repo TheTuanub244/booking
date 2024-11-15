@@ -57,3 +57,10 @@ export const getMonthlyOccupancyRatesByProperty = async (id) => {
   return respone.data;
 };
 
+export const deleteRoomById = async (roomId) => {
+  const respone = await axios.delete(
+    `http://localhost:8000/room/deleteRoomById/${roomId}`,
+  );
+
+  return respone.data;
+};

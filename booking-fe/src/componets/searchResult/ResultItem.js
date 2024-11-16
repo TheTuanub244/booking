@@ -1,13 +1,16 @@
 import React from "react";
 import "./ResultItem.css"
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const ResultItem = ({ property, index }) => {
-    const option = JSON.parse(localStorage.getItem('option'))
+    
+    const location = useLocation()
 
-    const checkAdults = option.capacity.adults  > 1 ? "adults" : "adult";
-    const checkRooms = option.capacity.room > 1 ? "rooms" : "room";
-    const checkIn = new Date(option.check_in);
-    const checkOut = new Date(option.check_out);
+    console.log(location.state?.option.capacity);
+    
+    const checkAdults = location.state?.option.capacity.adults  > 1 ? "adults" : "adult";
+    const checkRooms = location.state?.option.capacity.room > 1 ? "rooms" : "room";
+    const checkIn = new Date(location.state?.option.check_in);
+    const checkOut = new Date(location.state?.option.check_out);
     const differenceInTime = checkOut - checkIn;
     const navigate = useNavigate()
     const nights = differenceInTime / (1000 * 60 * 60 * 24);
@@ -71,7 +74,7 @@ const ResultItem = ({ property, index }) => {
                             fontSize: '12px',
                             marginLeft: '50%',
                             width: '100%'
-                        }}>{nights} {checkNights}, {option.capacity.adults} {checkAdults}, {option.capacity.room} {checkRooms}</p>
+                        }}>{nights} {checkNights}, {location.state?.option.capacity.adults} {checkAdults}, {location.state?.option.capacity.room} {checkRooms}</p>
                         <p style={{
                             fontSize: '20px',
                             marginLeft: '60%',

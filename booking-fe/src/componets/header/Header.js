@@ -19,13 +19,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 function Header({ type, places, promptData }) {
   const [openDate, setOpenDate] = useState(false);
+  const [placesToShowDropDown, setPlacesToShowDropDown] = useState()
   const location = useLocation()
   const latitude = localStorage.getItem('latitude')
   const longitude = localStorage.getItem('longitude')
+  const oneDayLater = new Date()
+  useEffect(() => {
+    setPlacesToShowDropDown(places)
+  }, [])
   const [date, setDate] = useState([
     {
       startDate: new Date(),
-      endDate: new Date(),
+      endDate: oneDayLater.setDate(oneDayLater.getDate() + 1),
       key: "selection",
     },
   ]);
@@ -61,8 +66,9 @@ function Header({ type, places, promptData }) {
   const [province, setProvince] = useState("");
 
   const handleChangeProvince = (e) => {
-    
     setProvince(e.target.value);
+    const searchPlace = places.filter((place) =>  place.includes(e.target.value))
+    setPlacesToShowDropDown(searchPlace)
   };
 
   const [openOptions, setOpenOptions] = useState(false);
@@ -173,13 +179,14 @@ function Header({ type, places, promptData }) {
               required
             />
           </div>
-          {showSuggestions && places && (
+          {showSuggestions && placesToShowDropDown && (
             <div className="suggestionsDropdown">
               <div className="suggestionsTitle">
                 Popular destinations nearby
               </div>
-              {places.map((place, index) => (
-                <div
+              {placesToShowDropDown.map((place, index) => (
+                index < 6 && (
+                  <div
                   key={index}
                   className="suggestionItem"
                   onMouseDown={() => handleSelectSuggestion(place)}
@@ -192,6 +199,7 @@ function Header({ type, places, promptData }) {
                     <div className="suggestionName">{place}</div>
                   </div>
                 </div>
+                )
               ))}
             </div>
           )}

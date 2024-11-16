@@ -8,11 +8,19 @@ import { findAvailableRoomWithSearch } from "../../api/roomAPI";
 import PropertyMap from "../../componets/partner/partnerRegister/Map";
 import Loading from "../../componets/loading/Loading";
 import { getSessionHistory } from "../../api/sessionAPI";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 const SearchResult = () => {
-    // const option = JSON.parse(localStorage.getItem('option'))
     const location = useLocation()
 
+    // const option = JSON.parse(localStorage.getItem('option'))
+    const queryString = location.search;
+    
+    const params = new URLSearchParams(queryString)
+    
+    useEffect(() => {
+        console.log(params.get("place"));
+        
+    }, [])
     const [allPlace, setAllPlace] = useState();
     const option = location.state?.option
     

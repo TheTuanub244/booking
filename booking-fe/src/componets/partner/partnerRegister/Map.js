@@ -111,10 +111,8 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
             attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
           />
 
-          {/* User's location with larger marker */}
           <LocationMarker />
 
-          {/* Markers for other properties */}
           {properties.length !== 0 &&
             properties.map((property) => (
               property.value && (

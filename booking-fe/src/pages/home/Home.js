@@ -78,7 +78,7 @@ function Home() {
   return (
     <div>
       <Navbar />
-      <Header places={allPlace} getHistory={getHistory} />
+      <Header places={allPlace} />
       <div className="homeContainer">
         {userId && sessionHistory && (
           <RecentRearch

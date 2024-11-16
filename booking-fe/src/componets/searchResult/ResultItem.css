@@ -15,7 +15,10 @@
     height: 500px;
     background-color: #f0f0f0;
     margin-right: 20px;
-    /* Thêm các thuộc tính cho bản đồ ở đây */
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .main-content {

@@ -45,11 +45,92 @@
 .property-marker-container {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
+.property-price {
+  position: absolute;
+  top: -40px; /* Đặt giá phía trên marker */
+  background-color: #003580; /* Màu nền xanh đậm */
+  color: white; /* Màu chữ trắng */
+  font-size: 14px; /* Kích thước chữ */
+  font-weight: bold; /* Chữ đậm */
+  padding: 5px 10px; /* Khoảng cách bên trong */
+  border-radius: 5px; /* Bo góc cho khung chữ */
+  white-space: nowrap; /* Không xuống dòng */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Tạo hiệu ứng bóng */
+}
 
-/* Shadow with 3D effect around the property marker */
+/* Mũi tên phía dưới giá */
+.property-price::after {
+  content: "";
+  position: absolute;
+  bottom: -5px; /* Đặt mũi tên ở phía dưới */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px; /* Kích thước mũi tên */
+  border-style: solid;
+  border-color: #003580 transparent transparent transparent; /* Màu xanh đậm */
+}
+.popup-content {
+  display: flex;
+  width: 400px; 
+  height: 150px; 
+  font-family: Arial, sans-serif;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden; /* Đảm bảo ảnh không bị tràn */
+}
+
+.popup-left {
+  flex: 3; /* 30% chiều rộng */
+  height: 100%; /* Chiều cao bằng với toàn bộ popup */
+}
+
+.popup-image {
+  width: 100%; /* Lấp đầy chiều ngang container */
+  height: 100%; /* Lấp đầy chiều cao container */
+  object-fit: cover; /* Giữ tỷ lệ ảnh và cắt ảnh để vừa container */
+}
+
+.popup-right {
+  flex: 7; /* 70% chiều rộng */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.popup-image {
+  width: 200px; /* Lấp đầy chiều ngang container */
+  height: 200px; /* Lấp đầy chiều dọc container */
+  object-fit: cover; /* Cắt ảnh vừa khung mà không bị méo */
+}
+.popup-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.popup-rate {
+  font-size: 14px;
+  color: #555;
+}
+
+.popup-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0071c2;
+  margin: 5px 0;
+}
+
+.popup-room-type {
+  font-size: 14px;
+  color: #888;
+}
+
 .property-marker-shadow {
   position: absolute;
   bottom: -25px; /* Position the shadow slightly below the marker */

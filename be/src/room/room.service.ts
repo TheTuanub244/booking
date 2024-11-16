@@ -55,6 +55,32 @@ export class RoomService {
   async countRoomWithPropety(property_id: mongoose.Types.ObjectId) {
     return await this.roomSchema.countDocuments({ property_id });
   }
+  async getAllRoomWithTotalPrice({
+    check_in,
+    check_out,
+    capacity,
+    userId,
+    place,
+  }) {
+    const uniqueMap = new Map();
+    const availableRoom = await this.findAvailableRoomWithSearch(
+      userId,
+      place,
+      check_in,
+      check_out,
+      capacity,
+    );
+     availableRoom.forEach(item => {
+        const propertyId = item.value.property_id._id;
+
+        if (!uniqueMap.has(propertyId)) {
+            uniqueMap.set(propertyId, item);
+        }
+    });
+    const uniquedProperties = Array.from(uniqueMap.values())
+    
+    return uniquedProperties;
+  }
   async getRoomWithProperty(property_id: ObjectId) {
     return this.roomSchema
       .find({
@@ -68,6 +94,7 @@ export class RoomService {
         $and: [{ property_id: property_id }, { 'capacity.room': { $gt: 0 } }],
       })
       .populate('property_id');
+
     return existedRoom;
   }
   async isDuplicateSearch(
@@ -104,9 +131,14 @@ export class RoomService {
     check_out,
     capacity,
   ) {
-    const findProperties = await this.propertySchema.find({
-      'address.province': place,
-    });
+    let findProperties;
+    if (place === 'all') {
+      findProperties = await this.propertySchema.find();
+    } else {
+      findProperties = await this.propertySchema.find({
+        'address.province': place,
+      });
+    }
 
     const availableRoom = [];
     await Promise.all(
@@ -133,39 +165,41 @@ export class RoomService {
                   check_out_date: check_out,
                 });
 
-              availableRoom.push({value, totalPriceNight});
+              availableRoom.push({ value, totalPriceNight });
             }
           }),
         );
       }),
     );
 
-    const session = await this.sessionSchema.findOne({ userId });
-    if (!session) throw new Error('Session not found');
+    if (userId) {
+      const session = await this.sessionSchema.findOne({ userId });
+      if (!session) throw new Error('Session not found');
 
-    // Use the custom comparison function
-    const isDuplicate = await this.isDuplicateSearch(session.recent_search, {
-      place,
-      capacity,
-      checkIn: new Date(check_in),
-      checkOut: new Date(check_out),
-    });
+      // Use the custom comparison function
+      const isDuplicate = await this.isDuplicateSearch(session.recent_search, {
+        place,
+        capacity,
+        checkIn: new Date(check_in),
+        checkOut: new Date(check_out),
+      });
 
-    if (!isDuplicate) {
-      await this.sessionSchema.findOneAndUpdate(
-        {
-          userId,
-        },
-        {
-          $push: {
-            recent_search: {
-              $each: [{ province: place, check_in, check_out, capacity }],
-              $slice: -3,
+      if (!isDuplicate) {
+        await this.sessionSchema.findOneAndUpdate(
+          {
+            userId,
+          },
+          {
+            $push: {
+              recent_search: {
+                $each: [{ province: place, check_in, check_out, capacity }],
+                $slice: -3,
+              },
             },
           },
-        },
-        { new: true },
-      );
+          { new: true },
+        );
+      }
     }
 
     return availableRoom;

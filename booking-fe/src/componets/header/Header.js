@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBed,
@@ -14,10 +15,13 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { findAvailableRoomWithSearch } from "../../api/roomAPI";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-function Header({ type, places, getHistory, promptData }) {
+function Header({ type, places, promptData }) {
   const [openDate, setOpenDate] = useState(false);
+  const location = useLocation()
+  const latitude = localStorage.getItem('latitude')
+  const longitude = localStorage.getItem('longitude')
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -57,6 +61,7 @@ function Header({ type, places, getHistory, promptData }) {
   const [province, setProvince] = useState("");
 
   const handleChangeProvince = (e) => {
+    
     setProvince(e.target.value);
   };
 
@@ -68,12 +73,13 @@ function Header({ type, places, getHistory, promptData }) {
     setSelectedAge(e.target.value);
   };
   const handleClick = async (e) => {
+    
     const userId = localStorage.getItem("userId");
     const data = {
       userId,
       place: province,
-      check_in: new Date(date[0].startDate).toISOString().split("T")[0],
-      check_out: new Date(date[0].endDate).toISOString().split("T")[0],
+      check_in: moment(date[0].startDate).format("YYYY-MM-DD"),
+      check_out: moment(date[0].endDate).format("YYYY-MM-DD"),
       capacity: {
         adults: options.adult,
         childs: {
@@ -84,11 +90,9 @@ function Header({ type, places, getHistory, promptData }) {
       },
     };
     data.province = data.place
-    localStorage.setItem('option', JSON.stringify(data))
-    if (userId) {
-      getHistory(userId);
-    }
-    navigate('/searchResult')
+    navigate('/searchResult', {
+      state: { option: data, longitude, latitude }
+    })
   };
   const [showSuggestions, setShowSuggestions] = useState(false);
   const handleSelectSuggestion = async (province) => {
@@ -105,8 +109,9 @@ function Header({ type, places, getHistory, promptData }) {
         children: promptData.capacity.childs.count,
         room: promptData.capacity.room
       })
+      setProvince(promptData.place)
     }
-  }, [promptData])
+  }, [])
   return (
     <div className="header">
       <div
@@ -160,7 +165,7 @@ function Header({ type, places, getHistory, promptData }) {
               type="text"
               placeholder="Where are you going?"
               className="headerSearchInput"
-              value={promptData ? promptData.place : province}
+              value={province}
               onChange={(e) => handleChangeProvince(e)}
               required
             />
@@ -200,7 +205,11 @@ function Header({ type, places, getHistory, promptData }) {
             {openDate && (
               <DateRange
                 editableDateInputs={true}
-                onChange={(item) => setDate([item.selection])}
+                onChange={(item) => {
+                  
+                  setDate([item.selection || item.range1])
+                  
+                }}
                 moveRangeOnFirstSelection={false}
                 ranges={date}
                 className="date"

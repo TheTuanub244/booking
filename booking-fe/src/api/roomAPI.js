@@ -64,3 +64,10 @@ export const deleteRoomById = async (roomId) => {
 
   return respone.data;
 };
+export const getAllRoomWithTotalPrice = async (check_in, check_out, capacity, userId) => {
+  const respone = await axios.post(
+    `http://localhost:8000/room/getAllRoomWithTotalPrice`, {check_in, check_out, place: "all", capacity, userId}
+  );
+
+  return respone.data;
+}

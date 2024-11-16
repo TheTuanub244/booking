@@ -37,7 +37,7 @@ const PropertyDetailsForm = ({
   });
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const getAllPropetyByOwner = async (userId) => {
-    const data = await getPropertyByOwner(userId);
+    const data = await getPropertyByOwner(userId, 1, 5);
     setPropertyData(data);
   };
   const handleGetPropertyById = async () => {
@@ -185,7 +185,6 @@ const PropertyDetailsForm = ({
       const files = Array.from(e.target.files);
       const newImages = [];
       const newImage = [];
-      console.log(files);
 
       files.forEach((file) => {
         const reader = new FileReader();
@@ -203,7 +202,8 @@ const PropertyDetailsForm = ({
                 images: [...newImages],
                 image: [...newImage],
               };
-
+              console.log(updatedRooms);
+              
               return {
                 ...prevData,
                 rooms: updatedRooms,
@@ -216,18 +216,21 @@ const PropertyDetailsForm = ({
       });
     } else {
       const file = e.target.files[0];
+      console.log(file);
+      
       const updatedRooms = [...propertyData.rooms];
 
       updatedRooms[index].image = file;
 
       if (file) {
         const reader = new FileReader();
-
+        
         reader.onloadend = () => {
           const updatedRooms = [...propertyData.rooms];
+          
           updatedRooms[index] = {
             ...updatedRooms[index],
-            images: reader.result,
+            images: [reader.result],
           };
 
           setPropertyData({
@@ -356,6 +359,8 @@ const PropertyDetailsForm = ({
     });
   };
   const updateProperty = async () => {
+    console.log(1);
+    
     const accessToken = localStorage.getItem("accessToken");
     const userId = localStorage.getItem("userId");
     propertyData.owner_id = userId;
@@ -645,7 +650,7 @@ const PropertyDetailsForm = ({
                       <input
                         type="number"
                         name="adults"
-                        value={room.capacity.childs.count}
+                        value={room.capacity.adults}
                         onChange={(e) =>
                           handleRoomCapacityChange(
                             index,
@@ -734,7 +739,6 @@ const PropertyDetailsForm = ({
                         {room.images &&
                           room.images.length > 0 &&
                           (room.images.length > 1 ? (
-                            // Nếu có hơn 1 ảnh, hiển thị slider
                             <Slider
                               dots={true}
                               infinite={true}

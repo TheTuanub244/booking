@@ -216,6 +216,9 @@ export class PropertyService {
           images: roomImageUrls[index] || null,
         })),
       };
+      if (!propertyData._id || propertyData._id === 'undefined') {
+        delete propertyData._id;
+      }
       const newProperty = new this.propertySchema(propertyData);
 
       const savedProperty = await newProperty.save();

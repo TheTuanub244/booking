@@ -99,11 +99,14 @@ function Header({ type, places, promptData }) {
     setProvince(province);
   };
   useEffect(() => {
+    
     if(promptData){
+      
       setDate([{
         endDate: new Date(promptData.check_out),
         startDate: new Date(promptData.check_in)
       }])
+      
       setOptions({
         adult: promptData.capacity.adults,
         children: promptData.capacity.childs.count,
@@ -111,7 +114,7 @@ function Header({ type, places, promptData }) {
       })
       setProvince(promptData.place)
     }
-  }, [])
+  }, [promptData])
   return (
     <div className="header">
       <div

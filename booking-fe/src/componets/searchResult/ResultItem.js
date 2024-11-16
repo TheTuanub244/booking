@@ -1,5 +1,6 @@
 import React from "react";
 import "./ResultItem.css"
+import { useNavigate } from "react-router-dom";
 const ResultItem = ({ property, index }) => {
     const option = JSON.parse(localStorage.getItem('option'))
 
@@ -8,7 +9,7 @@ const ResultItem = ({ property, index }) => {
     const checkIn = new Date(option.check_in);
     const checkOut = new Date(option.check_out);
     const differenceInTime = checkOut - checkIn;
-
+    const navigate = useNavigate()
     const nights = differenceInTime / (1000 * 60 * 60 * 24);
     const checkNights = nights > 1 ? "nights" : "night"
     const formatCurrency = (value) => {
@@ -78,7 +79,7 @@ const ResultItem = ({ property, index }) => {
                             color: 'black',
                             width: '100%'
                         }}>{formatCurrency(property.totalPriceNight)}</p>
-                        <button className="availability-button">See availability</button>
+                        <button className="availability-button" > See availability</button>
 
                     </div>
                 </div>

@@ -9,8 +9,24 @@ function RecentRearch({ data, getHistory }) {
     const userId = localStorage.getItem("userId");
     item.place = item.province
     item.userId = userId
+    const latitude = localStorage.getItem('latitude')
+    const longitude = localStorage.getItem('longitude')
     localStorage.setItem('option', JSON.stringify(item))
-    navigate('/searchResult')
+
+    navigate('/searchResult', {state: { option: {
+      check_in: item.check_in,
+      check_out: item.check_out,
+      place: item.place,
+      province: item.province,
+      capacity:{
+        adults: item.capacity.adults,
+        childs: {
+          count: item.capacity.childs.count,
+          age: item.capacity.childs.age
+        },
+        room: item.capacity.room
+      }
+    }, longitude, latitude }})
     if (userId) {
       item.userId = userId;
       getHistory(userId);

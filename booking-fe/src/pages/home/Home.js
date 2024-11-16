@@ -29,6 +29,7 @@ function Home() {
   const [allPlace, setAllPlace] = useState();
   const [userId, setUserId] = useState();
   const [propertyType, setPropertyType] = useState();
+  const [promptData, setPromptData] = useState()
   const navigate = useNavigate();
   const propertyByRates = async () => {
     const response = await getPropertyByRates();

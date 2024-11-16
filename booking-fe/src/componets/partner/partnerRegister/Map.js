@@ -28,6 +28,7 @@ const createUserMarkerIcon = () => {
   });
 };
 const createPropertyMarkerIcon = (totalPriceNight) => {
+  
   return L.divIcon({
     className: "property-marker-container fall-down", // Thêm lớp `fall-down`
     html: ` <div class="property-marker">
@@ -35,7 +36,11 @@ const createPropertyMarkerIcon = (totalPriceNight) => {
                 <div class="icon">
                     ${ReactDOMServer.renderToString(<FontAwesomeIcon icon={faLocationDot} style={{ color: "#74C0FC" }} />)}
                 </div>
-                 <div class="property-price">${totalPriceNight}</div>
+                  ${totalPriceNight && (
+                    ReactDOMServer.renderToString(<div class="property-price">{totalPriceNight}</div>)
+                  )
+                } 
+                
             </div>`,
     iconSize: [25, 25],
     iconAnchor: [12, 25],
@@ -132,7 +137,7 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
                           <div class="popup-right">
                             <h3 class="popup-title">${property.value.property_id.name}</h3>
                             <p class="popup-rate">Rating: ${property.value.property_id.rate || "N/A"}</p>
-                            <p class="popup-price">${formatCurrency(property.value.totalPriceNight)}</p>
+                            <p class="popup-price">${formatCurrency(property.totalPriceNight)}</p>
                             <p class="popup-room-type">${property.value.name}</p>
                           </div>
                         </div>

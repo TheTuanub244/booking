@@ -51,15 +51,15 @@
 }
 .property-price {
   position: absolute;
-  top: -40px; /* Đặt giá phía trên marker */
-  background-color: #003580; /* Màu nền xanh đậm */
-  color: white; /* Màu chữ trắng */
-  font-size: 14px; /* Kích thước chữ */
-  font-weight: bold; /* Chữ đậm */
-  padding: 5px 10px; /* Khoảng cách bên trong */
-  border-radius: 5px; /* Bo góc cho khung chữ */
-  white-space: nowrap; /* Không xuống dòng */
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Tạo hiệu ứng bóng */
+  top: -30px; 
+  background-color: #003580; 
+  color: white; 
+  font-size: 14px; 
+  font-weight: bold; 
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  white-space: nowrap;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); 
 }
 
 /* Mũi tên phía dưới giá */
@@ -75,38 +75,50 @@
 }
 .popup-content {
   display: flex;
-  width: 400px; 
-  height: 150px; 
+  width: 500px; 
+  height: 400px; 
   font-family: Arial, sans-serif;
-  background-color: white;
   border-radius: 8px;
-  overflow: hidden; /* Đảm bảo ảnh không bị tràn */
+  overflow: hidden;
+  justify-content: space-between; 
+}
+.leaflet-popup-content-wrapper {
+  padding: 0;
+  padding-left: -40px;
+}
+
+.leaflet-popup-content {
+  margin: 0; 
+  display: flex; 
+  width: 600px;
+  border-radius: 8px;
+  overflow: hidden; 
+  height: 200px;
 }
 
 .popup-left {
-  flex: 3; /* 30% chiều rộng */
-  height: 100%; /* Chiều cao bằng với toàn bộ popup */
+  height: 150px; 
+  margin-left: -20px;
+  width: 50%;
 }
 
 .popup-image {
-  width: 100%; /* Lấp đầy chiều ngang container */
-  height: 100%; /* Lấp đầy chiều cao container */
-  object-fit: cover; /* Giữ tỷ lệ ảnh và cắt ảnh để vừa container */
+
+  width: 150px; 
+  height: 150px; 
+  margin-left: -20px;
 }
 
 .popup-right {
-  flex: 7; /* 70% chiều rộng */
-  padding: 10px;
+  width: 60%;
+  margin-left: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+}
+.popup-right p{
+  margin: 6px 0;
 }
 
-.popup-image {
-  width: 200px; /* Lấp đầy chiều ngang container */
-  height: 200px; /* Lấp đầy chiều dọc container */
-  object-fit: cover; /* Cắt ảnh vừa khung mà không bị méo */
-}
 .popup-title {
   font-size: 16px;
   font-weight: bold;

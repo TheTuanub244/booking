@@ -172,7 +172,7 @@ export class RoomService {
       }),
     );
 
-    if (userId) {
+    if (userId && place != "all") {
       const session = await this.sessionSchema.findOne({ userId });
       if (!session) throw new Error('Session not found');
 

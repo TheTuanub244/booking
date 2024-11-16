@@ -15,6 +15,7 @@ const SearchResult = () => {
 
     const [allPlace, setAllPlace] = useState();
     const option = location.state?.option
+    
     const longitude = location.state?.longitude
     const latitude = location.state?.latitude
     const [showFullMap, setShowFullMap] = useState(false);
@@ -22,7 +23,7 @@ const SearchResult = () => {
     const [properties, setProperties] = useState();
     useEffect(() => {
         
-        if(location?.state.option){
+        if(location.state?.option){
             const searchRoom = async () => {
                 const response = await findAvailableRoomWithSearch(option);
                 if (response) {
@@ -56,7 +57,7 @@ const SearchResult = () => {
             searchRoom();
         }
         
-    }, [location?.state.option]);
+    }, [location.state?.option]);
     
 
     return (

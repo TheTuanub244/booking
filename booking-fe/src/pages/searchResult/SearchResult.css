@@ -4,14 +4,14 @@
     display: flex;
     padding: 20px;
     flex-direction: row;
+    margin-left: 20%;
 }
 
 .map-container {
-    width: 30%;
+    width: 90%;
     height: 200px;
     background-color: #f0f0f0;
     margin-right: 20px;
-    /* Thêm các thuộc tính cho bản đồ ở đây */
 }
 
 .main-content {
@@ -24,7 +24,9 @@
     align-items: center;
     margin-bottom: 20px;
 }
-
+.headerSearchInput{
+    height: 20px;
+}
 .header-search h1 {
     font-size: 24px;
 }
@@ -35,10 +37,12 @@
     padding: 10px 15px;
     cursor: pointer;
     border-radius: 5px;
+    margin-bottom: 20px;
 }
 
 .filter-section {
     width: 90%;
+    margin-top: 15px;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -73,12 +77,10 @@
 
 .price-info {
     font-size: 16px;
-    color: #333;
 }
 
 .original-price {
     text-decoration: line-through;
-    color: #999;
 }
 
 .discounted-price {

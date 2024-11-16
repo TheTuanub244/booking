@@ -16,7 +16,7 @@ import { findAvailableRoomWithSearch } from "../../api/roomAPI";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
-function Header({ type, places, getHistory }) {
+function Header({ type, places, getHistory, promptData }) {
   const [openDate, setOpenDate] = useState(false);
   const [date, setDate] = useState([
     {
@@ -83,6 +83,7 @@ function Header({ type, places, getHistory }) {
         room: options.room,
       },
     };
+    data.province = data.place
     localStorage.setItem('option', JSON.stringify(data))
     if (userId) {
       getHistory(userId);
@@ -93,7 +94,19 @@ function Header({ type, places, getHistory }) {
   const handleSelectSuggestion = async (province) => {
     setProvince(province);
   };
-
+  useEffect(() => {
+    if(promptData){
+      setDate([{
+        endDate: new Date(promptData.check_out),
+        startDate: new Date(promptData.check_in)
+      }])
+      setOptions({
+        adult: promptData.capacity.adults,
+        children: promptData.capacity.childs.count,
+        room: promptData.capacity.room
+      })
+    }
+  }, [promptData])
   return (
     <div className="header">
       <div
@@ -147,7 +160,7 @@ function Header({ type, places, getHistory }) {
               type="text"
               placeholder="Where are you going?"
               className="headerSearchInput"
-              value={province}
+              value={promptData ? promptData.place : province}
               onChange={(e) => handleChangeProvince(e)}
               required
             />

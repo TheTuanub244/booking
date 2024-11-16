@@ -125,12 +125,21 @@ export class RoomService {
             );
 
             if (finalRespone.length === 0) {
-              availableRoom.push(value);
+              const totalPriceNight =
+                await this.bookingService.calculateTotalNightPrice({
+                  room_id: [value._id],
+                  property: property._id,
+                  check_in_date: check_in,
+                  check_out_date: check_out,
+                });
+
+              availableRoom.push({value, totalPriceNight});
             }
           }),
         );
       }),
     );
+
     const session = await this.sessionSchema.findOne({ userId });
     if (!session) throw new Error('Session not found');
 

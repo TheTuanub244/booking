@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./recentResearch.css";
 import { findAvailableRoomWithSearch } from "../../api/roomAPI";
+import { useNavigate } from "react-router-dom";
 
 function RecentRearch({ data, getHistory }) {
+  const navigate = useNavigate()
   const handleClick = async (item) => {
     const userId = localStorage.getItem("userId");
-
+    item.place = item.province
+    item.userId = userId
+    localStorage.setItem('option', JSON.stringify(item))
+    navigate('/searchResult')
     if (userId) {
       item.userId = userId;
-      const respone = await findAvailableRoomWithSearch(item);
-      if (respone) {
-        getHistory(userId);
-      }
+      getHistory(userId);
     }
   };
   return (

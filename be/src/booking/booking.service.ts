@@ -25,6 +25,7 @@ export class BookingService {
   ) {} // TODO: calculate the total price
 
   async calculateTotalNightPrice(booking: any) {
+    
     const findRoomPromotion =
       await this.promotionService.findRoomPromotionForBooking(booking.room_id);
     const findPropertyPromotion =

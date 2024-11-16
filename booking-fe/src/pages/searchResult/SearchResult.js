@@ -5,47 +5,56 @@ import Navbar from "../../componets/navbar/Navbar";
 import { getDistinctPlace } from "../../api/propertyAPI";
 import Header from "../../componets/header/Header";
 import { findAvailableRoomWithSearch } from "../../api/roomAPI";
+import PropertyMap from "../../componets/partner/partnerRegister/Map";
 const SearchResult = () => {
     const option = JSON.parse(localStorage.getItem('option'))
+    const latitude = localStorage.getItem('latitude')
+    const longitude = localStorage.getItem('longitude')
     const [allPlace, setAllPlace] = useState();
+
     const [properties, setProperties] = useState();
     useEffect(() => {
-        const handleGetAllProperty = async () => {
-            const respone = await getDistinctPlace();
-            setAllPlace(respone);
-          };
         const searchRoom = async () => {
-            const response = await findAvailableRoomWithSearch(option)
-            if(response){
+            const response = await findAvailableRoomWithSearch(option);
+            if (response) {
                 const uniqueProperties = Array.from(
                     response.reduce((map, item) => {
-                      const propertyId = item.property_id._id;
-                      if (!map.has(propertyId)) {
-                        map.set(propertyId, item); 
-                      }
-                      return map;
+                        const propertyId = item.value.property_id._id;
+                        item.value.totalPriceNight = item.totalPriceNight;
+    
+                        if (!map.has(propertyId)) {
+                            map.set(propertyId, item.value); 
+                        } else {
+                            const existingItem = map.get(propertyId);
+                            if (item.value.property_id.rate > existingItem.property_id.rate) {
+                                map.set(propertyId, item.value);
+                            }
+                        }
+                        return map;
                     }, new Map()).values()
-                  );
-                console.log(uniqueProperties);
+                );
+    
+                const sortedProperties = uniqueProperties.sort((a, b) => b.property_id.rate - a.property_id.rate);
                 
-                setProperties(uniqueProperties)
+                setProperties(sortedProperties);
             }
-        }
-        searchRoom()
-    }, [])
+        };
+    
+        searchRoom();
+    }, []);
     
     
 
     return (
         <>
         <Navbar/>
+        <Header promptData={option}/>
         {
             properties ? (
                 <div className="search-result-container">
-            {/* Phần bản đồ */}
             <div className="search-container-left">
             <div className="map-container">
-                {/* Placeholder for map */}
+                <PropertyMap initialLocation={{lat: latitude, lng: longitude}}/>
             </div>
             <aside className="filter-section">
                     <h3>Filter by:</h3>
@@ -70,9 +79,9 @@ const SearchResult = () => {
             </div>
             <div className="main-content">
                 <div className="header-search">
-                    <h1>{option.place}:  properties found</h1>
-                    <button className="sort-button">Sort by: Top picks for families</button>
+                    <h1>{option.place}: {properties.length} properties found</h1>
                 </div>
+                <button className="sort-button">Sort by: Top picks for families</button>
 
                 <div className="results-list">
                     {properties.map((property, index) => (

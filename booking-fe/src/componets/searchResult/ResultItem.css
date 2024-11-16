@@ -63,14 +63,18 @@
 }
 
 .result-item {
-    width: 70%;
+    width: 80%;
     display: flex;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 10px;
     margin-bottom: 15px;
 }
-
+.first-index {
+    border: 1px solid #57a6f4; /* Màu viền sáng */
+    box-shadow: 0 0 15px rgba(87, 166, 244, 0.6); /* Hiệu ứng bóng sáng */
+    background-color: rgba(199, 226, 252, 0.6);
+}
 .hotel-image {
     border: 1px solid black;
     width: 250px;
@@ -126,7 +130,6 @@
 
 .original-price {
     text-decoration: line-through;
-    color: #999;
 }
 
 .discounted-price {
@@ -155,10 +158,11 @@
 .main-right{
     width: 50%;
 }
+
 .rating-box {
-    margin-right: 50px;
-    width: 12%;
+    width: 25%;
     border-radius: 10px;
+    height: 90px;
     padding: 5px;
     font-weight: bold;
     display: flex;
@@ -171,7 +175,7 @@
     flex-direction: column;
 }
 .score {
-    padding: 10px 5px;
+    padding: 7px 5px 0 5px;
     font-family: BlinkMacSystemFont, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     font-weight: 500;
     font-size: 20px;

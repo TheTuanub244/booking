@@ -56,12 +56,16 @@ function Home() {
       (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
+        localStorage.setItem('latitude', latitude)
+        localStorage.setItem('longitude', longitude)
+
         getNear(longitude, latitude);
       },
       (error) => {
         console.error("Error getting location:", error.message);
       },
     );
+    
     const userId = localStorage.getItem("userId");
     setUserId(userId);
     getPropertyType();

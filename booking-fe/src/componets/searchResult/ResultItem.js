@@ -1,6 +1,6 @@
 import React from "react";
 import "./ResultItem.css"
-const ResultItem = ({ property }) => {
+const ResultItem = ({ property, index }) => {
     const option = JSON.parse(localStorage.getItem('option'))
 
     const checkAdults = option.capacity.adults  > 1 ? "adults" : "adult";
@@ -11,8 +11,15 @@ const ResultItem = ({ property }) => {
 
     const nights = differenceInTime / (1000 * 60 * 60 * 24);
     const checkNights = nights > 1 ? "nights" : "night"
+    const formatCurrency = (value) => {
+        if (!value) return "";
+        return new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(value);
+      };
     return (
-        <div className="result-item">
+        <div className={`result-item ${index === 0 && "first-index"}`}>
             <img src={property.images[0]} alt={`${property.name}`} className="hotel-image" />
             <div className="hotel-info">
                 <div className="result-item-head">
@@ -61,8 +68,16 @@ const ResultItem = ({ property }) => {
                     <div className="main-right">
                         <p style={{
                             fontSize: '12px',
-                            marginLeft: '50%'
+                            marginLeft: '50%',
+                            width: '100%'
                         }}>{nights} {checkNights}, {option.capacity.adults} {checkAdults}, {option.capacity.room} {checkRooms}</p>
+                        <p style={{
+                            fontSize: '20px',
+                            marginLeft: '60%',
+                            fontWeight: '700',
+                            color: 'black',
+                            width: '100%'
+                        }}>{formatCurrency(property.totalPriceNight)}</p>
                         <button className="availability-button">See availability</button>
 
                     </div>

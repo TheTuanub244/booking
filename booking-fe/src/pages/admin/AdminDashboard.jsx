@@ -2,7 +2,7 @@ import { useState } from 'react';
 import MainDash from './contents/MainDash/MainDash';
 import RightSide from './component/RightSide/RightSide';
 import SideBar from './component/SideBar/SideBar';
-import './css/AdminDashboard.css'
+import './AdminDashboard.css'
 import Datatable from './component/UserManage/Datatable';
 import RoomTable from './component/RoomsManage/RoomTable';
 

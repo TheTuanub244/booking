@@ -1,0 +1,106 @@
+.datatable {
+  height: 600px;
+  padding: 20px;
+  background-color: #f9f9f9; /* Light background for contrast */
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.datatable .datatableTitle {
+  width: 100%;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.datatable .datatableTitle .link {
+  text-decoration: none;
+  color: #007bff; 
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid #007bff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.datatable .datatableTitle .link:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.datatable .cellWithImg {
+  display: flex;
+  align-items: center;
+}
+
+.datatable .cellWithImg .cellImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.datatable .cellWithStatus {
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.datatable .cellWithStatus.Available {
+  background-color: rgba(76, 175, 80, 0.1); 
+  color: #4caf50;
+}
+
+.datatable .cellWithStatus.Occupied {
+  background-color: rgba(255, 87, 34, 0.1); 
+  color: #ff5722;
+}
+
+.datatable .cellWithStatus.Maintenance {
+  background-color: rgba(255, 193, 7, 0.1); 
+  color: #ffc107;
+}
+
+.datatable .cellAction {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.datatable .cellAction .viewButton {
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: #007bff;
+  border: 1px solid #007bff;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.datatable .cellAction .viewButton:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.datatable .cellAction .deleteButton {
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: crimson;
+  border: 1px solid crimson;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.datatable .cellAction .deleteButton:hover {
+  background-color: crimson;
+  color: white;
+}

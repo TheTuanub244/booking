@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import ReactDOMServer from "react-dom/server";
 import { getAllRoomWithTotalPrice } from "../../../api/roomAPI";
+import Loading from "../../loading/Loading";
 const createUserMarkerIcon = () => {
   return L.divIcon({
     className: "user-marker-container",
@@ -48,12 +49,16 @@ const createPropertyMarkerIcon = (totalPriceNight) => {
   });
 };
 const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
+  const [isLoading, setIsLoading] = useState(true)
   const userId = localStorage.getItem('userId')
   const getRoomWithPrice = async () => {
+    setIsLoading(true)
     const respone = await getAllRoomWithTotalPrice(option?.check_in, option?.check_out,  option?.capacity, userId)
-    console.log(respone);
     
-    setProperties(respone)
+    if(respone){
+      setIsLoading(false)
+      setProperties(respone)
+    }
     
   }
   useEffect(() => {
@@ -101,7 +106,10 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
   return (
     <>
       {position && (
-        <MapContainer
+        isLoading ? (
+          <Loading/>
+        ) : (
+          <MapContainer
           center={position}
           zoom={15}
           style={{ height: "100%", width: "100%" }}
@@ -154,6 +162,7 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
               )
             ))}
         </MapContainer>
+        )
       )}
     </>
   );

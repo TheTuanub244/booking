@@ -12,3 +12,11 @@ export const getMonthlyRevenueByProperty = async (id) => {
   );
   return respone.data;
 };
+export const getBooking = async (id) => {
+  console.log(id);
+  
+  const respone = await axios.get(
+    `http://localhost:8000/booking/getBooking/${id}`,
+  );
+  return respone.data;
+}

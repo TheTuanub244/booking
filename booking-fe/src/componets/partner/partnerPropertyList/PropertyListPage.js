@@ -7,6 +7,8 @@ import PropertyDetailsForm from "../partnerRegister/PropertyDetailsForm";
 import SearchBar from "./Components/SearchBar";
 import PartnerNavbar from "../partnerNavbar/partnerNavbar";
 import DashboardPage from "../partnerDashboard/DashboardPage";
+import Loading from "../../loading/Loading";
+import PartnerBookingDashboard from "../partnerBooking/PartnerBookingDashboard";
 
 const PropertyListPage = () => {
   const [properties, setProperties] = useState([]);
@@ -15,6 +17,7 @@ const PropertyListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const propertiesPerPage = 5;
+  const [isLoading, setIsLoading] = useState(true)
   const [filteredProperties, setFilteredProperties] = useState(properties);
   const [activeTab, setActiveTab] = useState("list");
   const longitude = localStorage.getItem("longitude");
@@ -24,16 +27,20 @@ const PropertyListPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const fetchProperties = async () => {
+      setIsLoading(true)
       try {
         const response = await getPropertyByOwner(
           id,
           currentPage,
           propertiesPerPage,
         );
-        console.log(response);
+        
 
-        setProperties(response.properties);
-        setTotalPages(response.totalPages);
+        if(response){
+          setIsLoading(false)
+          setProperties(response.properties);
+          setTotalPages(response.totalPages);
+        }
       } catch (error) {
         console.error("Failed to fetch properties:", error);
       }
@@ -105,7 +112,11 @@ const PropertyListPage = () => {
         </div>
       </div>
       <div className="property-table-container">
-        <table className="property-table">
+        {
+          isLoading ? (
+            <Loading/>
+          ) : (
+            <table className="property-table">
           <thead>
             <tr>
               <th>Hình ảnh</th>
@@ -231,6 +242,8 @@ const PropertyListPage = () => {
                 ))}
           </tbody>
         </table>
+          )
+        }
       </div>
     </>
   );
@@ -275,12 +288,19 @@ const PropertyListPage = () => {
         >
           Thêm Mới
         </button>
+        <button
+          className={`tab-button ${activeTab === "booking" ? "active" : ""}`}
+          onClick={() => setActiveTab("booking")}
+        >
+          Booking
+        </button>
       </div>
       {activeTab === "info" && <DashboardPage />}
 
       {activeTab === "list" && renderListTab()}
       {activeTab === "add" && renderAddTab()}
       {activeTab === "edit" && renderEditTab()}
+      {activeTab === "booking" && <PartnerBookingDashboard/>}
     </div>
   );
 };

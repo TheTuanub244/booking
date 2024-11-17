@@ -6,6 +6,7 @@ import Slider from "react-slick";
 import { findRoomByProperty } from "../../../api/roomAPI";
 import DashboardPage from "../partnerDashboard/DashboardPage";
 import PropertyDetailsForm from "../partnerRegister/PropertyDetailsForm";
+import { formatCurrency } from "../../../helpers/currencyHelpers";
 const PropertyDetail = ({ propertyId, tab, setTab }) => {
   const [property, setProperty] = useState(null);
   const longitude = localStorage.getItem("longitude");
@@ -69,7 +70,9 @@ const PropertyDetail = ({ propertyId, tab, setTab }) => {
 
                   <div>
                     <h4>Images:</h4>
-                    <Slider {...settings}>
+                    {
+                      property.images.length > 1 ? (
+                        <Slider {...settings}>
                       {property.images.map((image, index) => (
                         <div key={index} className="carousel-image">
                           <img
@@ -80,6 +83,17 @@ const PropertyDetail = ({ propertyId, tab, setTab }) => {
                         </div>
                       ))}
                     </Slider>
+                      ) : (
+                        <div>
+                      <img
+                        src={property.images[0]}
+                        all={"Property Image Review"}
+                        className="img-thumbnail"
+                      />
+
+                    </div>
+                      )
+                    }
                   </div>
 
                   <div className="rooms-section">
@@ -99,7 +113,7 @@ const PropertyDetail = ({ propertyId, tab, setTab }) => {
                               <strong>Rating:</strong> {room.rating || 0}/5
                             </p>
     
-                            {/* <p className="room-detail"><strong>Price per night:</strong> Weekday: ${room.price_per_night.weekday}, Weekend: ${room.price_per_night.weekend}</p> */}
+                            <p className="room-detail"><strong>Price per night:</strong> Weekday: {formatCurrency(room.price_per_night.weekday)}, Weekend: {formatCurrency(room.price_per_night.weekend)}</p>
                             <p className="room-detail">
                               <strong>Capacity:</strong> {room.capacity.adults || 0}{" "}
                               adults, {room.capacity.childs.count || 0} children

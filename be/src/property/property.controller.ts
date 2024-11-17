@@ -144,7 +144,6 @@ export class PropertyController {
   ) {
     return this.propertyService.getPropertyWithOwner(id, page, limit);
   }
-  @UseGuards(ValidateTokenGuard)
   @Get('/getPropertyById/:id')
   async getPropertyById(@Param('id') id: ObjectId) {
     return this.propertyService.getPropertyById(id);

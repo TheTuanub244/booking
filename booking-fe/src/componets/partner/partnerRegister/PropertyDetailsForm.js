@@ -11,6 +11,7 @@ import {
 } from "../../../api/propertyAPI";
 import { useNavigate } from "react-router-dom";
 import { deleteRoomById, findRoomByProperty } from "../../../api/roomAPI";
+import { formatCurrency } from "../../../helpers/currencyHelpers";
 
 const PropertyDetailsForm = ({
   owner,
@@ -65,13 +66,7 @@ const PropertyDetailsForm = ({
   const [address, setAddress] = useState();
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
-  const formatCurrency = (value) => {
-    if (!value) return "";
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "street") {
@@ -311,7 +306,7 @@ const PropertyDetailsForm = ({
 
   const handleRoomCapacityChange = (index, field, value) => {
     const updatedRooms = [...propertyData.rooms];
-    if (field === "adults") {
+    if (field === "adults" || field === "room") {
       updatedRooms[index] = {
         ...updatedRooms[index],
         capacity: {
@@ -342,11 +337,10 @@ const PropertyDetailsForm = ({
         ...propertyData.rooms,
         {
           name: "",
-          type: "",
           size: 0,
           images: [],
           image: [],
-          capacity: { adults: 0, childs: { count: 0, age: 0 } },
+          capacity: { adults: 0, childs: { count: 0, age: 0 }, room: 0 },
           price_per_night: { weekday: "", weekend: "" },
           rawPricePerNight: {
             weekday: "",
@@ -517,7 +511,7 @@ const PropertyDetailsForm = ({
   return (
     <>
       {address && propertyData && propertyData.rooms && (
-        <div className="property-details-container">
+        <div className={`property-details-container ${type === "update" && "update-form"}`}>
           <div className="property-details-form">
             <h2>Add Property Details</h2>
             <form className="form-sectionn">
@@ -628,12 +622,16 @@ const PropertyDetailsForm = ({
                         required
                       />
 
-                      <label>Room Type</label>
+                      <label>Available Rooms</label>
                       <input
-                        type="text"
-                        name="type"
-                        value={room.type}
-                        onChange={(e) => handleRoomChange(index, e)}
+                        type="number"
+                        name="room"
+                        value={room.capacity.room}
+                        onChange={(e) => handleRoomCapacityChange(
+                          index,
+                          e.target.name,
+                          e.target.value,
+                        )}
                         required
                       />
                       <label>Room Size</label>
@@ -872,8 +870,10 @@ const PropertyDetailsForm = ({
               <strong>Property's Image:</strong>
             </p>
 
-            {propertyData.images.length !== 0 && (
-              <div
+            {propertyData.images && (
+                (
+                  propertyData.images.length > 1 ? (
+                    <div
                 className="image-slider"
                 style={{ overflow: "visible", position: "relative" }}
               >
@@ -918,6 +918,39 @@ const PropertyDetailsForm = ({
                   ))}
                 </Slider>
               </div>
+                  ) : (
+                    <div>
+                      <img
+                        src={propertyData.images[0]}
+                        all={"Property Image Review"}
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                      <button
+                        onClick={() => handleRemovePropertyImage(0)}
+                        style={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          backgroundColor: "rgba(255, 0, 0, 0.8)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "30px",
+                          height: "30px",
+                          fontSize: "16px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                          zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
+                        }}
+                      >
+                        &times; {/* Dấu x */}
+                      </button>
+                    </div>
+                  )
+                )
             )}
 
             <div className="mini-mapp">

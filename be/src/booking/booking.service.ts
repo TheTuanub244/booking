@@ -25,7 +25,6 @@ export class BookingService {
   ) {} // TODO: calculate the total price
 
   async calculateTotalNightPrice(booking: any) {
-    
     const findRoomPromotion =
       await this.promotionService.findRoomPromotionForBooking(booking.room_id);
     const findPropertyPromotion =
@@ -341,4 +340,27 @@ export class BookingService {
       yearlyRevenue: item.yearlyRevenue,
     }));
   }
+  async getBooking(owner_id: string) {
+    console.log(owner_id);
+    
+    return this.bookingSchema.aggregate([
+      {
+        $lookup: {
+          from: 'properties',
+          localField: 'property',
+          foreignField: '_id',
+          as: 'propertyDetails',
+        },
+      },
+      {
+        $unwind: '$propertyDetails',
+      },
+      {
+        $match: {
+          'propertyDetails.owner_id': new Types.ObjectId(owner_id),
+        },
+      },
+    ]);
+  }
+
 }

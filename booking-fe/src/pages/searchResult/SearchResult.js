@@ -42,11 +42,10 @@ const SearchResult = () => {
         if (currentPage > 1) setCurrentPage(currentPage - 1);
       };
     useEffect(() => {
-        
+        setIsLoading(true)
         if(location.state?.option){
             const searchRoom = async () => {
                 const response = await findAvailableRoomWithSearch(option);
-                console.log(currentPage);
                 
                 setIsLoading(false)
                 if (response?.length && response) {

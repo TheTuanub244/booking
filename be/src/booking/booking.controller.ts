@@ -24,4 +24,8 @@ export class BookingController {
   async getMonthlyRevenueByProperty(@Param('id') id: string) {
     return this.bookingService.getMonthlyRevenueByProperty(id);
   }
+  @Get(`/getBooking/:id`)
+  async getBooking(@Param('id') id: string){
+    return this.bookingService.getBooking(id )
+  }
 }

@@ -30,8 +30,11 @@
     "http-proxy-middleware": "^3.0.3",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
+    "moment": "^2.30.1",
     "react": "^18.3.1",
+
     "react-bootstrap": "^2.10.5",
+
     "react-chartjs-2": "^5.2.0",
     "react-content-loader": "^7.0.2",
     "react-date-range": "^1.4.0",
@@ -40,8 +43,9 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.30.2",
     "react-slider": "^2.0.6",
-    "sass": "^1.49.9",
+    "slick-carousel": "^1.8.1",
     "swiper": "^11.1.14",
     "web-vitals": "^2.1.4"
   },

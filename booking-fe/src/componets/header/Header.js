@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBed,
@@ -14,9 +15,13 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { findAvailableRoomWithSearch } from "../../api/roomAPI";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { useLocation, useNavigate } from "react-router-dom";
 
-function Header({ type, places, getHistory }) {
+function Header({ type, places, promptData }) {
   const [openDate, setOpenDate] = useState(false);
+  const location = useLocation()
+  const latitude = localStorage.getItem('latitude')
+  const longitude = localStorage.getItem('longitude')
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -52,10 +57,11 @@ function Header({ type, places, getHistory }) {
 
   const checkAdults = options.adult > 1 ? "adults" : "adult";
   const checkRooms = options.room > 1 ? "rooms" : "room";
-
+  const navigate = useNavigate()
   const [province, setProvince] = useState("");
 
   const handleChangeProvince = (e) => {
+    
     setProvince(e.target.value);
   };
 
@@ -67,12 +73,13 @@ function Header({ type, places, getHistory }) {
     setSelectedAge(e.target.value);
   };
   const handleClick = async (e) => {
+    
     const userId = localStorage.getItem("userId");
     const data = {
       userId,
       place: province,
-      check_in: new Date(date[0].startDate).toISOString().split("T")[0],
-      check_out: new Date(date[0].endDate).toISOString().split("T")[0],
+      check_in: moment(date[0].startDate).format("YYYY-MM-DD"),
+      check_out: moment(date[0].endDate).format("YYYY-MM-DD"),
       capacity: {
         adults: options.adult,
         childs: {
@@ -82,17 +89,32 @@ function Header({ type, places, getHistory }) {
         room: options.room,
       },
     };
-
-    const respone = await findAvailableRoomWithSearch(data);
-    if (userId) {
-      getHistory(userId);
-    }
+    data.province = data.place
+    navigate('/searchResult', {
+      state: { option: data, longitude, latitude }
+    })
   };
   const [showSuggestions, setShowSuggestions] = useState(false);
   const handleSelectSuggestion = async (province) => {
     setProvince(province);
   };
-
+  useEffect(() => {
+    
+    if(promptData){
+      
+      setDate([{
+        endDate: new Date(promptData.check_out),
+        startDate: new Date(promptData.check_in)
+      }])
+      
+      setOptions({
+        adult: promptData.capacity.adults,
+        children: promptData.capacity.childs.count,
+        room: promptData.capacity.room
+      })
+      setProvince(promptData.place)
+    }
+  }, [promptData])
   return (
     <div className="header">
       <div
@@ -186,7 +208,11 @@ function Header({ type, places, getHistory }) {
             {openDate && (
               <DateRange
                 editableDateInputs={true}
-                onChange={(item) => setDate([item.selection])}
+                onChange={(item) => {
+                  
+                  setDate([item.selection || item.range1])
+                  
+                }}
                 moveRangeOnFirstSelection={false}
                 ranges={date}
                 className="date"

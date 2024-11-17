@@ -45,11 +45,104 @@
 .property-marker-container {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
+.property-price {
+  position: absolute;
+  top: -30px; 
+  background-color: #003580; 
+  color: white; 
+  font-size: 14px; 
+  font-weight: bold; 
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  white-space: nowrap;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); 
+}
 
-/* Shadow with 3D effect around the property marker */
+/* Mũi tên phía dưới giá */
+.property-price::after {
+  content: "";
+  position: absolute;
+  bottom: -5px; /* Đặt mũi tên ở phía dưới */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px; /* Kích thước mũi tên */
+  border-style: solid;
+  border-color: #003580 transparent transparent transparent; /* Màu xanh đậm */
+}
+.popup-content {
+  display: flex;
+  width: 500px; 
+  height: 400px; 
+  font-family: Arial, sans-serif;
+  border-radius: 8px;
+  overflow: hidden;
+  justify-content: space-between; 
+}
+.leaflet-popup-content-wrapper {
+  padding: 0;
+  padding-left: -40px;
+}
+
+.leaflet-popup-content {
+  margin: 0; 
+  display: flex; 
+  width: 600px;
+  border-radius: 8px;
+  overflow: hidden; 
+  height: 200px;
+}
+
+.popup-left {
+  height: 150px; 
+  margin-left: -20px;
+  width: 50%;
+}
+
+.popup-image {
+
+  width: 150px; 
+  height: 150px; 
+  margin-left: -20px;
+}
+
+.popup-right {
+  width: 60%;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.popup-right p{
+  margin: 6px 0;
+}
+
+.popup-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.popup-rate {
+  font-size: 14px;
+  color: #555;
+}
+
+.popup-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0071c2;
+  margin: 5px 0;
+}
+
+.popup-room-type {
+  font-size: 14px;
+  color: #888;
+}
+
 .property-marker-shadow {
   position: absolute;
   bottom: -25px; /* Position the shadow slightly below the marker */

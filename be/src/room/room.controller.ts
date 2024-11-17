@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { FindRoomDto } from './dto/findRoom.dto';
@@ -6,6 +15,7 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from 'src/user/enum/role.enum';
 import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
+import { ObjectId } from 'mongoose';
 
 @Controller('room')
 export class RoomController {
@@ -49,5 +59,29 @@ export class RoomController {
   @Put('updateImageForRoom')
   async updateImageForRoom(@Body() data: any) {
     return this.roomService.updateImageForRoom(data.roomId, data.image);
+  }
+  @Get('getMonthlyOccupancyRatesByOwner/:id')
+  async getMonthlyOccupancyRatesByOwner(@Param('id') id: any) {
+    return this.roomService.getMonthlyOccupancyRatesByOwner(id, 2024);
+  }
+  @Get('getMonthlyOccupancyRatesByProperty/:id')
+  async getMonthlyOccupancyRatesByProperty(@Param('id') id: any) {
+    return this.roomService.getMonthlyOccupancyRatesByProperty(id, 2024);
+  }
+  @Delete(`deleteRoomById/:id`)
+  async deleteRoomById(@Param('id') id: ObjectId) {
+    console.log(id);
+
+    return this.roomService.deleteRoom(id);
+  }
+  @Post('getAllRoomWithTotalPrice')
+  async getAllRoomWithTotalPrice(@Body() data: any){
+    return this.roomService.getAllRoomWithTotalPrice({
+      check_in: data.check_in,
+      check_out: data.check_out,
+      place: data.place,
+      userId: data.userId,
+      capacity: data.capacity
+    })
   }
 }

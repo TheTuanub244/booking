@@ -6,7 +6,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: ['https://booking-app-1edf4.web.app', 'http://localhost:3000'],
+    origin: [
+      'https://booking-app-1edf4.web.app',
+      'http://localhost:3000',
+      'http://192.169.101.137:3000',
+    ],
     credentials: true,
   });
   app.use(cookieParser());

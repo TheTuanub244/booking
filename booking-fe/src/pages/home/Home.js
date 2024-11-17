@@ -29,6 +29,7 @@ function Home() {
   const [allPlace, setAllPlace] = useState();
   const [userId, setUserId] = useState();
   const [propertyType, setPropertyType] = useState();
+  const [promptData, setPromptData] = useState()
   const navigate = useNavigate();
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
@@ -56,12 +57,16 @@ function Home() {
       (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
+        localStorage.setItem('latitude', latitude)
+        localStorage.setItem('longitude', longitude)
+
         getNear(longitude, latitude);
       },
       (error) => {
         console.error("Error getting location:", error.message);
       },
     );
+    
     const userId = localStorage.getItem("userId");
     setUserId(userId);
     getPropertyType();
@@ -74,7 +79,7 @@ function Home() {
   return (
     <div>
       <Navbar />
-      <Header places={allPlace} getHistory={getHistory} />
+      <Header places={allPlace} />
       <div className="homeContainer">
         {userId && sessionHistory && (
           <RecentRearch
@@ -93,7 +98,7 @@ function Home() {
         <h1 className="homeTitle">Browse by property type</h1>
         <PropertyList propertyType={propertyType} />
         <h1 className="homeTitle">Quick and easy trip planner</h1>
-        <EasyTrip propertyNear={propertyNear} />
+        {propertyNear && <EasyTrip propertyNear={propertyNear} />}
         <h1 className="homeTitle">Home guests love</h1>
         <FeaturedProperties />
 

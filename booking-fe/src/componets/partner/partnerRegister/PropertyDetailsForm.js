@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from "react";
 import Map from "./Map"; // Import the Map component for Google Maps or OpenStreetMap
 import "./PropertyDetailsForm.css";
+import Slider from "react-slick";
 import { getProvince } from "../../../api/addressAPI";
-import { createPropertyWithPartner } from "../../../api/propertyAPI";
+import {
+  createPropertyWithPartner,
+  getPropertyById,
+  getPropertyByOwner,
+  updatePropertyWithPartner,
+} from "../../../api/propertyAPI";
+import { useNavigate } from "react-router-dom";
+import { deleteRoomById, findRoomByProperty } from "../../../api/roomAPI";
 
-const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
+const PropertyDetailsForm = ({
+  owner,
+  longitude,
+  latitude,
+  initialData,
+  type,
+  setTab,
+}) => {
   const [propertyData, setPropertyData] = useState({
     name: "",
     description: "",
@@ -16,14 +31,49 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
     },
     type: "",
     images: [],
-
+    image: [],
     location: { lat: latitude, lng: longitude },
     rooms: [],
   });
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const getAllPropetyByOwner = async (userId) => {
+    const data = await getPropertyByOwner(userId, 1, 5);
+    setPropertyData(data);
+  };
+  const handleGetPropertyById = async () => {
+    const property = JSON.parse(localStorage.getItem("property"));
+    const rooms = await findRoomByProperty(property._id);
+
+    const data = await getPropertyById(property._id);
+    if (data) {
+      data.rooms = rooms;
+      data.location.lat = data.location.latitude;
+      data.location.lng = data.location.longitude;
+    }
+    console.log(data.rooms[0].images);
+
+    setPropertyData(data);
+    setIsDataLoaded(true);
+  };
+  if (initialData) {
+    setPropertyData(initialData);
+  }
+  useEffect(() => {
+    if (type === "update" && !isDataLoaded) {
+      handleGetPropertyById();
+    }
+  }, [type, isDataLoaded]);
+  const navigate = useNavigate();
   const [address, setAddress] = useState();
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
-
+  const formatCurrency = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "street") {
@@ -90,13 +140,12 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
     }
   };
 
-  useEffect(() => {
-    console.log(propertyData);
-  }, [propertyData]);
-
-  const removeRoom = (index) => {
+  const removeRoom = async (index, room) => {
     const updatedRooms = propertyData.rooms.filter((_, i) => i !== index);
     setPropertyData({ ...propertyData, rooms: updatedRooms });
+    if (room._id) {
+      await deleteRoomById(room._id);
+    }
   };
   const handleLocationSelect = (location) => {
     setPropertyData((prevData) => ({
@@ -109,12 +158,14 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
   const [isMapOpen, setIsMapOpen] = useState(false);
   const handleRoomChange = (index, e) => {
     if (e.target.name === "weekday" || e.target.name === "weekend") {
+      const rawValue = e.target.value.replace(/,/g, "");
+      if (isNaN(rawValue)) return;
       const updatedRooms = [...propertyData.rooms];
       updatedRooms[index] = {
         ...updatedRooms[index],
-        pricePerNight: {
-          ...updatedRooms[index].pricePerNight,
-          [e.target.name]: parseInt(e.target.value),
+        price_per_night: {
+          ...updatedRooms[index].price_per_night,
+          [e.target.name]: rawValue,
         },
       };
       setPropertyData({ ...propertyData, rooms: updatedRooms });
@@ -130,39 +181,133 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
   };
 
   const handleRoomImageChange = (index, e) => {
-    const file = e.target.files[0];
-    const updatedRooms = [...propertyData.rooms];
+    if (type === "update") {
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      const newImage = [];
 
-    updatedRooms[index].image = file;
+      files.forEach((file) => {
+        const reader = new FileReader();
 
-    if (file) {
-      const reader = new FileReader();
+        reader.onloadend = () => {
+          newImages.push(reader.result);
+          newImage.push(file);
 
-      reader.onloadend = () => {
-        const updatedRooms = [...propertyData.rooms];
-        updatedRooms[index] = {
-          ...updatedRooms[index],
-          images: reader.result,
+          if (newImages.length === files.length) {
+            setPropertyData((prevData) => {
+              const updatedRooms = [...prevData.rooms];
+
+              updatedRooms[index] = {
+                ...updatedRooms[index],
+                images: [...newImages],
+                image: [...newImage],
+              };
+              console.log(updatedRooms);
+              
+              return {
+                ...prevData,
+                rooms: updatedRooms,
+              };
+            });
+          }
         };
 
-        setPropertyData({
-          ...propertyData,
-          rooms: updatedRooms,
-        });
-      };
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      });
+    } else {
+      const file = e.target.files[0];
+      console.log(file);
+      
+      const updatedRooms = [...propertyData.rooms];
+
+      updatedRooms[index].image = file;
+
+      if (file) {
+        const reader = new FileReader();
+        
+        reader.onloadend = () => {
+          const updatedRooms = [...propertyData.rooms];
+          
+          updatedRooms[index] = {
+            ...updatedRooms[index],
+            images: [reader.result],
+          };
+
+          setPropertyData({
+            ...propertyData,
+            rooms: updatedRooms,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
-  const handlePropertyImageChange = (e) => {
-    const file = e.target.files[0];
-    propertyData.image = file;
+  useEffect(() => {
+    console.log(propertyData);
+  }, [propertyData]);
+  const handleRemovePropertyImage = (index) => {
+    const updatedImages = propertyData.images.filter((_, i) => i !== index); // Lọc bỏ ảnh theo index
+    setPropertyData({
+      ...propertyData,
+      images: updatedImages,
+    });
+  };
+  const handleRemoveRoomImage = (roomIndex, imageIndex) => {
+    setPropertyData((prevData) => {
+      const updatedRooms = [...prevData.rooms];
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPropertyData({ ...propertyData, images: reader.result });
+      // Lọc bỏ ảnh theo index cho room tương ứng
+      const updatedImages = updatedRooms[roomIndex].images.filter(
+        (_, i) => i !== imageIndex,
+      );
+
+      // Cập nhật lại mảng images của room
+      updatedRooms[roomIndex] = {
+        ...updatedRooms[roomIndex],
+        images: updatedImages,
       };
-      reader.readAsDataURL(file);
+
+      // Cập nhật propertyData với danh sách rooms mới
+      return {
+        ...prevData,
+        rooms: updatedRooms,
+      };
+    });
+  };
+  const handlePropertyImageChange = (e) => {
+    if (type === "update") {
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      const newImage = [];
+      files.forEach((file) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          newImages.push(reader.result);
+          newImage.push(file);
+          if (newImages.length === files.length) {
+            setPropertyData({
+              ...propertyData,
+              images: [...(propertyData.images || []), ...newImages],
+              image: [...(propertyData.image || []), ...newImage],
+            });
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    } else {
+      const file = e.target.files[0];
+      propertyData.image = file;
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPropertyData({
+            ...propertyData,
+            images: [reader.result], // Reset lại mảng images nếu chỉ muốn một ảnh
+          });
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -202,12 +347,102 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
           type: "",
           size: 0,
           images: [],
-          image: "",
+          image: [],
           capacity: { adults: 0, childs: { count: 0, age: 0 } },
-          pricePerNight: { weekday: "", weekend: "" },
+          price_per_night: { weekday: "", weekend: "" },
+          rawPricePerNight: {
+            weekday: "",
+            weekend: "",
+          },
         },
       ],
     });
+  };
+  const updateProperty = async () => {
+    console.log(1);
+    
+    const accessToken = localStorage.getItem("accessToken");
+    const userId = localStorage.getItem("userId");
+    propertyData.owner_id = userId;
+    propertyData.location.longitude = propertyData.location.lng;
+    propertyData.location.latitude = propertyData.location.lat;
+
+    setPropertyData({
+      ...propertyData,
+      rooms: propertyData.rooms.map((room) => ({
+        ...room,
+        price_per_night: {
+          weekday: room.price_per_night.weekday,
+          weekend: room.price_per_night.weekend,
+        },
+      })),
+    });
+    const formData = new FormData();
+
+    // Add general property information
+    formData.append("_id", propertyData._id);
+
+    formData.append("name", propertyData.name);
+    formData.append("owner_id", propertyData.owner_id);
+
+    formData.append("description", propertyData.description);
+    formData.append("type", propertyData.type);
+    formData.append("location", JSON.stringify(propertyData.location));
+    formData.append("address", JSON.stringify(propertyData.address));
+
+    if (Array.isArray(propertyData.images)) {
+      propertyData.images.forEach((image, idx) => {
+        formData.append(`images[${idx}]`, image);
+      });
+    } else if (propertyData.images) {
+      // Nếu chỉ có một ảnh (trong trường hợp không phải mảng)
+      formData.append("images[0]", propertyData.images);
+    }
+    if (Array.isArray(propertyData.image)) {
+      propertyData.image.forEach((imageFile, idx) => {
+        formData.append(`image[${idx}]`, imageFile);
+      });
+    }
+    // Add room details, including each room’s image
+    propertyData.rooms.forEach((room, index) => {
+      // Append individual room fields
+      formData.append(`rooms[${index}][_id]`, room._id);
+
+      formData.append(`rooms[${index}][name]`, room.name);
+      formData.append(`rooms[${index}][type]`, room.type);
+      formData.append(`rooms[${index}][size]`, room.size);
+      formData.append(
+        `rooms[${index}][capacity]`,
+        JSON.stringify(room.capacity),
+      );
+      formData.append(
+        `rooms[${index}][price_per_night]`,
+        JSON.stringify(room.price_per_night),
+      );
+
+      // Append room image if available
+      if (Array.isArray(room.images)) {
+        room.images.forEach((image, imgIdx) => {
+          formData.append(`rooms[${index}][images][${imgIdx}]`, image);
+        });
+      } else if (room.images) {
+        // Nếu chỉ có một ảnh (không phải mảng)
+        formData.append(`rooms[${index}][images][0]`, room.images);
+      }
+      if (Array.isArray(room.image)) {
+        room.image.forEach((image, imgIdx) => {
+          formData.append(`rooms[${index}]image[${imgIdx}]`, image);
+        });
+      }
+    });
+    try {
+      const respone = await updatePropertyWithPartner(formData, accessToken);
+      if (respone) {
+        setTab("info");
+      }
+    } catch (error) {
+      console.error("Failed to add property:", error);
+    }
   };
   const addProperty = async () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -215,10 +450,20 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
     propertyData.owner_id = userId;
     propertyData.location.longitude = propertyData.location.lng;
     propertyData.location.latitude = propertyData.location.lat;
-
+    setPropertyData({
+      ...propertyData,
+      rooms: propertyData.rooms.map((room) => ({
+        ...room,
+        price_per_night: {
+          weekday: room.price_per_night.weekday,
+          weekend: room.price_per_night.weekend,
+        },
+      })),
+    });
     const formData = new FormData();
 
-    // Add general property information
+    formData.append("_id", propertyData._id);
+
     formData.append("name", propertyData.name);
     formData.append("owner_id", propertyData.owner_id);
 
@@ -228,6 +473,9 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
     formData.append("address", JSON.stringify(propertyData.address));
 
     // Add main property image if available
+    if (propertyData.images) {
+      formData.append("images", propertyData.images);
+    }
     if (propertyData.image) {
       formData.append("image", propertyData.image);
     }
@@ -243,11 +491,14 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
         JSON.stringify(room.capacity),
       );
       formData.append(
-        `rooms[${index}][pricePerNight]`,
-        JSON.stringify(room.pricePerNight),
+        `rooms[${index}][price_per_night]`,
+        JSON.stringify(room.price_per_night),
       );
 
       // Append room image if available
+      if (room.images) {
+        formData.append(`rooms[${index}][images]`, room.images);
+      }
       if (room.image) {
         formData.append(`rooms[${index}][image]`, room.image);
       }
@@ -255,8 +506,11 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
 
     // Send FormData to backend
     try {
-      const response = await createPropertyWithPartner(formData, accessToken);
-      console.log(response);
+      const respone = await createPropertyWithPartner(formData, accessToken);
+      if (respone) {
+        getAllPropetyByOwner(userId);
+        navigate(`property/propertyList/${userId}`);
+      }
     } catch (error) {
       console.error("Failed to add property:", error);
     }
@@ -264,7 +518,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
 
   return (
     <>
-      {address && (
+      {address && propertyData && propertyData.rooms && (
         <div className="property-details-container">
           <div className="property-details-form">
             <h2>Add Property Details</h2>
@@ -282,6 +536,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
                 <input
                   type="file"
                   name="images"
+                  multiple
                   onChange={(e) => handlePropertyImageChange(e)}
                   required
                 />
@@ -395,6 +650,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
                       <input
                         type="number"
                         name="adults"
+                        value={room.capacity.adults}
                         onChange={(e) =>
                           handleRoomCapacityChange(
                             index,
@@ -406,20 +662,32 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
                     </div>
                     <div className="container-right">
                       <h3 style={{}}>Price Per Night</h3>
-                      <label>Weekday Price</label>
+                      <label>
+                        Weekday Price:{" "}
+                        {formatCurrency(room.price_per_night.weekday)}
+                      </label>
+
                       <input
                         type="number"
                         name="weekday"
-                        value={propertyData.rooms[index].pricePerNight.weekday}
+                        value={
+                          propertyData.rooms[index].price_per_night.weekday
+                        }
                         onChange={(e) => handleRoomChange(index, e)}
                         required
                       />
 
-                      <label>Weekend Price</label>
+                      <label>
+                        Weekend Price:{" "}
+                        {formatCurrency(room.price_per_night.weekend)}
+                      </label>
+
                       <input
                         type="number"
                         name="weekend"
-                        value={propertyData.rooms[index].pricePerNight.weekend}
+                        value={
+                          propertyData.rooms[index].price_per_night.weekend
+                        }
                         onChange={(e) => handleRoomChange(index, e)}
                         required
                       />
@@ -427,6 +695,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
                       <input
                         type="number"
                         name="age"
+                        value={room.capacity.childs.age}
                         onChange={(e) =>
                           handleRoomCapacityChange(
                             index,
@@ -439,6 +708,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
                       <input
                         type="number"
                         name="count"
+                        value={room.capacity.childs.count}
                         onChange={(e) =>
                           handleRoomCapacityChange(
                             index,
@@ -458,23 +728,106 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
                     <label>Room Image</label>
                     <input
                       type="file"
+                      multiple
                       onChange={(e) => handleRoomImageChange(index, e)}
                     />
                   </div>
-                  {propertyData.rooms[index].images.length !== 0 && (
-                    <div className="image-preview">
-                      <img
-                        src={propertyData.rooms[index].images}
-                        alt="Selected property preview"
-                        style={{ width: "100%", height: "auto" }}
-                      />
-                    </div>
+                  {propertyData.rooms.length !== 0 && (
+                    <>
+                      <div key={index}>
+                        <h3>Room {index + 1}</h3>
+                        {room.images &&
+                          room.images.length > 0 &&
+                          (room.images.length > 1 ? (
+                            <Slider
+                              dots={true}
+                              infinite={true}
+                              speed={500}
+                              slidesToShow={1}
+                              slidesToScroll={1}
+                            >
+                              {room.images.map((image, imgidx) => (
+                                <div
+                                  key={`${index}-${imgidx}`}
+                                  style={{
+                                    position: "relative",
+                                    overflow: "visible",
+                                  }}
+                                >
+                                  <img
+                                    src={image}
+                                    alt={`Room ${index + 1} preview ${imgidx}`}
+                                    style={{ width: "100%", height: "auto" }}
+                                  />
+                                  <button
+                                    onClick={() =>
+                                      handleRemoveRoomImage(index, imgidx)
+                                    }
+                                    style={{
+                                      position: "absolute",
+                                      top: "10px",
+                                      right: "10px",
+                                      backgroundColor: "rgba(255, 0, 0, 0.8)",
+                                      color: "white",
+                                      border: "none",
+                                      borderRadius: "50%",
+                                      width: "30px",
+                                      height: "30px",
+                                      fontSize: "16px",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                                      zIndex: 10000,
+                                    }}
+                                  >
+                                    &times;
+                                  </button>
+                                </div>
+                              ))}
+                            </Slider>
+                          ) : (
+                            // Nếu chỉ có 1 ảnh, hiển thị ảnh đơn giản
+                            <div style={{ position: "relative" }}>
+                              <img
+                                src={room.images[0]}
+                                alt={`Room ${index + 1} preview`}
+                                style={{ width: "100%", height: "auto" }}
+                              />
+                              <button
+                                onClick={() => handleRemoveRoomImage(index, 0)}
+                                style={{
+                                  position: "absolute",
+                                  top: "10px",
+                                  right: "10px",
+                                  backgroundColor: "rgba(255, 0, 0, 0.8)",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "50%",
+                                  width: "30px",
+                                  height: "30px",
+                                  fontSize: "16px",
+                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                                  zIndex: 10000,
+                                }}
+                              >
+                                &times;
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                    </>
                   )}
 
                   <button
                     type="button"
                     className="remove-room-button"
-                    onClick={() => removeRoom(index)}
+                    onClick={() => removeRoom(index, room)}
                   >
                     Remove Room
                   </button>
@@ -492,7 +845,7 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
             <button
               type="button"
               className="add-property-button"
-              onClick={addProperty}
+              onClick={type === "update" ? updateProperty : addProperty}
             >
               Add Property
             </button>
@@ -522,16 +875,54 @@ const PropertyDetailsForm = ({ owner, longitude, latitude }) => {
             </p>
 
             {propertyData.images.length !== 0 && (
-              <div className="image-preview">
-                <img
-                  src={propertyData.images}
-                  alt="Selected property preview"
-                  style={{ width: "100%", height: "auto" }}
-                />
+              <div
+                className="image-slider"
+                style={{ overflow: "visible", position: "relative" }}
+              >
+                <Slider
+                  dots={true}
+                  infinite={true}
+                  speed={500}
+                  slidesToShow={1}
+                  slidesToScroll={1}
+                >
+                  {propertyData.images.map((image, idx) => (
+                    <div key={idx}>
+                      <img
+                        src={image}
+                        alt={`Property preview ${idx}`}
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                      <button
+                        onClick={() => handleRemovePropertyImage(idx)}
+                        style={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          backgroundColor: "rgba(255, 0, 0, 0.8)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "30px",
+                          height: "30px",
+                          fontSize: "16px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                          zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
+                        }}
+                      >
+                        &times; {/* Dấu x */}
+                      </button>
+                    </div>
+                  ))}
+                </Slider>
               </div>
             )}
 
-            <div className="mini-map">
+            <div className="mini-mapp">
               <Map
                 key={`${propertyData.location.lat}-${propertyData.location.lng}`}
                 onLocationSelect={() => {}}

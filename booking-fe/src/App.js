@@ -11,6 +11,11 @@ import PartnerDashboard from "./pages/partner/partnerDashboard/partnerDashboard"
 import PartnerRegister from "./pages/partner/partnerRegister/partnerRegister";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddNewUser from "./pages/admin/contents/AddNewUser/AddNewUser";
+import ProperyList from "./pages/partner/propertylist/PropertyList";
+import InformationDashboard from "./pages/partner/informationDashboard/InformationDashboard";
+import Payment from "./pages/payment/Payment";
+import PartnerPropertyDetailPage from "./pages/partner/propertyDetail/PartnerPropertyDetailPage";
+import SearchResult from "./pages/searchResult/SearchResult";
 
 function App() {
   return (
@@ -33,6 +38,20 @@ function App() {
             </Route>
         <Route path="/partner/partnerDashboard" element={<PartnerDashboard />} />
         <Route path="/partner/partnerRegister" element={<PartnerRegister />} />
+        <Route path="/partner/propertyList/:id" element={<ProperyList />} />
+        <Route
+          path="/partner/informationDashboard/:id"
+          element={<InformationDashboard />}
+        />
+        <Route path="/payment" element={<Payment />}></Route>
+        <Route
+          path="/partner/partnerPropertyDetailPage/:id"
+          element={<PartnerPropertyDetailPage />}
+        />
+        <Route
+          path="/searchResult"
+          element={<SearchResult />}
+        />
       </Routes>
     </BrowserRouter>
   );

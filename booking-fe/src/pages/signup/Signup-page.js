@@ -12,15 +12,15 @@ const provider = new GoogleAuthProvider();
 
 function SignUp_page() {
   const navigate = useNavigate();
-  
+
   const firebaseConfig = {
-    apiKey: process.env.REACT_APP_API_KEY,
-    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_APP_ID,
-    measurementId: process.env.REACT_APP_MEASUREMENT_ID,
+    apiKey: "AIzaSyDCraTEdoU1uNk8xAeftbYSfEs-eiCsD3U",
+    authDomain: "booking-app-1edf4.firebaseapp.com",
+    projectId: "booking-app-1edf4",
+    storageBucket: "booking-app-1edf4.appspot.com",
+    messagingSenderId: "319720545675",
+    appId: "1:319720545675:web:0643aa0a2da6034082e38e",
+    measurementId: "G-FK4KH759ZB",
   };
 
   // Initialize Firebase

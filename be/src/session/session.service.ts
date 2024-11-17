@@ -22,6 +22,7 @@ export class SessionService {
 
   async createSession(createSessionDto: CreateSessionDto) {
     const { userId, lastViewProperties, lastBooking } = createSessionDto;
+    console.log(createSessionDto);
 
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 

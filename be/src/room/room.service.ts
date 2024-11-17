@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room } from './room.schema';
-import mongoose, { Model, ObjectId } from 'mongoose';
+import mongoose, { Model, ObjectId, Types } from 'mongoose';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { FindRoomDto } from './dto/findRoom.dto';
 import { Review } from 'src/review/review.schema';
 import { BookingService } from 'src/booking/booking.service';
 import { Property } from 'src/property/property.schema';
 import { Session } from 'src/session/session.schema';
+import { Booking } from 'src/booking/booking.schema';
+import moment from 'moment';
 
 @Injectable()
 export class RoomService {
@@ -21,10 +23,63 @@ export class RoomService {
     private readonly bookingService: BookingService,
     @InjectModel(Session.name)
     private readonly sessionSchema: Model<Session>,
+    @InjectModel(Booking.name)
+    private readonly bookingSchema: Model<Booking>,
   ) {}
   async createRoom(createRoomDto: CreateRoomDto) {
     const newRoom = new this.roomSchema(createRoomDto);
     return newRoom.save();
+  }
+  async updateRoom(room: any) {
+    if (!room._id || room._id === 'undefined') {
+      delete room._id;
+    }
+
+    if (room._id) {
+      const findRoom = await this.roomSchema.findById(room._id);
+
+      if (!findRoom) {
+        throw new Error('Room not found');
+      }
+
+      return await findRoom.updateOne(room);
+    } else {
+      const newRoom = new this.roomSchema(room);
+      const savedRoom = await newRoom.save();
+      return savedRoom;
+    }
+  }
+  async deleteRoom(id: ObjectId) {
+    return await this.roomSchema.findByIdAndDelete(id);
+  }
+  async countRoomWithPropety(property_id: mongoose.Types.ObjectId) {
+    return await this.roomSchema.countDocuments({ property_id });
+  }
+  async getAllRoomWithTotalPrice({
+    check_in,
+    check_out,
+    capacity,
+    userId,
+    place,
+  }) {
+    const uniqueMap = new Map();
+    const availableRoom = await this.findAvailableRoomWithSearch(
+      userId,
+      place,
+      check_in,
+      check_out,
+      capacity,
+    );
+     availableRoom.forEach(item => {
+        const propertyId = item.value.property_id._id;
+
+        if (!uniqueMap.has(propertyId)) {
+            uniqueMap.set(propertyId, item);
+        }
+    });
+    const uniquedProperties = Array.from(uniqueMap.values())
+    
+    return uniquedProperties;
   }
   async getRoomWithProperty(property_id: ObjectId) {
     return this.roomSchema
@@ -34,9 +89,11 @@ export class RoomService {
       .populate('property_id');
   }
   async findAvailableRoomWithProperty(property_id: mongoose.Types.ObjectId) {
-    const existedRoom = await this.roomSchema.find({
-      $and: [{ property_id: property_id }, { 'capacity.room': { $gt: 0 } }],
-    });
+    const existedRoom = await this.roomSchema
+      .find({
+        $and: [{ property_id: property_id }, { 'capacity.room': { $gt: 0 } }],
+      })
+      .populate('property_id');
 
     return existedRoom;
   }
@@ -74,9 +131,14 @@ export class RoomService {
     check_out,
     capacity,
   ) {
-    const findProperties = await this.propertySchema.find({
-      'address.province': place,
-    });
+    let findProperties;
+    if (place === 'all') {
+      findProperties = await this.propertySchema.find();
+    } else {
+      findProperties = await this.propertySchema.find({
+        'address.province': place,
+      });
+    }
 
     const availableRoom = [];
     await Promise.all(
@@ -95,38 +157,49 @@ export class RoomService {
             );
 
             if (finalRespone.length === 0) {
-              availableRoom.push(value);
+              const totalPriceNight =
+                await this.bookingService.calculateTotalNightPrice({
+                  room_id: [value._id],
+                  property: property._id,
+                  check_in_date: check_in,
+                  check_out_date: check_out,
+                });
+
+              availableRoom.push({ value, totalPriceNight });
             }
           }),
         );
       }),
     );
-    const session = await this.sessionSchema.findOne({ userId });
-    if (!session) throw new Error('Session not found');
 
-    // Use the custom comparison function
-    const isDuplicate = await this.isDuplicateSearch(session.recent_search, {
-      place,
-      capacity,
-      checkIn: new Date(check_in),
-      checkOut: new Date(check_out),
-    });
+    if (userId && place != "all") {
+      const session = await this.sessionSchema.findOne({ userId });
+      if (!session) throw new Error('Session not found');
 
-    if (!isDuplicate) {
-      await this.sessionSchema.findOneAndUpdate(
-        {
-          userId,
-        },
-        {
-          $push: {
-            recent_search: {
-              $each: [{ province: place, check_in, check_out, capacity }],
-              $slice: -3,
+      // Use the custom comparison function
+      const isDuplicate = await this.isDuplicateSearch(session.recent_search, {
+        place,
+        capacity,
+        checkIn: new Date(check_in),
+        checkOut: new Date(check_out),
+      });
+
+      if (!isDuplicate) {
+        await this.sessionSchema.findOneAndUpdate(
+          {
+            userId,
+          },
+          {
+            $push: {
+              recent_search: {
+                $each: [{ province: place, check_in, check_out, capacity }],
+                $slice: -3,
+              },
             },
           },
-        },
-        { new: true },
-      );
+          { new: true },
+        );
+      }
     }
 
     return availableRoom;
@@ -191,5 +264,111 @@ export class RoomService {
       },
       { new: true },
     );
+  }
+  async getMonthlyOccupancyRatesByOwner(ownerId: Types.ObjectId, year: number) {
+    const rooms = await this.roomSchema
+      .find()
+      .populate({
+        path: 'property_id',
+        match: { owner_id: new mongoose.Types.ObjectId(ownerId) },
+      })
+      .exec();
+    console.log(rooms);
+
+    const validRooms = rooms.filter((room) => room.property_id !== null);
+
+    const totalRooms = validRooms.reduce((sum, room) => {
+      return sum + (room.capacity.room || 0);
+    }, 0);
+    const bookings = await this.bookingSchema
+      .find({
+        booking_status: 'completed',
+      })
+      .populate({
+        path: 'property',
+        match: { owner_id: new mongoose.Types.ObjectId(ownerId) },
+      })
+      .exec();
+
+    const monthlyBookings = Array(12).fill(0);
+
+    // Xử lý từng booking
+    bookings.forEach((booking) => {
+      const checkInMonth = booking.check_in_date.getMonth();
+      const checkOutMonth = booking.check_out_date.getMonth();
+
+      // Tăng số phòng đặt cho tháng check_in
+      monthlyBookings[checkInMonth] += 1;
+
+      if (checkOutMonth !== checkInMonth) {
+        for (let month = checkInMonth + 1; month <= checkOutMonth; month++) {
+          monthlyBookings[month] += 1;
+        }
+      }
+    });
+
+    const occupancyRates = monthlyBookings.map((count, index) => {
+      const occupancyRate = (count / totalRooms) * 100;
+      return {
+        month: index + 1,
+        occupancyRate: parseFloat(occupancyRate.toFixed(2)),
+      };
+    });
+
+    return occupancyRates;
+  }
+  async getMonthlyOccupancyRatesByProperty(
+    property_id: Types.ObjectId,
+    year: number,
+  ) {
+    const rooms = await this.roomSchema
+      .find()
+      .populate({
+        path: 'property_id',
+        match: { _id: new mongoose.Types.ObjectId(property_id) },
+      })
+      .exec();
+
+    const validRooms = rooms.filter((room) => room.property_id !== null);
+
+    const totalRooms = validRooms.reduce((sum, room) => {
+      return sum + (room.capacity.room || 0);
+    }, 0);
+    const bookings = await this.bookingSchema
+      .find({
+        booking_status: 'completed',
+      })
+      .populate({
+        path: 'property',
+        match: { _id: new mongoose.Types.ObjectId(property_id) },
+      })
+      .exec();
+
+    const monthlyBookings = Array(12).fill(0);
+
+    // Xử lý từng booking
+    bookings.forEach((booking) => {
+      const checkInMonth = booking.check_in_date.getMonth();
+      const checkOutMonth = booking.check_out_date.getMonth();
+
+      // Tăng số phòng đặt cho tháng check_in
+      monthlyBookings[checkInMonth] += 1;
+
+      if (checkOutMonth !== checkInMonth) {
+        for (let month = checkInMonth + 1; month <= checkOutMonth; month++) {
+          monthlyBookings[month] += 1;
+        }
+      }
+    });
+
+    const occupancyRates = monthlyBookings.map((count, index) => {
+      const occupancyRate = (count / totalRooms) * 100;
+      return {
+        month: index + 1,
+        occupancyRate: parseFloat(occupancyRate.toFixed(2)),
+      };
+    });
+
+    return occupancyRates;
   }
 }

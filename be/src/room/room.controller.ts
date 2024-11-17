@@ -70,17 +70,16 @@ export class RoomController {
   }
   @Delete(`deleteRoomById/:id`)
   async deleteRoomById(@Param('id') id: ObjectId) {
-
     return this.roomService.deleteRoom(id);
   }
   @Post('getAllRoomWithTotalPrice')
-  async getAllRoomWithTotalPrice(@Body() data: any){
+  async getAllRoomWithTotalPrice(@Body() data: any) {
     return this.roomService.getAllRoomWithTotalPrice({
       check_in: data.check_in,
       check_out: data.check_out,
       place: data.place,
       userId: data.userId,
       capacity: data.capacity,
-    })
+    });
   }
 }

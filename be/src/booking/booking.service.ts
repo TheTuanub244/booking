@@ -8,6 +8,7 @@ import { SessionService } from 'src/session/session.service';
 import { Promotion } from 'src/promotion/promotion.schema';
 import { Room } from 'src/room/room.schema';
 import { PromotionService } from 'src/promotion/promotion.service';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
 
 @Injectable()
 export class BookingService {
@@ -22,7 +23,8 @@ export class BookingService {
     @InjectModel(Room.name)
     private readonly roomSchema: Model<Room>,
     private readonly promotionService: PromotionService,
-  ) {} // TODO: calculate the total price
+    private readonly notificationGateway: NotificationGateway,
+  ) {}
 
   async calculateTotalNightPrice(booking: any) {
     const findRoomPromotion =
@@ -91,29 +93,46 @@ export class BookingService {
 
     return totalNightPrice;
   }
-  async createBooking(createBookingDto: CreateBookingDto) {
-    const totalNightPrice =
-      await this.calculateTotalNightPrice(createBookingDto);
+  async createBooking(createBookingDto: any) {
+    const customerId = createBookingDto.customerId;
+    // const findPartnerId = await this.roomSchema
+    //   .findOne({
+    //     property_id: createBookingDto.property,
+    //   })
+    //   .populate('property_id');
 
-    const newBooking = new this.bookingSchema(createBookingDto);
-    const savedBooking = await newBooking.save();
-
-    await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
-      total_price: totalNightPrice,
-    });
-    await this.sessionSchema.findOneAndUpdate(
-      {
-        userId: createBookingDto.user_id,
-      },
-      {
-        $set: {
-          data: {
-            lastBooking: savedBooking._id,
-          },
-        },
-      },
+    const notification = {
+      message: `User ${createBookingDto.partnerId} has booked Room ${createBookingDto.room_id}`,
+      date: new Date(),
+    };
+    this.notificationGateway.sendNotificationToPartner(
+      createBookingDto.partnerId.toString(),
+      notification,
     );
-    return savedBooking;
+
+    return { success: true };
+    // const totalNightPrice =
+    //   await this.calculateTotalNightPrice(createBookingDto);
+
+    // const newBooking = new this.bookingSchema(createBookingDto);
+    // const savedBooking = await newBooking.save();
+
+    // await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
+    //   total_price: totalNightPrice,
+    // });
+    // await this.sessionSchema.findOneAndUpdate(
+    //   {
+    //     userId: createBookingDto.user_id,
+    //   },
+    //   {
+    //     $set: {
+    //       data: {
+    //         lastBooking: savedBooking._id,
+    //       },
+    //     },
+    //   },
+    // );
+    // return savedBooking;
   }
   async findConflictingBookings(
     property: mongoose.Types.ObjectId,
@@ -341,26 +360,54 @@ export class BookingService {
     }));
   }
   async getBooking(owner_id: string) {
-    console.log(owner_id);
-    
     return this.bookingSchema.aggregate([
       {
         $lookup: {
-          from: 'properties',
-          localField: 'property',
-          foreignField: '_id',
-          as: 'propertyDetails',
+          from: 'properties', // Tên collection 'properties'
+          localField: 'property', // Field trong booking
+          foreignField: '_id', // Field trong properties
+          as: 'propertyDetails', // Kết quả sẽ lưu trong 'propertyDetails'
         },
       },
       {
-        $unwind: '$propertyDetails',
+        $unwind: '$propertyDetails', // Chuyển mảng thành object để xử lý owner_id
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
       },
       {
         $match: {
-          'propertyDetails.owner_id': new Types.ObjectId(owner_id),
+          'propertyDetails.owner_id': new Types.ObjectId(owner_id), // Match owner_id
+        },
+      },
+      {
+        $lookup: {
+          from: 'rooms', // Tên collection 'rooms'
+          localField: 'room_id', // Mảng room_id trong booking
+          foreignField: '_id', // Field _id trong rooms
+          as: 'roomDetails', // Kết quả sẽ lưu trong 'roomDetails'
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          check_in_date: 1,
+          check_out_date: 1,
+          total_price: 1,
+          booking_status: 1,
+          capacity: 1,
+          'propertyDetails.name': 1,
+          'propertyDetails.location': 1,
+          roomDetails: 1,
+          'userDetails.userName': 1,
+          'userDetails.email': 1,
         },
       },
     ]);
   }
-
 }

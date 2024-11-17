@@ -19,14 +19,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 function Header({ type, places, promptData }) {
   const [openDate, setOpenDate] = useState(false);
-  const [placesToShowDropDown, setPlacesToShowDropDown] = useState()
-  const location = useLocation()
-  const latitude = localStorage.getItem('latitude')
-  const longitude = localStorage.getItem('longitude')
-  const oneDayLater = new Date()
+  const [placesToShowDropDown, setPlacesToShowDropDown] = useState();
+  const location = useLocation();
+  const latitude = localStorage.getItem("latitude");
+  const longitude = localStorage.getItem("longitude");
+  const oneDayLater = new Date();
   useEffect(() => {
-    setPlacesToShowDropDown(places)
-  }, [])
+    setPlacesToShowDropDown(places);
+  }, []);
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -62,13 +62,15 @@ function Header({ type, places, promptData }) {
 
   const checkAdults = options.adult > 1 ? "adults" : "adult";
   const checkRooms = options.room > 1 ? "rooms" : "room";
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [province, setProvince] = useState("");
 
   const handleChangeProvince = (e) => {
     setProvince(e.target.value);
-    const searchPlace = places.filter((place) =>  place.includes(e.target.value))
-    setPlacesToShowDropDown(searchPlace)
+    const searchPlace = places.filter((place) =>
+      place.includes(e.target.value),
+    );
+    setPlacesToShowDropDown(searchPlace);
   };
 
   const [openOptions, setOpenOptions] = useState(false);
@@ -79,7 +81,6 @@ function Header({ type, places, promptData }) {
     setSelectedAge(e.target.value);
   };
   const handleClick = async (e) => {
-    
     const userId = localStorage.getItem("userId");
     const data = {
       userId,
@@ -95,32 +96,32 @@ function Header({ type, places, promptData }) {
         room: options.room,
       },
     };
-    data.province = data.place
-    navigate('/searchResult', {
-      state: { option: data, longitude, latitude }
-    })
+    data.province = data.place;
+    navigate("/searchResult", {
+      state: { option: data, longitude, latitude },
+    });
   };
   const [showSuggestions, setShowSuggestions] = useState(false);
   const handleSelectSuggestion = async (province) => {
     setProvince(province);
   };
   useEffect(() => {
-    
-    if(promptData){
-      
-      setDate([{
-        endDate: new Date(promptData.check_out),
-        startDate: new Date(promptData.check_in)
-      }])
-      
+    if (promptData) {
+      setDate([
+        {
+          endDate: new Date(promptData.check_out),
+          startDate: new Date(promptData.check_in),
+        },
+      ]);
+
       setOptions({
         adult: promptData.capacity.adults,
         children: promptData.capacity.childs.count,
-        room: promptData.capacity.room
-      })
-      setProvince(promptData.place)
+        room: promptData.capacity.room,
+      });
+      setProvince(promptData.place);
     }
-  }, [promptData])
+  }, [promptData]);
   return (
     <div className="header">
       <div
@@ -184,23 +185,24 @@ function Header({ type, places, promptData }) {
               <div className="suggestionsTitle">
                 Popular destinations nearby
               </div>
-              {placesToShowDropDown.map((place, index) => (
-                index < 6 && (
-                  <div
-                  key={index}
-                  className="suggestionItem"
-                  onMouseDown={() => handleSelectSuggestion(place)}
-                >
-                  <FontAwesomeIcon
-                    icon={faMapMarkerAlt}
-                    className="suggestionIcon"
-                  />
-                  <div className="suggestionText">
-                    <div className="suggestionName">{place}</div>
-                  </div>
-                </div>
-                )
-              ))}
+              {placesToShowDropDown.map(
+                (place, index) =>
+                  index < 6 && (
+                    <div
+                      key={index}
+                      className="suggestionItem"
+                      onMouseDown={() => handleSelectSuggestion(place)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faMapMarkerAlt}
+                        className="suggestionIcon"
+                      />
+                      <div className="suggestionText">
+                        <div className="suggestionName">{place}</div>
+                      </div>
+                    </div>
+                  ),
+              )}
             </div>
           )}
           <div className="headerSearchItem iconCalendar">
@@ -217,9 +219,7 @@ function Header({ type, places, promptData }) {
               <DateRange
                 editableDateInputs={true}
                 onChange={(item) => {
-                  
-                  setDate([item.selection || item.range1])
-                  
+                  setDate([item.selection || item.range1]);
                 }}
                 moveRangeOnFirstSelection={false}
                 ranges={date}

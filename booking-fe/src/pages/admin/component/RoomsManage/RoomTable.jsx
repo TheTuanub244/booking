@@ -1,11 +1,11 @@
 import "./RoomTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import { roomColumns, roomRows } from "../../data/roomdata"; 
+import { roomColumns, roomRows } from "../../data/roomdata";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const RoomTable = () => {
-  const [data, setData] = useState(roomRows); 
+  const [data, setData] = useState(roomRows);
   console.log(data);
 
   const handleDelete = (id) => {

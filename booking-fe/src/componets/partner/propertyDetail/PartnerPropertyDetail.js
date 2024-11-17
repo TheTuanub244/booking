@@ -21,10 +21,9 @@ const PropertyDetail = ({ propertyId, tab, setTab }) => {
         localStorage.setItem("property", JSON.stringify(respone));
         const findRoom = await findRoomByProperty(respone._id);
         console.log(findRoom);
-        
+
         if (findRoom) {
           setRooms(findRoom || []);
-          
         }
       }
     };
@@ -70,67 +69,68 @@ const PropertyDetail = ({ propertyId, tab, setTab }) => {
 
                   <div>
                     <h4>Images:</h4>
-                    {
-                      property.images.length > 1 ? (
-                        <Slider {...settings}>
-                      {property.images.map((image, index) => (
-                        <div key={index} className="carousel-image">
-                          <img
-                            src={image}
-                            alt={`Property ${index + 1}`}
-                            className="img-thumbnail"
-                          />
-                        </div>
-                      ))}
-                    </Slider>
-                      ) : (
-                        <div>
-                      <img
-                        src={property.images[0]}
-                        all={"Property Image Review"}
-                        className="img-thumbnail"
-                      />
-
-                    </div>
-                      )
-                    }
+                    {property.images.length > 1 ? (
+                      <Slider {...settings}>
+                        {property.images.map((image, index) => (
+                          <div key={index} className="carousel-image">
+                            <img
+                              src={image}
+                              alt={`Property ${index + 1}`}
+                              className="img-thumbnail"
+                            />
+                          </div>
+                        ))}
+                      </Slider>
+                    ) : (
+                      <div>
+                        <img
+                          src={property.images[0]}
+                          all={"Property Image Review"}
+                          className="img-thumbnail"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="rooms-section">
                     <h3>Rooms</h3>
-                    {
-                      (rooms && rooms.length > 0 ) ? (
-                        rooms.map((room, index) => (
-                          <div className="room-card" key={index}>
-                            <p className="room-info-title">{room.name}</p>
-                            <p className="room-detail">
-                              <strong>Type:</strong> {room.type || "None"}
-                            </p>
-                            <p className="room-detail">
-                              <strong>Size:</strong> {room.size || 0} sqm
-                            </p>
-                            <p className="room-detail">
-                              <strong>Rating:</strong> {room.rating || 0}/5
-                            </p>
-    
-                            <p className="room-detail"><strong>Price per night:</strong> Weekday: {formatCurrency(room.price_per_night.weekday)}, Weekend: {formatCurrency(room.price_per_night.weekend)}</p>
-                            <p className="room-detail">
-                              <strong>Capacity:</strong> {room.capacity.adults || 0}{" "}
-                              adults, {room.capacity.childs.count || 0} children
-                            </p>
-                            <div className="room-facility-list">
-                              {room.facility.map((facility, idx) => (
-                                <span key={idx} className="room-facility-item">
-                                  {facility}
-                                </span>
-                              ))}
-                            </div>
+                    {rooms && rooms.length > 0 ? (
+                      rooms.map((room, index) => (
+                        <div className="room-card" key={index}>
+                          <p className="room-info-title">{room.name}</p>
+                          <p className="room-detail">
+                            <strong>Type:</strong> {room.type || "None"}
+                          </p>
+                          <p className="room-detail">
+                            <strong>Size:</strong> {room.size || 0} sqm
+                          </p>
+                          <p className="room-detail">
+                            <strong>Rating:</strong> {room.rating || 0}/5
+                          </p>
+
+                          <p className="room-detail">
+                            <strong>Price per night:</strong> Weekday:{" "}
+                            {formatCurrency(room.price_per_night.weekday)},
+                            Weekend:{" "}
+                            {formatCurrency(room.price_per_night.weekend)}
+                          </p>
+                          <p className="room-detail">
+                            <strong>Capacity:</strong>{" "}
+                            {room.capacity.adults || 0} adults,{" "}
+                            {room.capacity.childs.count || 0} children
+                          </p>
+                          <div className="room-facility-list">
+                            {room.facility.map((facility, idx) => (
+                              <span key={idx} className="room-facility-item">
+                                {facility}
+                              </span>
+                            ))}
                           </div>
-                        ))
-                      ) : (
-                        <h1>No rooms</h1>
-                      )
-                    }
+                        </div>
+                      ))
+                    ) : (
+                      <h1>No rooms</h1>
+                    )}
                   </div>
                 </div>
               </div>

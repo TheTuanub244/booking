@@ -17,6 +17,8 @@ import { Room, RoomSchema } from 'src/room/room.schema';
 import { RoomModule } from 'src/room/room.module';
 import { SessionModule } from 'src/session/session.module';
 import { PromotionService } from 'src/promotion/promotion.service';
+import { NotificationModule } from 'src/notification/notification.module';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
 
 const jwtConstant = {
   secret: 'jwtsecret',
@@ -29,6 +31,7 @@ const jwtConstant = {
     SessionService,
     UserService,
     PromotionService,
+    NotificationGateway,
   ],
   exports: [BookingService],
   imports: [
@@ -51,6 +54,7 @@ const jwtConstant = {
       signOptions: { expiresIn: '60m' },
     }),
     PassportModule,
+    NotificationModule,
     UserModule,
     PromotionModule,
     forwardRef(() => RoomModule),

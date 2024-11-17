@@ -19,6 +19,7 @@ import * as admin from 'firebase-admin';
 import * as serviceAccount from './config/booking-app-1edf4-4dd703c8105b.json';
 import { JwtModule } from '@nestjs/jwt';
 import { PromotionModule } from './promotion/promotion.module';
+import { NotificationModule } from './notification/notification.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -40,6 +41,7 @@ const jwtConstant = {
     PaymentModule,
     AmentitesModule,
     PromotionModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [

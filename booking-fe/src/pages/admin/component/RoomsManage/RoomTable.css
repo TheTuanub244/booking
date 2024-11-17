@@ -18,7 +18,7 @@
 
 .datatable .datatableTitle .link {
   text-decoration: none;
-  color: #007bff; 
+  color: #007bff;
   font-size: 16px;
   font-weight: 500;
   border: 1px solid #007bff;
@@ -55,17 +55,17 @@
 }
 
 .datatable .cellWithStatus.Available {
-  background-color: rgba(76, 175, 80, 0.1); 
+  background-color: rgba(76, 175, 80, 0.1);
   color: #4caf50;
 }
 
 .datatable .cellWithStatus.Occupied {
-  background-color: rgba(255, 87, 34, 0.1); 
+  background-color: rgba(255, 87, 34, 0.1);
   color: #ff5722;
 }
 
 .datatable .cellWithStatus.Maintenance {
-  background-color: rgba(255, 193, 7, 0.1); 
+  background-color: rgba(255, 193, 7, 0.1);
   color: #ffc107;
 }
 

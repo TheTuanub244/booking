@@ -13,7 +13,7 @@ export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
   @Post('createBooking')
   // @Roles(ROLE.MEMBER)
-  async createBooking(@Body() createBookingDto: CreateBookingDto) {
+  async createBooking(@Body() createBookingDto: any) {
     return this.bookingService.createBooking(createBookingDto);
   }
   @Get(`/getMonthlyRevenue/:id`)
@@ -24,8 +24,10 @@ export class BookingController {
   async getMonthlyRevenueByProperty(@Param('id') id: string) {
     return this.bookingService.getMonthlyRevenueByProperty(id);
   }
-  @Get(`/getBooking/:id`)
-  async getBooking(@Param('id') id: string){
-    return this.bookingService.getBooking(id )
+  @Get(`/getBooking/:id/:status`)
+  async getBooking(@Param('id') id: string, @Param('status') status: string) {
+    console.log(status);
+
+    return this.bookingService.getBooking(id);
   }
 }

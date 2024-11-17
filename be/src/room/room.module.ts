@@ -20,6 +20,8 @@ import { UserService } from 'src/user/user.service';
 import { Promotion, PromotionSchema } from 'src/promotion/promotion.schema';
 import { PromotionModule } from 'src/promotion/promotion.module';
 import { PromotionService } from 'src/promotion/promotion.service';
+import { NotificationModule } from 'src/notification/notification.module';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -31,6 +33,7 @@ const jwtConstant = {
     SessionService,
     UserService,
     PromotionService,
+    NotificationGateway,
   ],
   exports: [RoomService], // Ensure to export services needed by other modules
   imports: [
@@ -48,6 +51,8 @@ const jwtConstant = {
       signOptions: { expiresIn: '60m' },
     }),
     forwardRef(() => SessionModule),
+    forwardRef(() => NotificationModule),
+
     forwardRef(() => BookingModule),
     forwardRef(() => UserModule),
     forwardRef(() => PromotionModule),

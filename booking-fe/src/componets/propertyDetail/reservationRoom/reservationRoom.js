@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./reservationRoom.css";
 import ReservationRoom_item from "./reservationRoom_item";
 import RoomModal from "./roomModal";
 import { checkRoomDateBooking } from "../../../function/searchRoomInProperty";
 import SignInPopup from "./signInPopup";
 import { useLocation, useNavigate } from "react-router-dom";
+import { createBooking } from "../../../api/bookingAPI";
 
-const ReservationRoom = ({ roomData }) => {
+const ReservationRoom = ({ roomData, partnerId }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
 
   const [checkInDate, setCheckInDate] = useState("");
@@ -104,7 +105,8 @@ const ReservationRoom = ({ roomData }) => {
   };
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleReserveClick = () => {
+  const handleReserveClick = async () => {
+    await createBooking(userId, partnerId);
     if (!userId) {
       setIsPopupOpen(true);
     }

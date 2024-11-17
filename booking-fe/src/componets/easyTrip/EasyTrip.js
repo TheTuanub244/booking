@@ -15,16 +15,11 @@ import "./easyTrip.css";
 import { useNavigate } from "react-router-dom";
 
 function EasyTrip({ propertyNear }) {
-  
-
-
   const handleClick = (id) => {
     setType(id);
   };
 
   const [type, setType] = useState(1);
-
-
 
   const navigate = useNavigate();
   const handleNavigate = async (id) => {

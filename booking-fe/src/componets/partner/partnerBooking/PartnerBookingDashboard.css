@@ -1,0 +1,6 @@
+.hover-row:hover {
+  background-color: azure;
+}
+.hover-row {
+  cursor: pointer;
+}

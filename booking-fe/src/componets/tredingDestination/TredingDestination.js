@@ -5,14 +5,16 @@ import { getPropertyByPlace } from "../../api/propertyAPI";
 
 function TredingDestination() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate()
-  const latitude = localStorage.getItem('latitude')
-  const longitude = localStorage.getItem('longitude')
-  const data = JSON.parse(localStorage.getItem('option'))
+  const navigate = useNavigate();
+  const latitude = localStorage.getItem("latitude");
+  const longitude = localStorage.getItem("longitude");
+  const data = JSON.parse(localStorage.getItem("option"));
   const handleSearchByPlace = async (value) => {
-    data.province = value
-    data.place = value
-    navigate(`/searchResult?place=${value}`, {state: { option: data, longitude, latitude }} )
+    data.province = value;
+    data.place = value;
+    navigate(`/searchResult?place=${value}`, {
+      state: { option: data, longitude, latitude },
+    });
   };
   return (
     <div className="treding-destination">

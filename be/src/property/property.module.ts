@@ -21,6 +21,8 @@ import { UserModule } from 'src/user/user.module';
 import { ReviewService } from 'src/review/review.service';
 import { Promotion, PromotionSchema } from 'src/promotion/promotion.schema';
 import { PromotionModule } from 'src/promotion/promotion.module';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationModule } from 'src/notification/notification.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -32,6 +34,7 @@ const jwtConstant = {
     SessionService,
     RoomService,
     ReviewService,
+    NotificationGateway,
   ],
   imports: [
     MongooseModule.forFeature([
@@ -61,6 +64,8 @@ const jwtConstant = {
     forwardRef(() => BookingModule),
     forwardRef(() => SessionModule),
     forwardRef(() => RoomModule),
+    forwardRef(() => NotificationModule),
+
     ReviewModule,
     UserModule,
     PromotionModule,

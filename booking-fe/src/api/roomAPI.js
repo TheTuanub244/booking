@@ -2,12 +2,11 @@ import axios from "axios";
 
 export const findAvailableRoomWithSearch = async (data) => {
   try {
-    
     const respone = await axios.post(
       "http://localhost:8000/room/findAvailableRoomWithSearch",
       data,
     );
-    
+
     return respone.data;
   } catch (error) {
     const respone = error.response.data.message;
@@ -65,10 +64,16 @@ export const deleteRoomById = async (roomId) => {
 
   return respone.data;
 };
-export const getAllRoomWithTotalPrice = async (check_in, check_out, capacity, userId) => {
+export const getAllRoomWithTotalPrice = async (
+  check_in,
+  check_out,
+  capacity,
+  userId,
+) => {
   const respone = await axios.post(
-    `http://localhost:8000/room/getAllRoomWithTotalPrice`, {check_in, check_out, place: "all", capacity, userId}
+    `http://localhost:8000/room/getAllRoomWithTotalPrice`,
+    { check_in, check_out, place: "all", capacity, userId },
   );
 
   return respone.data;
-}
+};

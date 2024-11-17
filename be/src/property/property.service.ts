@@ -345,7 +345,6 @@ export class PropertyService {
     const properties = await this.propertySchema.find({});
     const perfectProperties = [];
     const nearbyProperties = properties.filter((property) => {
-
       const distance = this.calculateDistance(
         latitude,
         longitude,

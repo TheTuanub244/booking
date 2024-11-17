@@ -6,7 +6,7 @@ import { useState } from "react";
 
 const Datatable = () => {
   const [data, setData] = useState(usersRows);
-  console.log(data)
+  console.log(data);
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
   };

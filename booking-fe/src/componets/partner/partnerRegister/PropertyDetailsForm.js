@@ -66,7 +66,7 @@ const PropertyDetailsForm = ({
   const [address, setAddress] = useState();
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "street") {
@@ -196,7 +196,7 @@ const PropertyDetailsForm = ({
                 image: [...newImage],
               };
               console.log(updatedRooms);
-              
+
               return {
                 ...prevData,
                 rooms: updatedRooms,
@@ -210,17 +210,17 @@ const PropertyDetailsForm = ({
     } else {
       const file = e.target.files[0];
       console.log(file);
-      
+
       const updatedRooms = [...propertyData.rooms];
 
       updatedRooms[index].image = file;
 
       if (file) {
         const reader = new FileReader();
-        
+
         reader.onloadend = () => {
           const updatedRooms = [...propertyData.rooms];
-          
+
           updatedRooms[index] = {
             ...updatedRooms[index],
             images: [reader.result],
@@ -352,7 +352,7 @@ const PropertyDetailsForm = ({
   };
   const updateProperty = async () => {
     console.log(1);
-    
+
     const accessToken = localStorage.getItem("accessToken");
     const userId = localStorage.getItem("userId");
     propertyData.owner_id = userId;
@@ -511,7 +511,9 @@ const PropertyDetailsForm = ({
   return (
     <>
       {address && propertyData && propertyData.rooms && (
-        <div className={`property-details-container ${type === "update" && "update-form"}`}>
+        <div
+          className={`property-details-container ${type === "update" && "update-form"}`}
+        >
           <div className="property-details-form">
             <h2>Add Property Details</h2>
             <form className="form-sectionn">
@@ -627,11 +629,13 @@ const PropertyDetailsForm = ({
                         type="number"
                         name="room"
                         value={room.capacity.room}
-                        onChange={(e) => handleRoomCapacityChange(
-                          index,
-                          e.target.name,
-                          e.target.value,
-                        )}
+                        onChange={(e) =>
+                          handleRoomCapacityChange(
+                            index,
+                            e.target.name,
+                            e.target.value,
+                          )
+                        }
                         required
                       />
                       <label>Room Size</label>
@@ -870,88 +874,85 @@ const PropertyDetailsForm = ({
               <strong>Property's Image:</strong>
             </p>
 
-            {propertyData.images && (
-                (
-                  propertyData.images.length > 1 ? (
-                    <div
-                className="image-slider"
-                style={{ overflow: "visible", position: "relative" }}
-              >
-                <Slider
-                  dots={true}
-                  infinite={true}
-                  speed={500}
-                  slidesToShow={1}
-                  slidesToScroll={1}
+            {propertyData.images &&
+              (propertyData.images.length > 1 ? (
+                <div
+                  className="image-slider"
+                  style={{ overflow: "visible", position: "relative" }}
                 >
-                  {propertyData.images.map((image, idx) => (
-                    <div key={idx}>
-                      <img
-                        src={image}
-                        alt={`Property preview ${idx}`}
-                        style={{ width: "100%", height: "auto" }}
-                      />
-                      <button
-                        onClick={() => handleRemovePropertyImage(idx)}
-                        style={{
-                          position: "absolute",
-                          top: "10px",
-                          right: "10px",
-                          backgroundColor: "rgba(255, 0, 0, 0.8)",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "50%",
-                          width: "30px",
-                          height: "30px",
-                          fontSize: "16px",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
-                          zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
-                        }}
-                      >
-                        &times; {/* Dấu x */}
-                      </button>
-                    </div>
-                  ))}
-                </Slider>
-              </div>
-                  ) : (
-                    <div>
-                      <img
-                        src={propertyData.images[0]}
-                        all={"Property Image Review"}
-                        style={{ width: "100%", height: "auto" }}
-                      />
-                      <button
-                        onClick={() => handleRemovePropertyImage(0)}
-                        style={{
-                          position: "absolute",
-                          top: "10px",
-                          right: "10px",
-                          backgroundColor: "rgba(255, 0, 0, 0.8)",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "50%",
-                          width: "30px",
-                          height: "30px",
-                          fontSize: "16px",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
-                          zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
-                        }}
-                      >
-                        &times; {/* Dấu x */}
-                      </button>
-                    </div>
-                  )
-                )
-            )}
+                  <Slider
+                    dots={true}
+                    infinite={true}
+                    speed={500}
+                    slidesToShow={1}
+                    slidesToScroll={1}
+                  >
+                    {propertyData.images.map((image, idx) => (
+                      <div key={idx}>
+                        <img
+                          src={image}
+                          alt={`Property preview ${idx}`}
+                          style={{ width: "100%", height: "auto" }}
+                        />
+                        <button
+                          onClick={() => handleRemovePropertyImage(idx)}
+                          style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                            backgroundColor: "rgba(255, 0, 0, 0.8)",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "50%",
+                            width: "30px",
+                            height: "30px",
+                            fontSize: "16px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                            zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
+                          }}
+                        >
+                          &times; {/* Dấu x */}
+                        </button>
+                      </div>
+                    ))}
+                  </Slider>
+                </div>
+              ) : (
+                <div>
+                  <img
+                    src={propertyData.images[0]}
+                    all={"Property Image Review"}
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                  <button
+                    onClick={() => handleRemovePropertyImage(0)}
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      backgroundColor: "rgba(255, 0, 0, 0.8)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "30px",
+                      height: "30px",
+                      fontSize: "16px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0px 0px 5px rgba(0,0,0,0.5)",
+                      zIndex: 10000, // Đặt z-index cực cao để nút nằm trên cùng
+                    }}
+                  >
+                    &times; {/* Dấu x */}
+                  </button>
+                </div>
+              ))}
 
             <div className="mini-mapp">
               <Map

@@ -29,7 +29,7 @@ function Home() {
   const [allPlace, setAllPlace] = useState();
   const [userId, setUserId] = useState();
   const [propertyType, setPropertyType] = useState();
-  const [promptData, setPromptData] = useState()
+  const [promptData, setPromptData] = useState();
   const navigate = useNavigate();
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
@@ -57,8 +57,8 @@ function Home() {
       (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        localStorage.setItem('latitude', latitude)
-        localStorage.setItem('longitude', longitude)
+        localStorage.setItem("latitude", latitude);
+        localStorage.setItem("longitude", longitude);
 
         getNear(longitude, latitude);
       },
@@ -66,7 +66,7 @@ function Home() {
         console.error("Error getting location:", error.message);
       },
     );
-    
+
     const userId = localStorage.getItem("userId");
     setUserId(userId);
     getPropertyType();

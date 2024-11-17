@@ -201,7 +201,7 @@ export class RoomService {
         );
       }
     }
-    
+
     return availableRoom;
   }
   async findConflictingInBookings(

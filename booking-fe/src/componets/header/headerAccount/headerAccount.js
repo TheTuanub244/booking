@@ -2,6 +2,7 @@ import React from "react";
 import "./headerAccount.css";
 import { signOut } from "../../../api/userAPI";
 import { useNavigate } from "react-router-dom";
+import { getRoleFromToken } from "../../../helpers/authHelpers";
 
 function HeaderAccount() {
   const isSignIn = localStorage.getItem("isSignIn");
@@ -9,7 +10,13 @@ function HeaderAccount() {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
   const handleNavigate = () => {
-    navigate("/partner/partnerDashboard");
+    const accessToken = localStorage.getItem("accessToken");
+    const role = getRoleFromToken(accessToken, "Partner");
+    if (role) {
+      navigate(`/partner/propertyList/${userId}`);
+    } else {
+      navigate("/partner/partnerDashboard");
+    }
   };
   const handleSignOut = async () => {
     localStorage.removeItem("userName");

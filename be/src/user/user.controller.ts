@@ -33,10 +33,12 @@ export class UserController {
   @Post('/sign-in')
   async signIn(@Body() user: any, @Res() response: Response) {
     const data = await this.userService.signIn(user);
+    console.log(data);
+
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
+      sameSite: 'lax',
+      secure: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return response.status(HttpStatus.OK).json({
@@ -59,13 +61,14 @@ export class UserController {
     const data = await this.userService.signInWithGoggle(user);
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
+      sameSite: 'lax',
+      secure: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return response.status(HttpStatus.OK).json({
       _id: data._id,
+      accessToken: data.access_token,
       message: 'Login successful',
     });
   }
@@ -91,8 +94,8 @@ export class UserController {
     const data = await this.userService.updateInformationForGoogle(user.user);
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
+      sameSite: 'lax',
+      secure: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return response.status(HttpStatus.OK).json({

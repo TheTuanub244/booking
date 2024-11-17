@@ -54,8 +54,6 @@ const PropertyDetail = () => {
 
           const roomDatas = await findRoomByProperty(id);
 
-
-
           setRoomData(roomDatas);
 
           setLoading(false);
@@ -301,7 +299,7 @@ const PropertyDetail = () => {
             <ReservationRoom roomData={roomData} />
           </div>
           <div className="property-review">
-              <PropertyReview property_id={id} />
+            <PropertyReview property_id={id} />
           </div>
         </>
       )}

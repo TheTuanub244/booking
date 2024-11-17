@@ -83,4 +83,66 @@ export class ReviewService {
 
     return reviewCount;
   }
+  async getMonthlyRating(owner_id: string) {
+    const reviews = await this.reviewSchema
+      .find()
+      .populate({
+        path: 'roomId',
+        populate: {
+          path: 'property_id',
+          match: { owner_id: new mongoose.Types.ObjectId(owner_id) },
+        },
+      })
+      .exec();
+
+    const validReviews = reviews.filter(
+      (review) => review.roomId?.property_id !== null,
+    );
+
+    const ratingCounts: { [key: number]: number } = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    };
+
+    validReviews.forEach((review) => {
+      const roundedRating = Math.ceil(review.rating);
+      ratingCounts[roundedRating] = (ratingCounts[roundedRating] || 0) + 1;
+    });
+
+    return ratingCounts;
+  }
+  async getMonthlyRatingByProperty(property_id: string) {
+    const reviews = await this.reviewSchema
+      .find()
+      .populate({
+        path: 'roomId',
+        populate: {
+          path: 'property_id',
+          match: { _id: new mongoose.Types.ObjectId(property_id) },
+        },
+      })
+      .exec();
+
+    const validReviews = reviews.filter(
+      (review) => review.roomId?.property_id !== null,
+    );
+
+    const ratingCounts: { [key: number]: number } = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    };
+
+    validReviews.forEach((review) => {
+      const roundedRating = Math.ceil(review.rating);
+      ratingCounts[roundedRating] = (ratingCounts[roundedRating] || 0) + 1;
+    });
+
+    return ratingCounts;
+  }
 }

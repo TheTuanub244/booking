@@ -9,13 +9,14 @@ import Auth from "./pages/auth/Auth";
 import Property from "./pages/property/Property";
 import PartnerDashboard from "./pages/partner/partnerDashboard/partnerDashboard";
 import PartnerRegister from "./pages/partner/partnerRegister/partnerRegister";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AddNewUser from "./pages/admin/contents/AddNewUser/AddNewUser";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />}></Route>
-
         <Route path="/" element={<Home />}></Route>
         <Route path="/hotels" element={<List />}></Route>
         <Route path="/hotels/:id" element={<Hotel />}></Route>
@@ -24,10 +25,13 @@ function App() {
         <Route path="/auth" element={<Auth />}></Route>
         <Route path="/property" element={<Property />}></Route>
         <Route path="/property/:id" element={<Property />}></Route>
-        <Route
-          path="/partner/partnerDashboard"
-          element={<PartnerDashboard />}
-        />
+        <Route path="/admin" element={<AdminDashboard />}>
+              <Route
+                path="new"
+                element={<AddNewUser/>}
+              />
+            </Route>
+        <Route path="/partner/partnerDashboard" element={<PartnerDashboard />} />
         <Route path="/partner/partnerRegister" element={<PartnerRegister />} />
       </Routes>
     </BrowserRouter>

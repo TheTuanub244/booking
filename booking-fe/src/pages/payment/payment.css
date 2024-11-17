@@ -217,3 +217,169 @@
 .rightContent {
   flex: 7;
 }
+
+.signIninfor {
+  display: flex;
+  gap:20px;
+  padding:15px;
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+  align-items: center;
+}
+
+.signIninfor > .img  {
+  border: 3px solid #2ebcef;
+  padding: 10px 12px;
+  border-radius: 50%;
+}
+
+.iconUser {
+  color:#2ebcef
+}
+
+.information > .text {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.information > .email {
+  font-size: 15px;
+  color: #595959;
+  font-size:300;
+}
+
+.yourDetails {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+  margin-top:20px;
+}
+
+.yourDetails h3 {
+  margin-top: 8px;
+  margin-left: 25px;
+  font-size: 22px;
+  
+}
+
+.yourDetails .alert{
+  display: flex;
+  gap:15px;
+  padding:14px 14px;
+  border: 1px solid #333;
+  margin-top: 20px;
+  margin-left: 25px;
+  align-items: center;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+}
+
+.alert .iconInfo {
+  font-size: 12px;
+  border: 2px solid #333;
+  padding:4px 5px;
+  border-radius: 50%;
+}
+
+.alert .required {
+  color: #e2240f;
+  font-weight: bold;
+  margin-left: 0px;
+}
+
+.alert .yourAlert{
+  font-size: 14px;
+  color: #595959;
+  font-size: 14px;
+}
+
+.formInput {
+  max-width: 500px;
+  margin: 20px 5px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.formInput label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.formInput .required {
+  color: #e74c3c;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.formInput input,
+.formInput select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.formInput input:focus,
+.formInput select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+  outline: none;
+}
+
+.formInput .form-control-comment {
+  margin-top: 5px;
+}
+
+.formInput .country {
+  appearance: none; /* Loại bỏ style mặc định */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E") no-repeat right 10px center;
+  background-color: #ffffff;
+  background-size: 18px;
+}
+
+.formInput select {
+  padding-right: 30px; /* Khoảng trống cho mũi tên */
+}
+
+
+.errorMessage {
+  color: red; /* Set the text color */
+  font-size: 14px; /* Adjust font size */
+  margin-top: 10px; /* Space above the error message */
+  font-weight: bold; /* Make the text bold */
+  /* Additional styles can be added as needed */
+  background-color: #f8d7da; /* Light background for visibility */
+  padding: 10px; /* Padding for better spacing */
+  border: 1px solid red; /* Red border to emphasize the error */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.formInput .btnSub {
+  padding: 12px 15px;
+  font-size: 16px;
+  background-color: #3498db;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+
+.formInput .btnSub:hover {
+  background-color: #2980b9;
+}
+
+
+.btnDiv {
+  display: flex;
+  justify-content: flex-end;
+}

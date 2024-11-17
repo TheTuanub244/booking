@@ -171,7 +171,6 @@ export class PropertyService {
           images: room.images || null,
         })),
       };
-      console.log(propertyData);
 
       const savedProperty = await this.propertySchema.findByIdAndUpdate(
         propertyData._id,
@@ -346,7 +345,6 @@ export class PropertyService {
     const properties = await this.propertySchema.find({});
     const perfectProperties = [];
     const nearbyProperties = properties.filter((property) => {
-      console.log(property);
 
       const distance = this.calculateDistance(
         latitude,

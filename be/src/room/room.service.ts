@@ -70,15 +70,15 @@ export class RoomService {
       check_out,
       capacity,
     );
-     availableRoom.forEach(item => {
-        const propertyId = item.value.property_id._id;
+    availableRoom.forEach((item) => {
+      const propertyId = item.value.property_id._id;
 
-        if (!uniqueMap.has(propertyId)) {
-            uniqueMap.set(propertyId, item);
-        }
+      if (!uniqueMap.has(propertyId)) {
+        uniqueMap.set(propertyId, item);
+      }
     });
-    const uniquedProperties = Array.from(uniqueMap.values())
-    
+    const uniquedProperties = Array.from(uniqueMap.values());
+
     return uniquedProperties;
   }
   async getRoomWithProperty(property_id: ObjectId) {
@@ -172,7 +172,7 @@ export class RoomService {
       }),
     );
 
-    if (userId && place != "all") {
+    if (userId && place != 'all') {
       const session = await this.sessionSchema.findOne({ userId });
       if (!session) throw new Error('Session not found');
 
@@ -201,7 +201,7 @@ export class RoomService {
         );
       }
     }
-
+    
     return availableRoom;
   }
   async findConflictingInBookings(

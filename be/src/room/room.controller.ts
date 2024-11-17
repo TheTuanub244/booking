@@ -70,7 +70,6 @@ export class RoomController {
   }
   @Delete(`deleteRoomById/:id`)
   async deleteRoomById(@Param('id') id: ObjectId) {
-    console.log(id);
 
     return this.roomService.deleteRoom(id);
   }
@@ -81,7 +80,7 @@ export class RoomController {
       check_out: data.check_out,
       place: data.place,
       userId: data.userId,
-      capacity: data.capacity
+      capacity: data.capacity,
     })
   }
 }

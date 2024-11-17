@@ -9,6 +9,7 @@ import PropertyMap from "../../componets/partner/partnerRegister/Map";
 import Loading from "../../componets/loading/Loading";
 import { getSessionHistory } from "../../api/sessionAPI";
 import { useLocation, useSearchParams } from "react-router-dom";
+import NotFound from "../../componets/searchResult/NotFound";
 const SearchResult = () => {
     const location = useLocation()
 
@@ -21,20 +22,34 @@ const SearchResult = () => {
         console.log(params.get("place"));
         
     }, [])
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const [allPlace, setAllPlace] = useState();
     const option = location.state?.option
-    
+    const [isLoading, setIsLoading] = useState(true)
+    const [notFound, setNotFound] = useState(false);
     const longitude = location.state?.longitude
     const latitude = location.state?.latitude
     const [showFullMap, setShowFullMap] = useState(false);
+    const limit = 4;
     
     const [properties, setProperties] = useState();
+    const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+      };
+    
+    const handlePreviousPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+      };
     useEffect(() => {
         
         if(location.state?.option){
             const searchRoom = async () => {
                 const response = await findAvailableRoomWithSearch(option);
-                if (response) {
+                console.log(currentPage);
+                
+                setIsLoading(false)
+                if (response?.length && response) {
                     const uniqueProperties = Array.from(
                         response.reduce((map, item) => {
                             const propertyId = item.value.property_id._id;
@@ -53,8 +68,12 @@ const SearchResult = () => {
                     );
         
                     const sortedProperties = uniqueProperties.sort((a, b) => b.property_id.rate - a.property_id.rate);
-                    
-                    setProperties(sortedProperties);
+                    const paginatedProperties = sortedProperties.slice(currentPage - 1, currentPage - 1 + limit);
+                    const totalPages = Math.ceil(sortedProperties.length / limit)
+                    setTotalPages(totalPages)
+                    setProperties(paginatedProperties);
+                } else {
+                    setNotFound(true)
                 }
             };
             const handleGetAllProperty = async () => {
@@ -65,79 +84,93 @@ const SearchResult = () => {
             searchRoom();
         }
         
-    }, [location.state?.option]);
+    }, [location.state?.option, currentPage]);
     
 
     return (
         <>
         <Navbar/>
         <Header places={allPlace} promptData={option}/>
-        {
-            properties ? (
+        {isLoading ? (
+                <Loading />
+            ) : notFound ? (
+                <NotFound place={location.state?.option.place} />
+            ) : properties ? (
                 <div className="search-result-container">
-            <div className="search-container-left">
-            <div className="map-container">
-                        <button
-                    className="show-on-map-btn"
-                    onClick={() => setShowFullMap(true)}
-                >
-                    Show on map
-                </button>
-
-                <PropertyMap initialLocation={{lat: latitude, lng: longitude}} option={option} />
-            </div>
-            {showFullMap && (
-                <div className="popup-map">
-                    <div className="popup-map-overlay" onClick={() => setShowFullMap(false)}></div>
-                    <div className="popup-map-content">
-                        <button
-                            className="close-popup-map"
-                            onClick={() => setShowFullMap(false)}
-                        >
-                            &times; 
+                    <div className="search-container-left">
+                        <div className="map-container">
+                            <button
+                                className="show-on-map-btn"
+                                onClick={() => setShowFullMap(true)}
+                            >
+                                Show on map
+                            </button>
+                            <PropertyMap initialLocation={{ lat: latitude, lng: longitude }} option={option} />
+                        </div>
+                        {showFullMap && (
+                            <div className="popup-map">
+                                <div className="popup-map-overlay" onClick={() => setShowFullMap(false)}></div>
+                                <div className="popup-map-content">
+                                    <button
+                                        className="close-popup-map"
+                                        onClick={() => setShowFullMap(false)}
+                                    >
+                                        &times;
+                                    </button>
+                                    <PropertyMap initialLocation={{ lat: latitude, lng: longitude }} option={option} />
+                                </div>
+                            </div>
+                        )}
+                        <aside className="filter-section">
+                            <h3>Filter by:</h3>
+                            <div className="filter-group">
+                                <label><input type="checkbox" /> Hotels</label>
+                                <label><input type="checkbox" /> Apartments</label>
+                            </div>
+                            <div className="filter-group">
+                                <h4>Your budget (per night)</h4>
+                                <input type="range" min="0" max="4000000" step="100000" />
+                            </div>
+                            <div className="filter-group">
+                                <h4>Deals</h4>
+                                <label><input type="checkbox" /> All deals</label>
+                            </div>
+                            <div className="filter-group">
+                                <h4>Popular filters</h4>
+                                <label><input type="checkbox" /> Superb: 9+</label>
+                                <label><input type="checkbox" /> Free cancellation</label>
+                            </div>
+                        </aside>
+                    </div>
+                    <div className="main-content">
+                        <div className="header-search">
+                            <h1>{option.place}: {properties.length} properties found</h1>
+                        </div>
+                        <button className="sort-button">Sort by: Top picks for families</button>
+                        <div className="results-list">
+                            {properties.map((property, index) => (
+                                <ResultItem key={property.property_id._id} property={property} index={index} option={option} />
+                            ))}
+                        </div>
+                        <div className="pagination-controls">
+                        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                            Previous
                         </button>
-                        <PropertyMap initialLocation={{ lat: latitude, lng: longitude }} option={option}/>
+                        <span>
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <button
+                            onClick={handleNextPage}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </button>
+                        </div>
                     </div>
                 </div>
-            )}
-            <aside className="filter-section">
-                    <h3>Filter by:</h3>
-                    <div className="filter-group">
-                        <label><input type="checkbox" /> Hotels</label>
-                        <label><input type="checkbox" /> Apartments</label>
-                    </div>
-                    <div className="filter-group">
-                        <h4>Your budget (per night)</h4>
-                        <input type="range" min="0" max="4000000" step="100000" />
-                    </div>
-                    <div className="filter-group">
-                        <h4>Deals</h4>
-                        <label><input type="checkbox" /> All deals</label>
-                    </div>
-                    <div className="filter-group">
-                        <h4>Popular filters</h4>
-                        <label><input type="checkbox" /> Superb: 9+</label>
-                        <label><input type="checkbox" /> Free cancellation</label>
-                    </div>
-                </aside>
-            </div>
-            <div className="main-content">
-                <div className="header-search">
-                    <h1>{option.place}: {properties.length} properties found</h1>
-                </div>
-                <button className="sort-button">Sort by: Top picks for families</button>
-
-                <div className="results-list">
-                    {properties.map((property, index) => (
-                        <ResultItem key={property.property_id._id} property={property} index={index} option={option}/>
-                    ))}
-                </div>
-            </div>
-        </div>
             ) : (
-                <Loading/>
-            )
-        }
+                <Loading />
+            )}
         </>
     );
 }

@@ -50,8 +50,6 @@ const PropertyDetailsForm = ({
       data.location.lat = data.location.latitude;
       data.location.lng = data.location.longitude;
     }
-    console.log(data.rooms[0].images);
-
     setPropertyData(data);
     setIsDataLoaded(true);
   };

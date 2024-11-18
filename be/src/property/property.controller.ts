@@ -30,7 +30,14 @@ export class PropertyController {
   @UseInterceptors(
     AnyFilesInterceptor({
       storage: diskStorage({
-        destination: './tmp/uploads',
+        destination: (req, file, callback) => {
+          const uploadDir = '/tmp/uploads';
+          // Tạo thư mục nếu chưa tồn tại
+          if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+          }
+          callback(null, uploadDir); // Ghi tệp vào `/tmp/uploads`
+        },
         filename: (req, file, callback) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);

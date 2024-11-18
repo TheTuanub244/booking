@@ -28,7 +28,7 @@ function PartnerNavbar() {
   useEffect(() => {
     getAllNotification()
     socketService.on("notifyPartner", (notification) => {
-      console.log(notification);
+      console.log('Notification received:', notification);
       fetchNotifications()
     });
   }, []);

@@ -18,6 +18,7 @@ const socket_io_1 = require("socket.io");
 let NotificationGateway = class NotificationGateway {
     handleConnection(client) {
         const partnerId = client.handshake.query.partnerId;
+        console.log(partnerId);
         if (partnerId) {
             client.join(partnerId);
             console.log(`Client ${client.id} joined room: ${partnerId}`);

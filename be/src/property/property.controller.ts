@@ -10,6 +10,8 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import * as fs from 'fs';
+
 import { PropertyService } from './property.service';
 import { ObjectId } from 'mongoose';
 import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';

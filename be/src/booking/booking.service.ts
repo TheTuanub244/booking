@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Booking } from './booking.schema';
 import mongoose, { Model, ObjectId, Types } from 'mongoose';
@@ -10,6 +10,9 @@ import { Room } from 'src/room/room.schema';
 import { PromotionService } from 'src/promotion/promotion.service';
 import { NotificationGateway } from 'src/notification/notification/notification.gateway';
 import { NotificationService } from 'src/notification/notification.service';
+import { BookingStatus } from './enum/bookingStatus.enum';
+import { PaymentStatus } from './enum/paymentStatus.enum';
+import { GmailService } from 'src/gmail/gmail.service';
 
 @Injectable()
 export class BookingService {
@@ -26,8 +29,110 @@ export class BookingService {
     private readonly promotionService: PromotionService,
     private readonly notificationGateway: NotificationGateway,
     private readonly notificationService: NotificationService,
+    private readonly gmailService: GmailService,
   ) {}
+  async getBookingById(booking_id: string) {
+    const findBooking = await this.bookingSchema.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(booking_id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $unwind: '$userDetails',
+      },
+      {
+        $lookup: {
+          from: 'rooms',
+          localField: 'room_id',
+          foreignField: '_id',
+          as: 'roomDetails',
+        },
+      },
+      {
+        $unwind: '$roomDetails',
+      },
+      {
+        $lookup: {
+          from: 'properties',
+          localField: 'property',
+          foreignField: '_id',
+          as: 'propertyDetails',
+        },
+      },
+      {
+        $unwind: '$propertyDetails',
+      },
+    ]);
+    if (!findBooking) {
+      throw new NotFoundException(`Booking with ID ${booking_id} not found`);
+    }
+    return findBooking;
+  }
+  async cancelBooking(booking_id: string) {
+    const booking = await this.getBookingById(booking_id);
 
+    if (booking[0].booking_status === BookingStatus.PENDING) {
+      await this.bookingSchema.findByIdAndDelete(
+        new Types.ObjectId(booking_id),
+      );
+    } else if (booking[0].booking_status === BookingStatus.COMPLETED) {
+      if (booking[0].payment_status === PaymentStatus.PAID) {
+        const subject = 'Booking Cancellation Confirmation';
+        const text = `Your booking has been cancelled. Here are the details:
+          - Property: ${booking[0].property.name}
+          - Room(s): ${Array.isArray(booking[0].roomDetails) ? booking[0].roomDetails?.map((room) => room.name).join(', ') : booking[0].roomDetails.name}
+          - Check-in Date: ${booking[0].check_in_date.toDateString()}
+          - Check-out Date: ${booking[0].check_out_date.toDateString()}
+          - Refund Amount: $${booking[0].total_price}`;
+        const cancelUrl = `${process.env.BACK_END_URL}/booking/confirm-cancellation?booking_id=${booking[0]._id}&redirect=${process.env.FRONT_END_URL}`;
+        const html = `
+          <h1>Booking Cancellation Confirmation</h1>
+          <p>We received your request to cancel the booking. Here are the details:</p>
+          <ul>
+            <li><strong>Property:</strong> ${booking[0].property.name}</li>
+            <li><strong>Room(s):</strong> ${Array.isArray(booking[0].roomDetails) ? booking[0].roomDetails?.map((room) => room.name).join(', ') : booking[0].roomDetails.name}</li>
+            <li><strong>Check-in Date:</strong> ${booking[0].check_in_date.toDateString()}</li>
+            <li><strong>Check-out Date:</strong> ${booking[0].check_out_date.toDateString()}</li>
+            <li><strong>Refund Amount:</strong> $${booking[0].total_price}</li>
+          </ul>
+          <p>Please click the button below to confirm cancellation</p>
+          <a href="${cancelUrl}" style="
+          display: inline-block;
+          padding: 10px 20px;
+          font-size: 16px;
+          color: white;
+          background-color: red;
+          text-decoration: none;
+          border-radius: 5px;
+        ">Confirm Cancellation</a>
+        <p>If you did not request this action, you can safely ignore this email.</p>
+          <p>We hope to serve you again in the future.</p>
+        `;
+
+        await this.gmailService.sendEmail(
+          booking[0].userDetails.email,
+          subject,
+          text,
+          html,
+        );
+      }
+    }
+  }
+  async finalizeCancellation(bookingId: string): Promise<boolean> {
+    const booking = await this.getBookingById(bookingId);
+    booking[0].booking_status = BookingStatus.CANCELED;
+    await booking[0].save();
+    return true;
+  }
   async calculateTotalNightPrice(booking: any) {
     const findRoomPromotion =
       await this.promotionService.findRoomPromotionForBooking(booking.room_id);

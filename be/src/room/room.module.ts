@@ -27,6 +27,8 @@ import {
   Notification,
   NotificationSchema,
 } from 'src/notification/notification.schema';
+import { GmailService } from 'src/gmail/gmail.service';
+import { GmailModule } from 'src/gmail/gmail.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -40,6 +42,7 @@ const jwtConstant = {
     PromotionService,
     NotificationGateway,
     NotificationService,
+    GmailService
   ],
   exports: [RoomService], // Ensure to export services needed by other modules
   imports: [
@@ -59,6 +62,8 @@ const jwtConstant = {
     }),
     forwardRef(() => SessionModule),
     forwardRef(() => NotificationModule),
+    forwardRef(() => GmailModule),
+
 
     forwardRef(() => BookingModule),
     forwardRef(() => UserModule),

@@ -49,9 +49,15 @@ export class Booking {
   @Prop({
     required: true,
     enum: BookingStatus,
-    default: BookingStatus.CONFIRMED,
+    default: BookingStatus.PENDING,
   })
   booking_status: BookingStatus;
+  @Prop({
+    required: true,
+    enum: PaymentStatus,
+    default: PaymentStatus.UNPAID,
+  })
+  payment_status: PaymentStatus;
   @Prop({})
   request: string;
 }

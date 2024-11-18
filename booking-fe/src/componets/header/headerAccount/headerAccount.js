@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getRoleFromToken } from "../../../helpers/authHelpers";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getAllNotificationWithUser, markAsRead } from "../../../api/notificationAPI";
+import { getAllNotificationWithUser, markAllAsRead, markAsRead } from "../../../api/notificationAPI";
 import socketService from "../../../helpers/sockerService";
 
 function HeaderAccount() {
@@ -36,17 +36,20 @@ function HeaderAccount() {
     setTotalUnseen(data.unseen)
   }
   const handleMarkAllAsRead = async (userId) => {
+    await markAllAsRead(userId)
+
     fetchNotifications();
   };
 
   useEffect(() => {
     getAllNotification()
-    socketService.on("notifyPartner", (notification) => {
-      console.log(notification);
-      fetchNotifications()
-      console.log();
-      
-    });
+    const id = localStorage.getItem("userId");
+    if (id) {
+      socketService.on("notifyPartner", (notification) => {
+        console.log("Notification received in HeaderAccount:", notification);
+        fetchNotifications();
+      });
+    }
   }, []);
   
   const handleSignOut = async () => {
@@ -57,12 +60,14 @@ function HeaderAccount() {
     localStorage.removeItem("isSignIn");
     localStorage.removeItem("email");
     await signOut(userId);
-    window.location.reload(); // Refresh the page after sign-out
+    window.location.reload(); 
   };
   const handleMarkAsRead = async (id) => {
     await markAsRead(id);
     fetchNotifications();
   };
+ 
+
   return (
     <div className="headerAccountContainer">
       <span className="listProperty" onClick={handleNavigate}>
@@ -85,14 +90,13 @@ function HeaderAccount() {
                 </div>
               </div>
 
-              {/* Dropdown danh sách thông báo */}
               {showDropdown && (
                 <div style={{
                   marginTop: '170px'
                 }} className="notification-dropdownn">
                   <div className="dropdown-headerr">
                     <h4>Thông báo</h4>
-                    <button className="mark-all-readd">
+                    <button className="mark-all-readd" onClick={() => handleMarkAllAsRead(userId)}>
                       Đánh dấu tất cả đã đọc
                     </button>
                   </div>

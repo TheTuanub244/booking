@@ -64,7 +64,6 @@ const PartnerBookingDashboard = () => {
   };
   return (
     <div className="partner-booking-dashboard">
-      <h1>Manage Bookings</h1>
 
       <FormControl
         style={{

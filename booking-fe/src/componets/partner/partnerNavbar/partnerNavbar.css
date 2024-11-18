@@ -138,3 +138,6 @@
   cursor: pointer;
   font-size: 14px;
 }
+.dropdown-body{
+  margin-left: 10px;
+}

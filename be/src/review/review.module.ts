@@ -29,6 +29,8 @@ import {
   Notification,
   NotificationSchema,
 } from 'src/notification/notification.schema';
+import { GmailModule } from 'src/gmail/gmail.module';
+import { GmailService } from 'src/gmail/gmail.service';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -42,6 +44,7 @@ const jwtConstant = {
     SessionService,
     NotificationGateway,
     NotificationService,
+    GmailService
   ],
   imports: [
     MongooseModule.forFeature([
@@ -68,6 +71,7 @@ const jwtConstant = {
     PassportModule,
     forwardRef(() => PropertyModule),
     forwardRef(() => NotificationModule),
+    forwardRef(() => GmailModule),
 
     forwardRef(() => BookingModule),
     forwardRef(() => SessionModule),

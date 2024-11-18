@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/createBooking.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -29,5 +39,28 @@ export class BookingController {
     console.log(status);
 
     return this.bookingService.getBooking(id);
+  }
+  @Delete('/cancelBooking/:id')
+  async cancelBooking(@Param('id') id: string) {
+    return this.bookingService.cancelBooking(id);
+  }
+  @Get('confirm-cancellation')
+  async confirmCancellation(
+    @Query('booking_id') booking_id: string,
+    @Query('redirect') redirect: string,
+    @Res() res,
+  ) {
+    try {
+      const success =
+        await this.bookingService.finalizeCancellation(booking_id);
+
+      if (success) {
+        return res.redirect(`${redirect}?status=success`);
+      } else {
+        return res.redirect(`${redirect}?status=failure`);
+      }
+    } catch (error) {
+      return res.redirect(`${redirect}?status=error`);
+    }
   }
 }

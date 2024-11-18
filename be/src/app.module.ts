@@ -21,6 +21,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PromotionModule } from './promotion/promotion.module';
 import { NotificationModule } from './notification/notification.module';
 import { NotificationGateway } from './notification/notification/notification.gateway';
+import { GmailService } from './gmail/gmail.service';
+import { GmailModule } from './gmail/gmail.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -43,6 +45,7 @@ const jwtConstant = {
     AmentitesModule,
     PromotionModule,
     NotificationModule,
+    GmailModule,
   ],
   controllers: [AppController],
   providers: [
@@ -62,7 +65,8 @@ const jwtConstant = {
         });
       },
     },
-    NotificationGateway
+    NotificationGateway,
+    GmailService
   ],
   exports: ['FIREBASE_ADMIN'],
 })

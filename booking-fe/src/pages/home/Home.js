@@ -99,7 +99,9 @@ function Home() {
         <PropertyList propertyType={propertyType} />
         <h1 className="homeTitle">Quick and easy trip planner</h1>
         {propertyNear && <EasyTrip propertyNear={propertyNear} />}
-        <h1 className="homeTitle">Home guests love</h1>
+        <h1 className="homeTitle" style={{
+          marginTop: '100px'
+        }}>Home guests love</h1>
         <FeaturedProperties />
 
         <Footer />

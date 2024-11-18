@@ -22,6 +22,11 @@ import { PromotionModule } from 'src/promotion/promotion.module';
 import { PromotionService } from 'src/promotion/promotion.service';
 import { NotificationModule } from 'src/notification/notification.module';
 import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
+import {
+  Notification,
+  NotificationSchema,
+} from 'src/notification/notification.schema';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -34,6 +39,7 @@ const jwtConstant = {
     UserService,
     PromotionService,
     NotificationGateway,
+    NotificationService,
   ],
   exports: [RoomService], // Ensure to export services needed by other modules
   imports: [
@@ -45,6 +51,7 @@ const jwtConstant = {
       { name: Session.name, schema: SessionSchema },
       { name: Property.name, schema: PropertySchema },
       { name: User.name, schema: UserSchema },
+      { name: Notification.name, schema: NotificationSchema },
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -56,6 +63,7 @@ const jwtConstant = {
     forwardRef(() => BookingModule),
     forwardRef(() => UserModule),
     forwardRef(() => PromotionModule),
+
     PropertyModule,
   ],
 })

@@ -35,3 +35,90 @@
 .signOutButton:hover {
   background-color: #ff1a1a;
 }
+.notification-wrapperr {
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-iconn {
+  font-size: 20px;
+}
+.notification-itemm {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s, font-weight 0.3s;
+}
+
+.notification-item.unreadd {
+  background-color: #f9f9f9;
+  font-weight: bold; 
+}
+
+.notification-item.readd {
+  background-color: white; 
+  font-weight: normal; 
+}
+.notification-itemm p {
+  margin: 0;
+  font-size: 14px;
+}
+
+
+.notification-itemm small {
+  color: #666;
+  font-size: 12px;
+}
+
+.mark-readd {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 15px;
+}
+.notification-badgee {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 4px 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 20px;
+  height: 20px;
+}
+.notification-dropdownn {
+  position: absolute;
+  top: -10%;
+  background-color: white;
+  color: black;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+
+.dropdown-headerr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+.mark-all-readd {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+}

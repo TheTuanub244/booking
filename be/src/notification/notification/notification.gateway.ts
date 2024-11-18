@@ -6,7 +6,6 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { ObjectId } from 'mongoose';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
@@ -33,9 +32,10 @@ export class NotificationGateway
     console.log(`Client disconnected: ${client.id}`);
   }
 
-  // Gửi thông báo đến partner cụ thể
   sendNotificationToPartner(partnerId: string, notification: any) {
-    this.server.to(partnerId).emit('notifyPartner', notification); // Gửi đến room
+    console.log(partnerId);
+    
+    this.server.to(partnerId).emit('notifyPartner', notification);
   }
 
   @SubscribeMessage('newBooking')

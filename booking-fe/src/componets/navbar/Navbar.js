@@ -19,6 +19,7 @@ function Navbar() {
             <button className="navButton" onClick={() => navigate("/signup")}>
               Resgiter
             </button>
+            
             <button className="navButton" onClick={() => navigate("/login")}>
               Login
             </button>

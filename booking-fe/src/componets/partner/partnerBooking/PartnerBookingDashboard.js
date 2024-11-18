@@ -58,7 +58,6 @@ const PartnerBookingDashboard = () => {
       const bookingSearch = bookings.filter((booking) =>
         booking.booking_status.includes(value),
       );
-      console.log(bookingSearch);
 
       setBookings(bookingSearch);
     }

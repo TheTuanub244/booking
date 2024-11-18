@@ -18,13 +18,11 @@ export const getBooking = async (id, status) => {
   );
   return respone.data;
 };
-export const createBooking = async (customerId, partnerId) => {
-  console.log(customerId);
-  console.log(partnerId);
-
+export const createBooking = async (customerId, partnerId, booking_id, property_id) => {
+  
   const respone = await axios.post(
     `http://localhost:8000/booking/createBooking`,
-    { customerId, partnerId },
+    { customerId, partnerId, booking_id, property_id },
   );
   return respone.data;
 };

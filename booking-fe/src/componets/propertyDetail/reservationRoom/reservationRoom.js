@@ -106,7 +106,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleReserveClick = async () => {
-    await createBooking(userId, partnerId);
+    await createBooking(userId, partnerId, "67349f6d8e44839e850b6366", "67131b83495dc248e2715e5f");
     if (!userId) {
       setIsPopupOpen(true);
     }

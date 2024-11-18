@@ -19,6 +19,11 @@ import { SessionModule } from 'src/session/session.module';
 import { PromotionService } from 'src/promotion/promotion.service';
 import { NotificationModule } from 'src/notification/notification.module';
 import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
+import {
+  Notification,
+  NotificationSchema,
+} from 'src/notification/notification.schema';
 
 const jwtConstant = {
   secret: 'jwtsecret',
@@ -32,6 +37,7 @@ const jwtConstant = {
     UserService,
     PromotionService,
     NotificationGateway,
+    NotificationService,
   ],
   exports: [BookingService],
   imports: [
@@ -47,6 +53,7 @@ const jwtConstant = {
       { name: User.name, schema: UserSchema },
       { name: Promotion.name, schema: PromotionSchema },
       { name: Room.name, schema: RoomSchema },
+      { name: Notification.name, schema: NotificationSchema },
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -59,6 +66,7 @@ const jwtConstant = {
     PromotionModule,
     forwardRef(() => RoomModule),
     forwardRef(() => SessionModule),
+    forwardRef(() => NotificationModule),
   ],
 })
 export class BookingModule {}

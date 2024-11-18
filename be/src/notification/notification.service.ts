@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { Notification } from './notification.schema';
 
 @Injectable()
@@ -11,17 +11,45 @@ export class NotificationService {
   ) {}
   async getUnseenNoti(user_id: ObjectId) {
     return this.notificationSchema
-      .find({ user_id, status: false })
+      .find({ receiver_id: user_id, status: false })
       .sort({ created_at: -1 });
+  }
+  async getAllNotificationWithUser(user_id: string) {
+    const countUnseen = await this.notificationSchema.countDocuments({
+      receiver_id: new Types.ObjectId(user_id),
+      status: false,
+    });
+    const countSeen = await this.notificationSchema.countDocuments({
+      receiver_id: new Types.ObjectId(user_id),
+      status: true,
+    });
+    const findNoti = await this.notificationSchema.find({
+      receiver_id: new Types.ObjectId(user_id),
+    });
+    return {
+      noti: findNoti,
+      seen: countSeen,
+      unseen: countUnseen,
+    };
   }
   async getSeenNoti(user_id: ObjectId) {
     return this.notificationSchema
-      .find({ user_id, status: true })
+      .find({ receiver_id: user_id, status: true })
       .sort({ created_at: -1 });
   }
-  async markAsRead(notificationId: ObjectId) {
+  async markAllAsRead(user_id: string) {
+    return this.notificationSchema.updateMany(
+      {
+        receiver_id: new Types.ObjectId(user_id),
+      },
+      {
+        $set: { status: true },
+      },
+    );
+  }
+  async markAsRead(notificationId: string) {
     return this.notificationSchema.findByIdAndUpdate(
-      notificationId,
+      new Types.ObjectId(notificationId),
       { status: true },
       { new: true },
     );
@@ -33,6 +61,7 @@ export class NotificationService {
   }
   async createNotification(notification: any) {
     const newNoti = new this.notificationSchema(notification);
-    return await newNoti.save();
+    const savedNoti = await newNoti.save();
+    return savedNoti;
   }
 }

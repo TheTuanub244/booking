@@ -9,6 +9,7 @@ import { Promotion } from 'src/promotion/promotion.schema';
 import { Room } from 'src/room/room.schema';
 import { PromotionService } from 'src/promotion/promotion.service';
 import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class BookingService {
@@ -24,6 +25,7 @@ export class BookingService {
     private readonly roomSchema: Model<Room>,
     private readonly promotionService: PromotionService,
     private readonly notificationGateway: NotificationGateway,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async calculateTotalNightPrice(booking: any) {
@@ -95,27 +97,31 @@ export class BookingService {
   }
   async createBooking(createBookingDto: any) {
     const customerId = createBookingDto.customerId;
-    // const findPartnerId = await this.roomSchema
-    //   .findOne({
-    //     property_id: createBookingDto.property,
-    //   })
-    //   .populate('property_id');
-
-    const notification = {
-      message: `User ${createBookingDto.partnerId} has booked Room ${createBookingDto.room_id}`,
-      date: new Date(),
-    };
-    this.notificationGateway.sendNotificationToPartner(
-      createBookingDto.partnerId.toString(),
-      notification,
-    );
-
-    return { success: true };
     // const totalNightPrice =
     //   await this.calculateTotalNightPrice(createBookingDto);
 
     // const newBooking = new this.bookingSchema(createBookingDto);
     // const savedBooking = await newBooking.save();
+    const findPartnerId = await this.roomSchema
+      .findOne({
+        property_id: createBookingDto.property_id,
+      })
+      .populate('property_id');
+    const partnerId = findPartnerId.property_id.owner_id;
+    const message = `User ${customerId} has booked`;
+    await this.notificationService.createNotification({
+      sender_id: new Types.ObjectId(customerId),
+      receiver_id: partnerId,
+      booking_id: new Types.ObjectId(createBookingDto.booking_id),
+      type: 'Booking',
+      message,
+    });
+    this.notificationGateway.sendNotificationToPartner(
+      createBookingDto.partnerId.toString(),
+      message,
+    );
+
+    return { success: true };
 
     // await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
     //   total_price: totalNightPrice,

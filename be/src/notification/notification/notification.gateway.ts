@@ -12,6 +12,7 @@ import { Server, Socket } from 'socket.io';
   cors: {
     origin: 'https://booking-app-1edf4.web.app', // URL frontend
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    credentials: true,
   },
 })
 export class NotificationGateway

@@ -51,6 +51,7 @@ const admin = __importStar(require("firebase-admin"));
 const serviceAccount = __importStar(require("./config/booking-app-1edf4-4dd703c8105b.json"));
 const promotion_module_1 = require("./promotion/promotion.module");
 const notification_module_1 = require("./notification/notification.module");
+const notification_gateway_1 = require("./notification/notification/notification.gateway");
 const jwtConstant = {
     secret: 'jwtsecret',
 };
@@ -96,6 +97,7 @@ exports.AppModule = AppModule = __decorate([
                     });
                 },
             },
+            notification_gateway_1.NotificationGateway
         ],
         exports: ['FIREBASE_ADMIN'],
     })

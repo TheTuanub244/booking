@@ -56,6 +56,7 @@ exports.NotificationGateway = NotificationGateway = __decorate([
         cors: {
             origin: 'https://booking-app-1edf4.web.app',
             methods: ['GET', 'POST', 'DELETE', 'PUT'],
+            credentials: true,
         },
     })
 ], NotificationGateway);

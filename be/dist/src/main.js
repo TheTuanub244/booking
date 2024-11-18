@@ -10,6 +10,13 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.useGlobalPipes(new validation_pipe_1.ValidationPipe());
+    app.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', 'https://booking-app-1edf4.web.app');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+        res.header('Access-Control-Allow-Credentials', 'true');
+        next();
+    });
     app.enableCors({
         origin: [
             'https://booking-app-1edf4.web.app',

@@ -6,8 +6,10 @@ class SocketService {
 
   connect(partnerId) {
     if (!this.socket) {
-      this.socket = io("https://booking-ten-omega.vercel.app0", {
-        query: { partnerId }, // Gửi partnerId khi kết nối
+      this.socket = io("https://booking-ten-omega.vercel.app", {
+        query: { partnerId },
+        withCredentials: true, 
+        transports: ['websocket'],
       });
       console.log("Socket connected!");
     }

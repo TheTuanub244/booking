@@ -55,7 +55,7 @@ exports.NotificationGateway = NotificationGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {
             origin: 'https://booking-app-1edf4.web.app',
-            methods: ['GET', 'POST', 'DELETE', 'PUT'],
+            methods: ['GET', 'POST'],
             credentials: true,
         },
     })

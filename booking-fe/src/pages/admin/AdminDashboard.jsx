@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import MainDash from './contents/MainDash/MainDash';
+import MainDash from './component/MainDash/MainDash';
 import RightSide from './component/RightSide/RightSide';
 import SideBar from './component/SideBar/SideBar';
 import './AdminDashboard.css'
 import Datatable from './component/UserManage/Datatable';
 import RoomTable from './component/RoomsManage/RoomTable';
+import { Route, Routes } from 'react-router-dom';
+import DashBoard from './contents/DashBoard/DashBoard';
 
 
 function AdminDashboard(){
@@ -25,8 +27,12 @@ function AdminDashboard(){
         <div className="AdminDashboard" >
             <div className="DashboardGlass">
                 <SideBar setSelectedComponent ={setSelectedComponent}/>
-                {renderMainContent()}
-                <RightSide/>
+                { <Routes>
+                  <Route path='/' element = {<DashBoard/>} ></Route>
+                  <Route path='/user' element = {<Datatable/>} ></Route>
+                  <Route path='/rooms' element = {<RoomTable/>} ></Route>
+                 </Routes> }
+                
             </div>
         </div>
     )

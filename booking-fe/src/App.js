@@ -30,12 +30,7 @@ function App() {
         <Route path="/auth" element={<Auth />}></Route>
         <Route path="/property" element={<Property />}></Route>
         <Route path="/property/:id" element={<Property />}></Route>
-        <Route path="/admin" element={<AdminDashboard />}>
-              <Route
-                path="new"
-                element={<AddNewUser/>}
-              />
-            </Route>
+        <Route path="/admin/*" element={<AdminDashboard />} />
         <Route path="/partner/partnerDashboard" element={<PartnerDashboard />} />
         <Route path="/partner/partnerRegister" element={<PartnerRegister />} />
         <Route path="/partner/propertyList/:id" element={<ProperyList />} />

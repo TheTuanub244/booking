@@ -14,27 +14,27 @@ import img3 from "../imgs/img3.png";
     {
       icon: UilEstate,
       heading: "Dashboard",
-      path: 'MainDash',
+      path: '/admin',
     },
     {
       icon: UilClipboardAlt,
       heading: "Bookings",
-      path: 'Bookings',
+      path: '/admin/bookings',
     },
     {
       icon: UilUsersAlt,
       heading: "Users",
-      path: 'UserManage',
+      path: '/admin/user',
     },
     {
       icon: UilPackage,
       heading: 'Rooms',
-      path: 'RoomManage',
+      path: '/admin/rooms',
     },
     {
       icon: UilChart,
       heading: 'Analytics',
-      path: 'Analytics',
+      path: '/admin/analytic',
     },
   ];
   export const cardsData = [

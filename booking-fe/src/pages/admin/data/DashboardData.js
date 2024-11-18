@@ -19,7 +19,7 @@ import img3 from "../imgs/img3.png";
     {
       icon: UilClipboardAlt,
       heading: "Bookings",
-      path: '/admin/bookings',
+      path: '/admin/booking',
     },
     {
       icon: UilUsersAlt,
@@ -29,7 +29,7 @@ import img3 from "../imgs/img3.png";
     {
       icon: UilPackage,
       heading: 'Rooms',
-      path: '/admin/rooms',
+      path: '/admin/room',
     },
     {
       icon: UilChart,

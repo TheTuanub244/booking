@@ -1,10 +1,10 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 
-const UserManage = () => {
+const RoomManage = () => {
   return (
     <Outlet/>
   )
 }
 
-export default UserManage
+export default RoomManage

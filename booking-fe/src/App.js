@@ -16,6 +16,16 @@ import InformationDashboard from "./pages/partner/informationDashboard/Informati
 import Payment from "./pages/payment/Payment";
 import PartnerPropertyDetailPage from "./pages/partner/propertyDetail/PartnerPropertyDetailPage";
 import SearchResult from "./pages/searchResult/SearchResult";
+import DashBoard from "./pages/admin/contents/DashBoard/DashBoard";
+import UserTable from "./pages/admin/component/UserTable/UserTable";
+import RoomTable from "./pages/admin/component/RoomsTable/RoomTable";
+import UserManage from "./pages/admin/contents/UserManage/UserManage";
+import RoomManage from "./pages/admin/contents/RoomManage/RoomManage";
+import AddNewRoom from "./pages/admin/contents/AddNewRoom/AddNewRoom";
+import ViewRoom from "./pages/admin/contents/ViewRoom/ViewRoom";
+import ViewUser from "./pages/admin/contents/ViewUser/ViewUser";
+import BookingManage from "./pages/admin/contents/BookingManage/BookingManage";
+import Analytics from "./pages/admin/contents/Analytics/Analytics";
 
 function App() {
   return (
@@ -30,7 +40,21 @@ function App() {
         <Route path="/auth" element={<Auth />}></Route>
         <Route path="/property" element={<Property />}></Route>
         <Route path="/property/:id" element={<Property />}></Route>
-        <Route path="/admin/*" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminDashboard />}>
+          <Route path="" element={<DashBoard />} />
+          <Route path="booking" element={<BookingManage />}/>
+          <Route path="user" element={<UserManage />}>
+            <Route path="" element={<UserTable />} />
+            <Route path="new" element={<AddNewUser />} />
+            <Route path="view/:id" element={<ViewUser />} />
+          </Route>
+          <Route path="room" element={<RoomManage />} >
+            <Route path="" element={<RoomTable />} />
+              <Route path="new" element={<AddNewRoom />} />
+              <Route path="view/:id" element={<ViewRoom />} />
+          </Route>
+          <Route path="analytic" element={<Analytics />}/>
+        </Route>
         <Route path="/partner/partnerDashboard" element={<PartnerDashboard />} />
         <Route path="/partner/partnerRegister" element={<PartnerRegister />} />
         <Route path="/partner/propertyList/:id" element={<ProperyList />} />

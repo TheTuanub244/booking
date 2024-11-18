@@ -1,13 +1,11 @@
-import "./RoomTable.css";
+import "./UserTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import { roomColumns, roomRows } from "../../data/roomdata"; 
-import { useState } from "react";
+import { userColumns, usersRows } from "../../data/userdata";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
-const RoomTable = () => {
-  const [data, setData] = useState(roomRows); 
-  console.log(data);
-
+const UserTable = () => {
+  const [data, setData] = useState(usersRows);
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
   };
@@ -20,7 +18,7 @@ const RoomTable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/" style={{ textDecoration: "none" }}>
+            <Link to="view/1" style={{ textDecoration: "none" }}>
               <div className="viewButton">View</div>
             </Link>
             <div
@@ -34,19 +32,19 @@ const RoomTable = () => {
       },
     },
   ];
-
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        Room Management
-        <Link to="/" className="link">
+        User Management
+        <Link to="/admin/user/new" className="link">
           Add New
         </Link>
+
       </div>
       <DataGrid
         className="datagrid"
         rows={data}
-        columns={roomColumns.concat(actionColumn)} // Updated to use roomColumns
+        columns={userColumns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
         checkboxSelection
@@ -55,4 +53,4 @@ const RoomTable = () => {
   );
 };
 
-export default RoomTable;
+export default UserTable;

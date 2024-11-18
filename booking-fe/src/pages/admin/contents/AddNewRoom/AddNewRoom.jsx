@@ -1,11 +1,10 @@
-import "./AddNewUser.css";
+import "./AddNewRoom.css";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
-import {userfields}  from "../../data/AddNewUserData";
-
-const AddNewUser = () => {
+import { roomfields } from "../../data/AddNewRoomData";
+const AddNewRoom = () => {
   const [file, setFile] = useState("");
-  const inputs = userfields
+  const inputs = roomfields
   console.log(inputs)
 
   return (
@@ -64,4 +63,4 @@ const AddNewUser = () => {
   );
 };
 
-export default AddNewUser;
+export default AddNewRoom;

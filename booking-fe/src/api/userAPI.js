@@ -4,7 +4,7 @@ export const signUp = async (user) => {
     console.log(user);
 
     const respone = await axios.post(
-      "http://localhost:8000/user/sign-up-with-email",
+      "https://booking-ten-omega.vercel.app/user/sign-up-with-email",
       user,
       {
         withCredentials: true,
@@ -23,7 +23,7 @@ export const signIn = async (user) => {
 
   try {
     const respone = await axios.post(
-      "http://localhost:8000/user/sign-in",
+      "https://booking-ten-omega.vercel.app/user/sign-in",
       user,
       { withCredentials: true },
     );
@@ -38,7 +38,7 @@ export const signIn = async (user) => {
 export const signInWithGoogle = async (user) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/user/sign-in-with-google",
+      "https://booking-ten-omega.vercel.app/user/sign-in-with-google",
       user,
       { withCredentials: true },
     );
@@ -52,7 +52,7 @@ export const signInWithGoogle = async (user) => {
 export const signOut = async (userId) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/session/sign-out",
+      "https://booking-ten-omega.vercel.app/session/sign-out",
       { userId },
       { withCredentials: true },
     );
@@ -66,7 +66,7 @@ export const signOut = async (userId) => {
 export const resetPassword = async (user) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/user/reset-password",
+      "https://booking-ten-omega.vercel.app/user/reset-password",
       user,
     );
     console.log(respone);
@@ -80,7 +80,7 @@ export const resetPassword = async (user) => {
 };
 export const checkEmail = async (email) => {
   try {
-    const respone = await axios.post("http://localhost:8000/user/check-email", {
+    const respone = await axios.post("https://booking-ten-omega.vercel.app/user/check-email", {
       data: email,
     });
     return respone.data;
@@ -92,14 +92,14 @@ export const checkEmail = async (email) => {
 };
 export const updatePartnerAccount = async (partner) => {
   const respone = await axios.post(
-    "http://localhost:8000/user/updatePartnerAccount",
+    "https://booking-ten-omega.vercel.app/user/updatePartnerAccount",
     { partner },
   );
   return respone.data;
 };
 export const updateInformationForGoogle = async (user) => {
   const respone = await axios.post(
-    "http://localhost:8000/user/updateInformationForGoogle",
+    "https://booking-ten-omega.vercel.app/user/updateInformationForGoogle",
     { user },
     {
       withCredentials: true,

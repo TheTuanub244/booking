@@ -3,7 +3,7 @@ import axios from "axios";
 export const findAvailableRoomWithSearch = async (data) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/room/findAvailableRoomWithSearch",
+      "https://booking-ten-omega.vercel.app/room/findAvailableRoomWithSearch",
       data,
     );
 
@@ -17,7 +17,7 @@ export const findAvailableRoomWithSearch = async (data) => {
 export const findRoomByProperty = async (property_id) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/room/getRoomWithProperty",
+      "https://booking-ten-omega.vercel.app/room/getRoomWithProperty",
       { property_id },
     );
 
@@ -31,7 +31,7 @@ export const findRoomByProperty = async (property_id) => {
 export const updateImageForRoom = async (roomId, image) => {
   try {
     const respone = await axios.put(
-      "http://localhost:8000/room/updateImageForRoom",
+      "https://booking-ten-omega.vercel.app/room/updateImageForRoom",
       { roomId, image },
     );
 
@@ -44,14 +44,14 @@ export const updateImageForRoom = async (roomId, image) => {
 };
 export const getMonthlyOccupancyRatesByOwner = async (id) => {
   const respone = await axios.get(
-    `http://localhost:8000/room/getMonthlyOccupancyRatesByOwner/${id}`,
+    `https://booking-ten-omega.vercel.app/room/getMonthlyOccupancyRatesByOwner/${id}`,
   );
 
   return respone.data;
 };
 export const getMonthlyOccupancyRatesByProperty = async (id) => {
   const respone = await axios.get(
-    `http://localhost:8000/room/getMonthlyOccupancyRatesByProperty/${id}`,
+    `https://booking-ten-omega.vercel.app/room/getMonthlyOccupancyRatesByProperty/${id}`,
   );
 
   return respone.data;
@@ -59,7 +59,7 @@ export const getMonthlyOccupancyRatesByProperty = async (id) => {
 
 export const deleteRoomById = async (roomId) => {
   const respone = await axios.delete(
-    `http://localhost:8000/room/deleteRoomById/${roomId}`,
+    `https://booking-ten-omega.vercel.app/room/deleteRoomById/${roomId}`,
   );
 
   return respone.data;
@@ -71,7 +71,7 @@ export const getAllRoomWithTotalPrice = async (
   userId,
 ) => {
   const respone = await axios.post(
-    `http://localhost:8000/room/getAllRoomWithTotalPrice`,
+    `https://booking-ten-omega.vercel.app/room/getAllRoomWithTotalPrice`,
     { check_in, check_out, place: "all", capacity, userId },
   );
 

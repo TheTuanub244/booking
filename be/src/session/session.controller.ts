@@ -43,8 +43,8 @@ export class SessionController {
   async signOut(@Body() data: any, @Res() response: Response) {
     response.clearCookie('refreshToken', {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: false,
+      sameSite: 'none',
+      secure: true,
     });
 
     await this.sessionService.signOut(data.userId);

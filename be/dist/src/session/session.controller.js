@@ -38,8 +38,8 @@ let SessionController = class SessionController {
     async signOut(data, response) {
         response.clearCookie('refreshToken', {
             httpOnly: true,
-            sameSite: 'lax',
-            secure: false,
+            sameSite: 'none',
+            secure: true,
         });
         await this.sessionService.signOut(data.userId);
         return response.status(common_1.HttpStatus.OK).json({

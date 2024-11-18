@@ -5,7 +5,7 @@ export const updatePropertyWithPartner = async (formData, token) => {
   }
   try {
     const response = await axios.post(
-      "http://localhost:8000/property/updatePropertyWithPartner",
+      "https://booking-ten-omega.vercel.app/property/updatePropertyWithPartner",
       formData,
       {
         headers: {
@@ -24,7 +24,7 @@ export const updatePropertyWithPartner = async (formData, token) => {
 export const createPropertyWithPartner = async (formData, token) => {
   try {
     const response = await axios.post(
-      "http://localhost:8000/property/createPropertyWithPartner",
+      "https://booking-ten-omega.vercel.app/property/createPropertyWithPartner",
       formData,
       {
         headers: {
@@ -42,14 +42,14 @@ export const createPropertyWithPartner = async (formData, token) => {
 };
 export const getAllProperty = async () => {
   const respone = await axios.get(
-    "http://localhost:8000/property/getAllProperty",
+    "https://booking-ten-omega.vercel.app/property/getAllProperty",
     { withCredentials: true },
   );
   return respone.data;
 };
 export const getPropertyById = async (id) => {
   const respone = await axios.get(
-    `http://localhost:8000/property/getPropertyById/${id}`,
+    `https://booking-ten-omega.vercel.app/property/getPropertyById/${id}`,
     { withCredentials: true },
   );
 
@@ -57,7 +57,7 @@ export const getPropertyById = async (id) => {
 };
 export const getPropertyTypesByPlace = async (place) => {
   const respone = await axios.post(
-    "http://localhost:8000/property/getPropertyTypesByPlace",
+    "https://booking-ten-omega.vercel.app/property/getPropertyTypesByPlace",
     { place },
     { withCredentials: true },
   );
@@ -66,7 +66,7 @@ export const getPropertyTypesByPlace = async (place) => {
 };
 export const getPropertyByTypeAndPlace = async (place, type) => {
   const respone = await axios.post(
-    "http://localhost:8000/property/getPropertyByTypeAndPlace",
+    "https://booking-ten-omega.vercel.app/property/getPropertyByTypeAndPlace",
     { place, type },
     { withCredentials: true },
   );
@@ -75,7 +75,7 @@ export const getPropertyByTypeAndPlace = async (place, type) => {
 };
 export const getPropertyByPlace = async (place) => {
   const respone = await axios.post(
-    "http://localhost:8000/property/getPropertyByPlace",
+    "https://booking-ten-omega.vercel.app/property/getPropertyByPlace",
     { place },
     { withCredentials: true },
   );
@@ -84,7 +84,7 @@ export const getPropertyByPlace = async (place) => {
 export const getPropertyByRates = async () => {
   try {
     const respone = await axios.get(
-      "http://localhost:8000/property/getPropertiesSortedByRate",
+      "https://booking-ten-omega.vercel.app/property/getPropertiesSortedByRate",
       { withCredentials: true },
     );
 
@@ -97,7 +97,7 @@ export const getPropertyByRates = async () => {
 };
 export const getAllTypeOfProperties = async () => {
   const response = await axios.get(
-    "http://localhost:8000/property/getAllTypeOfProperties",
+    "https://booking-ten-omega.vercel.app/property/getAllTypeOfProperties",
     { withCredentials: true },
   );
   return response.data;
@@ -105,7 +105,7 @@ export const getAllTypeOfProperties = async () => {
 export const updateImageForProperty = async (propertyId, image) => {
   try {
     const respone = await axios.put(
-      "http://localhost:8000/property/updateImageForProperty",
+      "https://booking-ten-omega.vercel.app/property/updateImageForProperty",
       { propertyId, image },
       { withCredentials: true },
     );
@@ -119,7 +119,7 @@ export const updateImageForProperty = async (propertyId, image) => {
 };
 export const getPropertyByOwner = async (id, currentPage, propertiesPage) => {
   const respone = await axios.get(
-    `http://localhost:8000/property/getPropetyWithOwner/${id}?page=${currentPage}&limit=${propertiesPage}`,
+    `https://booking-ten-omega.vercel.app/property/getPropetyWithOwner/${id}?page=${currentPage}&limit=${propertiesPage}`,
     { withCredentials: true },
   );
   return respone.data;
@@ -127,7 +127,7 @@ export const getPropertyByOwner = async (id, currentPage, propertiesPage) => {
 export const getPropertyNear = async (longitude, latitude) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/property/getPropertyNear",
+      "https://booking-ten-omega.vercel.app/property/getPropertyNear",
       { longitude, latitude },
       { withCredentials: true },
     );
@@ -142,7 +142,7 @@ export const getPropertyNear = async (longitude, latitude) => {
 export const getPropertyByplace = async (place) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/property/getPropertyByPlace",
+      "https://booking-ten-omega.vercel.app/property/getPropertyByPlace",
       { place },
     );
 
@@ -155,7 +155,7 @@ export const getPropertyByplace = async (place) => {
 };
 export const getDistinctPlace = async () => {
   const respone = await axios.get(
-    "http://localhost:8000/property/getDistinctPlace",
+    "https://booking-ten-omega.vercel.app/property/getDistinctPlace",
   );
   return respone.data;
 };

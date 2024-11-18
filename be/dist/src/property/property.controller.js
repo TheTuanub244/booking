@@ -43,7 +43,7 @@ const roles_guard_1 = require("../common/guards/roles.guard");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const role_enum_1 = require("../user/enum/role.enum");
 const platform_express_1 = require("@nestjs/platform-express");
-const multer_1 = require("multer");
+const multer_1 = __importStar(require("multer"));
 const path = __importStar(require("path"));
 let PropertyController = class PropertyController {
     constructor(propertyService) {
@@ -140,15 +140,7 @@ __decorate([
     (0, common_1.UseGuards)(validateToken_guard_1.ValidateTokenGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(role_enum_1.ROLE.ADMIN, role_enum_1.ROLE.PARTNER),
     (0, common_1.UseInterceptors)((0, platform_express_1.AnyFilesInterceptor)({
-        storage: (0, multer_1.diskStorage)({
-            destination: './tmp/uploads',
-            filename: (req, file, callback) => {
-                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                const ext = path.extname(file.originalname);
-                const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
-                callback(null, filename);
-            },
-        }),
+        storage: multer_1.default.memoryStorage(),
     })),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.UploadedFiles)()),

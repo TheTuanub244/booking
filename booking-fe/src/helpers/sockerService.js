@@ -6,7 +6,7 @@ class SocketService {
 
   connect(partnerId) {
     if (!this.socket) {
-      this.socket = io("https://booking-ten-omega.vercel.app", {
+      this.socket = io(process.env.REACT_APP_API_URL, {
         query: { partnerId },
         withCredentials: true, 
         transports: ['websocket'],

@@ -3,7 +3,7 @@ import axios from "axios";
 export const findAvailableRoomWithSearch = async (data) => {
   try {
     const respone = await axios.post(
-      "https://booking-ten-omega.vercel.app/room/findAvailableRoomWithSearch",
+      `${process.env.REACT_APP_API_URL}/room/findAvailableRoomWithSearch`,
       data,
     );
 
@@ -17,7 +17,7 @@ export const findAvailableRoomWithSearch = async (data) => {
 export const findRoomByProperty = async (property_id) => {
   try {
     const respone = await axios.post(
-      "https://booking-ten-omega.vercel.app/room/getRoomWithProperty",
+      `${process.env.REACT_APP_API_URL}/room/getRoomWithProperty`,
       { property_id },
     );
 
@@ -31,7 +31,7 @@ export const findRoomByProperty = async (property_id) => {
 export const updateImageForRoom = async (roomId, image) => {
   try {
     const respone = await axios.put(
-      "https://booking-ten-omega.vercel.app/room/updateImageForRoom",
+      `${process.env.REACT_APP_API_URL}/room/updateImageForRoom`,
       { roomId, image },
     );
 
@@ -44,14 +44,14 @@ export const updateImageForRoom = async (roomId, image) => {
 };
 export const getMonthlyOccupancyRatesByOwner = async (id) => {
   const respone = await axios.get(
-    `https://booking-ten-omega.vercel.app/room/getMonthlyOccupancyRatesByOwner/${id}`,
+    `${process.env.REACT_APP_API_URL}/room/getMonthlyOccupancyRatesByOwner/${id}`,
   );
 
   return respone.data;
 };
 export const getMonthlyOccupancyRatesByProperty = async (id) => {
   const respone = await axios.get(
-    `https://booking-ten-omega.vercel.app/room/getMonthlyOccupancyRatesByProperty/${id}`,
+    `${process.env.REACT_APP_API_URL}/room/getMonthlyOccupancyRatesByProperty/${id}`,
   );
 
   return respone.data;
@@ -59,7 +59,7 @@ export const getMonthlyOccupancyRatesByProperty = async (id) => {
 
 export const deleteRoomById = async (roomId) => {
   const respone = await axios.delete(
-    `https://booking-ten-omega.vercel.app/room/deleteRoomById/${roomId}`,
+    `${process.env.REACT_APP_API_URL}/room/deleteRoomById/${roomId}`,
   );
 
   return respone.data;
@@ -71,7 +71,7 @@ export const getAllRoomWithTotalPrice = async (
   userId,
 ) => {
   const respone = await axios.post(
-    `https://booking-ten-omega.vercel.app/room/getAllRoomWithTotalPrice`,
+    `${process.env.REACT_APP_API_URL}/room/getAllRoomWithTotalPrice`,
     { check_in, check_out, place: "all", capacity, userId },
   );
 

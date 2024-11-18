@@ -63,16 +63,7 @@ export class PropertyController {
   @Roles(ROLE.ADMIN, ROLE.PARTNER)
   @UseInterceptors(
     AnyFilesInterceptor({
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = path.extname(file.originalname);
-          const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
-      }),
+      storage: multer.memoryStorage(), // Lưu vào bộ nhớ tạm
     }),
   )
   async updatePropertyWithPartner(

@@ -6,7 +6,7 @@ class SocketService {
 
   connect(partnerId) {
     if (!this.socket) {
-      this.socket = io("http://localhost:8000", {
+      this.socket = io("https://booking-ten-omega.vercel.app0", {
         query: { partnerId }, // Gửi partnerId khi kết nối
       });
       console.log("Socket connected!");

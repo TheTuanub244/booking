@@ -10,8 +10,8 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000', // URL frontend
-    methods: ['GET', 'POST'],
+    origin: 'https://booking-app-1edf4.web.app', // URL frontend
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
   },
 })
 export class NotificationGateway

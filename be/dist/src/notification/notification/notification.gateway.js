@@ -53,8 +53,8 @@ __decorate([
 exports.NotificationGateway = NotificationGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {
-            origin: 'http://localhost:3000',
-            methods: ['GET', 'POST'],
+            origin: 'https://booking-app-1edf4.web.app',
+            methods: ['GET', 'POST', 'DELETE', 'PUT'],
         },
     })
 ], NotificationGateway);

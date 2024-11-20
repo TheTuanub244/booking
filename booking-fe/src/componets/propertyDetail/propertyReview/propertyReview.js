@@ -1,6 +1,6 @@
 import React from "react";
 import "./propertyReview.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import RatingProgressBar from "./ratingProgressBar/ratingProgressBar";
 import ReviewComment from "./reviewComment/reviewComment";
 import ReviewDetail from "./reviewDetail/reviewDetail";
@@ -18,7 +18,23 @@ const PropertyReview = ({ property_id }) => {
 
   const [allReviewPopUp, setAllReviewPopUp] = useState(true);
 
+  const reviewCommentRef = useRef(null);
+
   useEffect(() => {}, [property_id]);
+
+   
+  function scrollLeft() {
+    if (reviewCommentRef.current) {
+      reviewCommentRef.current.scrollBy({ left: -250, behavior: "smooth" });
+    }
+  }
+
+
+  function scrollRight() {
+    if (reviewCommentRef.current) {
+      reviewCommentRef.current.scrollBy({ left: 250, behavior: "smooth" });
+    }
+  }
 
   return (
     <div className="propertyReview-container">
@@ -51,11 +67,23 @@ const PropertyReview = ({ property_id }) => {
 
       <div className="review-comment-container">
         <h4>Comment</h4>
-        <div className="review-comment">
+        <button class="left-button" onClick={(e) => {e.preventDefault();
+                                scrollLeft();}}>&#8592;</button>
+        <div className="review-comment" ref={reviewCommentRef}>
+         
           <ReviewComment />
           <ReviewComment />
           <ReviewComment />
+          <ReviewComment />
+          <ReviewComment />
+          <ReviewComment />
+          <ReviewComment />
+          <ReviewComment />
+          <ReviewComment />
+          
         </div>
+        <button class="right-button" onClick={(e) => {e.preventDefault();
+                                 scrollRight();}}>&#8594;</button>
       </div>
 
       <button

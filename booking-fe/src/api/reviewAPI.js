@@ -22,7 +22,7 @@ export const getMonthlyRateByProperty = async (property_id) => {
   return respone.data;
 };
 export const findReviewWithProperty = async (property_id, page) => {
-  const respone = await axios.post(
+  const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/review/findReviewWithProperty/${property_id}?page=${page}`
   );
   return respone.data;

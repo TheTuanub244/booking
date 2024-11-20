@@ -13,10 +13,12 @@
 }
 /* PartnerDashboard.css */
 
-.container {
+.containerr{
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
-.dashboard-container {
+.dashboard-containerr {
   display: flex;
   padding: 5% calc(23% + 5px);
   justify-content: space-between;

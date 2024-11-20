@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/createReview.dto';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -13,9 +21,12 @@ export class ReviewController {
   async createReview(@Body() createReviewDto: CreateReviewDto) {
     return this.reviewService.createReview(createReviewDto);
   }
-  @Post('/findReviewWithProperty')
-  async findReviewWithProperty(@Body() property_id: any) {
-    return this.reviewService.findReviewWithProperty(property_id.property_id);
+  @Get('/findReviewWithProperty/:property_id')
+  async findReviewWithProperty(
+    @Param('property_id') property_id: string,
+    @Query('page') page: number,
+  ) {
+    return this.reviewService.findReviewWithProperty(property_id, page);
   }
   @Get('getMonthlyRating/:id')
   async getMonthlyRating(@Param('id') id: any) {

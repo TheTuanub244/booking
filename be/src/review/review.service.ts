@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Review } from './review.schema';
-import mongoose, { Model, ObjectId } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { CreateReviewDto } from './dto/createReview.dto';
 import { Property } from 'src/property/property.schema';
 import { Room } from 'src/room/room.schema';
@@ -72,16 +72,33 @@ export class ReviewService {
       return updateRoom.save();
     }
   }
-  async findReviewWithProperty(property_id: mongoose.Types.ObjectId) {
+  async findReviewWithProperty(
+    property_id: string,
+    page: number = 1,
+    limit: number = 10,
+  ) {
     const rooms = await this.roomSchema.find({ property_id });
     const roomIds = rooms.map((room) => room._id);
+    const skip = (page - 1) * limit;
 
-    // Step 2: Count reviews where room_id is in the list of roomIds
+    // Tìm các review liên quan và phân trang
+    const reviews = await this.reviewSchema
+      .find({ room_id: { $in: roomIds } })
+      .sort({ rating: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('userId', 'userName')
+      .populate('roomId', 'name')
+      .exec();
     const reviewCount = await this.reviewSchema
       .countDocuments({ room_id: { $in: roomIds } })
       .exec();
 
-    return reviewCount;
+    return {
+      reviews,
+      totalPages: Math.ceil(reviewCount / limit),
+      currentPage: page,
+    };
   }
   async getMonthlyRating(owner_id: string) {
     const reviews = await this.reviewSchema

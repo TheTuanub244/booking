@@ -1,7 +1,6 @@
 import axios from "axios";
 export const signUp = async (user) => {
   try {
-    console.log(user);
 
     const respone = await axios.post(
       `${process.env.REACT_APP_API_URL}/user/sign-up-with-email`,
@@ -17,6 +16,16 @@ export const signUp = async (user) => {
     return respone;
   }
 };
+export const confirmSignUpWithEmail = async (user) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/confirm-signup`,
+    user,
+    {
+      withCredentials: true,
+    },
+  );
+  return respone.data
+}
 export const signUpWithGoogle = async () => {};
 export const signIn = async (user) => {
   console.log(user);
@@ -107,3 +116,21 @@ export const updateInformationForGoogle = async (user) => {
   );
   return respone.data;
 };
+export const getPendingUser = async () => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/getPendingUser`
+  )
+  return respone.data
+}
+export const requestToPartner = async (userId) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/requestToPartner/${userId}`
+  )
+  return respone.data
+}
+export const checkRequestPartner = async (userId) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/checkRequest/${userId}`
+  )
+  return respone.data
+}

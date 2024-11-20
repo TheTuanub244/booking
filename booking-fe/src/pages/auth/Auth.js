@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import HeaderLogin from "../../componets/header/HeaderLogin";
 
 import "./Auth.css";
-import { resetPassword } from "../../api/userAPI";
+import { confirmSignUpWithEmail, resetPassword } from "../../api/userAPI";
 import { useState } from "react";
 
 const Auth = () => {
@@ -31,7 +31,6 @@ const Auth = () => {
     const email = localStorage.getItem("email");
     inputData.email = email;
     const respone = await resetPassword(inputData);
-    console.log(respone);
 
     if (respone === "") {
       navigate("/login");
@@ -39,6 +38,28 @@ const Auth = () => {
       setErrorForgotPassword(respone);
     }
   };
+  const getToken = () => {
+    return localStorage.getItem('signUpInfo');
+  }
+  const verifyEmail = async () => {
+    const token = getToken();
+    if (!token) return false;
+  
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      if( payload.exp > Date.now() / 1000){
+        const response = await confirmSignUpWithEmail(payload)
+        console.log(response);
+        
+        if(response){
+          navigate('/login')
+        }
+      } 
+    } catch (error) {
+      return false;
+    }
+  }
   return (
     <div>
       <HeaderLogin />
@@ -61,7 +82,7 @@ const Auth = () => {
             </div>
 
             <h1>Verify Email</h1>
-            <h2>Your email has been verified</h2>
+            <button onClick={() => verifyEmail()}>Click here to verify your email</button>
           </div>
         )}
         {mode === "resetPassword" && (

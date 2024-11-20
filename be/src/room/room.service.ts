@@ -125,7 +125,7 @@ export class RoomService {
     });
   }
   async findAvailableRoomWithSearch(
-    userId,
+    userId: string,
     place,
     check_in,
     check_out,
@@ -164,7 +164,6 @@ export class RoomService {
                   check_in_date: check_in,
                   check_out_date: check_out,
                 });
-
               availableRoom.push({ value, totalPriceNight });
             }
           }),
@@ -173,7 +172,12 @@ export class RoomService {
     );
 
     if (userId && place != 'all') {
-      const session = await this.sessionSchema.findOne({ userId });
+
+      const session = await this.sessionSchema.findOne({
+        userId: new Types.ObjectId(userId),
+      });
+      console.log(session);
+
       if (!session) throw new Error('Session not found');
 
       // Use the custom comparison function

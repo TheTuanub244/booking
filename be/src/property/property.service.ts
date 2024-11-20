@@ -298,7 +298,7 @@ export class PropertyService {
     await Promise.all(
       properties.map(async (property) => {
         const review = await this.reviewService.findReviewWithProperty(
-          property._id,
+          property._id.toString(),
         );
         propertiesWithRate.push({
           property,

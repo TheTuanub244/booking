@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
+  Param,
   Post,
   Res,
   UseGuards,
@@ -29,6 +31,10 @@ export class UserController {
   @Post('/sign-up-with-email')
   async signUpWithEmail(@Body() signup: any) {
     return this.userService.signUpWithEmail(signup);
+  }
+  @Post('/confirm-signup')
+  async confirmSignUpWithEmail(@Body() signup: any) {
+    return this.userService.confirmSignUp(signup);
   }
   @Post('/sign-in')
   async signIn(@Body() user: any, @Res() response: Response) {
@@ -104,5 +110,17 @@ export class UserController {
       refreshToken: data.refreshToken,
       message: 'Login successful',
     });
+  }
+  @Get('getPendingUser')
+  async getPendingUser() {
+    return this.userService.getPendingUser();
+  }
+  @Get('requestToPartner/:id')
+  async requestTopartner(@Param('id') id: string) {
+    return this.userService.requestToPartner(id);
+  }
+  @Get('checkRequest/:id')
+  async checkRequest(@Param('id') id: string){
+    return this.userService.checkRequestPartner(id)
   }
 }

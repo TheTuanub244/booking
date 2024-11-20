@@ -66,7 +66,7 @@ const ResultItem = ({ property, index }) => {
               <p className="reviews">Fabulous</p>
               <p className="review-count"> reviews</p>
             </div>
-            <p className="score">{property.property_id.rate}</p>
+            <p className="score">{property.property_id.rate || 0}</p>
           </div>
         </div>
         <div className="result-main">

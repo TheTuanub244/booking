@@ -14,6 +14,7 @@ import {
   FormControl,
   Input,
 } from "@mui/material";
+
 import axios from "axios";
 import { getBooking } from "../../../api/bookingAPI";
 import Loading from "../../loading/Loading";
@@ -21,6 +22,8 @@ import "./PartnerBookingDashboard.css";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
 import { useNavigate } from "react-router-dom";
 const PartnerBookingDashboard = () => {
+  const [showModal, setShowModal] = useState(false);
+
   const [bookings, setBookings] = useState([]);
   const [filter, setFilter] = useState("Name");
   const [filterStatus, setFilterStatus] = useState("All");
@@ -63,9 +66,10 @@ const PartnerBookingDashboard = () => {
       setBookings(bookingSearch);
     }
   };
+  
   return (
     <div className="partner-booking-dashboard">
-
+    
       <FormControl
         style={{
           marginBottom: 20,

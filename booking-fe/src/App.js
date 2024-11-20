@@ -19,7 +19,7 @@ import SearchResult from "./pages/searchResult/SearchResult";
 import { useEffect } from "react";
 import socketService from "./helpers/sockerService";
 import PartnerBookingDetail from "./pages/partner/partnerBookingDetail/PartnerBookingDetail";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const userId = localStorage.getItem("userId");
   console.log(userId);

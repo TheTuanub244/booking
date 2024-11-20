@@ -42,7 +42,7 @@ function PartnerNavbar() {
     fetchNotifications();
   };
   return (
-    <div className="navbar">
+    <div className="navbarr">
       <div className="navContainer">
         <a href="/">
           <span className="logo">Booking.com</span>

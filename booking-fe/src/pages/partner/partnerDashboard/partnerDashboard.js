@@ -4,11 +4,14 @@ import PartnerNavbar from "../../../componets/partner/partnerNavbar/partnerNavba
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { checkRequestPartner } from "../../../api/userAPI";
+import { Modal, Button } from "react-bootstrap";
 
 const words = ["Hotel", "Apartment", "Homestay", "Hostel"];
 
 const PartnerDashboard = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [showModal, setShowModal] = useState(false)
   const navigate = useNavigate();
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -54,11 +57,41 @@ const PartnerDashboard = () => {
         "Access support in 45 languages and manage your property through Pulse, our app for partners like you.",
     },
   ];
-
+  const handleGetStarted = async () => {
+    const userId = localStorage.getItem('userId')
+    const respone = await checkRequestPartner(userId)
+    
+    if(respone){
+      setShowModal(true)
+    }else {
+      navigate("/partner/partnerRegister")
+    }
+    
+  }
+  const handleCloseModal = async () => {
+    setShowModal(false)
+    navigate('/')
+  }
   return (
-    <div className="container">
+    <div className="containerr">
       <PartnerNavbar />
-      <div className="dashboard-container">
+      {showModal && (
+        <Modal show={showModal} onHide={() => setShowModal(false)} centered className="fix-modal">
+        <Modal.Header closeButton>
+          <Modal.Title>Registration Submitted</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Thank you for registering! Your request has been submitted and is
+          pending admin approval.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => handleCloseModal()}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      )}
+      <div className="dashboard-containerr">
         <div className="dashboard-text">
           <h1 className="big-text">List your</h1>
           <h1 className="big-text transition-text">
@@ -87,7 +120,7 @@ const PartnerDashboard = () => {
               payment
             </span>
           </div>
-          <button onClick={() => navigate("/partner/partnerRegister")}>
+          <button onClick={() => handleGetStarted()}>
             Get started now
           </button>
         </div>

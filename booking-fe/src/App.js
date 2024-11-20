@@ -18,6 +18,7 @@ import PartnerPropertyDetailPage from "./pages/partner/propertyDetail/PartnerPro
 import SearchResult from "./pages/searchResult/SearchResult";
 import { useEffect } from "react";
 import socketService from "./helpers/sockerService";
+import PartnerBookingDetail from "./pages/partner/partnerBookingDetail/PartnerBookingDetail";
 
 function App() {
   const userId = localStorage.getItem("userId");
@@ -60,6 +61,8 @@ function App() {
           element={<PartnerPropertyDetailPage />}
         />
         <Route path="/searchResult" element={<SearchResult />} />
+        <Route path="/partnerBookingDetail/:id" element={<PartnerBookingDetail/>} />
+
       </Routes>
     </BrowserRouter>
   );

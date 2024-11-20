@@ -26,3 +26,11 @@ export const createBooking = async (customerId, partnerId, booking_id, property_
   );
   return respone.data;
 };
+export const findUnfinishedBooking = async (userId) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/findUnfinishedBooking/${userId}`,
+
+  );
+  
+  return respone.data;
+}

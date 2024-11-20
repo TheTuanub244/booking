@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Booking } from './booking.schema';
 import mongoose, { Model, ObjectId, Types } from 'mongoose';
@@ -129,6 +133,14 @@ export class BookingService {
   }
   async finalizeCancellation(bookingId: string): Promise<boolean> {
     const booking = await this.getBookingById(bookingId);
+    const message = `Your property ${booking[0].propertyDetails.name} has been canceled by ${booking[0].userDetails.email}`;
+    await this.notificationService.createNotification({
+      sender_id: booking[0].userDetails._id,
+      receiver_id: booking[0].propertyDetails.owner_id,
+      booking_id: booking[0]._id,
+      type: 'Booking',
+      message
+    })
     booking[0].booking_status = BookingStatus.CANCELED;
     await booking[0].save();
     return true;
@@ -207,13 +219,21 @@ export class BookingService {
 
     // const newBooking = new this.bookingSchema(createBookingDto);
     // const savedBooking = await newBooking.save();
+    const findExistedBooking = await this.bookingSchema
+      .findOne({
+        user_id: customerId,
+      })
+      .populate('user_id');
+    if (findExistedBooking.booking_status === BookingStatus.PENDING) {
+      throw new BadRequestException('');
+    }
     const findPartnerId = await this.roomSchema
       .findOne({
         property_id: createBookingDto.property_id,
       })
       .populate('property_id');
     const partnerId = findPartnerId.property_id.owner_id;
-    const message = `User ${customerId} has booked`;
+    const message = `Your property ${findPartnerId.property_id.name} has been booked by ${findExistedBooking.user_id.email}`;
     await this.notificationService.createNotification({
       sender_id: new Types.ObjectId(customerId),
       receiver_id: partnerId,
@@ -225,8 +245,6 @@ export class BookingService {
       createBookingDto.partnerId.toString(),
       message,
     );
-
-    return { success: true };
 
     // await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
     //   total_price: totalNightPrice,
@@ -474,14 +492,14 @@ export class BookingService {
     return this.bookingSchema.aggregate([
       {
         $lookup: {
-          from: 'properties', // Tên collection 'properties'
-          localField: 'property', // Field trong booking
-          foreignField: '_id', // Field trong properties
-          as: 'propertyDetails', // Kết quả sẽ lưu trong 'propertyDetails'
+          from: 'properties', 
+          localField: 'property',
+          foreignField: '_id', 
+          as: 'propertyDetails', 
         },
       },
       {
-        $unwind: '$propertyDetails', // Chuyển mảng thành object để xử lý owner_id
+        $unwind: '$propertyDetails', 
       },
       {
         $lookup: {
@@ -493,15 +511,15 @@ export class BookingService {
       },
       {
         $match: {
-          'propertyDetails.owner_id': new Types.ObjectId(owner_id), // Match owner_id
+          'propertyDetails.owner_id': new Types.ObjectId(owner_id), 
         },
       },
       {
         $lookup: {
-          from: 'rooms', // Tên collection 'rooms'
-          localField: 'room_id', // Mảng room_id trong booking
-          foreignField: '_id', // Field _id trong rooms
-          as: 'roomDetails', // Kết quả sẽ lưu trong 'roomDetails'
+          from: 'rooms', 
+          localField: 'room_id', 
+          foreignField: '_id', 
+          as: 'roomDetails', 
         },
       },
       {
@@ -512,13 +530,44 @@ export class BookingService {
           total_price: 1,
           booking_status: 1,
           capacity: 1,
-          'propertyDetails.name': 1,
-          'propertyDetails.location': 1,
+          propertyDetails: 1,
           roomDetails: 1,
-          'userDetails.userName': 1,
-          'userDetails.email': 1,
+          userDetails: 1
         },
       },
     ]);
+  }
+  async findUnfinishedBooking(userId: string) {
+    const findBooking = await this.bookingSchema.aggregate([
+      {
+        $match: {
+          user_id: new Types.ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'rooms',
+          localField: 'room_id',
+          foreignField: '_id',
+          as: 'roomDetails',
+        },
+      },
+      {
+        $unwind: '$roomDetails',
+      },
+      {
+        $lookup: {
+          from: 'properties',
+          localField: 'property',
+          foreignField: '_id',
+          as: 'propertyDetails',
+        },
+      },
+      {
+        $unwind: '$propertyDetails',
+      },
+    ]);
+
+    return findBooking;
   }
 }

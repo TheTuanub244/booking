@@ -63,4 +63,8 @@ export class BookingController {
       return res.redirect(`${redirect}?status=error`);
     }
   }
+  @Get(`/findUnfinishedBooking/:userId`)
+  async findUnfinishedBooking(@Param('userId') userId: string) {
+    return this.bookingService.findUnfinishedBooking(userId);
+  }
 }

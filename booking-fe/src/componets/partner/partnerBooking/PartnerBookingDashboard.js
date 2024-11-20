@@ -19,11 +19,12 @@ import { getBooking } from "../../../api/bookingAPI";
 import Loading from "../../loading/Loading";
 import "./PartnerBookingDashboard.css";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
+import { useNavigate } from "react-router-dom";
 const PartnerBookingDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [filter, setFilter] = useState("Name");
   const [filterStatus, setFilterStatus] = useState("All");
-
+  const navigate = useNavigate()
   const userId = localStorage.getItem("userId");
   const handleGetBooking = async () => {
     try {
@@ -101,7 +102,7 @@ const PartnerBookingDashboard = () => {
             <MenuItem value="All">All</MenuItem>
 
             <MenuItem value="Completed">Completed</MenuItem>
-            <MenuItem value="Confirmed">Confirmed</MenuItem>
+            <MenuItem value="Pending">Pending</MenuItem>
             <MenuItem value="Canceled">Canceled</MenuItem>
           </Select>
         ) : (
@@ -131,8 +132,8 @@ const PartnerBookingDashboard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {bookings.map((booking) => (
-                <TableRow key={booking._id} className="hover-row">
+              {bookings.map((booking, index) => (
+                <TableRow key={booking._id} className="hover-row" onClick={() => navigate(`/partnerBookingDetail/${booking._id}`, {state: bookings[index]})}>
                   <TableCell>
                     {booking.userDetails[0]?.email ||
                       booking.userDetails[0]?.userName}

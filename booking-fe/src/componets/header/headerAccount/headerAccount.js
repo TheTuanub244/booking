@@ -3,7 +3,7 @@ import "./headerAccount.css";
 import { signOut } from "../../../api/userAPI";
 import { useNavigate } from "react-router-dom";
 import { getRoleFromToken } from "../../../helpers/authHelpers";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faHotel } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAllNotificationWithUser, markAllAsRead, markAsRead } from "../../../api/notificationAPI";
 import socketService from "../../../helpers/sockerService";
@@ -87,6 +87,7 @@ function HeaderAccount() {
                       marginRight: '32px'
                     }} className="notification-badgee">{totalUnseen}</span>
                   )}
+
                 </div>
               </div>
 

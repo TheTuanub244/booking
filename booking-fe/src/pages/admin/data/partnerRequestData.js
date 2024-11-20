@@ -1,10 +1,9 @@
-export const usersRows = [
+export const partnerRequestRows = [
   {
     id: 1,
     username: "User 1",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail1@gmail.com",
-    role: "MEMBER",
     age: 35,
   },
   {
@@ -12,7 +11,6 @@ export const usersRows = [
     username: "User 2",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail2@gmail.com",
-    role: "MEMBER",
     age: 42,
   },
   {
@@ -20,7 +18,6 @@ export const usersRows = [
     username: "User 3",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail3@gmail.com",
-    role: "ADMIN",
     age: 45,
   },
   {
@@ -28,7 +25,6 @@ export const usersRows = [
     username: "User 4",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail4@gmail.com",
-    role: "PARTNER",
     age: 16,
   },
   {
@@ -36,7 +32,6 @@ export const usersRows = [
     username: "User 5",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail5@gmail.com",
-    role: "MEMBER",
     age: 22,
   },
   {
@@ -44,7 +39,6 @@ export const usersRows = [
     username: "User 6",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail6@gmail.com",
-    role: "MEMBER",
     age: 15,
   },
   {
@@ -52,7 +46,6 @@ export const usersRows = [
     username: "User 7",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail7@gmail.com",
-    role: "MEMBER",
     age: 44,
   },
   {
@@ -60,7 +53,6 @@ export const usersRows = [
     username: "User 8",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail8@gmail.com",
-    role: "MEMBER",
     age: 36,
   },
   {
@@ -68,7 +60,6 @@ export const usersRows = [
     username: "User 9",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail9@gmail.com",
-    role: "MEMBER",
     age: 65,
   },
   {
@@ -76,7 +67,6 @@ export const usersRows = [
     username: "User 10",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail10@gmail.com",
-    role: "MEMBER",
     age: 65,
   },
 ];

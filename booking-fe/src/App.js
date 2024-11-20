@@ -19,13 +19,20 @@ import SearchResult from "./pages/searchResult/SearchResult";
 import DashBoard from "./pages/admin/contents/DashBoard/DashBoard";
 import UserTable from "./pages/admin/component/UserTable/UserTable";
 import RoomTable from "./pages/admin/component/RoomsTable/RoomTable";
-import UserManage from "./pages/admin/contents/UserManage/UserManage";
-import RoomManage from "./pages/admin/contents/RoomManage/RoomManage";
+import UserManage from "./pages/admin/contents/user/UserManage/UserManage";
+import RoomManage from "./pages/admin/contents/room/RoomManage/RoomManage";
 import AddNewRoom from "./pages/admin/contents/AddNewRoom/AddNewRoom";
-import ViewRoom from "./pages/admin/contents/ViewRoom/ViewRoom";
-import ViewUser from "./pages/admin/contents/ViewUser/ViewUser";
+import ViewRoom from "./pages/admin/contents/room/ViewRoom/ViewRoom";
+import ViewUser from "./pages/admin/contents/user/ViewUser/ViewUser";
 import BookingManage from "./pages/admin/contents/BookingManage/BookingManage";
 import Analytics from "./pages/admin/contents/Analytics/Analytics";
+import EditUser from "./pages/admin/contents/user/EditUser/EditUser";
+import PropertyManage from "./pages/admin/contents/property/PropertyManage/PropertyManage";
+import PropertyTable from "./pages/admin/component/PropertyTable/PropertyTable";
+import AddNewProperty from "./pages/admin/contents/property/AddNewProperty/AddNewProperty";
+import ViewProperty from "./pages/admin/contents/property/ViewProperty/ViewProperty";
+import EditProperty from "./pages/admin/contents/property/EditProperty/EditProperty";
+import ViewPartnerRequest from "./pages/admin/contents/partnerRequest/ViewPartnerRequest/ViewPartnerRequest";
 
 function App() {
   return (
@@ -43,10 +50,18 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />}>
           <Route path="" element={<DashBoard />} />
           <Route path="booking" element={<BookingManage />}/>
+          <Route path="partnerRequest" element={<ViewPartnerRequest />}></Route>
           <Route path="user" element={<UserManage />}>
             <Route path="" element={<UserTable />} />
             <Route path="new" element={<AddNewUser />} />
             <Route path="view/:id" element={<ViewUser />} />
+            <Route path="edit/:id" element={<EditUser />} />
+          </Route>
+          <Route path="property" element={<PropertyManage />}>
+            <Route path="" element={<PropertyTable />} />
+            <Route path="new" element={<AddNewProperty />} />
+            <Route path="view/:id" element={<ViewProperty />} />
+            <Route path="edit/:id" element={<EditProperty />} />
           </Route>
           <Route path="room" element={<RoomManage />} >
             <Route path="" element={<RoomTable />} />

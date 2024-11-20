@@ -59,39 +59,26 @@
   border-radius: 5px;
 }
 
-.datatable .cellWithRole.ADMIN {
-  background-color: rgba(255, 87, 34, 0.1); 
-  color: #ff5722;
-}
-
-.datatable .cellWithRole.MEMBER {
-  background-color: rgba(255, 193, 7, 0.1); 
-  color: #ffc107;
-}
-
-.datatable .cellWithRole.PARTNER {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: #4caf50;
-}
-
 .datatable .cellAction {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.datatable .cellAction .viewButton {
+.datatable .cellAction .acceptButton {
   padding: 2px 5px;
   border-radius: 5px;
-  color: darkblue;
+  background-color: rgba(41, 165, 41, 0.96);
+  color: white;
   border: 1px dotted rgba(0, 0, 139, 0.596);
   cursor: pointer;
 }
 
-.datatable .cellAction .deleteButton {
+.datatable .cellAction .declineButton {
   padding: 2px 5px;
   border-radius: 5px;
-  color: crimson;
+  background-color: crimson;
+  color: white;
   border: 1px dotted rgba(220, 20, 60, 0.6);
   cursor: pointer;
 }

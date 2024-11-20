@@ -1,18 +1,39 @@
-import "./UserTable.css";
+import "./PartnerRequestTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import { userColumns, usersRows } from "../../data/userdata";
+import {partnerRequestRows} from "../../data/partnerRequestData";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const UserTable = () => {
-  const [data, setData] = useState(usersRows);
-  const handleDelete = (id) => {
+const PartnerRequestTable = () => {
+  const [data, setData] = useState(partnerRequestRows);
+  const handleDecline = (id) => {
     setData(data.filter((item) => item.id !== id));
   };
+  const handleAcept = (id) => {
+    setData(data.filter((item) => item.id !== id));
+  };
+  function formatFriendlyDatetime(requestAt) {
+    const date = new Date(requestAt);
+    
 
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+  
+    return date.toLocaleString("en-US", options);
+  }
 
   const userColumn = [
-    { field: "id", headerName: "ID", width: 50 },
+    { field: "id", 
+      headerName: "ID", 
+      width: 50 
+    },
   {
     field: "user",
     headerName: "User",
@@ -37,18 +58,6 @@ const UserTable = () => {
     headerName: "Age",
     width: 100,
   },
-  {
-    field: "role",
-    headerName: "Role",
-    width: 160,
-    renderCell: (params) => {
-      return (
-        <div className={`cellWithRole ${params.row.role}`}>
-          {params.row.role}
-        </div>
-      );
-    },
-  },
     {
       field: "action",
       headerName: "Action",
@@ -56,12 +65,15 @@ const UserTable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to={`view/${params.row.id}`} style={{ textDecoration: "none" }}>
-              <div className="viewButton">View</div>
-            </Link>
+            <div 
+            className="acceptButton"
+            onClick={() => handleAcept(params.row.id)}
+            >
+              Accept
+            </div>
             <div
-              className="deleteButton"
-              onClick={() => handleDelete(params.row.id)}
+              className="declineButton"
+              onClick={() => handleDecline(params.row.id)}
             >
               Delete
             </div>
@@ -73,11 +85,7 @@ const UserTable = () => {
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        User Management
-        <Link to="/admin/user/new" className="link">
-          Add New
-        </Link>
-
+        Partner Request
       </div>
       <DataGrid
         className="datagrid"
@@ -91,4 +99,4 @@ const UserTable = () => {
   );
 };
 
-export default UserTable;
+export default PartnerRequestTable;

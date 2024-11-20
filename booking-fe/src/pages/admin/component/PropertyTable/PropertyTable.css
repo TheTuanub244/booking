@@ -64,7 +64,7 @@
   color: #ff5722;
 }
 
-.datatable .cellWithRole.MEMBER {
+.datatable .cellWithRole.USER {
   background-color: rgba(255, 193, 7, 0.1); 
   color: #ffc107;
 }

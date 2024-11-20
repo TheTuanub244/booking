@@ -18,22 +18,32 @@ import img3 from "../imgs/img3.png";
     },
     {
       icon: UilClipboardAlt,
-      heading: "Bookings",
+      heading: "Booking",
       path: '/admin/booking',
     },
     {
       icon: UilUsersAlt,
-      heading: "Users",
+      heading: "Partner Request",
+      path: '/admin/partnerRequest',
+    },
+    {
+      icon: UilUsersAlt,
+      heading: "User",
       path: '/admin/user',
     },
     {
       icon: UilPackage,
-      heading: 'Rooms',
+      heading: 'Room',
       path: '/admin/room',
     },
     {
       icon: UilChart,
-      heading: 'Analytics',
+      heading: 'Property',
+      path: '/admin/property',
+    },
+    {
+      icon: UilChart,
+      heading: 'Analytic',
       path: '/admin/analytic',
     },
   ];

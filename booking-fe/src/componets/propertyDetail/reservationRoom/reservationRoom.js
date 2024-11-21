@@ -241,7 +241,10 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                       numberOfNights={numberOfNights}
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
-                      setModalRoom={setModalRoom}
+                      setModalRoom={(room) => {
+                        setModalRoom(room);
+                        setIsModalOpen(true);
+                      }}
                     />
                   ))
                 : roomSearch.map((room) => (
@@ -251,7 +254,10 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                       numberOfNights={numberOfNights}
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
-                      setModalRoom={setModalRoom}
+                      setModalRoom={(room) => {
+                        setModalRoom(room); 
+                        setIsModalOpen(true);
+                      }}
                     />
                   ))}
             </tbody>
@@ -263,7 +269,9 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           </button>
         </div>
       </form>
-      <RoomModal isOpen={isModalOpen} onClose={closeModal} room={modalRoom} />
+
+      {isModalOpen && <RoomModal isOpen={isModalOpen} onClose={closeModal} room={modalRoom}/>}
+      
       <SignInPopup
         isOpen={isPopupOpen}
         onClose={handleClosePopup}

@@ -171,6 +171,8 @@ function Login() {
     const action = event.nativeEvent.submitter.name;
     try {
       const respone = await signIn(inputData);
+      console.log(respone);
+      
       if(respone === "Wrong password!"){
         setErrorLogIn(respone)
       }else {

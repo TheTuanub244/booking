@@ -39,7 +39,6 @@ export class UserController {
   @Post('/sign-in')
   async signIn(@Body() user: any, @Res() response: Response) {
     const data = await this.userService.signIn(user);
-    console.log(data);
 
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
@@ -50,6 +49,7 @@ export class UserController {
     return response.status(HttpStatus.OK).json({
       _id: data._id,
       accessToken: data.access_token,
+      displayName: data.displayName,
       refreshToken: data.refreshToken,
       message: 'Login successful',
     });

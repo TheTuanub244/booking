@@ -100,6 +100,15 @@ export class ReviewService {
       currentPage: page,
     };
   }
+  async countReviewWithProperty(property_id: string){
+    const rooms = await this.roomSchema.find({ property_id });
+    const roomIds = rooms.map((room) => room._id);
+    return this.reviewSchema
+      .countDocuments({ room_id: { $in: roomIds } })
+      .exec();
+
+    
+  }
   async getMonthlyRating(owner_id: string) {
     const reviews = await this.reviewSchema
       .find()

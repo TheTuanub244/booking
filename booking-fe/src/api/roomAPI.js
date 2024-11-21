@@ -3,10 +3,10 @@ import axios from "axios";
 export const findAvailableRoomWithSearch = async (data) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/room/findAvailableRoomWithSearch",
+      `${process.env.REACT_APP_API_URL}/room/findAvailableRoomWithSearch`,
       data,
     );
-    
+
     return respone.data;
   } catch (error) {
     const respone = error.response.data.message;
@@ -17,7 +17,7 @@ export const findAvailableRoomWithSearch = async (data) => {
 export const findRoomByProperty = async (property_id) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/room/getRoomWithProperty",
+      `${process.env.REACT_APP_API_URL}/room/getRoomWithProperty`,
       { property_id },
     );
 
@@ -31,7 +31,7 @@ export const findRoomByProperty = async (property_id) => {
 export const updateImageForRoom = async (roomId, image) => {
   try {
     const respone = await axios.put(
-      "http://localhost:8000/room/updateImageForRoom",
+      `${process.env.REACT_APP_API_URL}/room/updateImageForRoom`,
       { roomId, image },
     );
 
@@ -44,14 +44,14 @@ export const updateImageForRoom = async (roomId, image) => {
 };
 export const getMonthlyOccupancyRatesByOwner = async (id) => {
   const respone = await axios.get(
-    `http://localhost:8000/room/getMonthlyOccupancyRatesByOwner/${id}`,
+    `${process.env.REACT_APP_API_URL}/room/getMonthlyOccupancyRatesByOwner/${id}`,
   );
 
   return respone.data;
 };
 export const getMonthlyOccupancyRatesByProperty = async (id) => {
   const respone = await axios.get(
-    `http://localhost:8000/room/getMonthlyOccupancyRatesByProperty/${id}`,
+    `${process.env.REACT_APP_API_URL}/room/getMonthlyOccupancyRatesByProperty/${id}`,
   );
 
   return respone.data;
@@ -59,15 +59,21 @@ export const getMonthlyOccupancyRatesByProperty = async (id) => {
 
 export const deleteRoomById = async (roomId) => {
   const respone = await axios.delete(
-    `http://localhost:8000/room/deleteRoomById/${roomId}`,
+    `${process.env.REACT_APP_API_URL}/room/deleteRoomById/${roomId}`,
   );
 
   return respone.data;
 };
-export const getAllRoomWithTotalPrice = async (check_in, check_out, capacity, userId) => {
+export const getAllRoomWithTotalPrice = async (
+  check_in,
+  check_out,
+  capacity,
+  userId,
+) => {
   const respone = await axios.post(
-    `http://localhost:8000/room/getAllRoomWithTotalPrice`, {check_in, check_out, place: "all", capacity, userId}
+    `${process.env.REACT_APP_API_URL}/room/getAllRoomWithTotalPrice`,
+    { check_in, check_out, place: "all", capacity, userId },
   );
 
   return respone.data;
-}
+};

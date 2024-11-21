@@ -13,15 +13,17 @@
 }
 /* PartnerDashboard.css */
 
-.container {
+.containerr{
   width: 100%;
-  background-color: #003580;
-  height: 600px;
-}
-.dashboard-container {
   display: flex;
-  margin: 5% calc(23% + 5px);
+  flex-direction: column;
+}
+.dashboard-containerr {
+  display: flex;
+  padding: 5% calc(23% + 5px);
   justify-content: space-between;
+  background-color: #003580;
+  width: 100%;
 }
 .register-block {
   width: 40%;
@@ -29,6 +31,7 @@
   border: 6px solid rgb(255, 183, 0);
   border-radius: 10px;
   padding-left: 30px;
+  padding-top: 30px;
 }
 .dashboard-text {
   display: flex;

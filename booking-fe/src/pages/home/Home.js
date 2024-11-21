@@ -22,6 +22,8 @@ import {
 import { checkSession, getSessionHistory } from "../../api/sessionAPI";
 import LastViewProperties from "../../componets/lastViewProperties/LastViewProperties";
 import { useNavigate } from "react-router-dom";
+import { findUnfinishedBooking } from "../../api/bookingAPI";
+import BookingPopup from "../../componets/bookingPopup/BookingPopup";
 
 function Home() {
   const [sessionHistory, setSessionHistory] = useState();
@@ -29,7 +31,9 @@ function Home() {
   const [allPlace, setAllPlace] = useState();
   const [userId, setUserId] = useState();
   const [propertyType, setPropertyType] = useState();
-  const [promptData, setPromptData] = useState()
+  const [isPopup, setIsPopup] = useState(false)
+  const [promptData, setPromptData] = useState();
+  const [unfinishedBooking, setUnfinishedBooking] = useState([])
   const navigate = useNavigate();
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
@@ -52,13 +56,14 @@ function Home() {
 
     setPropertyNear(data);
   };
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        localStorage.setItem('latitude', latitude)
-        localStorage.setItem('longitude', longitude)
+        localStorage.setItem("latitude", latitude);
+        localStorage.setItem("longitude", longitude);
 
         getNear(longitude, latitude);
       },
@@ -66,16 +71,24 @@ function Home() {
         console.error("Error getting location:", error.message);
       },
     );
-    
+
     const userId = localStorage.getItem("userId");
     setUserId(userId);
     getPropertyType();
+    const handleFindUnfinishedBooking = async (userId) => {
+      const respone = await findUnfinishedBooking(userId)
+      if(respone){
+        setUnfinishedBooking(respone)
+      }
+    }
+   
     handleGetAllProperty();
     if (userId) {
       getHistory(userId);
+      handleFindUnfinishedBooking(userId)
     }
   }, []);
-
+ 
   return (
     <div>
       <Navbar />
@@ -99,11 +112,20 @@ function Home() {
         <PropertyList propertyType={propertyType} />
         <h1 className="homeTitle">Quick and easy trip planner</h1>
         {propertyNear && <EasyTrip propertyNear={propertyNear} />}
-        <h1 className="homeTitle">Home guests love</h1>
+        <h1 className="homeTitle" style={{
+          marginTop: '100px'
+        }}>Home guests love</h1>
         <FeaturedProperties />
 
         <Footer />
       </div>
+      {
+        unfinishedBooking && (
+          unfinishedBooking.length !== 0 && (
+            <BookingPopup booking={unfinishedBooking[0]} setUnfinishedBooking={setUnfinishedBooking}/>
+          )
+        )
+      }
     </div>
   );
 }

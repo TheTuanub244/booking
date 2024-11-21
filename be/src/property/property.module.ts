@@ -21,6 +21,15 @@ import { UserModule } from 'src/user/user.module';
 import { ReviewService } from 'src/review/review.service';
 import { Promotion, PromotionSchema } from 'src/promotion/promotion.schema';
 import { PromotionModule } from 'src/promotion/promotion.module';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationModule } from 'src/notification/notification.module';
+import { NotificationService } from 'src/notification/notification.service';
+import {
+  Notification,
+  NotificationSchema,
+} from 'src/notification/notification.schema';
+import { GmailModule } from 'src/gmail/gmail.module';
+import { GmailService } from 'src/gmail/gmail.service';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -32,6 +41,9 @@ const jwtConstant = {
     SessionService,
     RoomService,
     ReviewService,
+    NotificationGateway,
+    NotificationService,
+    GmailService
   ],
   imports: [
     MongooseModule.forFeature([
@@ -57,10 +69,15 @@ const jwtConstant = {
         name: User.name,
         schema: UserSchema,
       },
+      { name: Notification.name, schema: NotificationSchema },
     ]),
     forwardRef(() => BookingModule),
     forwardRef(() => SessionModule),
     forwardRef(() => RoomModule),
+    forwardRef(() => NotificationModule),
+    forwardRef(() => GmailModule),
+
+
     ReviewModule,
     UserModule,
     PromotionModule,

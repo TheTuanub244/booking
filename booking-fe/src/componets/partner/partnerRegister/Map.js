@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import ReactDOMServer from "react-dom/server";
 import { getAllRoomWithTotalPrice } from "../../../api/roomAPI";
+import Loading from "../../loading/Loading";
 const createUserMarkerIcon = () => {
   return L.divIcon({
     className: "user-marker-container",
@@ -28,7 +29,6 @@ const createUserMarkerIcon = () => {
   });
 };
 const createPropertyMarkerIcon = (totalPriceNight) => {
-  
   return L.divIcon({
     className: "property-marker-container fall-down", // Thêm lớp `fall-down`
     html: ` <div class="property-marker">
@@ -36,10 +36,12 @@ const createPropertyMarkerIcon = (totalPriceNight) => {
                 <div class="icon">
                     ${ReactDOMServer.renderToString(<FontAwesomeIcon icon={faLocationDot} style={{ color: "#74C0FC" }} />)}
                 </div>
-                  ${totalPriceNight && (
-                    ReactDOMServer.renderToString(<div class="property-price">{totalPriceNight}</div>)
-                  )
-                } 
+                  ${
+                    totalPriceNight &&
+                    ReactDOMServer.renderToString(
+                      <div class="property-price">{totalPriceNight}</div>,
+                    )
+                  } 
                 
             </div>`,
     iconSize: [25, 25],
@@ -48,18 +50,25 @@ const createPropertyMarkerIcon = (totalPriceNight) => {
   });
 };
 const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
-  const userId = localStorage.getItem('userId')
+  const [isLoading, setIsLoading] = useState(true);
+  const userId = localStorage.getItem("userId");
   const getRoomWithPrice = async () => {
-    const respone = await getAllRoomWithTotalPrice(option?.check_in, option?.check_out,  option?.capacity, userId)
-    console.log(respone);
-    
-    setProperties(respone)
-    
-  }
+    setIsLoading(true);
+    const respone = await getAllRoomWithTotalPrice(
+      option?.check_in,
+      option?.check_out,
+      option?.capacity,
+      userId,
+    );
+
+    if (respone) {
+      setIsLoading(false);
+      setProperties(respone);
+    }
+  };
   useEffect(() => {
-    getRoomWithPrice()
-    
-  }, [])
+    getRoomWithPrice();
+  }, []);
   const formatCurrency = (value) => {
     if (!value) return "";
     return new Intl.NumberFormat("vi-VN", {
@@ -100,36 +109,41 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
   };
   return (
     <>
-      {position && (
-        <MapContainer
-          center={position}
-          zoom={15}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
+      {position &&
+        (isLoading ? (
+          <Loading />
+        ) : (
+          <MapContainer
+            center={position}
+            zoom={15}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
 
-          {/* User's location with larger marker */}
-          <LocationMarker />
+            <LocationMarker />
 
-          {/* Markers for other properties */}
-          {properties.length !== 0 &&
-            properties.map((property) => (
-              property.value && (
-                <Marker
-                key={property.value.property_id.id}
-                position={[
-                  property.value.property_id.location.latitude,
-                  property.value.property_id.location.longitude,
-                ]}
-                icon={createPropertyMarkerIcon(formatCurrency(property.totalPriceNight))} // Smaller marker for other properties
-                eventHandlers={{
-                  mouseover: (e) => {
-                    const popup = L.popup()
-                      .setLatLng(e.latlng)
-                      .setContent(`
+            {properties.length !== 0 &&
+              properties.map(
+                (property) =>
+                  property.value && (
+                    <Marker
+                      key={property.value.property_id.id}
+                      position={[
+                        property.value.property_id.location.latitude,
+                        property.value.property_id.location.longitude,
+                      ]}
+                      icon={createPropertyMarkerIcon(
+                        formatCurrency(property.totalPriceNight),
+                      )} // Smaller marker for other properties
+                      eventHandlers={{
+                        mouseover: (e) => {
+                          const popup = L.popup()
+                            .setLatLng(e.latlng)
+                            .setContent(
+                              `
                         <div class="popup-content">
                           <div class="popup-left">
                             <img src="${property.value.property_id.images[0]}" alt="Property Image" class="popup-image"/>
@@ -141,22 +155,23 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
                             <p class="popup-room-type">${property.value.name}</p>
                           </div>
                         </div>
-                      `)
-                      .openOn(e.target._map);
-                  },
-                  mouseout: (e) => {
-                    e.target._map.closePopup();
-                  },
-                }}
-             >
-                <div className="property-marker-container">
-                  <div className="property-marker-rain-drop"></div>
-                </div>
-              </Marker>
-              )
-            ))}
-        </MapContainer>
-      )}
+                      `,
+                            )
+                            .openOn(e.target._map);
+                        },
+                        mouseout: (e) => {
+                          e.target._map.closePopup();
+                        },
+                      }}
+                    >
+                      <div className="property-marker-container">
+                        <div className="property-marker-rain-drop"></div>
+                      </div>
+                    </Marker>
+                  ),
+              )}
+          </MapContainer>
+        ))}
     </>
   );
 };

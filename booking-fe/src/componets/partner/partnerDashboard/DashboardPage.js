@@ -10,7 +10,6 @@ const DashboardPage = ({ type, property }) => {
   const [averageRating, setAverageRating] = useState(0);
   return (
     <div className="dashboard">
-      <h2>Dashboard - Tổng quan tài chính</h2>
       <div className="dashboard-summary">
         <div className="summary-item">
           <h3>Tổng Doanh Thu</h3>

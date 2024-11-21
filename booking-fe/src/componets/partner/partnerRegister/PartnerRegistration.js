@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./PartnerRegistration.css";
-import { updatePartnerAccount } from "../../../api/userAPI";
+import { requestToPartner, updatePartnerAccount } from "../../../api/userAPI";
+import { Modal, Button } from "react-bootstrap";
 import { getProvince } from "../../../api/addressAPI";
 import PropertyDetailsForm from "./PropertyDetailsForm";
+import { useNavigate } from "react-router-dom";
 
 const PartnerRegistration = ({ existedUser }) => {
   const [formData, setFormData] = useState({
@@ -19,9 +21,11 @@ const PartnerRegistration = ({ existedUser }) => {
   const [address, setAddress] = useState();
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
+  const navigate = useNavigate()
   const [street, setStreet] = useState();
   const longitude = localStorage.getItem("longitude");
   const latitude = localStorage.getItem("latitude");
+  const [showModal, setShowModal] = useState(false);
   const handleGetAddress = async () => {
     const respone = await getProvince();
     setAddress(respone);
@@ -77,15 +81,33 @@ const PartnerRegistration = ({ existedUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (existedUser) {
-      // const respone = await updatePartnerAccount(formData)
-      // console.log(respone);
       console.log(formData);
     }
-    setIsRegistered(true);
+    setShowModal(true)
   };
+  const handleCloseModal = async () => {
+    setShowModal(false)
 
+    navigate('/')
+  }
   return (
     <div className="registration-container">
+      {showModal && (
+        <Modal show={showModal} onHide={() => setShowModal(false)} centered className="fix-modal">
+        <Modal.Header closeButton>
+          <Modal.Title>Registration Submitted</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Thank you for registering! Your request has been submitted and is
+          pending admin approval.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => handleCloseModal()}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      )}
       {!isRegistered
         ? existedUser &&
           address && (
@@ -196,17 +218,9 @@ const PartnerRegistration = ({ existedUser }) => {
                     <option value="Homestay">Homestay</option>
                     <option value="Hostel">Hostel</option>
                   </select>
-
-                  <label>Number of Properties</label>
-                  <input
-                    type="number"
-                    name="numberOfProperties"
-                    value={formData.numberOfProperties}
-                    onChange={handleChange}
-                  />
                 </div>
 
-                <button type="submit" className="submit-button">
+                <button type="submit" className="submit-button" onClick={(e) => handleSubmit(e)}>
                   Register
                 </button>
               </form>

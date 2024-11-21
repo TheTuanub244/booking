@@ -1,10 +1,9 @@
 import axios from "axios";
 export const signUp = async (user) => {
   try {
-    console.log(user);
 
     const respone = await axios.post(
-      "http://localhost:8000/user/sign-up-with-email",
+      `${process.env.REACT_APP_API_URL}/user/sign-up-with-email`,
       user,
       {
         withCredentials: true,
@@ -17,13 +16,23 @@ export const signUp = async (user) => {
     return respone;
   }
 };
+export const confirmSignUpWithEmail = async (user) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/confirm-signup`,
+    user,
+    {
+      withCredentials: true,
+    },
+  );
+  return respone.data
+}
 export const signUpWithGoogle = async () => {};
 export const signIn = async (user) => {
   console.log(user);
 
   try {
     const respone = await axios.post(
-      "http://localhost:8000/user/sign-in",
+      `${process.env.REACT_APP_API_URL}/user/sign-in`,
       user,
       { withCredentials: true },
     );
@@ -38,7 +47,7 @@ export const signIn = async (user) => {
 export const signInWithGoogle = async (user) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/user/sign-in-with-google",
+      `${process.env.REACT_APP_API_URL}/user/sign-in-with-google`,
       user,
       { withCredentials: true },
     );
@@ -52,7 +61,7 @@ export const signInWithGoogle = async (user) => {
 export const signOut = async (userId) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/session/sign-out",
+      `${process.env.REACT_APP_API_URL}/session/sign-out`,
       { userId },
       { withCredentials: true },
     );
@@ -66,7 +75,7 @@ export const signOut = async (userId) => {
 export const resetPassword = async (user) => {
   try {
     const respone = await axios.post(
-      "http://localhost:8000/user/reset-password",
+      `${process.env.REACT_APP_API_URL}/user/reset-password`,
       user,
     );
     console.log(respone);
@@ -80,7 +89,7 @@ export const resetPassword = async (user) => {
 };
 export const checkEmail = async (email) => {
   try {
-    const respone = await axios.post("http://localhost:8000/user/check-email", {
+    const respone = await axios.post(`${process.env.REACT_APP_API_URL}/user/check-email`, {
       data: email,
     });
     return respone.data;
@@ -92,14 +101,14 @@ export const checkEmail = async (email) => {
 };
 export const updatePartnerAccount = async (partner) => {
   const respone = await axios.post(
-    "http://localhost:8000/user/updatePartnerAccount",
+    `${process.env.REACT_APP_API_URL}/user/updatePartnerAccount`,
     { partner },
   );
   return respone.data;
 };
 export const updateInformationForGoogle = async (user) => {
   const respone = await axios.post(
-    "http://localhost:8000/user/updateInformationForGoogle",
+    `${process.env.REACT_APP_API_URL}/user/updateInformationForGoogle`,
     { user },
     {
       withCredentials: true,
@@ -107,3 +116,21 @@ export const updateInformationForGoogle = async (user) => {
   );
   return respone.data;
 };
+export const getPendingUser = async () => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/getPendingUser`
+  )
+  return respone.data
+}
+export const requestToPartner = async (userId) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/requestToPartner/${userId}`
+  )
+  return respone.data
+}
+export const checkRequestPartner = async (userId) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/checkRequest/${userId}`
+  )
+  return respone.data
+}

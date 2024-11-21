@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./payment.css";
 import Navbar from "../../componets/navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWifi, faPlaneDeparture } from "@fortawesome/free-solid-svg-icons";
+import {
+  faWifi,
+  faPlaneDeparture,
+  faUser,
+  faInfo,
+} from "@fortawesome/free-solid-svg-icons";
 function Payment() {
+  const [errorPayment, setErrorPayment] = useState(
+    "Please fill in your last name",
+  );
+
+  const [country, setCountry] = useState([
+    { name: "Vietnam" },
+    { name: "Turkey" },
+    { name: "United States" },
+    { name: "Canada" },
+    { name: "Australia" },
+    { name: "Germany" },
+    { name: "France" },
+    { name: "Japan" },
+    { name: "South Korea" },
+    { name: "India" },
+  ]);
   return (
     <div>
       <Navbar />
@@ -81,7 +102,96 @@ function Payment() {
               </div>
             </div>
           </div>
-          <div className="rightContent"></div>
+          <div className="rightContent">
+            <div className="signIninfor">
+              <div className="img">
+                <FontAwesomeIcon icon={faUser} className="iconUser" />
+              </div>
+
+              <div className="information">
+                <div className="text">You are signed in</div>
+                <div className="email">tuanleminh2k3@gmail.com</div>
+              </div>
+            </div>
+
+            <div className="yourDetails">
+              <h3>Enter your details</h3>
+              <div className="alert">
+                <FontAwesomeIcon icon={faInfo} className="iconInfo" />
+                <div className="yourAlert">
+                  Almost done! Just fill in the{" "}
+                  <span className="required">*</span> required info
+                </div>
+              </div>
+              <div className="formInput">
+                <form
+                  method="post"
+                  action=""
+                  id="payment_form"
+                  accept-charset="UTF-8"
+                >
+                  <label>
+                    First name<span className="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control form-control-lg"
+                    name="firstname"
+                    required
+                  />
+                  <label>
+                    Last name<span className="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control form-control-comment form-control-lg"
+                    name="lastname"
+                    required
+                  />
+                  <label>
+                    Email address<span className="required">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
+                    class="form-control form-control-lg"
+                    name="email"
+                    required
+                  />
+                  <label>
+                    Phone number<span className="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    pattern="\d+"
+                    id="Phone"
+                    className="form-control form-control-comment form-control-lg"
+                    name="phone"
+                    required
+                  />
+
+                  <label>
+                    Country/Region<span className="required">*</span>
+                  </label>
+                  <select className="country" name="country">
+                    {country.map((index) => (
+                      <option value={index.name} data-code={index.code}>
+                        {index.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {errorPayment && (
+                    <p className="errorMessage">{errorPayment}</p>
+                  )}
+
+                  <div className="btnDiv">
+                    <button className="btnSub">Next: Final details</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

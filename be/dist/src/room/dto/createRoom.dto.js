@@ -1,6 +1,7 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateRoomDto = void 0;
-class CreateRoomDto {}
+class CreateRoomDto {
+}
 exports.CreateRoomDto = CreateRoomDto;
 //# sourceMappingURL=createRoom.dto.js.map

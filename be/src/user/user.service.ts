@@ -30,11 +30,10 @@ export class UserService {
   ) {}
   async checkEmail(email: string) {
     const existEmail = await this.userSchema.findOne({ email: email });
-
     if (existEmail) {
       return existEmail;
     }
-    return true;
+    return false;
   }
   async createUser(createUserDto: CreateUserDto) {
     const { userName, password, dob, email, address, phoneNumber } =
@@ -174,7 +173,6 @@ export class UserService {
       if (!existEmail) {
         throw new UnauthorizedException('Invalid username or password');
       }
-      console.log(auth);
 
       try {
         const userCredential = await signInWithEmailAndPassword(
@@ -201,6 +199,7 @@ export class UserService {
           lastBooking: null,
           recent_search: [],
         });
+        console.log(newSession);
 
         return {
           access_token: jwtToken,
@@ -208,10 +207,9 @@ export class UserService {
           refreshToken: newSession.refreshToken,
         };
       } catch (err) {
-        console.log(err.message);
-        console.log(err.errorName);
-
-        throw err;
+        throw new BadRequestException({
+          message: 'Wrong password!',
+        });
       }
     }
   }
@@ -260,13 +258,10 @@ export class UserService {
         email,
         password,
       );
-      const salt = await bcrypt.genSalt(10);
-
-      const hashedPassword = await bcrypt.hash(password, salt);
-      const newUser = new this.userSchema({
+      const jwtToken = await this.jwtSerivce.sign({
         userName,
+        password,
         dob,
-        password: hashedPassword,
         email,
         address,
         phoneNumber,
@@ -274,10 +269,35 @@ export class UserService {
       });
 
       await sendEmailVerification(userCredential.user);
-      return newUser.save();
+      return { jwtToken };
     } catch (err) {
       throw err;
     }
+  }
+  async confirmSignUp(user: any) {
+    const {
+      userName,
+      password,
+      dob,
+      email,
+      address,
+      phoneNumber,
+      uid,
+    } = user;
+    const salt = await bcrypt.genSalt(10);
+
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const newUser = new this.userSchema({
+      userName,
+      dob,
+      password: hashedPassword,
+      email,
+      address,
+      phoneNumber,
+      uid: uid,
+    });
+    const savedUser = await newUser.save();
+    return savedUser;
   }
   async signInWithGoggle(user: any) {
     const { email, uid } = user;
@@ -314,7 +334,6 @@ export class UserService {
   }
   async resetPassword(resetPassword: any) {
     const { email, password } = resetPassword;
-    console.log(resetPassword);
 
     const findUser = await this.userSchema
       .findOne({
@@ -386,5 +405,33 @@ export class UserService {
       _id: savedUser._id,
       refreshToken: newSession.refreshToken,
     };
+  }
+  async getPendingUser() {
+    return this.userSchema.find({
+      role: ROLE.PARTNER,
+    });
+  }
+  async requestToPartner(userId: string) {
+    return this.userSchema.findByIdAndUpdate(
+      new Types.ObjectId(userId),
+      {
+        $addToSet: {
+          role: ROLE.PARTNER,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+  }
+  async checkRequestPartner(userId: string) {
+    const findUser = await this.userSchema.find({
+      _id: new Types.ObjectId(userId),
+      role: ROLE.PARTNER,
+    });
+    if (findUser) {
+      return true;
+    }
+    return false;
   }
 }

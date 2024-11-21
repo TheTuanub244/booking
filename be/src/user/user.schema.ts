@@ -42,7 +42,7 @@ export class User {
   email: string;
   @Prop({ type: Date })
   dob: Date;
-  @Prop({ type: [String], enum: ROLE, default: ROLE.PARTNER })
+  @Prop({ type: [String], enum: ROLE, default: ROLE.MEMBER })
   role: ROLE[];
   @Prop({ required: true, default: false })
   isAdmin: boolean;

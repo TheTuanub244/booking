@@ -1,1 +1,2 @@
-export declare class AmentitesModule {}
+export declare class AmentitesModule {
+}

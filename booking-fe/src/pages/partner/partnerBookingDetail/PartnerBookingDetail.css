@@ -1,0 +1,28 @@
+.partner-booking-detail-container{
+    display: flex;
+    justify-content: center;
+}
+.partner-booking-detail-container-left{
+    margin-right: 30px;
+    border: 1px solid #e7e7e7;
+    border-radius: 15px;
+    padding: 10px;
+}
+.property-detail-information{
+    border: 1px solid #e7e7e7;
+    border-radius: 15px;
+    padding: 10px;
+}
+.property-detail-night{
+    border: 1px solid #e7e7e7;
+    border-radius: 15px;
+    padding: 10px;
+    margin-top: 30px;
+}
+p{
+    color: black
+}
+.check-in-check-out{
+    display: flex;
+    justify-content: space-between;
+}

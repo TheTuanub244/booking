@@ -25,12 +25,12 @@ function Login() {
     apiKey: "AIzaSyDCraTEdoU1uNk8xAeftbYSfEs-eiCsD3U",
     authDomain: "booking-app-1edf4.firebaseapp.com",
     projectId: "booking-app-1edf4",
-    storageBucket: "booking-app-1edf4.appspot.com",
+    storageBucket: "booking-app-1edf4.firebasestorage.app",
     messagingSenderId: "319720545675",
     appId: "1:319720545675:web:0643aa0a2da6034082e38e",
-    measurementId: "G-FK4KH759ZB",
+    measurementId: "G-FK4KH759ZB"
   };
-
+  
   const [userId, setUserId] = useState();
   const [addInfo, setAddInfo] = useState(false);
   const [address, setAddress] = useState();
@@ -171,35 +171,41 @@ function Login() {
     const action = event.nativeEvent.submitter.name;
     try {
       const respone = await signIn(inputData);
-
-      const { userName, accessToken, uid, displayName, _id } = respone;
-      const userData = {
-        userName: userName,
-        accessToken: accessToken,
-        uid: uid,
-        id: _id,
-        displayName: displayName,
-      };
-      SaveUserDataToLocal(userData);
-      const redirectPath = localStorage.getItem("redirectPath");
-      if (redirectPath) {
-        navigate(redirectPath);
-      } else {
-        navigate("/");
+      if(respone === "Wrong password!"){
+        setErrorLogIn(respone)
+      }else {
+        const { userName, accessToken, uid, displayName, _id } = respone;
+        const userData = {
+          userName: userName,
+          accessToken: accessToken,
+          uid: uid,
+          id: _id,
+          displayName: displayName,
+        };
+        SaveUserDataToLocal(userData);
+        const redirectPath = localStorage.getItem("redirectPath");
+        if (redirectPath) {
+          navigate(redirectPath);
+        } else {
+          navigate("/");
+        }
       }
+      
     } catch (e) {
       console.error("Error during sign-in:", e);
       setErrorLogIn(e.toString());
     }
   }
   async function forgotPassword() {
+    
     if (!inputData.userName) {
       setErrorLogIn("Invalid email");
     } else {
       localStorage.setItem("email", inputData.userName);
       const respone = await checkEmail(inputData.userName);
-
-      if (respone) {
+      console.log(respone);
+      
+      if (!respone) {
         setErrorLogIn("Invalid email");
       } else {
         sendPasswordResetEmail(auth, inputData.userName);

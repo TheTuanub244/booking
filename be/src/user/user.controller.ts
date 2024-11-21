@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
+  Param,
   Post,
   Res,
   UseGuards,
@@ -30,6 +32,10 @@ export class UserController {
   async signUpWithEmail(@Body() signup: any) {
     return this.userService.signUpWithEmail(signup);
   }
+  @Post('/confirm-signup')
+  async confirmSignUpWithEmail(@Body() signup: any) {
+    return this.userService.confirmSignUp(signup);
+  }
   @Post('/sign-in')
   async signIn(@Body() user: any, @Res() response: Response) {
     const data = await this.userService.signIn(user);
@@ -37,8 +43,8 @@ export class UserController {
 
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: false,
+      sameSite: 'none',
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return response.status(HttpStatus.OK).json({
@@ -61,8 +67,8 @@ export class UserController {
     const data = await this.userService.signInWithGoggle(user);
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: false,
+      sameSite: 'none',
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -94,8 +100,8 @@ export class UserController {
     const data = await this.userService.updateInformationForGoogle(user.user);
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: false,
+      sameSite: 'none',
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return response.status(HttpStatus.OK).json({
@@ -104,5 +110,17 @@ export class UserController {
       refreshToken: data.refreshToken,
       message: 'Login successful',
     });
+  }
+  @Get('getPendingUser')
+  async getPendingUser() {
+    return this.userService.getPendingUser();
+  }
+  @Get('requestToPartner/:id')
+  async requestTopartner(@Param('id') id: string) {
+    return this.userService.requestToPartner(id);
+  }
+  @Get('checkRequest/:id')
+  async checkRequest(@Param('id') id: string){
+    return this.userService.checkRequestPartner(id)
   }
 }

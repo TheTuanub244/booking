@@ -44,3 +44,4 @@ const SideBar = ({ setSelectedComponent }) => {
 };
 
 export default SideBar;
+export default SideBar;

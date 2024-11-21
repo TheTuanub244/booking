@@ -7,6 +7,8 @@ import PropertyDetailsForm from "../partnerRegister/PropertyDetailsForm";
 import SearchBar from "./Components/SearchBar";
 import PartnerNavbar from "../partnerNavbar/partnerNavbar";
 import DashboardPage from "../partnerDashboard/DashboardPage";
+import Loading from "../../loading/Loading";
+import PartnerBookingDashboard from "../partnerBooking/PartnerBookingDashboard";
 
 const PropertyListPage = () => {
   const [properties, setProperties] = useState([]);
@@ -15,6 +17,7 @@ const PropertyListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const propertiesPerPage = 5;
+  const [isLoading, setIsLoading] = useState(true);
   const [filteredProperties, setFilteredProperties] = useState(properties);
   const [activeTab, setActiveTab] = useState("list");
   const longitude = localStorage.getItem("longitude");
@@ -24,16 +27,19 @@ const PropertyListPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const fetchProperties = async () => {
+      setIsLoading(true);
       try {
         const response = await getPropertyByOwner(
           id,
           currentPage,
           propertiesPerPage,
         );
-        console.log(response);
 
-        setProperties(response.properties);
-        setTotalPages(response.totalPages);
+        if (response) {
+          setIsLoading(false);
+          setProperties(response.properties);
+          setTotalPages(response.totalPages);
+        }
       } catch (error) {
         console.error("Failed to fetch properties:", error);
       }
@@ -105,132 +111,138 @@ const PropertyListPage = () => {
         </div>
       </div>
       <div className="property-table-container">
-        <table className="property-table">
-          <thead>
-            <tr>
-              <th>Hình ảnh</th>
-              <th>Tên</th>
-              <th>Địa chỉ</th>
-              <th>Loại</th>
-              <th>Số phòng</th>
-              <th>Rate</th>
-              <th>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProperties.length !== 0
-              ? filteredProperties.map((property) => (
-                  <tr key={property.property._id}>
-                    <td>
-                      <img
-                        src={
-                          property.property.images[0] || "default-image-url.jpg"
-                        }
-                        alt="Property"
-                        className="property-image-thumbnail"
-                      />
-                    </td>
-                    <td>{property.property.name}</td>
-                    <td
-                      style={{
-                        width: "20%",
-                      }}
-                    >{`${property.property.address.street}, ${property.property.address.ward}, ${property.property.address.district}, ${property.property.address.province}`}</td>
-                    <td>{property.property.type}</td>
-                    <td>{property.totalRoom || 0}</td>
-                    <td>{property.property.rate || 0}</td>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <table className="property-table">
+            <thead>
+              <tr>
+                <th>Hình ảnh</th>
+                <th>Tên</th>
+                <th>Địa chỉ</th>
+                <th>Loại</th>
+                <th>Số phòng</th>
+                <th>Rate</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProperties.length !== 0
+                ? filteredProperties.map((property) => (
+                    <tr key={property.property._id}>
+                      <td>
+                        <img
+                          src={
+                            property.property.images[0] ||
+                            "default-image-url.jpg"
+                          }
+                          alt="Property"
+                          className="property-image-thumbnail"
+                        />
+                      </td>
+                      <td>{property.property.name}</td>
+                      <td
+                        style={{
+                          width: "20%",
+                        }}
+                      >{`${property.property.address.street}, ${property.property.address.ward}, ${property.property.address.district}, ${property.property.address.province}`}</td>
+                      <td>{property.property.type}</td>
+                      <td>{property.totalRoom || 0}</td>
+                      <td>{property.property.rate || 0}</td>
 
-                    <td
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "32px 10px",
-                      }}
-                    >
-                      <button
-                        className="view-details-button"
-                        onClick={() =>
-                          navigate(
-                            `/partner/partnerPropertyDetailPage/${property.property._id}`,
-                          )
-                        }
-                      >
-                        Xem Chi Tiết
-                      </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDelete(property._id)}
-                      >
-                        Xóa
-                      </button>
-                      <button
-                        className="edit-button"
-                        onClick={() => {
-                          handleEdit(property);
+                      <td
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "32px 10px",
                         }}
                       >
-                        Chỉnh sửa
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              : properties.map((property) => (
-                  <tr key={property.property._id}>
-                    <td>
-                      <img
-                        src={
-                          property.property.images[0] || "default-image-url.jpg"
-                        }
-                        alt="Property"
-                        className="property-image-thumbnail"
-                      />
-                    </td>
-                    <td>{property.property.name}</td>
-                    <td
-                      style={{
-                        width: "20%",
-                      }}
-                    >{`${property.property.address.street}, ${property.property.address.ward}, ${property.property.address.district}, ${property.property.address.province}`}</td>
-                    <td>{property.property.type}</td>
-                    <td>{property.totalRoom || 0}</td>
-                    <td>{property.property.rate || 0}</td>
+                        <button
+                          className="view-details-button"
+                          onClick={() =>
+                            navigate(
+                              `/partner/partnerPropertyDetailPage/${property.property._id}`,
+                            )
+                          }
+                        >
+                          Xem Chi Tiết
+                        </button>
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDelete(property._id)}
+                        >
+                          Xóa
+                        </button>
+                        <button
+                          className="edit-button"
+                          onClick={() => {
+                            handleEdit(property);
+                          }}
+                        >
+                          Chỉnh sửa
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                : properties.map((property) => (
+                    <tr key={property.property._id}>
+                      <td>
+                        <img
+                          src={
+                            property.property.images[0] ||
+                            "default-image-url.jpg"
+                          }
+                          alt="Property"
+                          className="property-image-thumbnail"
+                        />
+                      </td>
+                      <td>{property.property.name}</td>
+                      <td
+                        style={{
+                          width: "20%",
+                        }}
+                      >{`${property.property.address.street}, ${property.property.address.ward}, ${property.property.address.district}, ${property.property.address.province}`}</td>
+                      <td>{property.property.type}</td>
+                      <td>{property.totalRoom || 0}</td>
+                      <td>{property.property.rate || 0}</td>
 
-                    <td
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "32px 10px",
-                      }}
-                    >
-                      <button
-                        className="view-details-button"
-                        onClick={() => {
-                          navigate(
-                            `/partner/partnerPropertyDetailPage/${property.property._id}`,
-                          );
+                      <td
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "32px 10px",
                         }}
                       >
-                        Xem Chi Tiết
-                      </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDelete(property._id)}
-                      >
-                        Xóa
-                      </button>
-                      <button
-                        className="edit-button"
-                        onClick={() => {
-                          handleEdit(property);
-                        }}
-                      >
-                        Chỉnh sửa
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-          </tbody>
-        </table>
+                        <button
+                          className="view-details-button"
+                          onClick={() => {
+                            navigate(
+                              `/partner/partnerPropertyDetailPage/${property.property._id}`,
+                            );
+                          }}
+                        >
+                          Xem Chi Tiết
+                        </button>
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDelete(property._id)}
+                        >
+                          Xóa
+                        </button>
+                        <button
+                          className="edit-button"
+                          onClick={() => {
+                            handleEdit(property);
+                          }}
+                        >
+                          Chỉnh sửa
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   );
@@ -250,13 +262,15 @@ const PropertyListPage = () => {
       />
     </div>
   );
-  useEffect(() => {
-    console.log(properties);
-  }, [properties]);
+
   return (
     <div className="property-list-page">
-      <h2>Quản Lý Bất Động Sản</h2>
-      <div className="tabs">
+      <h2 style={{
+        marginLeft: '16%'
+      }}>Quản Lý Bất Động Sản</h2>
+      <div className="tabs"  style={{
+        marginLeft: '16%'
+      }}>
         <button
           className={`tab-button ${activeTab === "info" ? "active" : ""}`}
           onClick={() => setActiveTab("info")}
@@ -275,12 +289,19 @@ const PropertyListPage = () => {
         >
           Thêm Mới
         </button>
+        <button
+          className={`tab-button ${activeTab === "booking" ? "active" : ""}`}
+          onClick={() => setActiveTab("booking")}
+        >
+          Booking
+        </button>
       </div>
       {activeTab === "info" && <DashboardPage />}
 
       {activeTab === "list" && renderListTab()}
       {activeTab === "add" && renderAddTab()}
       {activeTab === "edit" && renderEditTab()}
+      {activeTab === "booking" && <PartnerBookingDashboard />}
     </div>
   );
 };

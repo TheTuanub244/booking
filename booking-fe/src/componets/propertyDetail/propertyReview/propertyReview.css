@@ -19,7 +19,10 @@
 
 .review-comment-container {
   margin-bottom: 20px;
-  width: 100%;
+  position: relative; /* Allows absolute-positioned children to stay inside */
+  width: 100%; /* Full width */
+  overflow: hidden; /* Prevent overflow outside container */
+  padding: 10px 0; /* Optional padding */
 }
 
 .rating-categories {
@@ -30,10 +33,50 @@
 }
 
 .review-comment {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  width: 100%;
+  display: flex; 
+  overflow-x: auto; 
+  gap: 15px;
+  padding: 10px; 
+  scroll-behavior: smooth; 
+  
+}
+
+
+.review-comment::-webkit-scrollbar {
+  display: none; 
+}
+
+
+
+.review-comment-container > button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); 
+  background-color: #333; 
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.7;
+  z-index: 1;
+  transition: opacity 0.2s;
+}
+
+.review-comment-container > button:hover {
+  opacity: 1;
+}
+
+.review-comment-container .left-button {
+  left: 0px; 
+}
+
+.review-comment-container .right-button {
+  right: 0px;
 }
 
 .all-reviews {

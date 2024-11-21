@@ -17,6 +17,15 @@ import { Room, RoomSchema } from 'src/room/room.schema';
 import { RoomModule } from 'src/room/room.module';
 import { SessionModule } from 'src/session/session.module';
 import { PromotionService } from 'src/promotion/promotion.service';
+import { NotificationModule } from 'src/notification/notification.module';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
+import {
+  Notification,
+  NotificationSchema,
+} from 'src/notification/notification.schema';
+import { GmailService } from 'src/gmail/gmail.service';
+import { GmailModule } from 'src/gmail/gmail.module';
 
 const jwtConstant = {
   secret: 'jwtsecret',
@@ -29,6 +38,9 @@ const jwtConstant = {
     SessionService,
     UserService,
     PromotionService,
+    NotificationGateway,
+    NotificationService,
+    GmailService
   ],
   exports: [BookingService],
   imports: [
@@ -44,6 +56,7 @@ const jwtConstant = {
       { name: User.name, schema: UserSchema },
       { name: Promotion.name, schema: PromotionSchema },
       { name: Room.name, schema: RoomSchema },
+      { name: Notification.name, schema: NotificationSchema },
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -51,10 +64,14 @@ const jwtConstant = {
       signOptions: { expiresIn: '60m' },
     }),
     PassportModule,
+    NotificationModule,
     UserModule,
     PromotionModule,
     forwardRef(() => RoomModule),
+    forwardRef(() => GmailModule),
+
     forwardRef(() => SessionModule),
+    forwardRef(() => NotificationModule),
   ],
 })
 export class BookingModule {}

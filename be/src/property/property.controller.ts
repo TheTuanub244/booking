@@ -10,6 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+
 import { PropertyService } from './property.service';
 import { ObjectId } from 'mongoose';
 import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
@@ -18,7 +19,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from 'src/user/enum/role.enum';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-import { diskStorage } from 'multer';
+import multer, { diskStorage } from 'multer';
 import * as path from 'path';
 import { log } from 'console';
 @Controller('property')
@@ -29,16 +30,7 @@ export class PropertyController {
   @Roles(ROLE.ADMIN, ROLE.PARTNER)
   @UseInterceptors(
     AnyFilesInterceptor({
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = path.extname(file.originalname);
-          const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
-      }),
+      storage: multer.memoryStorage(), // Lưu vào bộ nhớ tạm
     }),
   )
   async createPropertyWithPartner(
@@ -71,16 +63,7 @@ export class PropertyController {
   @Roles(ROLE.ADMIN, ROLE.PARTNER)
   @UseInterceptors(
     AnyFilesInterceptor({
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = path.extname(file.originalname);
-          const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
-      }),
+      storage: multer.memoryStorage(), // Lưu vào bộ nhớ tạm
     }),
   )
   async updatePropertyWithPartner(
@@ -144,7 +127,6 @@ export class PropertyController {
   ) {
     return this.propertyService.getPropertyWithOwner(id, page, limit);
   }
-  @UseGuards(ValidateTokenGuard)
   @Get('/getPropertyById/:id')
   async getPropertyById(@Param('id') id: ObjectId) {
     return this.propertyService.getPropertyById(id);

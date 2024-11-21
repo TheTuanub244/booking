@@ -16,7 +16,10 @@ import InformationDashboard from "./pages/partner/informationDashboard/Informati
 import Payment from "./pages/payment/Payment";
 import PartnerPropertyDetailPage from "./pages/partner/propertyDetail/PartnerPropertyDetailPage";
 import SearchResult from "./pages/searchResult/SearchResult";
-import DashBoard from "./pages/admin/contents/DashBoard/DashBoard";
+import { useEffect } from "react";
+import socketService from "./helpers/sockerService";
+import PartnerBookingDetail from "./pages/partner/partnerBookingDetail/PartnerBookingDetail";
+import 'bootstrap/dist/css/bootstrap.min.css';import DashBoard from "./pages/admin/contents/DashBoard/DashBoard";
 import UserTable from "./pages/admin/component/UserTable/UserTable";
 import RoomTable from "./pages/admin/component/RoomsTable/RoomTable";
 import UserManage from "./pages/admin/contents/user/UserManage/UserManage";
@@ -35,6 +38,15 @@ import EditProperty from "./pages/admin/contents/property/EditProperty/EditPrope
 import ViewPartnerRequest from "./pages/admin/contents/partnerRequest/ViewPartnerRequest/ViewPartnerRequest";
 
 function App() {
+  const userId = localStorage.getItem("userId");
+  console.log(userId);
+
+  useEffect(() => {
+    socketService.connect(userId);
+    return () => {
+      socketService.disconnect();
+    };
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
@@ -82,10 +94,9 @@ function App() {
           path="/partner/partnerPropertyDetailPage/:id"
           element={<PartnerPropertyDetailPage />}
         />
-        <Route
-          path="/searchResult"
-          element={<SearchResult />}
-        />
+        <Route path="/searchResult" element={<SearchResult />} />
+        <Route path="/partnerBookingDetail/:id" element={<PartnerBookingDetail/>} />
+
       </Routes>
     </BrowserRouter>
   );

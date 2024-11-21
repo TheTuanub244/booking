@@ -147,6 +147,7 @@ const PropertyDetail = () => {
       overView.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   return (
     <div className="propertyDetail-container">
       {loading ? (
@@ -295,9 +296,14 @@ const PropertyDetail = () => {
             )}
           </div>
 
-          <div ref={infoPrices} className="reservation-room">
-            <ReservationRoom roomData={roomData} />
-          </div>
+          {propertyData && (
+            <div ref={infoPrices} className="reservation-room">
+              <ReservationRoom
+                roomData={roomData}
+                partnerId={propertyData.owner_id}
+              />
+            </div>
+          )}
           <div className="property-review">
             <PropertyReview property_id={id} />
           </div>

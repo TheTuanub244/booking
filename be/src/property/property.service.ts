@@ -171,7 +171,6 @@ export class PropertyService {
           images: room.images || null,
         })),
       };
-      console.log(propertyData);
 
       const savedProperty = await this.propertySchema.findByIdAndUpdate(
         propertyData._id,
@@ -299,7 +298,7 @@ export class PropertyService {
     await Promise.all(
       properties.map(async (property) => {
         const review = await this.reviewService.findReviewWithProperty(
-          property._id,
+          property._id.toString(),
         );
         propertiesWithRate.push({
           property,
@@ -346,8 +345,6 @@ export class PropertyService {
     const properties = await this.propertySchema.find({});
     const perfectProperties = [];
     const nearbyProperties = properties.filter((property) => {
-      console.log(property);
-
       const distance = this.calculateDistance(
         latitude,
         longitude,

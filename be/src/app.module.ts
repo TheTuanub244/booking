@@ -16,9 +16,13 @@ import { ReviewModule } from './review/review.module';
 import { PaymentModule } from './payment/payment.module';
 import { AmentitesModule } from './amentites/amentites.module';
 import * as admin from 'firebase-admin';
-import * as serviceAccount from './config/booking-app-1edf4-4dd703c8105b.json';
+import * as serviceAccount from './config/booking-app-1edf4-2d2438250460.json';
 import { JwtModule } from '@nestjs/jwt';
 import { PromotionModule } from './promotion/promotion.module';
+import { NotificationModule } from './notification/notification.module';
+import { NotificationGateway } from './notification/notification/notification.gateway';
+import { GmailService } from './gmail/gmail.service';
+import { GmailModule } from './gmail/gmail.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -40,6 +44,8 @@ const jwtConstant = {
     PaymentModule,
     AmentitesModule,
     PromotionModule,
+    NotificationModule,
+    GmailModule,
   ],
   controllers: [AppController],
   providers: [
@@ -59,6 +65,8 @@ const jwtConstant = {
         });
       },
     },
+    NotificationGateway,
+    GmailService
   ],
   exports: ['FIREBASE_ADMIN'],
 })

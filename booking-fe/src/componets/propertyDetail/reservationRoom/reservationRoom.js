@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./reservationRoom.css";
 import ReservationRoom_item from "./reservationRoom_item";
 import RoomModal from "./roomModal";
 import { checkRoomDateBooking } from "../../../function/searchRoomInProperty";
 import SignInPopup from "./signInPopup";
 import { useLocation, useNavigate } from "react-router-dom";
+import { createBooking } from "../../../api/bookingAPI";
 
-const ReservationRoom = ({ roomData }) => {
+const ReservationRoom = ({ roomData, partnerId }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
 
   const [checkInDate, setCheckInDate] = useState("");
@@ -104,7 +105,8 @@ const ReservationRoom = ({ roomData }) => {
   };
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleReserveClick = () => {
+  const handleReserveClick = async () => {
+    await createBooking(userId, partnerId, "67349f6d8e44839e850b6366", "67131b83495dc248e2715e5f");
     if (!userId) {
       setIsPopupOpen(true);
     }
@@ -239,7 +241,10 @@ const ReservationRoom = ({ roomData }) => {
                       numberOfNights={numberOfNights}
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
-                      setModalRoom={setModalRoom}
+                      setModalRoom={(room) => {
+                        setModalRoom(room);
+                        setIsModalOpen(true);
+                      }}
                     />
                   ))
                 : roomSearch.map((room) => (
@@ -249,7 +254,10 @@ const ReservationRoom = ({ roomData }) => {
                       numberOfNights={numberOfNights}
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
-                      setModalRoom={setModalRoom}
+                      setModalRoom={(room) => {
+                        setModalRoom(room); 
+                        setIsModalOpen(true);
+                      }}
                     />
                   ))}
             </tbody>
@@ -261,7 +269,9 @@ const ReservationRoom = ({ roomData }) => {
           </button>
         </div>
       </form>
-      <RoomModal isOpen={isModalOpen} onClose={closeModal} room={modalRoom} />
+
+      {isModalOpen && <RoomModal isOpen={isModalOpen} onClose={closeModal} room={modalRoom}/>}
+      
       <SignInPopup
         isOpen={isPopupOpen}
         onClose={handleClosePopup}

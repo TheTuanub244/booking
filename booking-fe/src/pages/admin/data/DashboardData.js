@@ -1,12 +1,13 @@
 import {
-    UilEstate,
-    UilClipboardAlt,
-    UilUsersAlt,
-    UilPackage,
-    UilChart,
-    UilUsdSquare, UilMoneyWithdrawal,
-  } from "@iconscout/react-unicons";
-  import img1 from "../imgs/img1.png";
+  UilEstate,
+  UilClipboardAlt,
+  UilUsersAlt,
+  UilPackage,
+  UilChart,
+  UilUsdSquare,
+  UilMoneyWithdrawal,
+} from "@iconscout/react-unicons";
+import img1 from "../imgs/img1.png";
 import img2 from "../imgs/img2.png";
 import img3 from "../imgs/img3.png";
   

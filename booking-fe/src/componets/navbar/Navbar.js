@@ -7,7 +7,7 @@ function Navbar() {
   const isSignIn = localStorage.getItem("isSignIn");
   const navigate = useNavigate();
   return (
-    <div className="navbar">
+    <div className="navbarr">
       <div className="navContainer">
         <a href="/">
           <span className="logo">Booking.com</span>
@@ -19,6 +19,7 @@ function Navbar() {
             <button className="navButton" onClick={() => navigate("/signup")}>
               Resgiter
             </button>
+            
             <button className="navButton" onClick={() => navigate("/login")}>
               Login
             </button>

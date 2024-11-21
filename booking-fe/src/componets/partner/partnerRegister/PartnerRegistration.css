@@ -7,7 +7,15 @@
   font-family: Arial, sans-serif;
   color: #333;
 }
+.fix-modal .modal-dialog {
+  max-height: 60%; /* Tùy chỉnh chiều cao tối đa của modal */
+  height: auto; /* Điều chỉnh chiều cao theo nội dung */
+}
 
+.fix-modal .modal-content {
+  height: 100%; /* Chiều cao modal chiếm 100% của modal-dialog */
+  overflow-y: auto; /* Kích hoạt cuộn nếu nội dung vượt chiều cao */
+}
 .registration-form {
   background-color: #fff;
   padding: 30px;

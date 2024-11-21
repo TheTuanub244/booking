@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "booking-app-1edf4",
+  "private_key_id": "2d243825046037555a7b31e36152a5a0a3bc8931",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC59IOcQgotmv/h\nErCAtbhBxVw5HoSgwsdYaaHk9+osjA97veQKJyEU4frSRoWRsotlZLmnLI4rQr9e\ndISItBdvg816gtXkqrmXN0azRhcOzA7s/PDuPdCRDMCQZqyYhHyBd30wPotNo5C3\nSoVLtKn23E5n3kAX4UtlsY7exubi0mwmrTOlQsOJAnn9IWfl8EbDcgiexzZoh1pI\ntHb++TUeOSsc4A67SYyuveAHw2JfODfEJzsBASfRNHo3wxo6dCMPJDpKTHswBaQB\nhaIE8l+uCSOAuIbJqkJjmNVf+Q2gAqSWTjWEo9QtSsg9JSzTcVK4nwJALkTRsLkB\nW3PoG7g/AgMBAAECggEAG23g1/S50Z5Sbh22oVWsty7oephw0dHJW9ZBBig3h5il\nVAhfkcvRymXG/KtgWmxuuWcRJ4Kf+euflMw1HIEMD+vuLEsOR+uS8qY5rIoDLrCU\n5wosc8f0cuDhqqsqfFjWkLZSZgJjw/EDkLXSUad1hq9adWHILH2UBI0bWOsX9Y75\n0KzKrQ5v0pK7XCqs9QLkpiBTvUiF6m7EZ/3Op4VReEL7qFf8O8c1QEYR1c7St1oT\nOPdfuy6ZhSkU0dUgQrWE2UWZ3CvFQBAJ855y6c4NvsoCLYm/kbEir5OG2FFWnm6x\nrRXQC9RxYCR0hMNYmQjSIFprxNUhE2EzyNNpqIrI8QKBgQDKxEMKrgZOY5IdJrJS\n9eKW3MLa0DDaWyQwCW/MUusLZy5buMxiDOIxwQVbQUcRp8tbPCtjTY5nyDqQwf5Y\nsuia48KuCxoYFUcEEcT+OEsPM8DpHBvXtZFIen8vFLicBCthpN29o8N456OYrmMh\nueVrETGe2Eb/zKGwodffW7pF+QKBgQDqxl4Z+ycJeIY2QZrhJcM6qlv5/gkt+Z0j\nV35TuTevzcBsvMYlmofY/vOz48iYekjAYUBit0eDXxsRWA6w2avMazC9AYfHqROv\nHqQoYyaZGFUSmlG2AU2jez90WnKMksaZ/qrUriaUuOFLwUn3Eca3gWKHCzFym6dT\nUOQKcl0d9wKBgGTruF6ZbUQY5QGjYABQp93ktQtJsfcMg/9wwvdUke5UBcvbN8bZ\nmL+gzbS00dWkyV94nDPJx0Y6b4PbOmgVbBajpCMSHYO9G2KYIY9Sn3FKlgqwVd9Q\nXKZRafoZ+ySUIq9v6nnYB5Om31NAANEpgFmA7kycYwIwbI3Ij/R46EapAoGBAIv/\nTg3gHh8fp6ii5mBrzEcnX0Fror2vo2x3t/Tk9bf30U8GIoI569gR7/DNW8jQ4qEV\nXPeAozxLcjCdeeUrZ662HJIYX4dH410BwJH0zgds4w38x8zoaguaavRPGw+IVrVt\njyDT2F3HAVHTKPATwZObq80rd4kIGHcuPU2ddLlxAoGBAI2EaBnlSX9lNvVqKEET\ndgO536tDp5ymLVQrrfFpVEG6IdjZilyGmFE7YUU1JT2WNYRHIUD496VlImaURMyS\neCYpL19sayTwrdujTM1oxdSwk4R0LXRv+b18m2xhFtUISYs5g2lfOluuNzr4dpfT\ntW8B9vgg5cPRGlspux46rS6b\n-----END PRIVATE KEY-----\n",
+  "client_email": "booking-app-1edf4@appspot.gserviceaccount.com",
+  "client_id": "115793235265341692703",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/booking-app-1edf4%40appspot.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

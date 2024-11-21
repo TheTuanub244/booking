@@ -116,21 +116,22 @@ function SignUp_page() {
     event.preventDefault();
     const action = event.nativeEvent.submitter.name;
     const respone = await signUp(inputData);
-    console.log(respone);
 
     if (typeof respone === "string") {
       setErrorSignUp(respone);
     } else {
+      localStorage.setItem('signUpInfo', respone.jwtToken)
       navigate("/login");
       alert("Verify email has been sent!");
     }
   }
 
   async function handleCheckEmail() {
+    console.log(inputData);
+    
     const respone = await checkEmail(inputData.email);
-    console.log(respone);
 
-    if (respone === true) {
+    if (!respone) {
       setErrorSignUp("");
       setEnter(true);
     } else {

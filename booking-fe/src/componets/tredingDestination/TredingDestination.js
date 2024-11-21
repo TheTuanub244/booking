@@ -1,28 +1,31 @@
 import React from "react";
 import "./tredingDestination.css";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getPropertyByPlace } from "../../api/propertyAPI";
 
 function TredingDestination() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const latitude = localStorage.getItem("latitude");
+  const longitude = localStorage.getItem("longitude");
+  const userId = localStorage.getItem('userId')
+  const data = JSON.parse(localStorage.getItem("option"));
   const handleSearchByPlace = async (value) => {
-    const respone = await getPropertyByPlace(value);
-    console.log(respone);
+    data.userId = userId
 
-    searchParams.set("place", value);
-    setSearchParams(searchParams, { replace: true });
-    window.history.pushState(
-      {},
-      "",
-      `/searchByPlace?${searchParams.toString()}`,
-    );
+    data.province = value;
+    data.place = value;
+    
+    navigate(`/searchResult?place=${value}`, {
+      state: { option: data, longitude, latitude },
+    });
   };
   return (
     <div className="treding-destination">
       <div className="destination-firstrow">
         <div
           className="destination-item"
-          onClick={() => handleSearchByPlace("Ha Noi")}
+          onClick={() => handleSearchByPlace("Thành phố Hà Nội")}
         >
           <div className="item-title">
             <h3>Ha Noi</h3>
@@ -34,7 +37,7 @@ function TredingDestination() {
 
           <div className="item-body">
             <img
-              src="https://cf.bstatic.com/xdata/images/city/600x600/688853.jpg?k=f6427c8fccdf777e4bbc75fcd245e7c66204280181bea23350388c76c57348d1&o="
+              src="https://media.tacdn.com/media/attractions-content--1x-1/0b/18/9a/2c.jpg"
               alt=""
             />
           </div>
@@ -42,7 +45,7 @@ function TredingDestination() {
 
         <div
           className="destination-item"
-          onClick={() => handleSearchByPlace("Ho Chi Minh")}
+          onClick={() => handleSearchByPlace("Thành phố Hồ Chí Minh")}
         >
           <div className="item-title">
             <h3>Ho Chi Minh</h3>
@@ -63,10 +66,10 @@ function TredingDestination() {
       <div className="destination-secondrow">
         <div
           className="destination-item"
-          onClick={() => handleSearchByPlace("Sa Pa")}
+          onClick={() => handleSearchByPlace("Tỉnh Lào Cai")}
         >
           <div className="item-title">
-            <h3>Sa Pa</h3>
+            <h3>Lao Cai</h3>
             <img
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAulBMVEX///8AAAAAAAAAAAAAAAD//xT//xb/9Df/8jf/8Bn96Ub72Rn60Br4yVb4wjr3vTr1rBr0pRrxm2fwlZXxlmjymyDvjo7xliDxkxrwjhruhITtf4DreXnseHbsdXbpamrpaFDpY2vpZVDoX1/nWlroW1DoXiDnV0LmUl7mVELnUVHmUSHjTU3hSUnlQ0PfQ0PcPDzZOTnjNx7jNB7iMDDhLijWMDDgKCjUKirfIijfICDWISHPICDeFyFRpPkZAAAABXRSTlMAESIzRJTdRHwAAADMSURBVBgZrcHBSsNAFIbR7975J4GmIIIg3Unpxvd/Hd24EhELFaRNnBlnkp3NRvAc+DeGsaaYPY6seJaNR67dmuhC5LcJBAosCsaidAh3Y+af+SYzcxAWRGXonf6bQuMIVw9MUxwT55hCpDIEvYDydrbCK91OVI6wrgeG7cvJYPugDFzAMVFl7UNKvlemkuFEvNHpshnGo7wBBBjNx92Bp9O90USEF5q0GxKHr0RjjoMzGxKkDTMHoSnRJKrEIiCIrDFz41rJhrGm8Gc/DBY3JYgAKsIAAAAASUVORK5CYII="
               alt=""
@@ -83,7 +86,7 @@ function TredingDestination() {
 
         <div
           className="destination-item"
-          onClick={() => handleSearchByPlace("Quang Ninh")}
+          onClick={() => handleSearchByPlace("Tỉnh Quảng Ninh")}
         >
           <div className="item-title">
             <h3>Quang Ninh</h3>
@@ -103,7 +106,7 @@ function TredingDestination() {
 
         <div
           className="destination-item"
-          onClick={() => handleSearchByPlace("Ninh Binh")}
+          onClick={() => handleSearchByPlace("Tỉnh Ninh Bình")}
         >
           <div className="item-title">
             <h3>Ninh Binh</h3>

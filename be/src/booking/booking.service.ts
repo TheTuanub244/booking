@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Booking } from './booking.schema';
 import mongoose, { Model, ObjectId, Types } from 'mongoose';
@@ -8,6 +12,11 @@ import { SessionService } from 'src/session/session.service';
 import { Promotion } from 'src/promotion/promotion.schema';
 import { Room } from 'src/room/room.schema';
 import { PromotionService } from 'src/promotion/promotion.service';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
+import { BookingStatus } from './enum/bookingStatus.enum';
+import { PaymentStatus } from './enum/paymentStatus.enum';
+import { GmailService } from 'src/gmail/gmail.service';
 
 @Injectable()
 export class BookingService {
@@ -22,10 +31,121 @@ export class BookingService {
     @InjectModel(Room.name)
     private readonly roomSchema: Model<Room>,
     private readonly promotionService: PromotionService,
-  ) {} // TODO: calculate the total price
+    private readonly notificationGateway: NotificationGateway,
+    private readonly notificationService: NotificationService,
+    private readonly gmailService: GmailService,
+  ) {}
+  async getBookingById(booking_id: string) {
+    const findBooking = await this.bookingSchema.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(booking_id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $unwind: '$userDetails',
+      },
+      {
+        $lookup: {
+          from: 'rooms',
+          localField: 'room_id',
+          foreignField: '_id',
+          as: 'roomDetails',
+        },
+      },
+      {
+        $unwind: '$roomDetails',
+      },
+      {
+        $lookup: {
+          from: 'properties',
+          localField: 'property',
+          foreignField: '_id',
+          as: 'propertyDetails',
+        },
+      },
+      {
+        $unwind: '$propertyDetails',
+      },
+    ]);
+    if (!findBooking) {
+      throw new NotFoundException(`Booking with ID ${booking_id} not found`);
+    }
+    return findBooking;
+  }
+  async cancelBooking(booking_id: string) {
+    const booking = await this.getBookingById(booking_id);
 
+    if (booking[0].booking_status === BookingStatus.PENDING) {
+      await this.bookingSchema.findByIdAndDelete(
+        new Types.ObjectId(booking_id),
+      );
+    } else if (booking[0].booking_status === BookingStatus.COMPLETED) {
+      if (booking[0].payment_status === PaymentStatus.PAID) {
+        const subject = 'Booking Cancellation Confirmation';
+        const text = `Your booking has been cancelled. Here are the details:
+          - Property: ${booking[0].property.name}
+          - Room(s): ${Array.isArray(booking[0].roomDetails) ? booking[0].roomDetails?.map((room) => room.name).join(', ') : booking[0].roomDetails.name}
+          - Check-in Date: ${booking[0].check_in_date.toDateString()}
+          - Check-out Date: ${booking[0].check_out_date.toDateString()}
+          - Refund Amount: $${booking[0].total_price}`;
+        const cancelUrl = `${process.env.BACK_END_URL}/booking/confirm-cancellation?booking_id=${booking[0]._id}&redirect=${process.env.FRONT_END_URL}`;
+        const html = `
+          <h1>Booking Cancellation Confirmation</h1>
+          <p>We received your request to cancel the booking. Here are the details:</p>
+          <ul>
+            <li><strong>Property:</strong> ${booking[0].property.name}</li>
+            <li><strong>Room(s):</strong> ${Array.isArray(booking[0].roomDetails) ? booking[0].roomDetails?.map((room) => room.name).join(', ') : booking[0].roomDetails.name}</li>
+            <li><strong>Check-in Date:</strong> ${booking[0].check_in_date.toDateString()}</li>
+            <li><strong>Check-out Date:</strong> ${booking[0].check_out_date.toDateString()}</li>
+            <li><strong>Refund Amount:</strong> $${booking[0].total_price}</li>
+          </ul>
+          <p>Please click the button below to confirm cancellation</p>
+          <a href="${cancelUrl}" style="
+          display: inline-block;
+          padding: 10px 20px;
+          font-size: 16px;
+          color: white;
+          background-color: red;
+          text-decoration: none;
+          border-radius: 5px;
+        ">Confirm Cancellation</a>
+        <p>If you did not request this action, you can safely ignore this email.</p>
+          <p>We hope to serve you again in the future.</p>
+        `;
+
+        await this.gmailService.sendEmail(
+          booking[0].userDetails.email,
+          subject,
+          text,
+          html,
+        );
+      }
+    }
+  }
+  async finalizeCancellation(bookingId: string): Promise<boolean> {
+    const booking = await this.getBookingById(bookingId);
+    const message = `Your property ${booking[0].propertyDetails.name} has been canceled by ${booking[0].userDetails.email}`;
+    await this.notificationService.createNotification({
+      sender_id: booking[0].userDetails._id,
+      receiver_id: booking[0].propertyDetails.owner_id,
+      booking_id: booking[0]._id,
+      type: 'Booking',
+      message
+    })
+    booking[0].booking_status = BookingStatus.CANCELED;
+    await booking[0].save();
+    return true;
+  }
   async calculateTotalNightPrice(booking: any) {
-    
     const findRoomPromotion =
       await this.promotionService.findRoomPromotionForBooking(booking.room_id);
     const findPropertyPromotion =
@@ -92,29 +212,56 @@ export class BookingService {
 
     return totalNightPrice;
   }
-  async createBooking(createBookingDto: CreateBookingDto) {
-    const totalNightPrice =
-      await this.calculateTotalNightPrice(createBookingDto);
+  async createBooking(createBookingDto: any) {
+    const customerId = createBookingDto.customerId;
+    // const totalNightPrice =
+    //   await this.calculateTotalNightPrice(createBookingDto);
 
-    const newBooking = new this.bookingSchema(createBookingDto);
-    const savedBooking = await newBooking.save();
-
-    await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
-      total_price: totalNightPrice,
+    // const newBooking = new this.bookingSchema(createBookingDto);
+    // const savedBooking = await newBooking.save();
+    const findExistedBooking = await this.bookingSchema
+      .findOne({
+        user_id: customerId,
+      })
+      .populate('user_id');
+    if (findExistedBooking.booking_status === BookingStatus.PENDING) {
+      throw new BadRequestException('');
+    }
+    const findPartnerId = await this.roomSchema
+      .findOne({
+        property_id: createBookingDto.property_id,
+      })
+      .populate('property_id');
+    const partnerId = findPartnerId.property_id.owner_id;
+    const message = `Your property ${findPartnerId.property_id.name} has been booked by ${findExistedBooking.user_id.email}`;
+    await this.notificationService.createNotification({
+      sender_id: new Types.ObjectId(customerId),
+      receiver_id: partnerId,
+      booking_id: new Types.ObjectId(createBookingDto.booking_id),
+      type: 'Booking',
+      message,
     });
-    await this.sessionSchema.findOneAndUpdate(
-      {
-        userId: createBookingDto.user_id,
-      },
-      {
-        $set: {
-          data: {
-            lastBooking: savedBooking._id,
-          },
-        },
-      },
+    this.notificationGateway.sendNotificationToPartner(
+      createBookingDto.partnerId.toString(),
+      message,
     );
-    return savedBooking;
+
+    // await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
+    //   total_price: totalNightPrice,
+    // });
+    // await this.sessionSchema.findOneAndUpdate(
+    //   {
+    //     userId: createBookingDto.user_id,
+    //   },
+    //   {
+    //     $set: {
+    //       data: {
+    //         lastBooking: savedBooking._id,
+    //       },
+    //     },
+    //   },
+    // );
+    // return savedBooking;
   }
   async findConflictingBookings(
     property: mongoose.Types.ObjectId,
@@ -340,5 +487,87 @@ export class BookingService {
       monthlyRevenues: item.monthlyRevenues,
       yearlyRevenue: item.yearlyRevenue,
     }));
+  }
+  async getBooking(owner_id: string) {
+    return this.bookingSchema.aggregate([
+      {
+        $lookup: {
+          from: 'properties', 
+          localField: 'property',
+          foreignField: '_id', 
+          as: 'propertyDetails', 
+        },
+      },
+      {
+        $unwind: '$propertyDetails', 
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $match: {
+          'propertyDetails.owner_id': new Types.ObjectId(owner_id), 
+        },
+      },
+      {
+        $lookup: {
+          from: 'rooms', 
+          localField: 'room_id', 
+          foreignField: '_id', 
+          as: 'roomDetails', 
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          check_in_date: 1,
+          check_out_date: 1,
+          total_price: 1,
+          booking_status: 1,
+          capacity: 1,
+          propertyDetails: 1,
+          roomDetails: 1,
+          userDetails: 1
+        },
+      },
+    ]);
+  }
+  async findUnfinishedBooking(userId: string) {
+    const findBooking = await this.bookingSchema.aggregate([
+      {
+        $match: {
+          user_id: new Types.ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'rooms',
+          localField: 'room_id',
+          foreignField: '_id',
+          as: 'roomDetails',
+        },
+      },
+      {
+        $unwind: '$roomDetails',
+      },
+      {
+        $lookup: {
+          from: 'properties',
+          localField: 'property',
+          foreignField: '_id',
+          as: 'propertyDetails',
+        },
+      },
+      {
+        $unwind: '$propertyDetails',
+      },
+    ]);
+
+    return findBooking;
   }
 }

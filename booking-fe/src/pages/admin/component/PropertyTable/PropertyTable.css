@@ -14,9 +14,9 @@
 }
 .datatable {
   height: auto;
-  width: auto; 
+  width: auto;
   padding: 20px;
-  background-color: #f9f9f9; 
+  background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -26,8 +26,8 @@
 }
 
 .datatable .datagrid {
-  height: 100%; 
-  width: 100%; 
+  height: 100%;
+  width: 100%;
 }
 
 .datatable .datatableTitle .link {
@@ -60,12 +60,12 @@
 }
 
 .datatable .cellWithRole.ADMIN {
-  background-color: rgba(255, 87, 34, 0.1); 
+  background-color: rgba(255, 87, 34, 0.1);
   color: #ff5722;
 }
 
 .datatable .cellWithRole.USER {
-  background-color: rgba(255, 193, 7, 0.1); 
+  background-color: rgba(255, 193, 7, 0.1);
   color: #ffc107;
 }
 

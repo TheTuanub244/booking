@@ -22,12 +22,19 @@
 }
 
 .reviewer-image {
-  flex: 1;
+  flex: 2;
+  max-width: 100px;
 }
 
 .reviewer-image .img {
-
   aspect-ratio: 1;
+}
+
+.reviewer-image .img > img {
+  width: 100%; /* Makes the image responsive */
+  height: 100%; /* Makes the image responsive */
+  object-fit: cover;
+  
 }
 
 .reviewer-name-nationality {

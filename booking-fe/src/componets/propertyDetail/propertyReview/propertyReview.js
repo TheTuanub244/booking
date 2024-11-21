@@ -42,8 +42,9 @@ const PropertyReview = ({ property_id }) => {
     setIsLoading(true);
     try {
       const reviewComments = await findReviewWithProperty(property_id, 1);
-      setReviewComment(reviewComments);
-      //setIsLoading(false);
+      console.log(reviewComments);
+      setReviewComment(reviewComments.reviews);
+      setIsLoading(false);
     } catch (e) {
       console.log(`Error at fetching review comment ${e}`);
     }
@@ -99,8 +100,8 @@ const PropertyReview = ({ property_id }) => {
                                 scrollLeft();}}>&#8592;</button>
         <div className="review-comment" ref={reviewCommentRef}>
          
-          {!isLoading ? (reviewComment.map((review) => {
-            (<ReviewComment review={review} />)}
+          {!isLoading ? (reviewComment.map((review) => 
+            (<ReviewComment review={review} />)
           )) : (
             Array(10).fill(null).map((_, index) => <ReviewComment key={index} />)
           )}

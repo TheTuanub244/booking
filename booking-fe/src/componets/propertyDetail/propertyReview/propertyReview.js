@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import RatingProgressBar from "./ratingProgressBar/ratingProgressBar";
 import ReviewComment from "./reviewComment/reviewComment";
 import ReviewDetail from "./reviewDetail/reviewDetail";
+import { findReviewWithProperty } from "../../../api/reviewAPI";
+
 
 const PropertyReview = ({ property_id }) => {
   const [reviewPoint, setReviewPoint] = useState({
@@ -16,11 +18,37 @@ const PropertyReview = ({ property_id }) => {
     freewifi: 0,
   });
 
+
+  useEffect(() => {
+
+  }, []);
+
+  const [reviewComment, setReviewComment] = useState([]);
+
+  const [reviewUsers, setReviewUsers] = useState([]);
+
   const [allReviewPopUp, setAllReviewPopUp] = useState(true);
 
   const reviewCommentRef = useRef(null);
 
-  useEffect(() => {}, [property_id]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTopComments();
+    console.log(reviewComment);
+  }, [property_id]);
+
+  async function fetchTopComments() {
+    setIsLoading(true);
+    try {
+      const reviewComments = await findReviewWithProperty(property_id, 1);
+      setReviewComment(reviewComments);
+      //setIsLoading(false);
+    } catch (e) {
+      console.log(`Error at fetching review comment ${e}`);
+    }
+    
+  }
 
    
   function scrollLeft() {
@@ -71,16 +99,12 @@ const PropertyReview = ({ property_id }) => {
                                 scrollLeft();}}>&#8592;</button>
         <div className="review-comment" ref={reviewCommentRef}>
          
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          
+          {!isLoading ? (reviewComment.map((review) => {
+            (<ReviewComment review={review} />)}
+          )) : (
+            Array(10).fill(null).map((_, index) => <ReviewComment key={index} />)
+          )}
+            
         </div>
         <button class="right-button" onClick={(e) => {e.preventDefault();
                                  scrollRight();}}>&#8594;</button>

@@ -38,7 +38,7 @@
   gap: 15px;
   padding: 10px; 
   scroll-behavior: smooth; 
-  
+  min-height: 200px;
 }
 
 

@@ -18,14 +18,9 @@ const PropertyReview = ({ property_id }) => {
     freewifi: 0,
   });
 
-
-  useEffect(() => {
-
-  }, []);
-
   const [reviewComment, setReviewComment] = useState([]);
 
-  const [reviewUsers, setReviewUsers] = useState([]);
+  const [allReviewComment, setAllReviewComment] = useState([]);
 
   const [allReviewPopUp, setAllReviewPopUp] = useState(true);
 
@@ -37,6 +32,15 @@ const PropertyReview = ({ property_id }) => {
     fetchTopComments();
     console.log(reviewComment);
   }, [property_id]);
+
+  async function handleViewAllReview(){
+    try {
+      const reviewComments = await findReviewWithProperty(property_id, 1);
+      setAllReviewComment(reviewComments.reviews);
+    } catch(e) {
+      console.log(`Error at fetching review comment ${e}`);
+    }
+  }
 
   async function fetchTopComments() {
     setIsLoading(true);
@@ -100,8 +104,8 @@ const PropertyReview = ({ property_id }) => {
                                 scrollLeft();}}>&#8592;</button>
         <div className="review-comment" ref={reviewCommentRef}>
          
-          {!isLoading ? (reviewComment.map((review) => 
-            (<ReviewComment review={review} />)
+          {!isLoading ? (reviewComment.map((review, index) => 
+            (<ReviewComment key={index} review={review} />)
           )) : (
             Array(10).fill(null).map((_, index) => <ReviewComment key={index} />)
           )}
@@ -116,6 +120,7 @@ const PropertyReview = ({ property_id }) => {
         onClick={(e) => {
           e.preventDefault();
           setAllReviewPopUp(true);
+          handleViewAllReview();
         }}
       >
         View all reviews
@@ -129,39 +134,12 @@ const PropertyReview = ({ property_id }) => {
               setAllReviewPopUp(false);
             }}
           ></div>
+          
           <div className="all-reviews">
-            <ReviewDetail />
-            <hr></hr>
-            <ReviewDetail />
-            <hr></hr>
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
+          {allReviewComment ? allReviewComment.map((review, index) => (<ReviewDetail key={index} review={review} />))
+                            : (
+                              Array(10).fill(null).map((_, index) => <ReviewDetail key={index} />)
+                            )}
           </div>
         </>
       )}

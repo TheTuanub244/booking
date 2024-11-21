@@ -15,6 +15,10 @@
   margin: 10px;
 }
 
+.reviewComment-container p {
+  margin: 0;
+}
+
 .reviewer-comment {
   flex: 5;
   margin: 10px;
@@ -24,6 +28,7 @@
 .reviewer-image {
   flex: 2;
   max-width: 100px;
+  min-width: 50px;
 }
 
 .reviewer-image .img {
@@ -43,8 +48,6 @@
 }
 
 .reviewer-name {
-
-  margin-bottom: 5px;
   width: 100%;
 }
 

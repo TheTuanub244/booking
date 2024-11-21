@@ -78,17 +78,19 @@ export class ReviewService {
     limit: number = 10,
   ) {
     const rooms = await this.roomSchema.find({ property_id });
+    console.log(rooms);
+    
     const roomIds = rooms.map((room) => room._id);
     const skip = (page - 1) * limit;
 
     // Tìm các review liên quan và phân trang
     const reviews = await this.reviewSchema
-      .find({ room_id: { $in: roomIds } })
+      .find({ roomId: { $in: roomIds } })
       .sort({ rating: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('userId', 'userName')
-      .populate('roomId', 'name')
+      .populate('userId')
+      .populate('roomId')
       .exec();
     const reviewCount = await this.reviewSchema
       .countDocuments({ room_id: { $in: roomIds } })

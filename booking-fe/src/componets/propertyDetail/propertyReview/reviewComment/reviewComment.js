@@ -3,8 +3,8 @@ import "./reviewComment.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css"; // Import default styles for Skeleton
 
-const ReviewComment = ({ user, review }) => {
-  const placeholderImage = "/mnt/data/A_circular_placeholder_image_for_a_user_profile._T.png";
+const ReviewComment = ({ review }) => {
+  
   return (
     <div className="reviewComment-container">
       <div className="reviewer-profile">
@@ -15,10 +15,10 @@ const ReviewComment = ({ user, review }) => {
         </div>
         <div className="reviewer-name-nationality">
           <div className="reviewer-name">
-            <p>{user?.userName || <Skeleton width="100%" />}</p>
+            <p>{review?.userId?.userName || <Skeleton width="100%" />}</p>
           </div>
           <div className="reviewer-nationality">
-            <p>{user?.address?.province || <Skeleton width="100%" />}</p>
+            <p>{review?.userId?.address?.province || <Skeleton width="100%" />}</p>
           </div>
         </div>
       </div>

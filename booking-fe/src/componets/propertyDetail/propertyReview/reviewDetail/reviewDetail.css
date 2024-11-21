@@ -4,6 +4,10 @@
   width: 100%;
 }
 
+.review-detail p {
+  margin: 0;
+}
+
 .review-detail-profile {
   display: flex;
   flex: 1;
@@ -23,7 +27,6 @@
 .review-detail-rate,
 .review-detail-text,
 .review-detail-response {
-  background-color: gray;
   margin: 5px;
 }
 
@@ -34,6 +37,9 @@
 
 .review-detail-rate {
   aspect-ratio: 1;
+  text-align: center;
+  background-color: green;
+  width: 30px;
   text-align: center;
 }
 

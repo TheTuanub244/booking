@@ -28,7 +28,6 @@ export const confirmSignUpWithEmail = async (user) => {
 }
 export const signUpWithGoogle = async () => {};
 export const signIn = async (user) => {
-  console.log(user);
 
   try {
     const respone = await axios.post(

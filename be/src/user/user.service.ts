@@ -160,11 +160,11 @@ export class UserService {
 
       return {
         access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
+        displayName: existUser.userName,
         _id: existUser._id,
         refreshToken: newSession.refreshToken,
       };
     } else {
-      console.log(1);
 
       const existEmail = await this.userSchema.findOne({
         email: userName,
@@ -203,6 +203,7 @@ export class UserService {
 
         return {
           access_token: jwtToken,
+          displayName: existEmail.userName,
           _id: existEmail._id,
           refreshToken: newSession.refreshToken,
         };

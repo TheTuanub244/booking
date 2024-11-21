@@ -1,20 +1,21 @@
 import "./PropertyTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import {propertyRows } from "../../data/propertyData";
+import { propertyRows } from "../../data/propertyData";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const PropertyTable = () => {
   const [data, setData] = useState(propertyRows);
+
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
   };
-  function getOwnerName(ownerId) {
-    //Get OwnerName by api
-    return "Owner";
 
+  function getOwnerName(ownerId) {
+    // Placeholder function to get owner name by owner ID
+    return "Owner";
   }
-  
+
   const propertyColumn = [
     { field: "id", headerName: "ID", width: 50 },
     {
@@ -26,16 +27,14 @@ const PropertyTable = () => {
       field: "owner_id",
       headerName: "Owner Name",
       width: 200,
-      renderCell: (params) => {
-        return getOwnerName(params.row.owner_id);
-      },
+      renderCell: (params) => getOwnerName(params.row.owner_id),
     },
     {
       field: "address",
       headerName: "Address",
       width: 250,
       valueGetter: (params) =>
-        `${params.row.address?.province}, ${params.row.address?.district}, ${params.row.address?.ward}, ${params.row.address?.street}`,
+        `${params.row.address?.province || ""}, ${params.row.address?.district || ""}, ${params.row.address?.ward || ""}, ${params.row.address?.street || ""}`,
     },
     {
       field: "property_type",
@@ -56,10 +55,7 @@ const PropertyTable = () => {
       width: 200,
       renderCell: (params) => (
         <div className="cellAction">
-          <Link
-            to={`view/${params.row.id}`}
-            style={{ textDecoration: "none" }}
-          >
+          <Link to={`view/${params.row.id}`} style={{ textDecoration: "none" }}>
             <div className="viewButton">View</div>
           </Link>
           <div
@@ -72,17 +68,9 @@ const PropertyTable = () => {
       ),
     },
   ];
-  
-  
-  return (
-    <div className="datatable">
-      <div className="datatableTitle">
-        Property Management
-        <Link to="/admin/user/new" className="link">
-          Add New
-        </Link>
 
-      </div>
+  return (
+    <div style={{ height: 600, width: "100%" }}>
       <DataGrid
         className="datagrid"
         rows={data}

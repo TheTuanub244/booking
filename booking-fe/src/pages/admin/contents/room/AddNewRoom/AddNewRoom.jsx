@@ -1,10 +1,10 @@
 import "./AddNewRoom.css";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
-import { roomfields } from "../../data/AddNewRoomData";
+import { roomRows } from "../../../data/roomdata";
 const AddNewRoom = () => {
   const [file, setFile] = useState("");
-  const inputs = roomfields
+  const inputs = roomRows
   console.log(inputs)
 
   return (

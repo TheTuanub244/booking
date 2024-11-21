@@ -10,7 +10,6 @@ import Property from "./pages/property/Property";
 import PartnerDashboard from "./pages/partner/partnerDashboard/partnerDashboard";
 import PartnerRegister from "./pages/partner/partnerRegister/partnerRegister";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AddNewUser from "./pages/admin/contents/AddNewUser/AddNewUser";
 import ProperyList from "./pages/partner/propertylist/PropertyList";
 import InformationDashboard from "./pages/partner/informationDashboard/InformationDashboard";
 import Payment from "./pages/payment/Payment";
@@ -24,7 +23,6 @@ import UserTable from "./pages/admin/component/UserTable/UserTable";
 import RoomTable from "./pages/admin/component/RoomsTable/RoomTable";
 import UserManage from "./pages/admin/contents/user/UserManage/UserManage";
 import RoomManage from "./pages/admin/contents/room/RoomManage/RoomManage";
-import AddNewRoom from "./pages/admin/contents/AddNewRoom/AddNewRoom";
 import ViewRoom from "./pages/admin/contents/room/ViewRoom/ViewRoom";
 import ViewUser from "./pages/admin/contents/user/ViewUser/ViewUser";
 import BookingManage from "./pages/admin/contents/BookingManage/BookingManage";
@@ -36,6 +34,9 @@ import AddNewProperty from "./pages/admin/contents/property/AddNewProperty/AddNe
 import ViewProperty from "./pages/admin/contents/property/ViewProperty/ViewProperty";
 import EditProperty from "./pages/admin/contents/property/EditProperty/EditProperty";
 import ViewPartnerRequest from "./pages/admin/contents/partnerRequest/ViewPartnerRequest/ViewPartnerRequest";
+import AddNewRoom from "./pages/admin/contents/room/AddNewRoom/AddNewRoom";
+import AddNewUser from "./pages/admin/contents/user/AddNewUser/AddNewUser";
+import PropertyManageList from "./pages/admin/contents/property/PropertyList/PropertyManageList";
 
 function App() {
   const userId = localStorage.getItem("userId");
@@ -70,7 +71,7 @@ function App() {
             <Route path="edit/:id" element={<EditUser />} />
           </Route>
           <Route path="property" element={<PropertyManage />}>
-            <Route path="" element={<PropertyTable />} />
+            <Route path="" element={<PropertyManageList />} />
             <Route path="new" element={<AddNewProperty />} />
             <Route path="view/:id" element={<ViewProperty />} />
             <Route path="edit/:id" element={<EditProperty />} />

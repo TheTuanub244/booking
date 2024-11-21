@@ -1,11 +1,11 @@
 import "./AddNewUser.css";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
-import {userfields}  from "../../data/AddNewUserData";
+import { usersRows } from "../../../data/userdata";
 
 const AddNewUser = () => {
   const [file, setFile] = useState("");
-  const inputs = userfields
+  const inputs = usersRows
   console.log(inputs)
 
   return (

@@ -4,20 +4,28 @@ import { propertyRows } from "../../data/propertyData";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const PropertyTable = () => {
-  const [data, setData] = useState(propertyRows);
+const PropertyTable = ({properties}) => {
+  const [data, setData] = useState(properties);
 
   const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+    setData(data.filter((item) => item._id !== id));
   };
-
+  const tableRows = properties.map((property) => ({
+    ...property,
+    id: property._id, // Map `_id` to `id`
+  }));
+  
   function getOwnerName(ownerId) {
     // Placeholder function to get owner name by owner ID
     return "Owner";
   }
 
   const propertyColumn = [
-    { field: "id", headerName: "ID", width: 50 },
+    { 
+      field: "_id", 
+      headerName: "ID", 
+      width: 50 
+    },
     {
       field: "name",
       headerName: "Name",
@@ -70,16 +78,14 @@ const PropertyTable = () => {
   ];
 
   return (
-    <div style={{ height: 600, width: "100%" }}>
       <DataGrid
-        className="datagrid"
-        rows={data}
+        className="propertyTableGrid"
+        rows={tableRows}
         columns={propertyColumn}
-        pageSize={9}
-        rowsPerPageOptions={[9]}
+        pageSize={6}
+        rowsPerPageOptions={[6]}
         checkboxSelection
       />
-    </div>
   );
 };
 

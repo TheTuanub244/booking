@@ -1,38 +1,60 @@
-.datatable {
-    height: 600px;
-    padding: 20px;
-  }
-  
-  .datatable .datatableTitle {
-    width: 100%;
-    font-size: 24px;
-    color: gray;
-    margin-bottom: 10px;
+.propertyManageList {
+  height: 600px;
+  padding: 20px;
+}
+
+.propertyManageList .propertyManageListTitle {
+  width: 100%;
+  font-size: 24px;
+  color: gray;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.propertyManageList {
+  height: auto;
+  width: auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.propertyManageList .propertyManageListTitle .link {
+  text-decoration: none;
+  color: green;
+  font-size: 16px;
+  font-weight: 400;
+  border: 1px solid green;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.propertyContent {
+  flex: 1; /* Allows it to expand within a flex container */
+  min-height: 400px; /* Ensures the content has a minimum height */
+  height: 100%; /* Adjust to match parent if needed */
+  overflow: auto; /* Enables scrolling if needed */
+}
+
+
+  .viewBy {
+    margin: 20px 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-  }
-  .datatable {
-    height: auto;
-    width: auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    gap: 10px;
   }
   
-  
-  .datatable .datatableTitle .link {
-    text-decoration: none;
-    color: green;
+  .viewSelect {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     font-size: 16px;
-    font-weight: 400;
-    border: 1px solid green;
-    padding: 5px;
-    border-radius: 5px;
-    cursor: pointer;
   }
+  

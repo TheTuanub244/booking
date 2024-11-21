@@ -1,18 +1,4 @@
-.datatable {
-  height: 600px;
-  padding: 20px;
-}
-
-.datatable .datatableTitle {
-  width: 100%;
-  font-size: 24px;
-  color: gray;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.datatable {
+.userTable {
   height: auto;
   width: auto; 
   padding: 20px;
@@ -25,12 +11,22 @@
   justify-content: space-between;
 }
 
-.datatable .datagrid {
+.userTable .userTableTitle {
+  width: 100%;
+  font-size: 24px;
+  color: gray;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.userTable .userTableGrid {
   height: 100%; 
   width: 100%; 
 }
 
-.datatable .datatableTitle .link {
+.userTable .userTableTitle .addNewButton {
   text-decoration: none;
   color: green;
   font-size: 16px;
@@ -41,12 +37,12 @@
   cursor: pointer;
 }
 
-.datatable .cellWithImg {
+.userTable .cellWithImg {
   display: flex;
   align-items: center;
 }
 
-.datatable .cellWithImg .cellImg {
+.userTable .cellWithImg .cellImg {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -54,33 +50,33 @@
   margin-right: 20px;
 }
 
-.datatable .cellWithRole {
+.userTable .cellWithRole {
   padding: 5px;
   border-radius: 5px;
 }
 
-.datatable .cellWithRole.ADMIN {
+.userTable .cellWithRole.ADMIN {
   background-color: rgba(255, 87, 34, 0.1); 
   color: #ff5722;
 }
 
-.datatable .cellWithRole.MEMBER {
+.userTable .cellWithRole.MEMBER {
   background-color: rgba(255, 193, 7, 0.1); 
   color: #ffc107;
 }
 
-.datatable .cellWithRole.PARTNER {
+.userTable .cellWithRole.PARTNER {
   background-color: rgba(76, 175, 80, 0.1);
   color: #4caf50;
 }
 
-.datatable .cellAction {
+.userTable .cellAction {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.datatable .cellAction .viewButton {
+.userTable .cellAction .viewButton {
   padding: 2px 5px;
   border-radius: 5px;
   color: darkblue;
@@ -88,7 +84,7 @@
   cursor: pointer;
 }
 
-.datatable .cellAction .deleteButton {
+.userTable .cellAction .deleteButton {
   padding: 2px 5px;
   border-radius: 5px;
   color: crimson;

@@ -1,52 +1,15 @@
-.datatable {
-  height: 600px;
-  padding: 20px;
-}
 
-.datatable .datatableTitle {
-  width: 100%;
-  font-size: 24px;
-  color: gray;
-  margin-bottom: 10px;
+
+.cellWithImg {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-.datatable {
-  height: auto;
-  width: auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
-.datatable .datagrid {
+.propertyTableGrid {
   height: 100%;
   width: 100%;
 }
-
-.datatable .datatableTitle .link {
-  text-decoration: none;
-  color: green;
-  font-size: 16px;
-  font-weight: 400;
-  border: 1px solid green;
-  padding: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.datatable .cellWithImg {
-  display: flex;
-  align-items: center;
-}
-
-.datatable .cellWithImg .cellImg {
+ .cellWithImg .cellImg {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -54,33 +17,33 @@
   margin-right: 20px;
 }
 
-.datatable .cellWithRole {
+ .cellWithRole {
   padding: 5px;
   border-radius: 5px;
 }
 
-.datatable .cellWithRole.ADMIN {
+.cellWithRole.ADMIN {
   background-color: rgba(255, 87, 34, 0.1);
   color: #ff5722;
 }
 
-.datatable .cellWithRole.USER {
+.cellWithRole.USER {
   background-color: rgba(255, 193, 7, 0.1);
   color: #ffc107;
 }
 
-.datatable .cellWithRole.PARTNER {
+.cellWithRole.PARTNER {
   background-color: rgba(76, 175, 80, 0.1);
   color: #4caf50;
 }
 
-.datatable .cellAction {
+.cellAction {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.datatable .cellAction .viewButton {
+.cellAction .viewButton {
   padding: 2px 5px;
   border-radius: 5px;
   color: darkblue;
@@ -88,7 +51,7 @@
   cursor: pointer;
 }
 
-.datatable .cellAction .deleteButton {
+.cellAction .deleteButton {
   padding: 2px 5px;
   border-radius: 5px;
   color: crimson;

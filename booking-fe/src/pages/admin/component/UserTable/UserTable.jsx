@@ -71,16 +71,16 @@ const UserTable = () => {
     },
   ];
   return (
-    <div className="datatable">
-      <div className="datatableTitle">
+    <div className="userTable">
+      <div className="userTableTitle">
         User Management
-        <Link to="/admin/user/new" className="link">
+        <Link to="/admin/user/new" className="addNewButton">
           Add New
         </Link>
 
       </div>
       <DataGrid
-        className="datagrid"
+        className="userTableGrid"
         rows={data}
         columns={userColumn}
         pageSize={9}

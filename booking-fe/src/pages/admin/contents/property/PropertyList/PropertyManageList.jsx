@@ -30,8 +30,8 @@ const PropertyManageList = () => {
   };
 
   return (
-    <div className="datatable">
-      <div className="datatableTitle">
+    <div className="propertyManageList">
+      <div className="propertyManageListTitle">
         Property Management
         <Link to="/admin/user/new" className="link">
           Add New
@@ -53,12 +53,13 @@ const PropertyManageList = () => {
 
       <div className="propertyContent">
         {loading ? (
-          <p>Loading...</p> // Loading state indicator
+          <p>Loading...</p>
         ) : viewMode === "cards" ? (
           <PropertySection properties={properties} />
         ) : (
           <PropertyTable properties={properties} />
         )}
+       
       </div>
     </div>
   );

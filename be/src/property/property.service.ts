@@ -29,6 +29,8 @@ export class PropertyService {
 
   async uploadImageToCloudinary(filePath: string): Promise<string> {
     try {
+      console.log(filePath);
+      
       const result = await cloudinary.uploader.upload(filePath);
       fs.unlink(filePath, (err) => {
         if (err) {

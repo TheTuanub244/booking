@@ -26,7 +26,13 @@ const PropertyReview = ({ property_id }) => {
 
   const reviewCommentRef = useRef(null);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const allReviewRef = useRef(null);
+
+  const [currentAllReviewPage, setCurrentAllReviewPage] = useState(1);
+
+  const [isLoadingReview, setIsLoadingReview] = useState(true);
+
+  const [isLoadingAllReview, setIsLoadingAllReview] = useState(true);
 
   useEffect(() => {
     fetchTopComments();
@@ -34,21 +40,55 @@ const PropertyReview = ({ property_id }) => {
   }, [property_id]);
 
   async function handleViewAllReview(){
+    setIsLoadingAllReview(true);
+    document.body.style.overflow = "hidden";
+
     try {
       const reviewComments = await findReviewWithProperty(property_id, 1);
       setAllReviewComment(reviewComments.reviews);
+      setIsLoadingAllReview(false);
     } catch(e) {
       console.log(`Error at fetching review comment ${e}`);
     }
   }
 
+  // Fetch reviews for a specific page
+  async function loadReviews(page) {
+    console.log("Loading");
+    setIsLoadingAllReview(true);
+    try {
+      const response = await findReviewWithProperty(property_id, page);
+      setAllReviewComment((prevReviews) => [...prevReviews, ...response.reviews]);
+      setCurrentAllReviewPage(page);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    } finally {
+      setIsLoadingAllReview(false);
+    }
+  }
+
+  // Handle scroll event
+  const handleScrollAllReview = (e) => {
+    const bottom =
+      e.target.scrollHeight === e.target.scrollTop + e.target.clientHeight;
+    if (bottom && !isLoadingAllReview) {
+      loadReviews(currentAllReviewPage + 1); // Load next page when reaching bottom
+    }
+  };
+
+
+
+  function handleCloseAllReview() {
+    document.body.style.overflow = "";
+  }
+
   async function fetchTopComments() {
-    setIsLoading(true);
+    setIsLoadingReview(true);
     try {
       const reviewComments = await findReviewWithProperty(property_id, 1);
       console.log(reviewComments);
       setReviewComment(reviewComments.reviews);
-      setIsLoading(false);
+      setIsLoadingReview(false);
     } catch (e) {
       console.log(`Error at fetching review comment ${e}`);
     }
@@ -100,18 +140,18 @@ const PropertyReview = ({ property_id }) => {
 
       <div className="review-comment-container">
         <h4>Comment</h4>
-        <button class="left-button" onClick={(e) => {e.preventDefault();
+        <button className="left-button" onClick={(e) => {e.preventDefault();
                                 scrollLeft();}}>&#8592;</button>
         <div className="review-comment" ref={reviewCommentRef}>
          
-          {!isLoading ? (reviewComment.map((review, index) => 
+          {!isLoadingReview ? (reviewComment.map((review, index) => 
             (<ReviewComment key={index} review={review} />)
           )) : (
             Array(10).fill(null).map((_, index) => <ReviewComment key={index} />)
           )}
             
         </div>
-        <button class="right-button" onClick={(e) => {e.preventDefault();
+        <button className="right-button" onClick={(e) => {e.preventDefault();
                                  scrollRight();}}>&#8594;</button>
       </div>
 
@@ -132,14 +172,16 @@ const PropertyReview = ({ property_id }) => {
             onClick={(e) => {
               e.preventDefault();
               setAllReviewPopUp(false);
+              handleCloseAllReview();
             }}
           ></div>
           
-          <div className="all-reviews">
-          {allReviewComment ? allReviewComment.map((review, index) => (<ReviewDetail key={index} review={review} />))
-                            : (
-                              Array(10).fill(null).map((_, index) => <ReviewDetail key={index} />)
-                            )}
+          <div className="all-reviews"
+            onClick={(e) => e.stopPropagation()}
+            onScroll={(e) => handleScrollAllReview(e)}
+            ref={allReviewRef}>
+          {allReviewComment.map((review, index) => (<ReviewDetail key={index} review={review} />))}
+          {!isLoadingAllReview &&  (Array(10).fill(null).map((_, index) => <ReviewDetail key={index} />))}       
           </div>
         </>
       )}

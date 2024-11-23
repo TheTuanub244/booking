@@ -4,7 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import RatingProgressBar from "./ratingProgressBar/ratingProgressBar";
 import ReviewComment from "./reviewComment/reviewComment";
 import ReviewDetail from "./reviewDetail/reviewDetail";
-import { findReviewWithProperty } from "../../../api/reviewAPI";
+import { findReviewWithProperty, getMonthlyRateByProperty } from "../../../api/reviewAPI";
+import Skeleton from "react-loading-skeleton";
 
 
 const PropertyReview = ({ property_id }) => {
@@ -22,7 +23,9 @@ const PropertyReview = ({ property_id }) => {
 
   const [allReviewComment, setAllReviewComment] = useState([]);
 
-  const [allReviewPopUp, setAllReviewPopUp] = useState(true);
+  const [monthlyRate, setMonthlyRate] = useState({});
+
+  const [allReviewPopUp, setAllReviewPopUp] = useState(false);
 
   const reviewCommentRef = useRef(null);
 
@@ -34,8 +37,11 @@ const PropertyReview = ({ property_id }) => {
 
   const [isLoadingAllReview, setIsLoadingAllReview] = useState(true);
 
+  const [isLoadingRate, setIsLoadingRate] = useState(true);
+
   useEffect(() => {
     fetchTopComments();
+    fetchMonthlyRate();
     console.log(reviewComment);
   }, [property_id]);
 
@@ -95,6 +101,27 @@ const PropertyReview = ({ property_id }) => {
     
   }
 
+  async function fetchMonthlyRate(){
+    setIsLoadingRate(true);
+    try {
+      const monthRate = await getMonthlyRateByProperty(property_id);
+      console.log(monthRate["3"]);
+      let count = monthRate["1"] + monthRate["2"] + monthRate["3"] + monthRate["4"] + monthRate["5"];
+      let avarage = (0.0 + monthRate["1"] + monthRate["2"] * 2 + monthRate["3"] * 3 + monthRate["4"] * 4 + monthRate["5"] * 5) / count;
+      avarage = parseFloat(avarage.toFixed(1));
+      console.log(count, avarage);
+
+      setMonthlyRate({
+        review_count: count,
+        avarage: avarage
+      });
+      console.log(monthRate);
+      setIsLoadingRate(false);
+    } catch (e) {
+      console.log(`Error at fetching review comment ${e}`);
+    }
+  }
+
    
   function scrollLeft() {
     if (reviewCommentRef.current) {
@@ -114,13 +141,15 @@ const PropertyReview = ({ property_id }) => {
       <h2>Review</h2>
       <div className="overview-review">
         <div className="avarage-point">
-          <h4>9.9</h4>
+          {!isLoadingRate ? <b>{monthlyRate.avarage}</b> : <Skeleton />}
         </div>
         <div className="rate">
-          <h4>nice</h4>
+          {!isLoadingRate ? <b>{monthlyRate.avarage > 3 ? "NICE" : "AWFUL"}</b> : <Skeleton />}
+          
         </div>
         <div className="numberOfReviews">
-          <h4>9999 Reviews</h4>
+          {!isLoadingRate ? <b>{monthlyRate.review_count} Reviews</b> : <Skeleton />}
+          
         </div>
       </div>
       <div className="review-rating-container">

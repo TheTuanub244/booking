@@ -1,0 +1,93 @@
+.userTable {
+  height: auto;
+  width: auto; 
+  padding: 20px;
+  background-color: #f9f9f9; 
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.userTable .userTableTitle {
+  width: 100%;
+  font-size: 24px;
+  color: gray;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.userTable .userTableGrid {
+  height: 100%; 
+  width: 100%; 
+}
+
+.userTable .userTableTitle .addNewButton {
+  text-decoration: none;
+  color: green;
+  font-size: 16px;
+  font-weight: 400;
+  border: 1px solid green;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.userTable .cellWithImg {
+  display: flex;
+  align-items: center;
+}
+
+.userTable .cellWithImg .cellImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.userTable .cellWithRole {
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.userTable .cellWithRole.ADMIN {
+  background-color: rgba(255, 87, 34, 0.1); 
+  color: #ff5722;
+}
+
+.userTable .cellWithRole.MEMBER {
+  background-color: rgba(255, 193, 7, 0.1); 
+  color: #ffc107;
+}
+
+.userTable .cellWithRole.PARTNER {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.userTable .cellAction {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.userTable .cellAction .viewButton {
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: darkblue;
+  border: 1px dotted rgba(0, 0, 139, 0.596);
+  cursor: pointer;
+}
+
+.userTable .cellAction .deleteButton {
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: crimson;
+  border: 1px dotted rgba(220, 20, 60, 0.6);
+  cursor: pointer;
+}

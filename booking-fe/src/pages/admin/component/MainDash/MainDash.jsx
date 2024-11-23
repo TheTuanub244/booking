@@ -1,6 +1,6 @@
 import React from "react";
-import Cards from "../../component/Cards/Cards";
-import Table from "../../component/Table/Table";
+import Cards from "../Cards/Cards";
+import Table from "../Table/Table";
 import "./MainDash.css";
 const MainDash = () => {
   return (

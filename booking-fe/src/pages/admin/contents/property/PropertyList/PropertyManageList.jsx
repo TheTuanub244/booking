@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import "./PropertyManageList.css";
 import { Link } from "react-router-dom";
 import PropertyTable from "../../../component/PropertyTable/PropertyTable";
 import PropertySection from "../../../component/PropertyCardSection/PropertyCardSection";
-import { getAllProperty } from "../../../../../api/propertyAPI"; 
+import { getAllProperty } from "../../../../../api/propertyAPI";
+import "./PropertyManageList.css";
 
 const PropertyManageList = () => {
-  const [viewMode, setViewMode] = useState("cards"); // Default view mode
+  const [viewMode, setViewMode] = useState("cards"); 
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,7 +18,7 @@ const PropertyManageList = () => {
       } catch (error) {
         console.error("Error fetching properties:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -33,7 +33,7 @@ const PropertyManageList = () => {
     <div className="propertyManageList">
       <div className="propertyManageListTitle">
         Property Management
-        <Link to="/admin/user/new" className="link">
+        <Link to="new" className="link">
           Add New
         </Link>
       </div>
@@ -59,7 +59,6 @@ const PropertyManageList = () => {
         ) : (
           <PropertyTable properties={properties} />
         )}
-       
       </div>
     </div>
   );

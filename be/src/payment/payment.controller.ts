@@ -9,7 +9,6 @@ config(); // Load environment variables
 
 @Controller('payment')
 export class PaymentController {
-  
   @Post('create_payment')
   async createPaymentUrl(
     @Body() body: any,
@@ -19,7 +18,6 @@ export class PaymentController {
     const date = new Date();
     const createDate = moment(date).format('YYYYMMDDHHmmss');
 
-    // Lấy IP address của người dùng
     const ipAddr =
       req.headers['x-forwarded-for']?.toString() ||
       req.connection.remoteAddress ||
@@ -27,19 +25,20 @@ export class PaymentController {
       (req.connection as any).socket?.remoteAddress ||
       '';
 
-    const tmnCode = process.env.vnp_TmnCode2 || '';
-    const secretKey = process.env.vnp_HashSecret2 || '';
-    const vnpUrl = process.env.vnp_Url || '';
-    const returnUrl = process.env.vnp_ReturnUrl || '';
+    const tmnCode = process.env.VNP_TMN_CODE || '';
+    const secretKey = process.env.VNP_HASH_SECRET || '';
+    const vnpUrl = process.env.VNP_URL || '';
+    const returnUrl = process.env.VNP_RETURN_URL || '';
 
     const orderId = moment(date).format('DDHHmmss');
-    const amount = Number(body.amount); // Lấy số tiền từ body
-    const bankCode = req.body.bankCode; // Mã ngân hàng (mặc định NCB)
+    const amount = body.amount; // Lấy dữ liệu từ body
+    const bankCode = body.bankCode;
 
-    const locale = body.language || 'en'; // Ngôn ngữ mặc định là tiếng Anh
-    const currCode = 'VND'; // Mã tiền tệ mặc định là VND
 
-    // Tạo tham số cho VNPAY
+
+    const locale = body.language || 'en';
+    const currCode = 'VND';
+
     const vnp_Params: { [key: string]: string | number } = {
       vnp_Version: '2.1.0',
       vnp_Command: 'pay',
@@ -47,16 +46,16 @@ export class PaymentController {
       vnp_Locale: locale,
       vnp_CurrCode: currCode,
       vnp_TxnRef: orderId,
-      vnp_OrderInfo: `Thanh toan cho ma GD:${orderId}`,
+      vnp_OrderInfo: `Thanh toan cho ma GD: ${orderId}`,
       vnp_OrderType: 'other',
-      vnp_Amount: amount * 100, // Số tiền phải nhân với 100
+      vnp_Amount: amount * 100,
       vnp_ReturnUrl: returnUrl,
       vnp_IpAddr: ipAddr,
       vnp_CreateDate: createDate,
     };
 
     if (bankCode) {
-      vnp_Params['vnp_BankCode'] = bankCode; // Thêm mã ngân hàng vào tham số
+      vnp_Params['vnp_BankCode'] = bankCode;
     }
 
     // Sắp xếp tham số
@@ -67,14 +66,40 @@ export class PaymentController {
     const hmac = crypto.createHmac('sha512', secretKey);
     const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
 
-    // Gắn chữ ký vào tham số
     sortedParams['vnp_SecureHash'] = signed;
 
     // Tạo URL chuyển hướng
     const paymentUrl = `${vnpUrl}?${qs.stringify(sortedParams, { encode: false })}`;
+
     res.redirect(paymentUrl);
   }
 
+  @Get('vnpay_return')
+  async vnpayReturn(@Query() query: any, @Res() res: Response) {
+    const vnp_Params = { ...query };
+    const secureHash = vnp_Params['vnp_SecureHash'];
+
+    // Xóa các tham số không cần thiết
+    delete vnp_Params['vnp_SecureHash'];
+    delete vnp_Params['vnp_SecureHashType'];
+
+    // Sắp xếp lại tham số
+    const sortedParams = this.sortObject(vnp_Params);
+
+    const secretKey = process.env.VNP_HASH_SECRET || '';
+
+    // Tạo chữ ký
+    const signData = qs.stringify(sortedParams, { encode: false });
+    const hmac = crypto.createHmac('sha512', secretKey);
+    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+
+    if (secureHash === signed) {
+      // Kiểm tra dữ liệu trong DB có hợp lệ hay không và thông báo kết quả
+      return vnp_Params;
+    } else {
+      return vnp_Params;
+    }
+  }
 
   @Get('vnpay_ipn')
   async vnpayIpn(@Query() query: any, @Res() res: Response) {
@@ -90,7 +115,7 @@ export class PaymentController {
     const sortedParams = this.sortObject(vnp_Params);
 
     // Lấy secretKey từ biến môi trường
-    const secretKey = process.env.VNP_HASHSECRET || '';
+    const secretKey = process.env.VNP_HASH_SECRET || '';
 
     // Tạo chuỗi để ký
     const signData = qs.stringify(sortedParams, { encode: false });
@@ -102,12 +127,12 @@ export class PaymentController {
     // Giả sử đây là trạng thái của giao dịch
     const paymentStatus = '0'; // Trạng thái mặc định, giao dịch chưa được xử lý
 
-    const checkOrderId = true; 
-    const checkAmount = true; 
+    const checkOrderId = true;
+    const checkAmount = true;
     if (secureHash === signed) {
       if (checkOrderId) {
         if (checkAmount) {
-          if (paymentStatus === '0') { 
+          if (paymentStatus === '0') {
             if (rspCode === '00') {
               res.status(200).json({ RspCode: '00', Message: 'Success' });
             } else {
@@ -131,12 +156,23 @@ export class PaymentController {
   }
 
   // Hàm sắp xếp object
-  private sortObject(obj: { [key: string]: any }): { [key: string]: any } {
-    const sorted: { [key: string]: any } = {};
-    const keys = Object.keys(obj).sort(); // Lấy các keys và sắp xếp
-    keys.forEach((key) => {
-      sorted[key] = obj[key]; // Sắp xếp lại theo thứ tự
-    });
-    return sorted;
+  private sortObject(obj: { [key: string]: any }): { [key: string]: string } {
+    let sorted: { [key: string]: string } = {};  // Định nghĩa kiểu dữ liệu cho đối tượng kết quả
+    let str: string[] = [];  // Mảng chứa các khóa (keys)
+
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        str.push(encodeURIComponent(key));  // Thêm khóa đã mã hóa vào mảng
+      }
+    }
+
+    str.sort();  // Sắp xếp các khóa
+
+    for (let key of str) {
+      // Thêm các cặp khóa-giá trị vào đối tượng sorted, giá trị được mã hóa và thay thế %20 bằng dấu cộng
+      sorted[key] = encodeURIComponent(obj[key]).replace(/%20/g, "+");
+    }
+
+    return sorted;  // Trả về đối tượng đã sắp xếp
   }
 }

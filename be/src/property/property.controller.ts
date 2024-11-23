@@ -30,7 +30,16 @@ export class PropertyController {
   @Roles(ROLE.ADMIN, ROLE.PARTNER)
   @UseInterceptors(
     AnyFilesInterceptor({
-      storage: multer.memoryStorage(), // Lưu vào bộ nhớ tạm
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
     }),
   )
   async createPropertyWithPartner(
@@ -63,7 +72,16 @@ export class PropertyController {
   @Roles(ROLE.ADMIN, ROLE.PARTNER)
   @UseInterceptors(
     AnyFilesInterceptor({
-      storage: multer.memoryStorage(), // Lưu vào bộ nhớ tạm
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
     }),
   )
   async updatePropertyWithPartner(

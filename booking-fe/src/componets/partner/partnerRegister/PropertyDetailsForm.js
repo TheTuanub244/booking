@@ -501,7 +501,7 @@ const PropertyDetailsForm = ({
       const respone = await createPropertyWithPartner(formData, accessToken);
       if (respone) {
         getAllPropetyByOwner(userId);
-        navigate(`property/propertyList/${userId}`);
+        navigate(`/partner/propertyList/${userId}`);
       }
     } catch (error) {
       console.error("Failed to add property:", error);

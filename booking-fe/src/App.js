@@ -14,6 +14,7 @@ import AddNewUser from "./pages/admin/contents/AddNewUser/AddNewUser";
 import ProperyList from "./pages/partner/propertylist/PropertyList";
 import InformationDashboard from "./pages/partner/informationDashboard/InformationDashboard";
 import Payment from "./pages/payment/Payment";
+import ResultPayment from './pages/resultPayment/ResultPayment';
 import PartnerPropertyDetailPage from "./pages/partner/propertyDetail/PartnerPropertyDetailPage";
 import SearchResult from "./pages/searchResult/SearchResult";
 import { useEffect } from "react";
@@ -56,6 +57,7 @@ function App() {
           element={<InformationDashboard />}
         />
         <Route path="/payment" element={<Payment />}></Route>
+        <Route path="payment/vnpay_return" element={<ResultPayment />}></Route>
         <Route
           path="/partner/partnerPropertyDetailPage/:id"
           element={<PartnerPropertyDetailPage />}

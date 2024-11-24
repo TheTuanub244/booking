@@ -18,14 +18,15 @@
   align-items: center;
   font-family: "Inter", sans-serif;
 }
-.DashboardGlass {
-  display: grid;
-  height: 97%;
-  width: 97%;
-  border-radius: 2rem;
-  background-color: var(--glass);
-  grid-template-columns: 14rem auto 20rem;
-  gap: 15px;
-  padding: 15px;
-  overflow: hidden;
+.DashboardGlass{
+    display: grid;
+    height: 97%;
+    width: 97%;
+    border-radius: 2rem;
+    background-color: var(--glass);
+    grid-template-columns: 14rem auto;
+    gap: 15px;
+    padding: 15px;
+    overflow: hidden;
+    
 }

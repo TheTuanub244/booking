@@ -1,50 +1,10 @@
-export const userColumns = [
-  { field: "id", headerName: "ID", width: 50 },
-  {
-    field: "user",
-    headerName: "User",
-    width: 130,
-    renderCell: (params) => {
-      return (
-        <div className="cellWithImg">
-          <img className="cellImg" src={params.row.img} alt="avatar" />
-          {params.row.username}
-        </div>
-      );
-    },
-  },
-  {
-    field: "email",
-    headerName: "Email",
-    width: 200,
-  },
-
-  {
-    field: "age",
-    headerName: "Age",
-    width: 100,
-  },
-  {
-    field: "role",
-    headerName: "Role",
-    width: 160,
-    renderCell: (params) => {
-      return (
-        <div className={`cellWithRole ${params.row.role}`}>
-          {params.row.role}
-        </div>
-      );
-    },
-  },
-];
-
 export const usersRows = [
   {
     id: 1,
     username: "User 1",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail1@gmail.com",
-    role: "USER",
+    role: "MEMBER",
     age: 35,
   },
   {
@@ -52,7 +12,7 @@ export const usersRows = [
     username: "User 2",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail2@gmail.com",
-    role: "USER",
+    role: "MEMBER",
     age: 42,
   },
   {
@@ -76,7 +36,7 @@ export const usersRows = [
     username: "User 5",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail5@gmail.com",
-    role: "USER",
+    role: "MEMBER",
     age: 22,
   },
   {
@@ -84,7 +44,7 @@ export const usersRows = [
     username: "User 6",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail6@gmail.com",
-    role: "USER",
+    role: "MEMBER",
     age: 15,
   },
   {
@@ -92,7 +52,7 @@ export const usersRows = [
     username: "User 7",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail7@gmail.com",
-    role: "USER",
+    role: "MEMBER",
     age: 44,
   },
   {
@@ -100,7 +60,7 @@ export const usersRows = [
     username: "User 8",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail8@gmail.com",
-    role: "USER",
+    role: "MEMBER",
     age: 36,
   },
   {
@@ -108,7 +68,7 @@ export const usersRows = [
     username: "User 9",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail9@gmail.com",
-    role: "USER",
+    role: "MEMBER",
     age: 65,
   },
   {
@@ -116,7 +76,7 @@ export const usersRows = [
     username: "User 10",
     img: "https://images8.alphacoders.com/657/657974.jpg",
     email: "useremail10@gmail.com",
-    role: "USER",
+    role: "MEMBER",
     age: 65,
   },
 ];

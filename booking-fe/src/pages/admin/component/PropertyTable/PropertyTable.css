@@ -1,0 +1,60 @@
+
+
+.cellWithImg {
+  display: flex;
+  align-items: center;
+}
+
+.propertyTableGrid {
+  height: 100%;
+  width: 100%;
+}
+ .cellWithImg .cellImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+ .cellWithRole {
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.cellWithRole.ADMIN {
+  background-color: rgba(255, 87, 34, 0.1);
+  color: #ff5722;
+}
+
+.cellWithRole.USER {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.cellWithRole.PARTNER {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.cellAction {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cellAction .viewButton {
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: darkblue;
+  border: 1px dotted rgba(0, 0, 139, 0.596);
+  cursor: pointer;
+}
+
+.cellAction .deleteButton {
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: crimson;
+  border: 1px dotted rgba(220, 20, 60, 0.6);
+  cursor: pointer;
+}

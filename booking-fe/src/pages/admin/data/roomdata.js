@@ -1,137 +1,244 @@
-export const roomColumns = [
-  { field: "id", headerName: "ID", width: 70 },
-  {
-    field: "room",
-    headerName: "Room",
-    width: 230,
-    renderCell: (params) => {
-      return (
-        <div className="cellWithImg">
-          <img className="cellImg" src={params.row.img} alt="room" />
-          {params.row.name}
-        </div>
-      );
-    },
-  },
-  {
-    field: "address",
-    headerName: "Address",
-    width: 300,
-  },
-  {
-    field: "price",
-    headerName: "Price ($)",
-    width: 120,
-  },
-  {
-    field: "availability",
-    headerName: "Availability",
-    width: 160,
-    renderCell: (params) => {
-      return (
-        <div className={`cellWithStatus ${params.row.availability}`}>
-          {params.row.availability}
-        </div>
-      );
-    },
-  },
-];
-
 export const roomRows = [
   {
     id: 1,
-    name: "Deluxe Suite",
-    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550862.jpeg?k=3514aa4abb76a6d19df104cb307b78b841ac0676967f24f4b860d289d55d3964&o=",
-    address: "123 Main Street, Cityville",
-    price: 200,
-    availability: "Available",
+    name: "Oceanview Suite",
+    property_id: "Oceanfront Villa",
+    size: 45,
+    price_per_night: {
+      weekday: 150,
+      weekend: 200,
+    },
+    capacity: {
+      adults: 2,
+      children: {
+        count: 2,
+        age: 12,
+      },
+      room: 1,
+    },
+    facility: ["Wi-Fi", "Air Conditioning", "Balcony", "Minibar"],
+    images: [
+      "https://example.com/oceanview-suite-1.jpg",
+      "https://example.com/oceanview-suite-2.jpg",
+      "https://example.com/oceanview-suite-3.jpg",
+    ],
+    rating: 4.7,
   },
   {
     id: 2,
-    name: "Ocean View Room",
-    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595548591.jpeg?k=01741bc3aef1a5233dd33794dda397083092c0215b153915f27ea489468e57a2&o=",
-    address: "456 Beach Road, Seaside",
-    price: 300,
-    availability: "Available",
+    name: "Downtown Deluxe",
+    property_id: "Downtown Apartment",
+    size: 30,
+    price_per_night: {
+      weekday: 120,
+      weekend: 150,
+    },
+    capacity: {
+      adults: 2,
+      children: {
+        count: 1,
+        age: 8,
+      },
+      room: 1,
+    },
+    facility: ["Wi-Fi", "TV", "Coffee Machine"],
+    images: [
+      "https://example.com/downtown-deluxe-1.jpg",
+      "https://example.com/downtown-deluxe-2.jpg",
+    ],
+    rating: 4.5,
   },
   {
     id: 3,
-    name: "Standard Room",
-    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595551044.jpeg?k=262826efe8e21a0868105c01bf7113ed94de28492ee370f4225f00d1de0c6c44&o=",
-    address: "789 Downtown Blvd, Metropolis",
-    price: 150,
-    availability: "Unavailable",
+    name: "Cottage Comfort",
+    property_id: "Cozy Cottage",
+    size: 40,
+    price_per_night: {
+      weekday: 100,
+      weekend: 130,
+    },
+    capacity: {
+      adults: 2,
+      children: {
+        count: 2,
+        age: 10,
+      },
+      room: 1,
+    },
+    facility: ["Fireplace", "Garden", "Wi-Fi"],
+    images: [
+      "https://example.com/cottage-comfort-1.jpg",
+      "https://example.com/cottage-comfort-2.jpg",
+    ],
+    rating: 4.3,
   },
   {
     id: 4,
-    name: "Executive Suite",
-    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550862.jpeg?k=3514aa4abb76a6d19df104cb307b78b841ac0676967f24f4b860d289d55d3964&o=",
-    address: "101 Corporate Ave, Business City",
-    price: 400,
-    availability: "Available",
+    name: "Penthouse Paradise",
+    property_id: "Luxury Penthouse",
+    size: 120,
+    price_per_night: {
+      weekday: 500,
+      weekend: 600,
+    },
+    capacity: {
+      adults: 4,
+      children: {
+        count: 0,
+        age: null,
+      },
+      room: 2,
+    },
+    facility: ["Jacuzzi", "Panoramic View", "Bar"],
+    images: [
+      "https://example.com/penthouse-paradise-1.jpg",
+      "https://example.com/penthouse-paradise-2.jpg",
+      "https://example.com/penthouse-paradise-3.jpg",
+    ],
+    rating: 4.9,
   },
   {
     id: 5,
-    name: "Penthouse",
-    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595548591.jpeg?k=01741bc3aef1a5233dd33794dda397083092c0215b153915f27ea489468e57a2&o=",
-    address: "202 Luxury Lane, Uptown",
-    price: 500,
-    availability: "Unavailable",
+    name: "Suburban Retreat",
+    property_id: "Suburban House",
+    size: 60,
+    price_per_night: {
+      weekday: 200,
+      weekend: 250,
+    },
+    capacity: {
+      adults: 3,
+      children: {
+        count: 2,
+        age: 7,
+      },
+      room: 2,
+    },
+    facility: ["Garage", "Garden", "Wi-Fi"],
+    images: [
+      "https://example.com/suburban-retreat-1.jpg",
+      "https://example.com/suburban-retreat-2.jpg",
+    ],
+    rating: 4.4,
   },
   {
     id: 6,
-    name: "Family Room",
-    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595551044.jpeg?k=262826efe8e21a0868105c01bf7113ed94de28492ee370f4225f00d1de0c6c44&o=",
-    address: "303 Suburb St, Familyville",
-    price: 180,
-    availability: "Available",
+    name: "Beach Bungalow",
+    property_id: "Beachfront Bungalow",
+    size: 50,
+    price_per_night: {
+      weekday: 180,
+      weekend: 220,
+    },
+    capacity: {
+      adults: 2,
+      children: {
+        count: 0,
+        age: null,
+      },
+      room: 1,
+    },
+    facility: ["Beach Access", "Hammock", "Outdoor Shower"],
+    images: [
+      "https://example.com/beach-bungalow-1.jpg",
+      "https://example.com/beach-bungalow-2.jpg",
+    ],
+    rating: 4.6,
   },
   {
     id: 7,
-    name: "Deluxe Suite",
-    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550862.jpeg?k=3514aa4abb76a6d19df104cb307b78b841ac0676967f24f4b860d289d55d3964&o=",
-    address: "123 Main Street, Cityville",
-    price: 200,
-    availability: "Available",
+    name: "Mountain Cabin",
+    property_id: "Mountain Lodge",
+    size: 70,
+    price_per_night: {
+      weekday: 220,
+      weekend: 280,
+    },
+    capacity: {
+      adults: 4,
+      children: {
+        count: 2,
+        age: 5,
+      },
+      room: 2,
+    },
+    facility: ["Fireplace", "Hot Tub", "Wi-Fi"],
+    images: [
+      "https://example.com/mountain-cabin-1.jpg",
+      "https://example.com/mountain-cabin-2.jpg",
+    ],
+    rating: 4.8,
   },
   {
     id: 8,
-    name: "Ocean View Room",
-    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595548591.jpeg?k=01741bc3aef1a5233dd33794dda397083092c0215b153915f27ea489468e57a2&o=",
-    address: "456 Beach Road, Seaside",
-    price: 300,
-    availability: "Available",
+    name: "Loft Lounge",
+    property_id: "City Loft",
+    size: 35,
+    price_per_night: {
+      weekday: 130,
+      weekend: 160,
+    },
+    capacity: {
+      adults: 2,
+      children: {
+        count: 0,
+        age: null,
+      },
+      room: 1,
+    },
+    facility: ["Wi-Fi", "TV", "City View"],
+    images: [
+      "https://example.com/loft-lounge-1.jpg",
+      "https://example.com/loft-lounge-2.jpg",
+    ],
+    rating: 4.3,
   },
   {
     id: 9,
-    name: "Standard Room",
-    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595551044.jpeg?k=262826efe8e21a0868105c01bf7113ed94de28492ee370f4225f00d1de0c6c44&o=",
-    address: "789 Downtown Blvd, Metropolis",
-    price: 150,
-    availability: "Unavailable",
+    name: "Ranch Rest",
+    property_id: "Countryside Ranch",
+    size: 80,
+    price_per_night: {
+      weekday: 170,
+      weekend: 210,
+    },
+    capacity: {
+      adults: 3,
+      children: {
+        count: 3,
+        age: 9,
+      },
+      room: 2,
+    },
+    facility: ["Horse Stables", "Outdoor Grill", "Wi-Fi"],
+    images: [
+      "https://example.com/ranch-rest-1.jpg",
+      "https://example.com/ranch-rest-2.jpg",
+    ],
+    rating: 4.2,
   },
   {
     id: 10,
-    name: "Executive Suite",
-    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550862.jpeg?k=3514aa4abb76a6d19df104cb307b78b841ac0676967f24f4b860d289d55d3964&o=",
-    address: "101 Corporate Ave, Business City",
-    price: 400,
-    availability: "Available",
-  },
-  {
-    id: 11,
-    name: "Penthouse",
-    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595548591.jpeg?k=01741bc3aef1a5233dd33794dda397083092c0215b153915f27ea489468e57a2&o=",
-    address: "202 Luxury Lane, Uptown",
-    price: 500,
-    availability: "Unavailable",
-  },
-  {
-    id: 12,
-    name: "Family Room",
-    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595551044.jpeg?k=262826efe8e21a0868105c01bf7113ed94de28492ee370f4225f00d1de0c6c44&o=",
-    address: "303 Suburb St, Familyville",
-    price: 180,
-    availability: "Available",
+    name: "Urban Suite",
+    property_id: "Urban Studio",
+    size: 28,
+    price_per_night: {
+      weekday: 110,
+      weekend: 140,
+    },
+    capacity: {
+      adults: 2,
+      children: {
+        count: 0,
+        age: null,
+      },
+      room: 1,
+    },
+    facility: ["Wi-Fi", "TV", "Coffee Maker"],
+    images: [
+      "https://example.com/urban-suite-1.jpg",
+      "https://example.com/urban-suite-2.jpg",
+    ],
+    rating: 4.4,
   },
 ];

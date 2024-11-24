@@ -50,6 +50,7 @@
 .filter-section {
   margin-bottom: 20px;
   width: 100%;
+
 }
 
 .filter-section h4 {
@@ -65,6 +66,12 @@
   line-height: 1.5;
   cursor: pointer;
 }
+.filter-section input[type="radio"] {
+  margin-right: 10px;
+  flex-shrink: 0;
+  background-color: red;
+
+}
 
 input[type="range"] {
   width: 100%;
@@ -72,12 +79,6 @@ input[type="range"] {
 }
 .filter-group h4 {
   margin-bottom: 5px;
-}
-.filter-section label input[type="checkbox"] {
-  flex-shrink: 0; 
-  margin-right: 10px; 
-  width: 18px;
-  height: 18px; 
 }
 .results-list {
   width: 100%;

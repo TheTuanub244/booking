@@ -31,6 +31,7 @@ const SearchResult = () => {
   const longitude = location.state?.longitude;
   const latitude = location.state?.latitude;
   const [showFullMap, setShowFullMap] = useState(false);
+  const [totalProperties, setTotalProperties] = useState();
   const limit = 4;
 
   const [properties, setProperties] = useState();
@@ -41,53 +42,52 @@ const SearchResult = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+  const searchRoom = async () => {
+    const response = await findAvailableRoomWithSearch(option);
+
+    setIsLoading(false);
+    if (response?.length && response) {
+      const uniqueProperties = Array.from(
+        response
+          .reduce((map, item) => {
+            const propertyId = item.value.property_id._id;
+            item.value.totalPriceNight = item.totalPriceNight;
+
+            if (!map.has(propertyId)) {
+              map.set(propertyId, item.value);
+            } else {
+              const existingItem = map.get(propertyId);
+              if (
+                item.value.property_id.rate > existingItem.property_id.rate
+              ) {
+                map.set(propertyId, item.value);
+              }
+            }
+            return map;
+          }, new Map())
+          .values(),
+      );
+
+      const sortedProperties = uniqueProperties.sort(
+        (a, b) => b.property_id.rate - a.property_id.rate,
+      );
+      setTotalProperties(sortedProperties)
+      const paginatedProperties = sortedProperties.slice(
+        currentPage - 1,
+        currentPage - 1 + limit,
+      );
+      
+      const totalPages = Math.ceil(sortedProperties.length / limit);
+      setTotalPages(totalPages);
+      setProperties(paginatedProperties);
+    } else {
+      setNotFound(true);
+    }
+  };
   useEffect(() => {
     setIsLoading(true);
     if (location.state?.option) {
-      const searchRoom = async () => {
-        const response = await findAvailableRoomWithSearch(option);
-
-        setIsLoading(false);
-        if (response?.length && response) {
-          const uniqueProperties = Array.from(
-            response
-              .reduce((map, item) => {
-                const propertyId = item.value.property_id._id;
-                item.value.totalPriceNight = item.totalPriceNight;
-
-                if (!map.has(propertyId)) {
-                  map.set(propertyId, item.value);
-                } else {
-                  const existingItem = map.get(propertyId);
-                  if (
-                    item.value.property_id.rate > existingItem.property_id.rate
-                  ) {
-                    map.set(propertyId, item.value);
-                  }
-                }
-                return map;
-              }, new Map())
-              .values(),
-          );
-
-          const sortedProperties = uniqueProperties.sort(
-            (a, b) => b.property_id.rate - a.property_id.rate,
-          );
-          const paginatedProperties = sortedProperties.slice(
-            currentPage - 1,
-            currentPage - 1 + limit,
-          );
-          console.log();
-          
-          const totalPages = Math.ceil(sortedProperties.length / limit);
-          setTotalPages(totalPages);
-          console.log(paginatedProperties);
-          
-          setProperties(paginatedProperties);
-        } else {
-          setNotFound(true);
-        }
-      };
+      
       const handleGetAllProperty = async () => {
         const respone = await getDistinctPlace();
         setAllPlace(respone);
@@ -97,11 +97,13 @@ const SearchResult = () => {
     }
   }, [location.state?.option, currentPage]);
   const [filters, setFilters] = useState({
-    propertyType: ["Hotels", "Apartments"],
-    budget: [100000, 700000],
-    rating: [],
+    propertyType: [],
+    budget: [],
+    ratingNumber: [],
+    ratingName: []
   });
   const [values, setValues] = useState([100000, 20000000]);
+  const [filteredProperties, setFileredProperties] = useState([]);
   const handleChange = (newValues) => {
     setValues(newValues);
   };
@@ -127,7 +129,35 @@ const SearchResult = () => {
     { name: "5 stars", count: 7 },
   ];
 ;
+  const applyFilter = () => {
+    if(!totalProperties) return;
+    let filtered = totalProperties.filter((property) =>
+      filters.propertyType.length > 0
+        ? filters.propertyType.includes(property.property_id.type)
+        : true 
+    );
+    if (filters.ratingNumber.length > 0) {
+      
+      filtered = filtered.filter(
+        (property) => property.property_id.rate >= Number(filters.ratingNumber[0])
+      );
+    }
+    
+    filtered = filtered.filter((property) => property.totalPriceNight >= values[0] && property.totalPriceNight <= values[1]);
 
+    setFileredProperties(filtered)
+    
+    
+    const paginatedProperties = filtered.slice(
+      currentPage - 1,
+      currentPage - 1 + limit,
+    );
+    console.log(paginatedProperties);
+    
+    setProperties(paginatedProperties);
+    const totalPages = Math.ceil(filtered.length / limit);
+    setTotalPages(totalPages);
+  }
   const handlePropertyTypeChange = (type) => {
     const updatedTypes = filters.propertyType.includes(type)
       ? filters.propertyType.filter((t) => t !== type)
@@ -135,12 +165,17 @@ const SearchResult = () => {
     setFilters({ ...filters, propertyType: updatedTypes });
   };
 
-  const handleRatingChange = (rating) => {
-    const updatedRatings = filters.rating.includes(rating)
-      ? filters.rating.filter((r) => r !== rating)
-      : [...filters.rating, rating];
-    setFilters({ ...filters, rating: updatedRatings });
+  const handleRatingChange = (rating, ratingNumber) => {
+    if (filters.ratingName[0] === rating) {
+      setFilters({ ...filters, ratingName: [], ratingNumber: [] });
+    } else {
+      
+      setFilters({ ...filters, ratingName: [rating], ratingNumber: [ratingNumber] });
+    }
   };
+  useEffect(() => {
+    applyFilter();
+  }, [filters, values, currentPage]);
   return (
     <>
       <Navbar />
@@ -190,10 +225,10 @@ const SearchResult = () => {
       <div className="filter-section">
         <h4>Property Type</h4>
         {propertyTypes.map((type) => (
-          <div key={type.name} className="property-type">
+          <div key={type.name}>
             <label>
               <input
-                type="checkbox"
+                type="radio"
                 checked={filters.propertyType.includes(type.name)}
                 onChange={() => handlePropertyTypeChange(type.name)}
               />
@@ -269,13 +304,15 @@ const SearchResult = () => {
 
       <div className="filter-section">
         <h4>Property Rating</h4>
-        {ratings.map((rating) => (
+        {ratings.map((rating, index) => (
           <div key={rating.name}>
             <label>
               <input
-                type="checkbox"
-                checked={filters.rating.includes(rating.name)}
-                onChange={() => handleRatingChange(rating.name)}
+                type="radio"
+                name="rating"
+                value={rating.name}
+                checked={filters.ratingName.includes(rating.name)}
+                onChange={() => handleRatingChange(rating.name, index + 1)}
               />
               {rating.name} ({rating.count})
             </label>

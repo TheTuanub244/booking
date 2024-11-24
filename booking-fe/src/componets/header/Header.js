@@ -16,6 +16,7 @@ import "react-date-range/dist/theme/default.css";
 import { findAvailableRoomWithSearch } from "../../api/roomAPI";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getDistinctPlace } from "../../api/propertyAPI";
 
 function Header({ type, places, promptData }) {
   const [openDate, setOpenDate] = useState(false);
@@ -26,7 +27,7 @@ function Header({ type, places, promptData }) {
   const oneDayLater = new Date();
   useEffect(() => {
     setPlacesToShowDropDown(places);
-  }, []);
+  }, [places]);
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -64,7 +65,6 @@ function Header({ type, places, promptData }) {
   const checkRooms = options.room > 1 ? "rooms" : "room";
   const navigate = useNavigate();
   const [province, setProvince] = useState("");
-
   const handleChangeProvince = (e) => {
     setProvince(e.target.value);
     const searchPlace = places.filter((place) =>

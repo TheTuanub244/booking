@@ -80,6 +80,8 @@ const SearchResult = () => {
           
           const totalPages = Math.ceil(sortedProperties.length / limit);
           setTotalPages(totalPages);
+          console.log(paginatedProperties);
+          
           setProperties(paginatedProperties);
         } else {
           setNotFound(true);
@@ -93,7 +95,54 @@ const SearchResult = () => {
       searchRoom();
     }
   }, [location.state?.option, currentPage]);
+  const [filters, setFilters] = useState({
+    propertyType: ["Hotels", "Apartments"],
+    budget: [100000, 700000],
+    rating: [],
+  });
 
+  const propertyTypes = [
+    { name: "Entire homes & apartments", count: 277 },
+    { name: "Apartments", count: 265 },
+    { name: "Hotels", count: 220 },
+    { name: "Homestays", count: 27 },
+    { name: "Guest houses", count: 24 },
+    { name: "Motels", count: 10 },
+    { name: "Villas", count: 10 },
+    { name: "Bed and breakfasts", count: 7 },
+    { name: "Capsule hotels", count: 2 },
+    { name: "Hostels", count: 1 },
+    { name: "Love hotels", count: 1 },
+  ];
+
+  const ratings = [
+    { name: "1 star", count: 28 },
+    { name: "2 stars", count: 69 },
+    { name: "3 stars", count: 121 },
+    { name: "4 stars", count: 117 },
+    { name: "5 stars", count: 7 },
+  ];
+
+  const handleBudgetChange = (e) => {
+    console.log(e.target.value);
+    
+    const value = e.target.value.split(",");
+    setFilters({ ...filters, budget: value.map(Number) });
+  };
+
+  const handlePropertyTypeChange = (type) => {
+    const updatedTypes = filters.propertyType.includes(type)
+      ? filters.propertyType.filter((t) => t !== type)
+      : [...filters.propertyType, type];
+    setFilters({ ...filters, propertyType: updatedTypes });
+  };
+
+  const handleRatingChange = (rating) => {
+    const updatedRatings = filters.rating.includes(rating)
+      ? filters.rating.filter((r) => r !== rating)
+      : [...filters.rating, rating];
+    setFilters({ ...filters, rating: updatedRatings });
+  };
   return (
     <>
       <Navbar />
@@ -139,36 +188,54 @@ const SearchResult = () => {
                 </div>
               </div>
             )}
-            <aside className="filter-section">
-              <h3>Filter by:</h3>
-              <div className="filter-group">
-                <label>
-                  <input type="checkbox" /> Hotels
-                </label>
-                <label>
-                  <input type="checkbox" /> Apartments
-                </label>
-              </div>
-              <div className="filter-group">
-                <h4>Your budget (per night)</h4>
-                <input type="range" min="0" max="4000000" step="100000" />
-              </div>
-              <div className="filter-group">
-                <h4>Deals</h4>
-                <label>
-                  <input type="checkbox" /> All deals
-                </label>
-              </div>
-              <div className="filter-group">
-                <h4>Popular filters</h4>
-                <label>
-                  <input type="checkbox" /> Superb: 9+
-                </label>
-                <label>
-                  <input type="checkbox" /> Free cancellation
-                </label>
-              </div>
-            </aside>
+             <div className="filter-bar">
+      <div className="filter-section">
+        <h4>Property Type</h4>
+        {propertyTypes.map((type) => (
+          <div key={type.name} className="property-type">
+            <label>
+              <input
+                type="checkbox"
+                checked={filters.propertyType.includes(type.name)}
+                onChange={() => handlePropertyTypeChange(type.name)}
+              />
+              {type.name} ({type.count})
+            </label>
+          </div>
+        ))}
+      </div>
+
+      <div className="filter-section">
+        <h4>Your Budget (per night)</h4>
+        <input
+          type="range"
+          min="100000"
+          max="20000000"
+          value={filters.budget.join(",")}
+          step="10000"
+          onChange={handleBudgetChange}
+        />
+        <p>
+          VND {filters.budget[0]} - VND {filters.budget[1]}
+        </p>
+      </div>
+
+      <div className="filter-section">
+        <h4>Property Rating</h4>
+        {ratings.map((rating) => (
+          <div key={rating.name}>
+            <label>
+              <input
+                type="checkbox"
+                checked={filters.rating.includes(rating.name)}
+                onChange={() => handleRatingChange(rating.name)}
+              />
+              {rating.name} ({rating.count})
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
           </div>
           <div className="main-content">
             <div className="header-search">

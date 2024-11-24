@@ -128,8 +128,6 @@ export class UserService {
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(userName)) {
-      console.log(2);
-
       const existUser = await this.userSchema
         .findOne({
           userName: userName,
@@ -165,14 +163,16 @@ export class UserService {
         refreshToken: newSession.refreshToken,
       };
     } else {
-
       const existEmail = await this.userSchema.findOne({
         email: userName,
       });
 
+      console.log(existEmail);
+
       if (!existEmail) {
         throw new UnauthorizedException('Invalid username or password');
       }
+      console.log(1);
 
       try {
         const userCredential = await signInWithEmailAndPassword(
@@ -276,15 +276,7 @@ export class UserService {
     }
   }
   async confirmSignUp(user: any) {
-    const {
-      userName,
-      password,
-      dob,
-      email,
-      address,
-      phoneNumber,
-      uid,
-    } = user;
+    const { userName, password, dob, email, address, phoneNumber, uid } = user;
     const salt = await bcrypt.genSalt(10);
 
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -343,28 +335,32 @@ export class UserService {
       .select('+password')
       .exec();
 
-    admin
-      .auth()
-      .updateUser(findUser.uid, {
-        password: password,
-      })
-      .then(async (userRecord) => {
-        console.log(
-          'Successfully updated Firebase password for user:',
-          userRecord.toJSON(),
-        );
+    try {
+      admin
+        .auth()
+        .updateUser(findUser.uid, {
+          password: password,
+        })
+        .then(async (userRecord) => {
+          console.log(
+            'Successfully updated Firebase password for user:',
+            userRecord.toJSON(),
+          );
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        await this.userSchema.findOneAndUpdate(
-          {
-            email: email,
-          },
-          {
-            password: hashedPassword,
-          },
-        );
-      });
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(password, salt);
+          await this.userSchema.findOneAndUpdate(
+            {
+              email: email,
+            },
+            {
+              password: hashedPassword,
+            },
+          );
+        });
+    } catch (err) {
+      throw err;
+    }
   }
   async updatePartnerAccount(partner: any) {
     const findUser = await this.userSchema.findOneAndUpdate(
@@ -434,5 +430,55 @@ export class UserService {
       return true;
     }
     return false;
+  }
+  async updateResetPasswordToken(userId: string, email: string) {
+    const resetToken = await this.jwtSerivce.sign(
+      { email, timestamp: Date.now() },
+      { expiresIn: '1h' },
+    );
+
+    await this.userSchema.findByIdAndUpdate(
+      new Types.ObjectId(userId),
+      {
+        $set: {
+          resetPasswordExpires: Date.now() + 3600000,
+          resetPasswordTokenStatus: 'unused',
+          resetPasswordToken: resetToken,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+    return resetToken;
+  }
+  async checkResetPasswordToken(userId: string, newPassword: string, token: string) {
+    
+    try {
+      const decoded = await this.jwtSerivce.verify(token, {secret: process.env.JWT_SECRET});
+      const user = await this.userSchema.findOne({
+        _id: new Types.ObjectId(userId),
+        resetPasswordToken: token,
+        resetPasswordTokenStatus: 'unused',
+        resetPasswordExpires: { $gt: new Date() },
+      });
+      if (!user) {
+        return {
+          message: 'Token is invalid or has already been used'
+        };
+      }
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      await this.userSchema.findByIdAndUpdate(new Types.ObjectId(userId), {
+        password: hashedPassword,
+        resetPasswordTokenStatus: 'used', 
+        resetPasswordToken: null, 
+        resetPasswordExpires: null,
+      });
+
+      return { message: true };
+    } catch (err) {
+      throw err
+    }
   }
 }

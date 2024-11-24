@@ -7,6 +7,7 @@ import {
   signIn,
   signInWithGoogle,
   updateInformationForGoogle,
+  updateResetPasswordToken,
 } from "../../api/userAPI";
 import {
   GoogleAuthProvider,
@@ -171,9 +172,8 @@ function Login() {
     const action = event.nativeEvent.submitter.name;
     try {
       const respone = await signIn(inputData);
-      console.log(respone);
       
-      if(respone === "Wrong password!"){
+      if(respone === "Wrong password!" || respone === "Invalid username or password"){
         setErrorLogIn(respone)
       }else {
         const { userName, accessToken, uid, displayName, _id } = respone;
@@ -204,13 +204,24 @@ function Login() {
       setErrorLogIn("Invalid email");
     } else {
       localStorage.setItem("email", inputData.userName);
-      const respone = await checkEmail(inputData.userName);
-      console.log(respone);
+      const user = await checkEmail(inputData.userName);
+      console.log(user);
       
-      if (!respone) {
+      if (!user) {
         setErrorLogIn("Invalid email");
       } else {
-        sendPasswordResetEmail(auth, inputData.userName);
+        const resetToken = await updateResetPasswordToken(user._id, inputData.userName)
+        console.log(resetToken);
+          
+        
+        sendPasswordResetEmail(auth, inputData.userName, {url: `${process.env.REACT_APP_API_URL}/checkResetPasswordToken?token=${resetToken}&userId=${user._id}`, }).then(() => {
+          alert("Reset password email has been sent");
+          setErrorLogIn("");
+        })
+        .catch((error) => {
+          console.error("Error:", error.message);
+          setErrorLogIn(error.message);
+        });
         alert("Reset password email has sent");
         setErrorLogIn("");
       }

@@ -2,13 +2,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import HeaderLogin from "../../componets/header/HeaderLogin";
 
 import "./Auth.css";
-import { confirmSignUpWithEmail, resetPassword } from "../../api/userAPI";
-import { useState } from "react";
+import { checkResetPasswordToken, confirmSignUpWithEmail, resetPassword } from "../../api/userAPI";
+import { useEffect, useState } from "react";
 
 const Auth = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const mode = queryParams.get("mode");
+  const continueUrl = queryParams.get("continueUrl")
   const [inputData, setInputData] = useState({
     password: "",
     email: "",
@@ -24,18 +25,32 @@ const Auth = () => {
       [name]: value,
     });
   };
-
   const handleResetPassword = async (e) => {
     e.preventDefault();
-
+    const continueParams = new URLSearchParams(new URL(continueUrl).search);
+    const token = continueParams.get('token')
+    const userId = continueParams.get('userId')
     const email = localStorage.getItem("email");
     inputData.email = email;
-    const respone = await resetPassword(inputData);
+    try{
+      console.log(inputData);
 
-    if (respone === "") {
+      const respone = await checkResetPasswordToken(userId, token, inputData)
+    
+    if(respone.message === true){
+      const handleResetPassword = await resetPassword(inputData)
+      if (handleResetPassword === "") {
       navigate("/login");
     } else {
-      setErrorForgotPassword(respone);
+      setErrorForgotPassword(handleResetPassword);
+    }
+    } else {
+      setErrorForgotPassword(respone.message)
+    }
+    }catch(err){
+      
+      setErrorForgotPassword(err.response.data.message)
+      
     }
   };
   const getToken = () => {
@@ -43,6 +58,7 @@ const Auth = () => {
   }
   const verifyEmail = async () => {
     const token = getToken();
+    
     if (!token) return false;
   
     try {

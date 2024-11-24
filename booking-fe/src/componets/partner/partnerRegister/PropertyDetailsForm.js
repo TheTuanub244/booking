@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { deleteRoomById, findRoomByProperty } from "../../../api/roomAPI";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
+import { handleSignOut } from "../../../helpers/authHelpers";
 
 const PropertyDetailsForm = ({
   owner,
@@ -495,13 +496,18 @@ const PropertyDetailsForm = ({
         formData.append(`rooms[${index}][image]`, room.image);
       }
     });
-
+    const respone = await createPropertyWithPartner(formData, accessToken);
+    console.log(respone);
     // Send FormData to backend
     try {
       const respone = await createPropertyWithPartner(formData, accessToken);
-      if (respone) {
+      if(respone.response.status === 401){
+        alert('You need to sign in!')
+        await handleSignOut()
+        navigate('/login')
+      }else {
         getAllPropetyByOwner(userId);
-        navigate(`/partner/propertyList/${userId}`);
+        setTab("list")
       }
     } catch (error) {
       console.error("Failed to add property:", error);

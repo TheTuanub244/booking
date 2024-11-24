@@ -115,6 +115,8 @@ function SignUp_page() {
   async function handleSubmit(event, inputData) {
     event.preventDefault();
     const action = event.nativeEvent.submitter.name;
+    console.log(inputData);
+    
     const respone = await signUp(inputData);
 
     if (typeof respone === "string") {

@@ -36,8 +36,7 @@ export const createPropertyWithPartner = async (formData, token) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error creating property:", error);
-    throw error;
+    return error
   }
 };
 export const getAllProperty = async () => {
@@ -52,7 +51,8 @@ export const getPropertyById = async (id) => {
     `${process.env.REACT_APP_API_URL}/property/getPropertyById/${id}`,
     { withCredentials: true },
   );
-
+  console.log(respone);
+  
   return respone.data;
 };
 export const getPropertyTypesByPlace = async (place) => {

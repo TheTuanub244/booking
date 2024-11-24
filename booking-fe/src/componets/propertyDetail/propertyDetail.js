@@ -12,7 +12,7 @@ import Map from "../partner/partnerRegister/Map";
 import PropertyReview from "./propertyReview/propertyReview";
 
 const PropertyDetail = () => {
-  const { id } = useParams(); // Extract the id from URL parameters
+  const { id } = useParams();
   const [propertyData, setPropertyData] = useState(null);
   const [roomData, setRoomData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +47,7 @@ const PropertyDetail = () => {
 
         try {
           const data = await getPropertyById(pId);
-
+          
           setPropertyData(data);
           const { street, district, province } = data.address;
           setLocation(`${street}, ${district}, ${province}`);
@@ -268,6 +268,8 @@ const PropertyDetail = () => {
                     lng: propertyData.location.longitude,
                   }}
                   disableClick={true}
+                allowPositionChange={false}
+                showPropertyInfo={false}
                 />
                 <button className="open-map-button" onClick={handleOpenMap}>
                   Open Map
@@ -275,11 +277,17 @@ const PropertyDetail = () => {
               </div>
             </div>
             {isMapOpen && (
-              <div className="modal-overlay">
-                <div className="modal-content">
+              <div className="modal-overlay" onClick={() => {
+                handleCloseMap(); 
+              }}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="model-contentt">
                   <button
                     className="circle-close-button"
-                    onClick={handleCloseMap}
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                      handleCloseMap(); 
+                    }}
                   >
                     &times;
                   </button>
@@ -290,7 +298,10 @@ const PropertyDetail = () => {
                       lng: propertyData.location.longitude,
                     }}
                     disableClick={true}
+                allowPositionChange={false}
+                showPropertyInfo={true}
                   />
+                  </div>
                 </div>
               </div>
             )}

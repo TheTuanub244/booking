@@ -28,7 +28,6 @@ const ForgotPassword = () => {
 
     const email = localStorage.getItem("email");
     inputData.email = email;
-    console.log(inputData);
     
     const respone = await resetPassword(inputData);
     console.log(respone);

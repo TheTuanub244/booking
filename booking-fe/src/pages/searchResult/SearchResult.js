@@ -76,6 +76,8 @@ const SearchResult = () => {
             currentPage - 1,
             currentPage - 1 + limit,
           );
+          console.log();
+          
           const totalPages = Math.ceil(sortedProperties.length / limit);
           setTotalPages(totalPages);
           setProperties(paginatedProperties);
@@ -113,6 +115,8 @@ const SearchResult = () => {
               <PropertyMap
                 initialLocation={{ lat: latitude, lng: longitude }}
                 option={option}
+                disableClick={true}
+                allowPositionChange={false}
               />
             </div>
             {showFullMap && (

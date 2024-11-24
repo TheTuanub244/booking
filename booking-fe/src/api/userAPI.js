@@ -133,3 +133,18 @@ export const checkRequestPartner = async (userId) => {
   )
   return respone.data
 }
+export const updateResetPasswordToken = async(userId, email) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/updateResetPasswordToken/?userId=${userId}&email=${email}`
+  )
+  return respone.data
+}
+export const checkResetPasswordToken = async (userId, token, user) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/checkResetPasswordToken/?userId=${userId}&token=${token}`, user
+  )
+  console.log(1);
+  console.log(respone);
+  
+  return respone.data
+}

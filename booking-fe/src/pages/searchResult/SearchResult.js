@@ -10,6 +10,7 @@ import Loading from "../../componets/loading/Loading";
 import { getSessionHistory } from "../../api/sessionAPI";
 import { useLocation, useSearchParams } from "react-router-dom";
 import NotFound from "../../componets/searchResult/NotFound";
+import { Range } from "react-range";
 const SearchResult = () => {
   const location = useLocation();
 
@@ -100,7 +101,10 @@ const SearchResult = () => {
     budget: [100000, 700000],
     rating: [],
   });
-
+  const [values, setValues] = useState([100000, 20000000]);
+  const handleChange = (newValues) => {
+    setValues(newValues);
+  };
   const propertyTypes = [
     { name: "Entire homes & apartments", count: 277 },
     { name: "Apartments", count: 265 },
@@ -122,13 +126,7 @@ const SearchResult = () => {
     { name: "4 stars", count: 117 },
     { name: "5 stars", count: 7 },
   ];
-
-  const handleBudgetChange = (e) => {
-    console.log(e.target.value);
-    
-    const value = e.target.value.split(",");
-    setFilters({ ...filters, budget: value.map(Number) });
-  };
+;
 
   const handlePropertyTypeChange = (type) => {
     const updatedTypes = filters.propertyType.includes(type)
@@ -206,19 +204,68 @@ const SearchResult = () => {
       </div>
 
       <div className="filter-section">
-        <h4>Your Budget (per night)</h4>
-        <input
-          type="range"
-          min="100000"
-          max="20000000"
-          value={filters.budget.join(",")}
-          step="10000"
-          onChange={handleBudgetChange}
-        />
-        <p>
-          VND {filters.budget[0]} - VND {filters.budget[1]}
-        </p>
+      <h4>Your Budget (per night)</h4>
+      <Range
+        step={100000}
+        min={100000}
+        max={20000000}
+        values={values}
+        onChange={(values) => handleChange(values)}
+        renderTrack={({ props, children }) => (
+          <div
+            {...props}
+            style={{
+              ...props.style,
+              height: "6px",
+              background: "#ddd",
+              position: "relative",
+              borderRadius: "3px",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                height: "6px",
+                background: "#007bff",
+                borderRadius: "3px",
+                left: `${((values[0] - 100000) / (20000000 - 100000)) * 100}%`,
+                right: `${100 - ((values[1] - 100000) / (20000000 - 100000)) * 100}%`,
+              }}
+            />
+            {children}
+          </div>
+        )}
+        renderThumb={({ props }) => (
+          <div
+            {...props}
+            style={{
+              ...props.style,
+              height: "20px",
+              width: "20px",
+              backgroundColor: "#007bff",
+              borderRadius: "50%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              boxShadow: "0px 2px 6px #aaa",
+            }}
+          >
+            <div
+              style={{
+                height: "10px",
+                width: "10px",
+                backgroundColor: "white",
+                borderRadius: "50%",
+              }}
+            />
+          </div>
+        )}
+      />
+      <div className="range-values">
+        <span>Min: VND {values[0].toLocaleString()}</span>
+        <span>Max: VND {values[1].toLocaleString()}</span>
       </div>
+    </div>
 
       <div className="filter-section">
         <h4>Property Rating</h4>

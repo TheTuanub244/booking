@@ -39,7 +39,9 @@
 }
 
 .filter-bar {
+  margin-top: 20px;
   width: 300px;
+  margin-right: 20px;
   border: 1px solid #ddd;
   padding: 20px;
   border-radius: 5px;
@@ -199,4 +201,20 @@ input[type="range"] {
 
 .close-popup-map:hover {
   background-color: #d43f3a;
+}
+.range-slider {
+  width: 100%;
+  padding: 20px;
+}
+
+.range-slider h4 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.range-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 14px;
 }

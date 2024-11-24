@@ -160,3 +160,17 @@ export const getDistinctPlace = async () => {
   );
   return respone.data;
 };
+
+export const getTransactionInformation = async () => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/payment/vnpay_return`,
+    );
+    return res.data;
+  } catch(error) {
+    const respone = error.response.data.message;
+
+    return respone;
+  }
+
+}

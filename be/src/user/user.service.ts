@@ -452,10 +452,15 @@ export class UserService {
     );
     return resetToken;
   }
-  async checkResetPasswordToken(userId: string, newPassword: string, token: string) {
-    
+  async checkResetPasswordToken(
+    userId: string,
+    newPassword: string,
+    token: string,
+  ) {
     try {
-      const decoded = await this.jwtSerivce.verify(token, {secret: process.env.JWT_SECRET});
+      const decoded = await this.jwtSerivce.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
       const user = await this.userSchema.findOne({
         _id: new Types.ObjectId(userId),
         resetPasswordToken: token,
@@ -464,21 +469,21 @@ export class UserService {
       });
       if (!user) {
         return {
-          message: 'Token is invalid or has already been used'
+          message: 'Token is invalid or has already been used',
         };
       }
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
       await this.userSchema.findByIdAndUpdate(new Types.ObjectId(userId), {
         password: hashedPassword,
-        resetPasswordTokenStatus: 'used', 
-        resetPasswordToken: null, 
+        resetPasswordTokenStatus: 'used',
+        resetPasswordToken: null,
         resetPasswordExpires: null,
       });
 
       return { message: true };
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 }

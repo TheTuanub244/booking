@@ -9,10 +9,38 @@ import {
   faUser,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
+import { getBookingByOwner } from "../../api/bookingAPI";
+
 function Payment() {
+  const [location, setLocation] = useState("");
+  const [checkInDate,setCheckInDate] = useState("");
+  const [checkOutDate,setCheckOutDate] = useState("");
+  const [hotelName,setHotelName] = useState("");
+  const [totalPrice,setTotalPrice] = useState(0);
+  const [adults,setAdults] = useState("");
+  const [child,setChild] = useState("");
+  const [room,setRoom] = useState("");
+  
   const [errorPayment, setErrorPayment] = useState(
     "Please fill in your last name",
   );
+
+  useEffect(() => {
+    getData();
+    
+  },[])
+
+  async function getData() {
+    try {
+        const data = await getBookingByOwner('672f7626c4ad709978b765b3');
+        console.log(data[1]); // Đây là kết quả cuối cùng bạn muốn
+        const {province,district,ward,street } = data[1].propertyDetails.address;
+        setLocation(`${street}, ${ward}, ${district}, ${province}`);
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
 
   const [formData, setFormData] = useState({
     firstname: "",

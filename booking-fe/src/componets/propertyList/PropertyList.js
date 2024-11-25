@@ -66,7 +66,7 @@ const PropertyList = ({ propertyType }) => {
       <Swiper
         spaceBetween={15}
         slidesPerView={4}
-        navigation
+        navigation={images.length > 4}
         pagination={{ clickable: true }}
         modules={[Navigation, Pagination]}
       >

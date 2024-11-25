@@ -21,7 +21,7 @@ const PartnerRegistration = ({ existedUser }) => {
   const [address, setAddress] = useState();
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [street, setStreet] = useState();
   const longitude = localStorage.getItem("longitude");
   const latitude = localStorage.getItem("latitude");
@@ -83,30 +83,35 @@ const PartnerRegistration = ({ existedUser }) => {
     if (existedUser) {
       console.log(formData);
     }
-    setShowModal(true)
+    setShowModal(true);
   };
   const handleCloseModal = async () => {
-    setShowModal(false)
+    setShowModal(false);
 
-    navigate('/')
-  }
+    navigate("/");
+  };
   return (
     <div className="registration-container">
       {showModal && (
-        <Modal show={showModal} onHide={() => setShowModal(false)} centered className="fix-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>Registration Submitted</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Thank you for registering! Your request has been submitted and is
-          pending admin approval.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={() => handleCloseModal()}>
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <Modal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          centered
+          className="fix-modal"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Registration Submitted</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Thank you for registering! Your request has been submitted and is
+            pending admin approval.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={() => handleCloseModal()}>
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
       {!isRegistered
         ? existedUser &&
@@ -220,7 +225,11 @@ const PartnerRegistration = ({ existedUser }) => {
                   </select>
                 </div>
 
-                <button type="submit" className="submit-button" onClick={(e) => handleSubmit(e)}>
+                <button
+                  type="submit"
+                  className="submit-button"
+                  onClick={(e) => handleSubmit(e)}
+                >
                   Register
                 </button>
               </form>

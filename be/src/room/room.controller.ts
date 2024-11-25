@@ -52,6 +52,7 @@ export class RoomController {
       data.check_in,
       data.check_out,
       data.capacity,
+      data.type,
     );
   }
   @UseGuards(RolesGuard, ValidateTokenGuard)

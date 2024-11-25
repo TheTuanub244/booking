@@ -5,8 +5,8 @@ import { usersRows } from "../../../data/userdata";
 
 const AddNewUser = () => {
   const [file, setFile] = useState("");
-  const inputs = usersRows
-  console.log(inputs)
+  const inputs = usersRows;
+  console.log(inputs);
 
   return (
     <div className="new">
@@ -39,21 +39,21 @@ const AddNewUser = () => {
                 />
               </div>
               {inputs.map((input) => (
-              <div className="formInput" key={input.id}>
-                <label>{input.label}</label>
-                {input.type === "select" ? (
-                  <select>
-                    {input.options.map((option, idx) => (
-                      <option key={idx} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input type={input.type} placeholder={input.placeholder} />
-                )}
-              </div>
-            ))}
+                <div className="formInput" key={input.id}>
+                  <label>{input.label}</label>
+                  {input.type === "select" ? (
+                    <select>
+                      {input.options.map((option, idx) => (
+                        <option key={idx} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input type={input.type} placeholder={input.placeholder} />
+                  )}
+                </div>
+              ))}
 
               <button>Send</button>
             </form>

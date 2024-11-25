@@ -50,8 +50,6 @@
 .filter-section {
   margin-bottom: 20px;
   width: 100%;
-
-
 }
 
 .filter-section h4 {
@@ -72,7 +70,6 @@
   margin-right: 10px;
   flex-shrink: 0;
   background-color: red;
-
 }
 
 input[type="range"] {
@@ -82,7 +79,7 @@ input[type="range"] {
 .filter-group h4 {
   margin-bottom: 5px;
 }
-.fix-width input{
+.fix-width input {
   width: 20px;
 }
 .results-list {

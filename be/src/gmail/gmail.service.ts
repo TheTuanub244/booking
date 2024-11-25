@@ -7,9 +7,8 @@ export class GmailService {
   }
 
   async sendEmail(to: string, subject: string, text: string, html: string) {
-    
     const msg = {
-      to: "tuanub244@gmail.com",
+      to: 'tuanub244@gmail.com',
       from: 'khuatvanviet17@gmail.com', // Thay bằng email đã xác minh trên SendGrid
       subject,
       text,
@@ -17,7 +16,7 @@ export class GmailService {
     };
     try {
       const response = await sgMail.send(msg);
-      
+
       return response;
     } catch (error) {
       console.error(

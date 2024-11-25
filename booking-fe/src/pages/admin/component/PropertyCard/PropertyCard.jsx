@@ -5,7 +5,7 @@ const PropertyCard = ({ property }) => {
   return (
     <Card
       sx={{
-        maxWidth: 320, 
+        maxWidth: 320,
         minHeight: 220,
         display: "flex",
         flexDirection: "column",
@@ -15,7 +15,7 @@ const PropertyCard = ({ property }) => {
       <CardMedia
         component="img"
         height="140"
-        image={property.images[0]} 
+        image={property.images[0]}
         alt={property.name}
       />
       <CardContent>

@@ -18,8 +18,12 @@ export const getBooking = async (id, status) => {
   );
   return respone.data;
 };
-export const createBooking = async (customerId, partnerId, booking_id, property_id) => {
-  
+export const createBooking = async (
+  customerId,
+  partnerId,
+  booking_id,
+  property_id,
+) => {
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/booking/createBooking`,
     { customerId, partnerId, booking_id, property_id },
@@ -29,8 +33,7 @@ export const createBooking = async (customerId, partnerId, booking_id, property_
 export const findUnfinishedBooking = async (userId) => {
   const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/booking/findUnfinishedBooking/${userId}`,
-
   );
-  
+
   return respone.data;
-}
+};

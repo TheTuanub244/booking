@@ -26,7 +26,7 @@
   position: relative;
 }
 .map-container-disabled {
-  pointer-events: auto; 
+  pointer-events: auto;
 }
 .selected-property-container {
   height: auto;
@@ -36,28 +36,28 @@
   width: 400px;
   top: 10px;
   left: 10px;
-  z-index: 5000; 
+  z-index: 5000;
   background: white;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
-.selected-property-head{
+.selected-property-head {
   display: flex;
   width: 100%;
   border-bottom: 1px solid #ededed;
   padding-bottom: 10px;
 }
-.selected-property-room{
+.selected-property-room {
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #ededed;
 }
-.selected-property-name{
+.selected-property-name {
   margin-left: 20px;
 }
-.selected-property-room button{
+.selected-property-room button {
   height: 40px;
   background-color: #007aff;
   color: white;
@@ -67,7 +67,7 @@
   width: 22%;
 }
 .map-container-disabled > .leaflet-container {
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 /* Pulse animation */

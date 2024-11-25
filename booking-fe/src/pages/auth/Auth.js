@@ -2,14 +2,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import HeaderLogin from "../../componets/header/HeaderLogin";
 
 import "./Auth.css";
-import { checkResetPasswordToken, confirmSignUpWithEmail, resetPassword } from "../../api/userAPI";
+import {
+  checkResetPasswordToken,
+  confirmSignUpWithEmail,
+  resetPassword,
+} from "../../api/userAPI";
 import { useEffect, useState } from "react";
 
 const Auth = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const mode = queryParams.get("mode");
-  const continueUrl = queryParams.get("continueUrl")
+  const continueUrl = queryParams.get("continueUrl");
   const [inputData, setInputData] = useState({
     password: "",
     email: "",
@@ -28,54 +32,52 @@ const Auth = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     const continueParams = new URLSearchParams(new URL(continueUrl).search);
-    const token = continueParams.get('token')
-    const userId = continueParams.get('userId')
+    const token = continueParams.get("token");
+    const userId = continueParams.get("userId");
     const email = localStorage.getItem("email");
     inputData.email = email;
-    try{
+    try {
       console.log(inputData);
 
-      const respone = await checkResetPasswordToken(userId, token, inputData)
-    
-    if(respone.message === true){
-      const handleResetPassword = await resetPassword(inputData)
-      if (handleResetPassword === "") {
-      navigate("/login");
-    } else {
-      setErrorForgotPassword(handleResetPassword);
-    }
-    } else {
-      setErrorForgotPassword(respone.message)
-    }
-    }catch(err){
-      
-      setErrorForgotPassword(err.response.data.message)
-      
+      const respone = await checkResetPasswordToken(userId, token, inputData);
+
+      if (respone.message === true) {
+        const handleResetPassword = await resetPassword(inputData);
+        if (handleResetPassword === "") {
+          navigate("/login");
+        } else {
+          setErrorForgotPassword(handleResetPassword);
+        }
+      } else {
+        setErrorForgotPassword(respone.message);
+      }
+    } catch (err) {
+      setErrorForgotPassword(err.response.data.message);
     }
   };
   const getToken = () => {
-    return localStorage.getItem('signUpInfo');
-  }
+    return localStorage.getItem("signUpInfo");
+  };
   const verifyEmail = async () => {
     const token = getToken();
-    
+
     if (!token) return false;
-  
+
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      
-      if( payload.exp > Date.now() / 1000){
-        const response = await confirmSignUpWithEmail(payload)
+      const payload = JSON.parse(atob(token.split(".")[1]));
+
+      if (payload.exp > Date.now() / 1000) {
+        const response = await confirmSignUpWithEmail(payload);
         console.log(response);
-        
-        if(response){
-          navigate('/login')
+
+        if (response) {
+          navigate("/login");
         }
-      } 
+      }
     } catch (error) {
       return false;
     }
-  }
+  };
   return (
     <div>
       <HeaderLogin />
@@ -98,7 +100,9 @@ const Auth = () => {
             </div>
 
             <h1>Verify Email</h1>
-            <button onClick={() => verifyEmail()}>Click here to verify your email</button>
+            <button onClick={() => verifyEmail()}>
+              Click here to verify your email
+            </button>
           </div>
         )}
         {mode === "resetPassword" && (

@@ -10,7 +10,7 @@ export const getRoleFromToken = (token, role) => {
   }
 };
 export const handleSignOut = async () => {
-  const userId = localStorage.getItem('userId')
+  const userId = localStorage.getItem("userId");
   localStorage.removeItem("userName");
   localStorage.removeItem("accessToken");
   localStorage.removeItem("userId");
@@ -18,5 +18,4 @@ export const handleSignOut = async () => {
   localStorage.removeItem("isSignIn");
   localStorage.removeItem("email");
   await signOut(userId);
-  
 };

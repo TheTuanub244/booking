@@ -65,7 +65,7 @@ const jwtConstant = {
       },
     },
     NotificationGateway,
-    GmailService
+    GmailService,
   ],
   exports: ['FIREBASE_ADMIN'],
 })

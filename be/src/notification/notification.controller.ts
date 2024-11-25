@@ -23,11 +23,11 @@ export class NotificationController {
     return this.notificationService.getAllNotificationWithUser(userId);
   }
   @Get(`markAsRead/:notiId`)
-  markAsRead(@Param('notiId') notiId: string){
-    return this.notificationService.markAsRead(notiId)
+  markAsRead(@Param('notiId') notiId: string) {
+    return this.notificationService.markAsRead(notiId);
   }
   @Get(`markAllAsRead/:user_id`)
-  markAllAsRead(@Param('user_id') user_id: string){
-    return this.notificationService.markAllAsRead(user_id)
+  markAllAsRead(@Param('user_id') user_id: string) {
+    return this.notificationService.markAllAsRead(user_id);
   }
 }

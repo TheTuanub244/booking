@@ -25,7 +25,10 @@ const ResultItem = ({ property, index }) => {
   };
 
   return (
-    <div className={`result-item ${index === 0 && "first-index"}`} onClick={() => navigate(`/property/${property.property_id._id}`)}>
+    <div
+      className={`result-item ${index === 0 && "first-index"}`}
+      onClick={() => navigate(`/property/${property.property_id._id}`)}
+    >
       <img
         src={property.images[0]}
         alt={`${property.name}`}

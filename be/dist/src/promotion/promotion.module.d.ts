@@ -1,2 +1,1 @@
-export declare class PromotionModule {
-}
+export declare class PromotionModule {}

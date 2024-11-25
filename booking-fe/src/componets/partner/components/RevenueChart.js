@@ -18,8 +18,8 @@ const RevenueChart = ({ setTotalRevenue, type, property }) => {
     }
     const result = await data;
     const revenueData = new Array(12).fill(0);
-    
-    if(result.length !== 0){
+
+    if (result.length !== 0) {
       result[0].monthlyRevenues.forEach((item) => {
         revenueData[item.month - 1] = item.revenue;
       });

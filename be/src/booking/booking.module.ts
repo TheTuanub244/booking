@@ -40,7 +40,7 @@ const jwtConstant = {
     PromotionService,
     NotificationGateway,
     NotificationService,
-    GmailService
+    GmailService,
   ],
   exports: [BookingService],
   imports: [

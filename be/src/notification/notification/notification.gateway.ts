@@ -25,7 +25,7 @@ export class NotificationGateway
   handleConnection(client: Socket) {
     const partnerId = client.handshake.query.partnerId;
     console.log(partnerId);
-    
+
     if (partnerId) {
       client.join(partnerId);
       console.log(`Client ${client.id} joined room: ${partnerId}`);
@@ -38,7 +38,7 @@ export class NotificationGateway
 
   sendNotificationToPartner(partnerId: string, notification: any) {
     console.log(partnerId);
-    
+
     this.server.to(partnerId).emit('notifyPartner', notification);
   }
 

@@ -27,7 +27,7 @@ const PartnerBookingDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [filter, setFilter] = useState("Name");
   const [filterStatus, setFilterStatus] = useState("All");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   const handleGetBooking = async () => {
     try {
@@ -66,10 +66,9 @@ const PartnerBookingDashboard = () => {
       setBookings(bookingSearch);
     }
   };
-  
+
   return (
     <div className="partner-booking-dashboard">
-    
       <FormControl
         style={{
           marginBottom: 20,
@@ -137,7 +136,15 @@ const PartnerBookingDashboard = () => {
             </TableHead>
             <TableBody>
               {bookings.map((booking, index) => (
-                <TableRow key={booking._id} className="hover-row" onClick={() => navigate(`/partnerBookingDetail/${booking._id}`, {state: bookings[index]})}>
+                <TableRow
+                  key={booking._id}
+                  className="hover-row"
+                  onClick={() =>
+                    navigate(`/partnerBookingDetail/${booking._id}`, {
+                      state: bookings[index],
+                    })
+                  }
+                >
                   <TableCell>
                     {booking.userDetails[0]?.email ||
                       booking.userDetails[0]?.userName}

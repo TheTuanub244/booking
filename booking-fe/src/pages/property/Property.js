@@ -12,12 +12,12 @@ function Property() {
       const respone = await getDistinctPlace();
       setAllPlace(respone);
     };
-    handleGetAllProperty()
-  }, [])
+    handleGetAllProperty();
+  }, []);
   return (
     <div className="Property">
       <Navbar />
-      <Header places={allPlace}/>
+      <Header places={allPlace} />
       <PropertyDetail />
     </div>
   );

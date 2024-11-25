@@ -265,12 +265,19 @@ const PropertyListPage = () => {
 
   return (
     <div className="property-list-page">
-      <h2 style={{
-        marginLeft: '16%'
-      }}>Quản Lý Bất Động Sản</h2>
-      <div className="tabs"  style={{
-        marginLeft: '16%'
-      }}>
+      <h2
+        style={{
+          marginLeft: "16%",
+        }}
+      >
+        Quản Lý Bất Động Sản
+      </h2>
+      <div
+        className="tabs"
+        style={{
+          marginLeft: "16%",
+        }}
+      >
         <button
           className={`tab-button ${activeTab === "info" ? "active" : ""}`}
           onClick={() => setActiveTab("info")}

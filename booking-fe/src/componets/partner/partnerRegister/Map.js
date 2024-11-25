@@ -51,11 +51,18 @@ const createPropertyMarkerIcon = (totalPriceNight) => {
     popupAnchor: [0, -25],
   });
 };
-const Map = ({ onLocationSelect, initialLocation, disableClick, option, allowPositionChange, showPropertyInfo }) => {
+const Map = ({
+  onLocationSelect,
+  initialLocation,
+  disableClick,
+  option,
+  allowPositionChange,
+  showPropertyInfo,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const userId = localStorage.getItem("userId");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const getRoomWithPrice = async () => {
     setIsLoading(true);
     const respone = await getAllRoomWithTotalPrice(
@@ -106,22 +113,25 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option, allowPos
     });
 
     return position ? (
-      <Marker position={position} icon={createUserMarkerIcon()} eventHandlers={{
-        click: (e) => {
-          if (disableClick) {
-            e.originalEvent.preventDefault();
-            e.originalEvent.stopPropagation();
-          }
-        },
-      }}>
+      <Marker
+        position={position}
+        icon={createUserMarkerIcon()}
+        eventHandlers={{
+          click: (e) => {
+            if (disableClick) {
+              e.originalEvent.preventDefault();
+              e.originalEvent.stopPropagation();
+            }
+          },
+        }}
+      >
         <Popup>Your Property</Popup>
       </Marker>
     ) : null;
   };
   useEffect(() => {
     console.log(selectedProperty);
-    
-  }, [selectedProperty])
+  }, [selectedProperty]);
   return (
     <>
       {isLoading ? (
@@ -140,45 +150,79 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option, allowPos
               boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
             }}
           >
-            {(selectedProperty && showPropertyInfo) && (
+            {selectedProperty && showPropertyInfo && (
               <>
-                <div className="selected-property-container" >
-                <div className="selected-property-head">
-                <img
-                  src={selectedProperty.value.property_id.images[0]}
-                  alt="Property"
-                  style={{ width: "100px", height: "100px", objectFit: "cover" }}
-                />
-                <div className="selected-property-name">
-                  <p style={{
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: '#006CE4',
-                  }}>{selectedProperty.value.property_id.name}</p>
-                  <p>Rating: {selectedProperty.value.property_id.rate || "N/A"}</p>
-                </div>
-               
-                </div>
-                <div className="selected-property-room">
-               <div className="room-information">
-                 <p>{selectedProperty.value.name}</p>
-                 <p>{selectedProperty.value.capacity.adults} {selectedProperty.value.capacity.adults > 1 ? "adults" : "adult"}, {selectedProperty.value.capacity.childs.count} {selectedProperty.value.capacity.childs.count > 1 ? "children" : "child"}</p>
-                  <p style={{
-                    fontWeight: '700',
-                    fontSize: '20px'
-                  }}>{formatCurrency(selectedProperty.totalPriceNight)}</p>
-               </div>
-               <button onClick={() => navigate(`/property/${selectedProperty.value.property_id._id}`)}>View</button>
-             </div>
+                <div className="selected-property-container">
+                  <div className="selected-property-head">
+                    <img
+                      src={selectedProperty.value.property_id.images[0]}
+                      alt="Property"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div className="selected-property-name">
+                      <p
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: "600",
+                          color: "#006CE4",
+                        }}
+                      >
+                        {selectedProperty.value.property_id.name}
+                      </p>
+                      <p>
+                        Rating:{" "}
+                        {selectedProperty.value.property_id.rate || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="selected-property-room">
+                    <div className="room-information">
+                      <p>{selectedProperty.value.name}</p>
+                      <p>
+                        {selectedProperty.value.capacity.adults}{" "}
+                        {selectedProperty.value.capacity.adults > 1
+                          ? "adults"
+                          : "adult"}
+                        , {selectedProperty.value.capacity.childs.count}{" "}
+                        {selectedProperty.value.capacity.childs.count > 1
+                          ? "children"
+                          : "child"}
+                      </p>
+                      <p
+                        style={{
+                          fontWeight: "700",
+                          fontSize: "20px",
+                        }}
+                      >
+                        {formatCurrency(selectedProperty.totalPriceNight)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/property/${selectedProperty.value.property_id._id}`,
+                        )
+                      }
+                    >
+                      View
+                    </button>
+                  </div>
 
-               <p>{selectedProperty.value.property_id.address.street}, {selectedProperty.value.property_id.address.ward}, {selectedProperty.value.property_id.address.district}, {selectedProperty.value.property_id.address.province}</p>
-
-              </div>
-              
+                  <p>
+                    {selectedProperty.value.property_id.address.street},{" "}
+                    {selectedProperty.value.property_id.address.ward},{" "}
+                    {selectedProperty.value.property_id.address.district},{" "}
+                    {selectedProperty.value.property_id.address.province}
+                  </p>
+                </div>
               </>
-            ) }
+            )}
           </div>
-  
+
           {/* Chỉ render MapContainer khi `position` đã được khởi tạo */}
           {position && (
             <MapContainer
@@ -212,12 +256,14 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option, allowPos
                         property.value.property_id.location.latitude,
                         property.value.property_id.location.longitude,
                       ]}
-                      icon={createPropertyMarkerIcon(formatCurrency(property.totalPriceNight))}
+                      icon={createPropertyMarkerIcon(
+                        formatCurrency(property.totalPriceNight),
+                      )}
                       eventHandlers={{
                         click: () => setSelectedProperty(property),
                       }}
                     />
-                  )
+                  ),
               )}
             </MapContainer>
           )}

@@ -14,35 +14,35 @@ function Payment() {
     "Please fill in your last name",
   );
 
-  const [formData, setFormData] = useState(
-    {
-      firstname: '',
-      lastname: '',
-      email: '',
-      phone: '',
-      country: '',
-      amount: 0,
-      bankCode: '',
-      language: 'vn'
-    }
-  )
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+    country: "",
+    amount: 0,
+    bankCode: "",
+    language: "vn",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
-    localStorage.setItem('email',formData.email);
+    localStorage.setItem("email", formData.email);
     console.log(formData);
-    axios.post('http://localhost:8000/payment/create_payment', formData)
-      .then(res => {
-        console.log(res.data)
-      }).catch(err => console.log(err));
-  }
+    axios
+      .post("http://localhost:8000/payment/create_payment", formData)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+  };
 
   const [country, setCountry] = useState([
     { name: "Vietnam" },
@@ -203,14 +203,16 @@ function Payment() {
                     className="form-control form-control-comment form-control-lg"
                     name="phone"
                     onChange={handleChange}
-
                     required
                   />
 
                   <label>
                     Country/Region<span className="required">*</span>
                   </label>
-                  <select className="country" name="country" onChange={handleChange}
+                  <select
+                    className="country"
+                    name="country"
+                    onChange={handleChange}
                   >
                     {country.map((index) => (
                       <option value={index.name} data-code={index.code}>
@@ -220,11 +222,23 @@ function Payment() {
                   </select>
 
                   <label for="amount">Số tiền</label>
-                  <input class="form-control" data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." id="amount" name="amount" type="number" onChange={handleChange}/>
-
+                  <input
+                    class="form-control"
+                    data-val="true"
+                    data-val-number="The field Amount must be a number."
+                    data-val-required="The Amount field is required."
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    onChange={handleChange}
+                  />
 
                   <label for="bankcode">Ngân hàng</label>
-                  <select name="bankCode" id="bankcode" class="form-control" onChange={handleChange}
+                  <select
+                    name="bankCode"
+                    id="bankcode"
+                    class="form-control"
+                    onChange={handleChange}
                   >
                     <option value="">Không chọn </option>
                     <option value="JCB">JCB</option>
@@ -233,12 +247,12 @@ function Payment() {
                     <option value="VIETCAPITALBANK">VIETCAPITALBANK</option>
                     <option value="SCB">Ngan hang SCB</option>
                     <option value="NCB">Ngan hang NCB</option>
-                    <option value="SACOMBANK">Ngan hang SacomBank  </option>
+                    <option value="SACOMBANK">Ngan hang SacomBank </option>
                     <option value="EXIMBANK">Ngan hang EximBank </option>
                     <option value="MSBANK">Ngan hang MSBANK </option>
                     <option value="NAMABANK">Ngan hang NamABank </option>
                     <option value="VNMART"> Vi dien tu VnMart</option>
-                    <option value="VIETINBANK">Ngan hang Vietinbank  </option>
+                    <option value="VIETINBANK">Ngan hang Vietinbank </option>
                     <option value="VIETCOMBANK">Ngan hang VCB </option>
                     <option value="HDBANK">Ngan hang HDBank</option>
                     <option value="DONGABANK">Ngan hang Dong A</option>
@@ -258,7 +272,11 @@ function Payment() {
                   </select>
 
                   <label for="language">Ngôn ngữ</label>
-                  <select name="language" id="language" class="form-control" onChange={handleChange}
+                  <select
+                    name="language"
+                    id="language"
+                    class="form-control"
+                    onChange={handleChange}
                   >
                     <option value="vn">Tiếng Việt</option>
                     <option value="en">English</option>
@@ -268,7 +286,9 @@ function Payment() {
                   )}
 
                   <div className="btnDiv">
-                    <button type="submit" className="btnSub">Next: Final details</button>
+                    <button type="submit" className="btnSub">
+                      Next: Final details
+                    </button>
                   </div>
                 </form>
               </div>

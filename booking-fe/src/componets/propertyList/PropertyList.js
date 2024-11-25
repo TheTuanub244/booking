@@ -4,6 +4,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "./propertyList.css";
 import { Navigation, Pagination } from "swiper/modules";
+import { useNavigate } from "react-router-dom";
 
 const PropertyList = ({ propertyType }) => {
   const images = [
@@ -34,38 +35,63 @@ const PropertyList = ({ propertyType }) => {
     },
     {
       type: "Bungalow",
-      image: "https://res.cloudinary.com/du4fzcfok/image/upload/v1732513698/R_hvzzw7.jpg"
+      image:
+        "https://res.cloudinary.com/du4fzcfok/image/upload/v1732513698/R_hvzzw7.jpg",
     },
     {
       type: "Villa",
-      image: "https://res.cloudinary.com/du4fzcfok/image/upload/v1732513697/OIP_tdscij.jpg"
+      image:
+        "https://res.cloudinary.com/du4fzcfok/image/upload/v1732513697/OIP_tdscij.jpg",
     },
     {
       type: "Resort",
-      image: "https://res.cloudinary.com/du4fzcfok/image/upload/v1732513697/OIP_tdscij.jpg"
-    }
+      image:
+        "https://res.cloudinary.com/du4fzcfok/image/upload/v1732513697/OIP_tdscij.jpg",
+    },
   ];
-
+  const data = JSON.parse(localStorage.getItem("option"));
+  const userId = localStorage.getItem("userId");
+  const navigate = useNavigate();
+  const latitude = localStorage.getItem("latitude");
+  const longitude = localStorage.getItem("longitude");
+  const handleSearchByType = async (value) => {
+    data.userId = userId;
+    data.type = value;
+    navigate(`/searchResult?type=${value}`, {
+      state: { option: data, longitude, latitude },
+    });
+  };
   return (
     <div className="pList">
       <Swiper
-        spaceBetween={15} 
-        slidesPerView={4} 
-        navigation 
-        pagination={{ clickable: true }} 
-        modules={[Navigation, Pagination]} 
+        spaceBetween={15}
+        slidesPerView={4}
+        navigation
+        pagination={{ clickable: true }}
+        modules={[Navigation, Pagination]}
       >
         {propertyType &&
           propertyType.map((type, index) => {
             // Tìm hình ảnh trùng khớp với type
-            const matchedImage = images.find((image) => image.type === type.name);
+            const matchedImage = images.find(
+              (image) => image.type === type.name,
+            );
 
             return (
               <SwiperSlide key={index}>
-                <div className="pListItem">
+                <div
+                  className="pListItem"
+                  onClick={() => handleSearchByType(type.name)}
+                >
                   <div className="pListImg">
                     {matchedImage ? (
-                      <img src={matchedImage.image} alt={type.name} />
+                      <img
+                        src={matchedImage.image}
+                        alt={type.name}
+                        style={{
+                          height: "180px",
+                        }}
+                      />
                     ) : (
                       <div>No Image Available</div>
                     )}

@@ -190,7 +190,7 @@ export class PropertyController {
     return this.propertyService.getDistinctPlace();
   }
   @Get('getRateOfProperties')
-  async getRateOfProperties(){
-    return this.propertyService.getRateOfProperties()
+  async getRateOfProperties() {
+    return this.propertyService.getRateOfProperties();
   }
 }

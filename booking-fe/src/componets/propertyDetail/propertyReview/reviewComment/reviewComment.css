@@ -22,7 +22,6 @@
 .reviewer-comment {
   flex: 5;
   margin: 10px;
-
 }
 
 .reviewer-image {
@@ -39,7 +38,6 @@
   width: 100%; /* Makes the image responsive */
   height: 100%; /* Makes the image responsive */
   object-fit: cover;
-  
 }
 
 .reviewer-name-nationality {
@@ -52,6 +50,5 @@
 }
 
 .reviewer-nationality {
-
   width: 100%;
 }

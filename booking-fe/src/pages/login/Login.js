@@ -29,9 +29,9 @@ function Login() {
     storageBucket: "booking-app-1edf4.firebasestorage.app",
     messagingSenderId: "319720545675",
     appId: "1:319720545675:web:0643aa0a2da6034082e38e",
-    measurementId: "G-FK4KH759ZB"
+    measurementId: "G-FK4KH759ZB",
   };
-  
+
   const [userId, setUserId] = useState();
   const [addInfo, setAddInfo] = useState(false);
   const [address, setAddress] = useState();
@@ -172,10 +172,13 @@ function Login() {
     const action = event.nativeEvent.submitter.name;
     try {
       const respone = await signIn(inputData);
-      
-      if(respone === "Wrong password!" || respone === "Invalid username or password"){
-        setErrorLogIn(respone)
-      }else {
+
+      if (
+        respone === "Wrong password!" ||
+        respone === "Invalid username or password"
+      ) {
+        setErrorLogIn(respone);
+      } else {
         const { userName, accessToken, uid, displayName, _id } = respone;
         const userData = {
           userName: userName,
@@ -192,36 +195,39 @@ function Login() {
           navigate("/");
         }
       }
-      
     } catch (e) {
       console.error("Error during sign-in:", e);
       setErrorLogIn(e.toString());
     }
   }
   async function forgotPassword() {
-    
     if (!inputData.userName) {
       setErrorLogIn("Invalid email");
     } else {
       localStorage.setItem("email", inputData.userName);
       const user = await checkEmail(inputData.userName);
       console.log(user);
-      
+
       if (!user) {
         setErrorLogIn("Invalid email");
       } else {
-        const resetToken = await updateResetPasswordToken(user._id, inputData.userName)
+        const resetToken = await updateResetPasswordToken(
+          user._id,
+          inputData.userName,
+        );
         console.log(resetToken);
-          
-        
-        sendPasswordResetEmail(auth, inputData.userName, {url: `${process.env.REACT_APP_API_URL}/checkResetPasswordToken?token=${resetToken}&userId=${user._id}`, }).then(() => {
-          alert("Reset password email has been sent");
-          setErrorLogIn("");
+
+        sendPasswordResetEmail(auth, inputData.userName, {
+          url: `${process.env.REACT_APP_API_URL}/checkResetPasswordToken?token=${resetToken}&userId=${user._id}`,
         })
-        .catch((error) => {
-          console.error("Error:", error.message);
-          setErrorLogIn(error.message);
-        });
+          .then(() => {
+            alert("Reset password email has been sent");
+            setErrorLogIn("");
+          })
+          .catch((error) => {
+            console.error("Error:", error.message);
+            setErrorLogIn(error.message);
+          });
         alert("Reset password email has sent");
         setErrorLogIn("");
       }

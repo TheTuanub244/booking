@@ -501,13 +501,13 @@ const PropertyDetailsForm = ({
     // Send FormData to backend
     try {
       const respone = await createPropertyWithPartner(formData, accessToken);
-      if(respone.response.status === 401){
-        alert('You need to sign in!')
-        await handleSignOut()
-        navigate('/login')
-      }else {
+      if (respone.response.status === 401) {
+        alert("You need to sign in!");
+        await handleSignOut();
+        navigate("/login");
+      } else {
         getAllPropetyByOwner(userId);
-        setTab("list")
+        setTab("list");
       }
     } catch (error) {
       console.error("Failed to add property:", error);

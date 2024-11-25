@@ -106,7 +106,12 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleReserveClick = async () => {
-    await createBooking(userId, partnerId, "67349f6d8e44839e850b6366", "67131b83495dc248e2715e5f");
+    await createBooking(
+      userId,
+      partnerId,
+      "67349f6d8e44839e850b6366",
+      "67131b83495dc248e2715e5f",
+    );
     if (!userId) {
       setIsPopupOpen(true);
     }
@@ -255,7 +260,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
                       setModalRoom={(room) => {
-                        setModalRoom(room); 
+                        setModalRoom(room);
                         setIsModalOpen(true);
                       }}
                     />
@@ -270,8 +275,10 @@ const ReservationRoom = ({ roomData, partnerId }) => {
         </div>
       </form>
 
-      {isModalOpen && <RoomModal isOpen={isModalOpen} onClose={closeModal} room={modalRoom}/>}
-      
+      {isModalOpen && (
+        <RoomModal isOpen={isModalOpen} onClose={closeModal} room={modalRoom} />
+      )}
+
       <SignInPopup
         isOpen={isPopupOpen}
         onClose={handleClosePopup}

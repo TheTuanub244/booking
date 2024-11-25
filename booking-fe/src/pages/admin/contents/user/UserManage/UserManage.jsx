@@ -1,10 +1,8 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 const UserManage = () => {
-  return (
-    <Outlet/>
-  )
-}
+  return <Outlet />;
+};
 
-export default UserManage
+export default UserManage;

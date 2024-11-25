@@ -18,7 +18,7 @@ export class User {
   resetPasswordToken: string;
   @Prop({ required: false, type: Date, default: null })
   resetPasswordExpires: Date;
-  @Prop({ type: String, enum: ['unused', 'used'], default: 'unused' }) 
+  @Prop({ type: String, enum: ['unused', 'used'], default: 'unused' })
   resetPasswordTokenStatus: 'unused' | 'used';
   @Prop({
     type: {
@@ -81,7 +81,6 @@ export class User {
     },
     _id: false,
   })
-
   partnerInfo?: {
     businessName: string;
     propertyType: string;

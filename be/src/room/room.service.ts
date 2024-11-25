@@ -69,6 +69,7 @@ export class RoomService {
       check_in,
       check_out,
       capacity,
+      null,
     );
     availableRoom.forEach((item) => {
       const propertyId = item.value.property_id._id;
@@ -78,7 +79,6 @@ export class RoomService {
       }
     });
     const uniquedProperties = Array.from(uniqueMap.values());
-    
 
     return uniquedProperties;
   }
@@ -127,86 +127,125 @@ export class RoomService {
   }
   async findAvailableRoomWithSearch(
     userId: string,
-    place,
+    place: string,
     check_in,
     check_out,
     capacity,
+    type: string,
   ) {
-    let findProperties;
-    if (place === 'all') {
-      findProperties = await this.propertySchema.find();
-    } else {
-      findProperties = await this.propertySchema.find({
-        'address.province': place,
-      });
-    }
+    if (place) {
+      let findProperties;
+      if (place === 'all') {
+        findProperties = await this.propertySchema.find();
+      } else {
+        findProperties = await this.propertySchema.find({
+          'address.province': place,
+        });
+      }
 
-    const availableRoom = [];
-    await Promise.all(
-      findProperties.map(async (property) => {
-        const findAvailableRoom = await this.findAvailableRoomWithProperty(
-          property._id,
-        );
+      const availableRoom = [];
+      await Promise.all(
+        findProperties.map(async (property) => {
+          const findAvailableRoom = await this.findAvailableRoomWithProperty(
+            property._id,
+          );
 
-        await Promise.all(
-          findAvailableRoom.map(async (value) => {
-            const finalRespone = await this.findConflictingInBookings(
-              value._id,
-              property._id,
-              check_in,
-              check_out,
-            );
+          await Promise.all(
+            findAvailableRoom.map(async (value) => {
+              const finalRespone = await this.findConflictingInBookings(
+                value._id,
+                property._id,
+                check_in,
+                check_out,
+              );
 
-            if (finalRespone.length === 0) {
-              const totalPriceNight =
-                await this.bookingService.calculateTotalNightPrice({
-                  room_id: [value._id],
-                  property: property._id,
-                  check_in_date: check_in,
-                  check_out_date: check_out,
-                });
-              availableRoom.push({ value, totalPriceNight });
-            }
-          }),
-        );
-      }),
-    );
-    
-    
-    if (userId && place != 'all') {
-      const session = await this.sessionSchema.findOne({
-        userId: new Types.ObjectId(userId),
-      });
-      console.log(session);
+              if (finalRespone.length === 0) {
+                const totalPriceNight =
+                  await this.bookingService.calculateTotalNightPrice({
+                    room_id: [value._id],
+                    property: property._id,
+                    check_in_date: check_in,
+                    check_out_date: check_out,
+                  });
+                availableRoom.push({ value, totalPriceNight });
+              }
+            }),
+          );
+        }),
+      );
 
-      if (!session) throw new Error('Session not found');
+      if (userId && place != 'all') {
+        const session = await this.sessionSchema.findOne({
+          userId: new Types.ObjectId(userId),
+        });
+        console.log(session);
 
-      const isDuplicate = await this.isDuplicateSearch(session.recent_search, {
-        place,
-        capacity,
-        checkIn: new Date(check_in),
-        checkOut: new Date(check_out),
-      });
+        if (!session) throw new Error('Session not found');
 
-      if (!isDuplicate) {
-        await this.sessionSchema.findOneAndUpdate(
+        const isDuplicate = await this.isDuplicateSearch(
+          session.recent_search,
           {
-            userId,
+            place,
+            capacity,
+            checkIn: new Date(check_in),
+            checkOut: new Date(check_out),
           },
-          {
-            $push: {
-              recent_search: {
-                $each: [{ province: place, check_in, check_out, capacity }],
-                $slice: -3,
+        );
+
+        if (!isDuplicate) {
+          await this.sessionSchema.findOneAndUpdate(
+            {
+              userId,
+            },
+            {
+              $push: {
+                recent_search: {
+                  $each: [{ province: place, check_in, check_out, capacity }],
+                  $slice: -3,
+                },
               },
             },
-          },
-          { new: true },
+            { new: true },
+          );
+        }
+        return availableRoom;
+      } else {
+        const findProperties = await this.propertySchema.find({
+          property_type: type,
+        });
+        const availableRoom = [];
+        await Promise.all(
+          findProperties.map(async (property) => {
+            const findAvailableRoom = await this.findAvailableRoomWithProperty(
+              property._id,
+            );
+
+            await Promise.all(
+              findAvailableRoom.map(async (value) => {
+                const finalRespone = await this.findConflictingInBookings(
+                  value._id,
+                  property._id,
+                  check_in,
+                  check_out,
+                );
+
+                if (finalRespone.length === 0) {
+                  const totalPriceNight =
+                    await this.bookingService.calculateTotalNightPrice({
+                      room_id: [value._id],
+                      property: property._id,
+                      check_in_date: check_in,
+                      check_out_date: check_out,
+                    });
+                  availableRoom.push({ value, totalPriceNight });
+                }
+              }),
+            );
+          }),
         );
+        return availableRoom;
       }
     }
-
-    return availableRoom;
   }
   async findConflictingInBookings(
     room_id: mongoose.Types.ObjectId,

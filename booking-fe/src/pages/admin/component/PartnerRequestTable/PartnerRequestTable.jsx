@@ -1,6 +1,6 @@
 import "./PartnerRequestTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import {partnerRequestRows} from "../../data/partnerRequestData";
+import { partnerRequestRows } from "../../data/partnerRequestData";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -14,7 +14,6 @@ const PartnerRequestTable = () => {
   };
   function formatFriendlyDatetime(requestAt) {
     const date = new Date(requestAt);
-    
 
     const options = {
       weekday: "long",
@@ -25,39 +24,36 @@ const PartnerRequestTable = () => {
       minute: "2-digit",
       hour12: true,
     };
-  
+
     return date.toLocaleString("en-US", options);
   }
 
   const userColumn = [
-    { field: "id", 
-      headerName: "ID", 
-      width: 50 
+    { field: "id", headerName: "ID", width: 50 },
+    {
+      field: "user",
+      headerName: "User",
+      width: 130,
+      renderCell: (params) => {
+        return (
+          <div className="cellWithImg">
+            <img className="cellImg" src={params.row.img} alt="avatar" />
+            {params.row.username}
+          </div>
+        );
+      },
     },
-  {
-    field: "user",
-    headerName: "User",
-    width: 130,
-    renderCell: (params) => {
-      return (
-        <div className="cellWithImg">
-          <img className="cellImg" src={params.row.img} alt="avatar" />
-          {params.row.username}
-        </div>
-      );
+    {
+      field: "email",
+      headerName: "Email",
+      width: 200,
     },
-  },
-  {
-    field: "email",
-    headerName: "Email",
-    width: 200,
-  },
 
-  {
-    field: "age",
-    headerName: "Age",
-    width: 100,
-  },
+    {
+      field: "age",
+      headerName: "Age",
+      width: 100,
+    },
     {
       field: "action",
       headerName: "Action",
@@ -65,9 +61,9 @@ const PartnerRequestTable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <div 
-            className="acceptButton"
-            onClick={() => handleAcept(params.row.id)}
+            <div
+              className="acceptButton"
+              onClick={() => handleAcept(params.row.id)}
             >
               Accept
             </div>
@@ -84,9 +80,7 @@ const PartnerRequestTable = () => {
   ];
   return (
     <div className="datatable">
-      <div className="datatableTitle">
-        Partner Request
-      </div>
+      <div className="datatableTitle">Partner Request</div>
       <DataGrid
         className="datagrid"
         rows={data}

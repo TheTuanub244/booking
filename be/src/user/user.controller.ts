@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -30,6 +31,8 @@ export class UserController {
   }
   @Post('/sign-up-with-email')
   async signUpWithEmail(@Body() signup: any) {
+    console.log(signup);
+
     return this.userService.signUpWithEmail(signup);
   }
   @Post('/confirm-signup')
@@ -39,7 +42,6 @@ export class UserController {
   @Post('/sign-in')
   async signIn(@Body() user: any, @Res() response: Response) {
     const data = await this.userService.signIn(user);
-
     response.cookie('refreshToken', data.refreshToken, {
       httpOnly: true,
       sameSite: 'none',
@@ -120,7 +122,26 @@ export class UserController {
     return this.userService.requestToPartner(id);
   }
   @Get('checkRequest/:id')
-  async checkRequest(@Param('id') id: string){
-    return this.userService.checkRequestPartner(id)
+  async checkRequest(@Param('id') id: string) {
+    return this.userService.checkRequestPartner(id);
+  }
+  @Get('updateResetPasswordToken')
+  async updateResetPasswordToken(
+    @Query('userId') userId: string,
+    @Query('email') email: string,
+  ) {
+    return this.userService.updateResetPasswordToken(userId, email);
+  }
+  @Post('checkResetPasswordToken')
+  async checkResetPasswordToken(
+    @Query('userId') userId: string,
+    @Query('token') token: string,
+    @Body() user: any,
+  ) {
+    return this.userService.checkResetPasswordToken(
+      userId,
+      user.password,
+      token,
+    );
   }
 }

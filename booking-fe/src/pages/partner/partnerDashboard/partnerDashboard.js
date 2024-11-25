@@ -11,7 +11,7 @@ const words = ["Hotel", "Apartment", "Homestay", "Hostel"];
 
 const PartnerDashboard = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -58,38 +58,42 @@ const PartnerDashboard = () => {
     },
   ];
   const handleGetStarted = async () => {
-    const userId = localStorage.getItem('userId')
-    const respone = await checkRequestPartner(userId)
-    
-    if(respone){
-      setShowModal(true)
-    }else {
-      navigate("/partner/partnerRegister")
+    const userId = localStorage.getItem("userId");
+    const respone = await checkRequestPartner(userId);
+
+    if (respone) {
+      setShowModal(true);
+    } else {
+      navigate("/partner/partnerRegister");
     }
-    
-  }
+  };
   const handleCloseModal = async () => {
-    setShowModal(false)
-    navigate('/')
-  }
+    setShowModal(false);
+    navigate("/");
+  };
   return (
     <div className="containerr">
       <PartnerNavbar />
       {showModal && (
-        <Modal show={showModal} onHide={() => setShowModal(false)} centered className="fix-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>Registration Submitted</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Thank you for registering! Your request has been submitted and is
-          pending admin approval.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={() => handleCloseModal()}>
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <Modal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          centered
+          className="fix-modal"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Registration Submitted</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Thank you for registering! Your request has been submitted and is
+            pending admin approval.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={() => handleCloseModal()}>
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
       <div className="dashboard-containerr">
         <div className="dashboard-text">
@@ -120,9 +124,7 @@ const PartnerDashboard = () => {
               payment
             </span>
           </div>
-          <button onClick={() => handleGetStarted()}>
-            Get started now
-          </button>
+          <button onClick={() => handleGetStarted()}>Get started now</button>
         </div>
       </div>
       <div className="register-body">

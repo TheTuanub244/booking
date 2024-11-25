@@ -1,4 +1,4 @@
-import "./ViewRoom.css"
+import "./ViewRoom.css";
 
 const ViewRoom = () => {
   return (

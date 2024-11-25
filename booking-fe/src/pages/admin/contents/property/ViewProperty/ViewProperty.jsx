@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ViewProperty = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default ViewProperty
+export default ViewProperty;

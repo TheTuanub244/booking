@@ -139,8 +139,8 @@ export class BookingService {
       receiver_id: booking[0].propertyDetails.owner_id,
       booking_id: booking[0]._id,
       type: 'Booking',
-      message
-    })
+      message,
+    });
     booking[0].booking_status = BookingStatus.CANCELED;
     await booking[0].save();
     return true;
@@ -488,18 +488,18 @@ export class BookingService {
       yearlyRevenue: item.yearlyRevenue,
     }));
   }
-  async getBooking(owner_id: string) {
+  async getBookingByOwner(owner_id: string) {
     return this.bookingSchema.aggregate([
       {
         $lookup: {
-          from: 'properties', 
+          from: 'properties',
           localField: 'property',
-          foreignField: '_id', 
-          as: 'propertyDetails', 
+          foreignField: '_id',
+          as: 'propertyDetails',
         },
       },
       {
-        $unwind: '$propertyDetails', 
+        $unwind: '$propertyDetails',
       },
       {
         $lookup: {
@@ -511,15 +511,15 @@ export class BookingService {
       },
       {
         $match: {
-          'propertyDetails.owner_id': new Types.ObjectId(owner_id), 
+          'propertyDetails.owner_id': new Types.ObjectId(owner_id),
         },
       },
       {
         $lookup: {
-          from: 'rooms', 
-          localField: 'room_id', 
-          foreignField: '_id', 
-          as: 'roomDetails', 
+          from: 'rooms',
+          localField: 'room_id',
+          foreignField: '_id',
+          as: 'roomDetails',
         },
       },
       {
@@ -532,7 +532,7 @@ export class BookingService {
           capacity: 1,
           propertyDetails: 1,
           roomDetails: 1,
-          userDetails: 1
+          userDetails: 1,
         },
       },
     ]);

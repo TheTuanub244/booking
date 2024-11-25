@@ -3,42 +3,42 @@ import { Link, useParams } from "react-router-dom";
 import "./EditUser.css";
 
 const EditUser = ({}) => {
-    const {id} = useParams();
-    const [user, setUser] = useState(null);
+  const { id } = useParams();
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-      const fetchUser = async () => {
-        const mockUserData = {
-          _id: "1",
-          userName: "User",
-          email: "user@gmail.com",
-          phoneNumber: "0123456789",
-          gender: false,
-          avatar: "https://images8.alphacoders.com/657/657974.jpg",
-          address: {
+  useEffect(() => {
+    const fetchUser = async () => {
+      const mockUserData = {
+        _id: "1",
+        userName: "User",
+        email: "user@gmail.com",
+        phoneNumber: "0123456789",
+        gender: false,
+        avatar: "https://images8.alphacoders.com/657/657974.jpg",
+        address: {
+          province: "HaNoi",
+          district: "HoangMai",
+          ward: "KimDong",
+        },
+        role: ["PARTNER"],
+        isAdmin: false,
+        partnerInfo: {
+          businessName: "ABC",
+          propertyType: "ABC",
+          numberOfProperties: 5,
+          businessAddress: {
             province: "HaNoi",
             district: "HoangMai",
             ward: "KimDong",
+            street: "1 Main St.",
           },
-          role: ["PARTNER"],
-          isAdmin: false,
-          partnerInfo: {
-            businessName: "ABC",
-            propertyType: "ABC",
-            numberOfProperties: 5,
-            businessAddress: {
-              province: "HaNoi",
-              district: "HoangMai",
-              ward: "KimDong",
-              street: "1 Main St.",
-            },
-          },
-        };
-        setUser(mockUserData);
+        },
       };
-  
-      fetchUser();
-    }, []);
+      setUser(mockUserData);
+    };
+
+    fetchUser();
+  }, []);
 
   const handleSubmit = () => {
     alert("User details submitted!");
@@ -75,7 +75,7 @@ const EditUser = ({}) => {
           <button type="submit" onClick={handleSubmit}>
             Submit
           </button>
-          <Link to={`/admin/user/view/${id}`}  className="backButton">
+          <Link to={`/admin/user/view/${id}`} className="backButton">
             Back
           </Link>
         </div>

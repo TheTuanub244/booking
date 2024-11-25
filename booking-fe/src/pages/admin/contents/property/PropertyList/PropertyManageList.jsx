@@ -6,7 +6,7 @@ import { getAllProperty } from "../../../../../api/propertyAPI";
 import "./PropertyManageList.css";
 
 const PropertyManageList = () => {
-  const [viewMode, setViewMode] = useState("cards"); 
+  const [viewMode, setViewMode] = useState("cards");
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 

@@ -31,9 +31,9 @@ function Home() {
   const [allPlace, setAllPlace] = useState();
   const [userId, setUserId] = useState();
   const [propertyType, setPropertyType] = useState();
-  const [isPopup, setIsPopup] = useState(false)
+  const [isPopup, setIsPopup] = useState(false);
   const [promptData, setPromptData] = useState();
-  const [unfinishedBooking, setUnfinishedBooking] = useState([])
+  const [unfinishedBooking, setUnfinishedBooking] = useState([]);
   const navigate = useNavigate();
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
@@ -76,19 +76,19 @@ function Home() {
     setUserId(userId);
     getPropertyType();
     const handleFindUnfinishedBooking = async (userId) => {
-      const respone = await findUnfinishedBooking(userId)
-      if(respone){
-        setUnfinishedBooking(respone)
+      const respone = await findUnfinishedBooking(userId);
+      if (respone) {
+        setUnfinishedBooking(respone);
       }
-    }
-   
+    };
+
     handleGetAllProperty();
     if (userId) {
       getHistory(userId);
-      handleFindUnfinishedBooking(userId)
+      handleFindUnfinishedBooking(userId);
     }
   }, []);
- 
+
   return (
     <div>
       <Navbar />
@@ -112,20 +112,24 @@ function Home() {
         <PropertyList propertyType={propertyType} />
         <h1 className="homeTitle">Quick and easy trip planner</h1>
         {propertyNear && <EasyTrip propertyNear={propertyNear} />}
-        <h1 className="homeTitle" style={{
-          marginTop: '100px'
-        }}>Home guests love</h1>
+        <h1
+          className="homeTitle"
+          style={{
+            marginTop: "100px",
+          }}
+        >
+          Home guests love
+        </h1>
         <FeaturedProperties />
 
         <Footer />
       </div>
-      {
-        unfinishedBooking && (
-          unfinishedBooking.length !== 0 && (
-            <BookingPopup booking={unfinishedBooking[0]} setUnfinishedBooking={setUnfinishedBooking}/>
-          )
-        )
-      }
+      {unfinishedBooking && unfinishedBooking.length !== 0 && (
+        <BookingPopup
+          booking={unfinishedBooking[0]}
+          setUnfinishedBooking={setUnfinishedBooking}
+        />
+      )}
     </div>
   );
 }

@@ -1,2 +1,1 @@
-export declare class PaymentModule {
-}
+export declare class PaymentModule {}

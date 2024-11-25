@@ -23,7 +23,6 @@
   right: 10px;
 }
 
-
 .thumbnail-container {
   display: flex;
   margin-top: 10px;
@@ -46,13 +45,11 @@
 
 .thumbnail-container .active {
   border: 3px solid #333;
-  transform: scale(1.1); 
+  transform: scale(1.1);
 }
-
 
 .main-image img {
   width: 100%;
   height: auto;
   border-radius: 5px;
 }
-

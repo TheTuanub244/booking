@@ -46,23 +46,24 @@
 .notification-itemm {
   padding: 10px;
   border-bottom: 1px solid #ddd;
-  transition: background-color 0.3s, font-weight 0.3s;
+  transition:
+    background-color 0.3s,
+    font-weight 0.3s;
 }
 
 .notification-item.unreadd {
   background-color: #f9f9f9;
-  font-weight: bold; 
+  font-weight: bold;
 }
 
 .notification-item.readd {
-  background-color: white; 
-  font-weight: normal; 
+  background-color: white;
+  font-weight: normal;
 }
 .notification-itemm p {
   margin: 0;
   font-size: 14px;
 }
-
 
 .notification-itemm small {
   color: #666;
@@ -105,7 +106,6 @@
   border-radius: 5px;
   z-index: 1000;
 }
-
 
 .dropdown-headerr {
   display: flex;

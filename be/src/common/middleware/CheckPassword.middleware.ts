@@ -5,24 +5,20 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class ResetPasswordMiddleware implements NestMiddleware {
+export class CheckPasswordMiddleware implements NestMiddleware {
   async use(req: any, res: any, next: () => void) {
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
     const requiredFields = [
       { message: 'Email is required', field: 'email' },
       { message: 'Password is required', field: 'password' },
-      { message: 'Please re-enter the password', field: 'rePassword' },
     ];
-    console.log(req.body);
-
     const errors = requiredFields
       .filter(({ field }) => !req.body[field])
       .map(({ field, message }) => ({
         field,
         message,
       }));
-
     if (!passwordRegex.test(req.body.password)) {
       throw new BadRequestException({
         message:
@@ -35,12 +31,6 @@ export class ResetPasswordMiddleware implements NestMiddleware {
         message: errors.map((error) => error.message),
         field: errors.map((error) => error.field),
       });
-    } else {
-      if (req.body.password !== req.body.rePassword) {
-        throw new BadRequestException({
-          message: 'The password is not the same',
-        });
-      }
     }
     next();
   }

@@ -1,11 +1,11 @@
 import "./RoomTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import {  roomRows } from "../../data/roomdata"; 
+import { roomRows } from "../../data/roomdata";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const RoomTable = () => {
-  const [data, setData] = useState(roomRows); 
+  const [data, setData] = useState(roomRows);
   console.log(data);
 
   const handleDelete = (id) => {
@@ -22,7 +22,8 @@ const RoomTable = () => {
       field: "property_id",
       headerName: "Property ID",
       width: 150,
-      valueGetter: (params) => params.row.property_id?.name || params.row.property_id,
+      valueGetter: (params) =>
+        params.row.property_id?.name || params.row.property_id,
     },
     {
       field: "size",
@@ -82,10 +83,7 @@ const RoomTable = () => {
       width: 200,
       renderCell: (params) => (
         <div className="cellAction">
-          <Link
-            to={`view/${params.row.id}`}
-            style={{ textDecoration: "none" }}
-          >
+          <Link to={`view/${params.row.id}`} style={{ textDecoration: "none" }}>
             <div className="viewButton">View</div>
           </Link>
           <div
@@ -98,7 +96,6 @@ const RoomTable = () => {
       ),
     },
   ];
-  
 
   return (
     <div className="datatable">

@@ -38,24 +38,50 @@
   margin-bottom: 20px;
 }
 
-.filter-section {
-  width: 90%;
-  margin-top: 15px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #fafafa;
+.filter-bar {
+  margin-top: 20px;
+  width: 300px;
   margin-right: 20px;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
 }
 
-.filter-group {
-  margin-bottom: 15px;
+.filter-section {
+  margin-bottom: 20px;
+  width: 100%;
 }
 
+.filter-section h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.filter-section label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+  padding-left: 0;
+}
+.filter-section input[type="radio"] {
+  margin-right: 10px;
+  flex-shrink: 0;
+  background-color: red;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin-top: 10px;
+}
 .filter-group h4 {
   margin-bottom: 5px;
 }
-
+.fix-width input {
+  width: 20px;
+}
 .results-list {
   width: 100%;
 }
@@ -178,4 +204,20 @@
 
 .close-popup-map:hover {
   background-color: #d43f3a;
+}
+.range-slider {
+  width: 100%;
+  padding: 20px;
+}
+
+.range-slider h4 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.range-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 14px;
 }

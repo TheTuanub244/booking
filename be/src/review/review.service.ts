@@ -78,8 +78,7 @@ export class ReviewService {
     limit: number = 10,
   ) {
     const rooms = await this.roomSchema.find({ property_id });
-    console.log(rooms);
-    
+
     const roomIds = rooms.map((room) => room._id);
     const skip = (page - 1) * limit;
 
@@ -102,14 +101,12 @@ export class ReviewService {
       currentPage: page,
     };
   }
-  async countReviewWithProperty(property_id: string){
+  async countReviewWithProperty(property_id: string) {
     const rooms = await this.roomSchema.find({ property_id });
     const roomIds = rooms.map((room) => room._id);
     return this.reviewSchema
       .countDocuments({ room_id: { $in: roomIds } })
       .exec();
-
-    
   }
   async getMonthlyRating(owner_id: string) {
     const reviews = await this.reviewSchema

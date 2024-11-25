@@ -29,7 +29,9 @@
 
 .newContainer .bottom {
   overflow-y: auto; /* Enable vertical scrolling for the form section */
-  max-height: calc(100vh - 100px); /* Adjust the height dynamically based on viewport */
+  max-height: calc(
+    100vh - 100px
+  ); /* Adjust the height dynamically based on viewport */
 }
 
 .newContainer .top .left,

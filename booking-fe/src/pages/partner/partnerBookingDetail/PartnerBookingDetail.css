@@ -1,119 +1,114 @@
-.partner-booking-detail-container{
-    display: flex;
-    justify-content: center;
-    padding-top: 30px;
-    
+.partner-booking-detail-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
 }
-.partner-booking-detail-container-left{
-    margin-right: 30px;
-    height: 300px;
-    padding: 20px;
-    border: 1px solid #ddd; 
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    background-color: #ffffff; 
-    padding: 16px; 
+.partner-booking-detail-container-left {
+  margin-right: 30px;
+  height: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 16px;
 }
 .partner-booking-detail-container-left p {
-    font-weight: 600;
+  font-weight: 600;
 }
 
-.image-thumbnail{
-    width: 520px;
-    height: 400px;
-    border-radius: 10px;
+.image-thumbnail {
+  width: 520px;
+  height: 400px;
+  border-radius: 10px;
 }
-.complete-color{
-    color: green;
+.complete-color {
+  color: green;
 }
-.cancel-color{
-    color: red;
+.cancel-color {
+  color: red;
 }
-.pending-color{
-    color: rgb(138, 138, 0);
+.pending-color {
+  color: rgb(138, 138, 0);
 }
-.property-detail-information{
-    border: 1px solid #ddd; 
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    background-color: #ffffff; 
-    padding: 16px; 
+.property-detail-information {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 16px;
 }
-.property-detail-night{
-    border: 1px solid #ddd; 
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    background-color: #ffffff; 
-    padding: 16px; 
-    margin-top: 30px;
+.property-detail-night {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 16px;
+  margin-top: 30px;
 }
-p{
-    color: black
+p {
+  color: black;
 }
-.check-in-check-out{
-    display: flex;
-    justify-content: space-between;
+.check-in-check-out {
+  display: flex;
+  justify-content: space-between;
 }
-.check-in{
-    border-right: 1px solid black;
-    width: 50%;
-
-    
+.check-in {
+  border-right: 1px solid black;
+  width: 50%;
 }
-.property-detail-rate{
-    display: flex;
-    width: 30%;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
+.property-detail-rate {
+  display: flex;
+  width: 30%;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
 }
-.rate-number{
-    background-color: #003B95;
-    color: white;
-    padding: 2px;
-    border-radius: 5px;
+.rate-number {
+  background-color: #003b95;
+  color: white;
+  padding: 2px;
+  border-radius: 5px;
 }
-.check-out{
-    width: 50%;
-    padding-left: 12%;
-
+.check-out {
+  width: 50%;
+  padding-left: 12%;
 }
 .selection-summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .selection-summary p {
-    margin: 0; /* Xóa margin của đoạn text */
-    flex: 1; /* Để chiếm không gian còn lại */
-    font-size: 16px;
+  margin: 0; /* Xóa margin của đoạn text */
+  flex: 1; /* Để chiếm không gian còn lại */
+  font-size: 16px;
 }
 
 .toggle-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    color: #007BFF; /* Màu sắc icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #007bff; /* Màu sắc icon */
 }
 
 /* Smooth expand/collapse container */
 .room-names {
-    overflow: hidden;
-    transition: max-height 0.3s ease; /* Thời gian chuyển đổi */
-    max-height: 0; /* Mặc định là 0 khi collapse */
+  overflow: hidden;
+  transition: max-height 0.3s ease; /* Thời gian chuyển đổi */
+  max-height: 0; /* Mặc định là 0 khi collapse */
 }
 
 .room-names.expanded {
-    max-height: 500px; /* Chiều cao tối đa khi mở */
+  max-height: 500px; /* Chiều cao tối đa khi mở */
 }
-.total-price-container{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
+.total-price-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

@@ -16,6 +16,8 @@ import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import ReactDOMServer from "react-dom/server";
 import { getAllRoomWithTotalPrice } from "../../../api/roomAPI";
 import Loading from "../../loading/Loading";
+import { calculateNights } from "../../../helpers/dateHelpers";
+import { useNavigate } from "react-router-dom";
 const createUserMarkerIcon = () => {
   return L.divIcon({
     className: "user-marker-container",
@@ -49,9 +51,18 @@ const createPropertyMarkerIcon = (totalPriceNight) => {
     popupAnchor: [0, -25],
   });
 };
-const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
+const Map = ({
+  onLocationSelect,
+  initialLocation,
+  disableClick,
+  option,
+  allowPositionChange,
+  showPropertyInfo,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedProperty, setSelectedProperty] = useState(null);
   const userId = localStorage.getItem("userId");
+  const navigate = useNavigate();
   const getRoomWithPrice = async () => {
     setIsLoading(true);
     const respone = await getAllRoomWithTotalPrice(
@@ -88,10 +99,10 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
     }
     getProperties();
   }, [initialLocation]);
-  const LocationMarker = () => {
+  const LocationMarker = ({ allowPositionChange }) => {
     useMapEvents({
       click(e) {
-        if (!disableClick) {
+        if (!disableClick && (allowPositionChange || !position)) {
           const { lat, lng } = e.latlng;
           setPosition({ lat: parseFloat(lat), lng: parseFloat(lng) });
           if (onLocationSelect) {
@@ -102,31 +113,141 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
     });
 
     return position ? (
-      <Marker position={position} icon={createUserMarkerIcon()}>
+      <Marker
+        position={position}
+        icon={createUserMarkerIcon()}
+        eventHandlers={{
+          click: (e) => {
+            if (disableClick) {
+              e.originalEvent.preventDefault();
+              e.originalEvent.stopPropagation();
+            }
+          },
+        }}
+      >
         <Popup>Your Property</Popup>
       </Marker>
     ) : null;
   };
+  useEffect(() => {
+    console.log(selectedProperty);
+  }, [selectedProperty]);
   return (
     <>
-      {position &&
-        (isLoading ? (
-          <Loading />
-        ) : (
-          <MapContainer
-            center={position}
-            zoom={15}
-            style={{ height: "100%", width: "100%" }}
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          {/* Hiển thị thông tin property được chọn ở góc trên trái */}
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              zIndex: 1000,
+              padding: "10px",
+              borderRadius: "8px",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+            }}
           >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
+            {selectedProperty && showPropertyInfo && (
+              <>
+                <div className="selected-property-container">
+                  <div className="selected-property-head">
+                    <img
+                      src={selectedProperty.value.property_id.images[0]}
+                      alt="Property"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div className="selected-property-name">
+                      <p
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: "600",
+                          color: "#006CE4",
+                        }}
+                      >
+                        {selectedProperty.value.property_id.name}
+                      </p>
+                      <p>
+                        Rating:{" "}
+                        {selectedProperty.value.property_id.rate || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="selected-property-room">
+                    <div className="room-information">
+                      <p>{selectedProperty.value.name}</p>
+                      <p>
+                        {selectedProperty.value.capacity.adults}{" "}
+                        {selectedProperty.value.capacity.adults > 1
+                          ? "adults"
+                          : "adult"}
+                        , {selectedProperty.value.capacity.childs.count}{" "}
+                        {selectedProperty.value.capacity.childs.count > 1
+                          ? "children"
+                          : "child"}
+                      </p>
+                      <p
+                        style={{
+                          fontWeight: "700",
+                          fontSize: "20px",
+                        }}
+                      >
+                        {formatCurrency(selectedProperty.totalPriceNight)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/property/${selectedProperty.value.property_id._id}`,
+                        )
+                      }
+                    >
+                      View
+                    </button>
+                  </div>
 
-            <LocationMarker />
+                  <p>
+                    {selectedProperty.value.property_id.address.street},{" "}
+                    {selectedProperty.value.property_id.address.ward},{" "}
+                    {selectedProperty.value.property_id.address.district},{" "}
+                    {selectedProperty.value.property_id.address.province}
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
 
-            {properties.length !== 0 &&
-              properties.map(
+          {/* Chỉ render MapContainer khi `position` đã được khởi tạo */}
+          {position && (
+            <MapContainer
+              center={position}
+              zoom={15}
+              style={{ height: "100%", width: "100%" }}
+              className={disableClick ? "map-container-disabled" : ""}
+              whenCreated={(mapInstance) => {
+                if (disableClick) {
+                  mapInstance.dragging.disable();
+                  mapInstance.touchZoom.disable();
+                  mapInstance.doubleClickZoom.disable();
+                  mapInstance.scrollWheelZoom.disable();
+                  mapInstance.boxZoom.disable();
+                  mapInstance.keyboard.disable();
+                  mapInstance.off("click");
+                }
+              }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <LocationMarker />
+              {properties.map(
                 (property) =>
                   property.value && (
                     <Marker
@@ -137,41 +258,17 @@ const Map = ({ onLocationSelect, initialLocation, disableClick, option }) => {
                       ]}
                       icon={createPropertyMarkerIcon(
                         formatCurrency(property.totalPriceNight),
-                      )} // Smaller marker for other properties
+                      )}
                       eventHandlers={{
-                        mouseover: (e) => {
-                          const popup = L.popup()
-                            .setLatLng(e.latlng)
-                            .setContent(
-                              `
-                        <div class="popup-content">
-                          <div class="popup-left">
-                            <img src="${property.value.property_id.images[0]}" alt="Property Image" class="popup-image"/>
-                          </div>
-                          <div class="popup-right">
-                            <h3 class="popup-title">${property.value.property_id.name}</h3>
-                            <p class="popup-rate">Rating: ${property.value.property_id.rate || "N/A"}</p>
-                            <p class="popup-price">${formatCurrency(property.totalPriceNight)}</p>
-                            <p class="popup-room-type">${property.value.name}</p>
-                          </div>
-                        </div>
-                      `,
-                            )
-                            .openOn(e.target._map);
-                        },
-                        mouseout: (e) => {
-                          e.target._map.closePopup();
-                        },
+                        click: () => setSelectedProperty(property),
                       }}
-                    >
-                      <div className="property-marker-container">
-                        <div className="property-marker-rain-drop"></div>
-                      </div>
-                    </Marker>
+                    />
                   ),
               )}
-          </MapContainer>
-        ))}
+            </MapContainer>
+          )}
+        </>
+      )}
     </>
   );
 };

@@ -1,5 +1,3 @@
-
-
 .cellWithImg {
   display: flex;
   align-items: center;
@@ -9,7 +7,7 @@
   height: 100%;
   width: 100%;
 }
- .cellWithImg .cellImg {
+.cellWithImg .cellImg {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -17,7 +15,7 @@
   margin-right: 20px;
 }
 
- .cellWithRole {
+.cellWithRole {
   padding: 5px;
   border-radius: 5px;
 }

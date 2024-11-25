@@ -32,7 +32,7 @@
 
 .review-detail-text {
   display: inline-block;
-  
+
   width: 98%;
 }
 
@@ -40,7 +40,7 @@
   aspect-ratio: 1;
   text-align: center;
   background-color: green;
-  
+
   width: 30px;
   text-align: center;
 }

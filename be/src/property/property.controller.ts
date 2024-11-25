@@ -146,7 +146,7 @@ export class PropertyController {
     return this.propertyService.getPropertyWithOwner(id, page, limit);
   }
   @Get('/getPropertyById/:id')
-  async getPropertyById(@Param('id') id: ObjectId) {
+  async getPropertyById(@Param('id') id: string) {
     return this.propertyService.getPropertyById(id);
   }
   @Get('getPropertiesSortedByRate')
@@ -188,5 +188,9 @@ export class PropertyController {
   @Get('getDistinctPlace')
   async getDistinctPlace() {
     return this.propertyService.getDistinctPlace();
+  }
+  @Get('getRateOfProperties')
+  async getRateOfProperties() {
+    return this.propertyService.getRateOfProperties();
   }
 }

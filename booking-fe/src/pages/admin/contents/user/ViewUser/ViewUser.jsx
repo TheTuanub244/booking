@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import "./ViewUser.css";
 
 const ViewUser = () => {
-  const {id} = useParams();
+  const { id } = useParams();
   const [user, setUser] = useState(null);
 
   useEffect(() => {

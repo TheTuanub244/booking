@@ -78,6 +78,7 @@ export class RoomService {
       }
     });
     const uniquedProperties = Array.from(uniqueMap.values());
+    
 
     return uniquedProperties;
   }
@@ -170,9 +171,9 @@ export class RoomService {
         );
       }),
     );
-
+    
+    
     if (userId && place != 'all') {
-
       const session = await this.sessionSchema.findOne({
         userId: new Types.ObjectId(userId),
       });
@@ -180,7 +181,6 @@ export class RoomService {
 
       if (!session) throw new Error('Session not found');
 
-      // Use the custom comparison function
       const isDuplicate = await this.isDuplicateSearch(session.recent_search, {
         place,
         capacity,

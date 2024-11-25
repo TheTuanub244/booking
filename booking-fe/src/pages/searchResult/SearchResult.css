@@ -51,6 +51,7 @@
   margin-bottom: 20px;
   width: 100%;
 
+
 }
 
 .filter-section h4 {
@@ -65,6 +66,7 @@
   font-size: 14px;
   line-height: 1.5;
   cursor: pointer;
+  padding-left: 0;
 }
 .filter-section input[type="radio"] {
   margin-right: 10px;
@@ -79,6 +81,9 @@ input[type="range"] {
 }
 .filter-group h4 {
   margin-bottom: 5px;
+}
+.fix-width input{
+  width: 20px;
 }
 .results-list {
   width: 100%;

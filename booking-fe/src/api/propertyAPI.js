@@ -44,6 +44,7 @@ export const getAllProperty = async () => {
     `${process.env.REACT_APP_API_URL}/property/getAllProperty`,
     { withCredentials: true },
   );
+  
   return respone.data;
 };
 export const getPropertyById = async (id) => {

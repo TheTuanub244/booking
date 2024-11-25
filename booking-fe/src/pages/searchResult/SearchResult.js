@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import ResultItem from "../../componets/searchResult/ResultItem";
 import "./SearchResult.css";
 import Navbar from "../../componets/navbar/Navbar";
-import { getAllTypeOfProperties, getDistinctPlace, getRateOfProperties } from "../../api/propertyAPI";
+import { getDistinctPlace } from "../../api/propertyAPI";
 import Header from "../../componets/header/Header";
 import { findAvailableRoomWithSearch } from "../../api/roomAPI";
 import PropertyMap from "../../componets/partner/partnerRegister/Map";
@@ -35,7 +35,7 @@ const SearchResult = () => {
   const limit = 4;
   const [propetyTypes, setPropertyTypes] = useState([])
   const [properties, setProperties] = useState();
-  const [rates, setRates] = useState([{rate: 0, count: 0, name: '0 star'}, {rate: 1, count: 0, name: '1 star'}, {rate: 2, count: 0, name: '2 stars'}, {rate: 3, count: 0, name: '3 stars'}, {rate: 4, count: 0, name: '4 stars'}, {rate: 5, count: 0, name: '5 stars'}])
+  const [rates, setRates] = useState([{rate: 0, count: 0, name: '0 stars'}, {rate: 1, count: 0, name: '1 stars'}, {rate: 2, count: 0, name: '2 stars'}, {rate: 3, count: 0, name: '3 stars'}, {rate: 4, count: 0, name: '4 stars'}, {rate: 5, count: 0, name: '5 stars'}])
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -43,23 +43,6 @@ const SearchResult = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-  useEffect(() => {
-    const getAllTypes = async () => {
-      const response = await getAllTypeOfProperties()
-      setPropertyTypes(response)
-    }
-    const getAllRate = async () => {
-      const response = await getRateOfProperties()
-      setRates((prevRates) =>
-        prevRates.map((item) => {
-          const match = response.find((r) => r.rate === item.rate);
-          return match ? { ...item, count: match.count } : item;
-        })
-      );
-    }
-    getAllTypes()
-    getAllRate()
-  }, [])
 
   const searchRoom = async () => {
     const response = await findAvailableRoomWithSearch(option);
@@ -90,6 +73,45 @@ const SearchResult = () => {
       const sortedProperties = uniqueProperties.sort(
         (a, b) => b.property_id.rate - a.property_id.rate,
       );
+      const result = sortedProperties.reduce(
+        (acc, item) => {
+          const property = item.property_id;
+          if (property && property.property_type) {
+            if (!acc.propertyTypes[property.property_type]) {
+              acc.propertyTypes[property.property_type] = 1;
+            } else {
+              acc.propertyTypes[property.property_type]++;
+            }
+          }
+          if (property && property.rate !== undefined) {
+            const roundedRate = Math.round(property.rate);
+            if (!acc.rates[roundedRate]) {
+              acc.rates[roundedRate] = 1;
+            } else {
+              acc.rates[roundedRate]++;
+            }
+          }
+          return acc;
+        },
+        { propertyTypes: {}, rates: {} },
+      );
+      const propertyTypesArray = Object.entries(result.propertyTypes).map(
+        ([type, count]) => ({ name: type, count })
+      );
+      
+      const ratesArray = Object.entries(result.rates).map(
+        ([rate, count]) => ({ name: `${rate} stars`, count })
+      );
+      setRates((prevRates) =>
+        prevRates.map((item) => {
+          console.log(result);
+          
+          const match = ratesArray.find((r) => r.name === item.name);
+          
+          return match ? { ...item, count: match.count } : item;
+        })
+      );
+      setPropertyTypes(propertyTypesArray)
       setTotalProperties(sortedProperties)
       const paginatedProperties = sortedProperties.slice(
         currentPage - 1,
@@ -103,6 +125,7 @@ const SearchResult = () => {
       setNotFound(true);
     }
   };
+
   useEffect(() => {
     setIsLoading(true);
     if (location.state?.option) {
@@ -135,7 +158,7 @@ const SearchResult = () => {
     if (filters.ratingNumber.length > 0) {
       
       filtered = filtered.filter(
-        (property) => property.property_id.rate >= Number(filters.ratingNumber[0])
+        (property) => Math.round(property.property_id.rate) === Number(filters.ratingNumber[0])
       );
     }
     
@@ -153,10 +176,13 @@ const SearchResult = () => {
     setTotalPages(totalPages);
   }
   const handlePropertyTypeChange = (type) => {
-    const updatedTypes = filters.propertyType.includes(type)
-      ? filters.propertyType.filter((t) => t !== type)
-      : [...filters.propertyType, type];
-    setFilters({ ...filters, propertyType: updatedTypes });
+    if(filters.propertyType.length === type){
+      setFilters({ ...filters, propertyType: [] });
+    } else {
+    setFilters({ ...filters, propertyType: [type] });
+
+    }
+
   };
 
   const handleRatingChange = (rating, ratingNumber) => {
@@ -219,7 +245,7 @@ const SearchResult = () => {
       <div className="filter-section">
         <h4>Property Type</h4>
         {propetyTypes.map((type) => (
-          <div key={type.name}>
+          <div key={type.name} className="fix-width">
             <label>
               <input
                 type="radio"
@@ -299,7 +325,7 @@ const SearchResult = () => {
       <div className="filter-section">
         <h4>Property Rating</h4>
         {rates.map((rating, index) => (
-          <div key={rating.name}>
+          <div key={rating.name} className="fix-width">
             <label>
               <input
                 type="radio"

@@ -488,7 +488,7 @@ export class BookingService {
       yearlyRevenue: item.yearlyRevenue,
     }));
   }
-  async getBooking(owner_id: string) {
+  async getBookingByOwner(owner_id: string) {
     return this.bookingSchema.aggregate([
       {
         $lookup: {

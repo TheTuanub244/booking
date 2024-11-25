@@ -37,3 +37,10 @@ export const findUnfinishedBooking = async (userId) => {
 
   return respone.data;
 };
+export const getBookingByOwner = async (userId) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/getBookingByOwner/${userId}`,
+  );
+
+  return respone.data;
+}

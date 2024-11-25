@@ -96,7 +96,6 @@ export const getPropertyByRates = async () => {
   }
 };
 export const getAllTypeOfProperties = async () => {
-  console.log(process.env.REACT_APP_API_URL)
   const response = await axios.get(
     `${process.env.REACT_APP_API_URL}/property/getAllTypeOfProperties`,
     { withCredentials: true },
@@ -173,4 +172,10 @@ export const getTransactionInformation = async () => {
     return respone;
   }
 
+}
+export const getRateOfProperties = async () => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/property/getRateOfProperties`,
+  );
+  return respone.data;
 }

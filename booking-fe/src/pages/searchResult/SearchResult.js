@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import ResultItem from "../../componets/searchResult/ResultItem";
 import "./SearchResult.css";
 import Navbar from "../../componets/navbar/Navbar";
-import { getDistinctPlace } from "../../api/propertyAPI";
+import { getAllTypeOfProperties, getDistinctPlace, getRateOfProperties } from "../../api/propertyAPI";
 import Header from "../../componets/header/Header";
 import { findAvailableRoomWithSearch } from "../../api/roomAPI";
 import PropertyMap from "../../componets/partner/partnerRegister/Map";
@@ -33,8 +33,9 @@ const SearchResult = () => {
   const [showFullMap, setShowFullMap] = useState(false);
   const [totalProperties, setTotalProperties] = useState();
   const limit = 4;
-
+  const [propetyTypes, setPropertyTypes] = useState([])
   const [properties, setProperties] = useState();
+  const [rates, setRates] = useState([{rate: 0, count: 0, name: '0 star'}, {rate: 1, count: 0, name: '1 star'}, {rate: 2, count: 0, name: '2 stars'}, {rate: 3, count: 0, name: '3 stars'}, {rate: 4, count: 0, name: '4 stars'}, {rate: 5, count: 0, name: '5 stars'}])
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -42,6 +43,24 @@ const SearchResult = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+  useEffect(() => {
+    const getAllTypes = async () => {
+      const response = await getAllTypeOfProperties()
+      setPropertyTypes(response)
+    }
+    const getAllRate = async () => {
+      const response = await getRateOfProperties()
+      setRates((prevRates) =>
+        prevRates.map((item) => {
+          const match = response.find((r) => r.rate === item.rate);
+          return match ? { ...item, count: match.count } : item;
+        })
+      );
+    }
+    getAllTypes()
+    getAllRate()
+  }, [])
+
   const searchRoom = async () => {
     const response = await findAvailableRoomWithSearch(option);
 
@@ -103,37 +122,14 @@ const SearchResult = () => {
     ratingName: []
   });
   const [values, setValues] = useState([100000, 20000000]);
-  const [filteredProperties, setFileredProperties] = useState([]);
   const handleChange = (newValues) => {
     setValues(newValues);
   };
-  const propertyTypes = [
-    { name: "Entire homes & apartments", count: 277 },
-    { name: "Apartments", count: 265 },
-    { name: "Hotels", count: 220 },
-    { name: "Homestays", count: 27 },
-    { name: "Guest houses", count: 24 },
-    { name: "Motels", count: 10 },
-    { name: "Villas", count: 10 },
-    { name: "Bed and breakfasts", count: 7 },
-    { name: "Capsule hotels", count: 2 },
-    { name: "Hostels", count: 1 },
-    { name: "Love hotels", count: 1 },
-  ];
-
-  const ratings = [
-    { name: "1 star", count: 28 },
-    { name: "2 stars", count: 69 },
-    { name: "3 stars", count: 121 },
-    { name: "4 stars", count: 117 },
-    { name: "5 stars", count: 7 },
-  ];
-;
   const applyFilter = () => {
     if(!totalProperties) return;
     let filtered = totalProperties.filter((property) =>
       filters.propertyType.length > 0
-        ? filters.propertyType.includes(property.property_id.type)
+        ? filters.propertyType.includes(property.property_id.property_type)
         : true 
     );
     if (filters.ratingNumber.length > 0) {
@@ -145,14 +141,12 @@ const SearchResult = () => {
     
     filtered = filtered.filter((property) => property.totalPriceNight >= values[0] && property.totalPriceNight <= values[1]);
 
-    setFileredProperties(filtered)
     
     
     const paginatedProperties = filtered.slice(
       currentPage - 1,
       currentPage - 1 + limit,
     );
-    console.log(paginatedProperties);
     
     setProperties(paginatedProperties);
     const totalPages = Math.ceil(filtered.length / limit);
@@ -224,7 +218,7 @@ const SearchResult = () => {
              <div className="filter-bar">
       <div className="filter-section">
         <h4>Property Type</h4>
-        {propertyTypes.map((type) => (
+        {propetyTypes.map((type) => (
           <div key={type.name}>
             <label>
               <input
@@ -304,7 +298,7 @@ const SearchResult = () => {
 
       <div className="filter-section">
         <h4>Property Rating</h4>
-        {ratings.map((rating, index) => (
+        {rates.map((rating, index) => (
           <div key={rating.name}>
             <label>
               <input
@@ -312,7 +306,7 @@ const SearchResult = () => {
                 name="rating"
                 value={rating.name}
                 checked={filters.ratingName.includes(rating.name)}
-                onChange={() => handleRatingChange(rating.name, index + 1)}
+                onChange={() => handleRatingChange(rating.name, index)}
               />
               {rating.name} ({rating.count})
             </label>

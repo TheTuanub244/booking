@@ -189,4 +189,8 @@ export class PropertyController {
   async getDistinctPlace() {
     return this.propertyService.getDistinctPlace();
   }
+  @Get('getRateOfProperties')
+  async getRateOfProperties(){
+    return this.propertyService.getRateOfProperties()
+  }
 }

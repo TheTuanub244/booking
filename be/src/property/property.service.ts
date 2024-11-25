@@ -30,7 +30,7 @@ export class PropertyService {
   async uploadImageToCloudinary(filePath: string): Promise<string> {
     try {
       console.log(filePath);
-      
+
       const result = await cloudinary.uploader.upload(filePath);
       fs.unlink(filePath, (err) => {
         if (err) {
@@ -322,8 +322,48 @@ export class PropertyService {
       property_type: type,
     });
   }
+  async getRateOfProperties() {
+    const findRate = await this.propertySchema.aggregate([
+      {
+        $group: {
+          _id: '$rate',
+          count: { $sum: 1 },
+        },
+      },
+
+      {
+        $project: {
+          rate: '$_id',
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+    const formattedRate = findRate.map(({ count, rate }) => ({
+      count,
+      rate: Math.ceil(rate),
+    }));
+    return formattedRate;
+  }
   async getAllTypeOfProperties() {
-    return this.propertySchema.distinct('property_type');
+    return this.propertySchema.aggregate([
+      {
+        $group: {
+          _id: '$property_type',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          name: '$_id',
+          count: 1,
+          _id: 0,
+        },
+      },
+      {
+        $sort: { count: -1 },
+      },
+    ]);
   }
   deg2rad(deg: number): number {
     return deg * (Math.PI / 180);

@@ -42,6 +42,7 @@ const PropertyList = ({ propertyType }) => {
         navigation // Thêm điều khiển điều hướng
         pagination={{ clickable: true }} // Thêm phân trang
         modules={[Navigation, Pagination]} // Thêm các module vào đây
+        watchOverflow={true}
       >
         {propertyType &&
           propertyType.map((type, index) => {

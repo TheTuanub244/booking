@@ -1,4 +1,5 @@
 import { Controller, Post, Body, Req, Res, Query, Get } from '@nestjs/common';
+import { PaymentService } from './payment.service';
 import { Request, Response } from 'express';
 import moment from 'moment';
 import { config } from 'dotenv';
@@ -7,8 +8,21 @@ import crypto from 'crypto';
 
 config(); // Load environment variables
 
+
+
+
 @Controller('payment')
 export class PaymentController {
+  constructor(private readonly paymentSevice: PaymentService) {}
+  @Post('save_payment')
+  async savePayment(
+    @Body() body:any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.paymentSevice.savePayment(body);
+  }
+
   @Post('create_payment')
   async createPaymentUrl(
     @Body() body: any,

@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Booking } from 'src/booking/booking.schema';
 import { PaymentMethod } from './enum/paymentMethod.enum';
-import { PaymentStatus } from './enum/paymentStatus.enum';
 
 @Schema()
 export class Payment {
@@ -12,7 +11,9 @@ export class Payment {
   amount: number;
   @Prop({ required: true, enum: PaymentMethod })
   payment_method: PaymentMethod;
-  @Prop({ required: true, enum: PaymentStatus })
-  payment_status: PaymentStatus;
+  @Prop({ require: true })
+  paymentCode: string;
+  @Prop({ require: true, type: Date })
+  paymentDate: Date;
 }
 export const PaymentSchema = SchemaFactory.createForClass(Payment);

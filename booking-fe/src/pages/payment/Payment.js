@@ -65,7 +65,7 @@ function Payment() {
     localStorage.setItem("email", formData.email);
     console.log(formData);
     axios
-      .post(`${process.env.REACT_APP_API_URL}/payment/create_payment`, formData)
+      .post(`${process.env.REACT_APP_API_URL}/payment/create_transaction`, formData)
       .then((res) => {
         console.log(res.data);
       })
@@ -187,7 +187,7 @@ function Payment() {
                   onSubmit={handleSubmit}
                   id="payment_form"
                   accept-charset="UTF-8"
-                  action="http://localhost:8000/payment/create_payment"
+                  action="http://localhost:8000/payment/create_transaction"
                   method="post"
                 >
                   <label>

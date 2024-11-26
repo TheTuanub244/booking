@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { redirect, useLocation, useNavigate } from "react-router-dom";
 import "./resultPayment.css";
+import axios from "axios";
 
 function ResultPayment() {
   const location = useLocation(); // Lấy thông tin URL hiện tại
@@ -16,6 +17,21 @@ function ResultPayment() {
   const [message, setMessage] = useState(true);
   useEffect(() => {
     if (transactionStatus === "00") {
+      const data = {
+        booking_id:"",
+        amount:amount,
+        payment_method: "Thanh toán bằng thẻ ATM",
+        paymentCode:transactionCode,
+        paymentDate:"2021-12-20"
+      }
+
+      axios
+      .post(`${process.env.REACT_APP_API_URL}/payment/create_payment`, data)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+   
       setMessage(true);
     } else {
       setMessage(false);

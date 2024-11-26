@@ -15,5 +15,6 @@ export class Payment {
   paymentCode: string;
   @Prop({ require: true, type: Date })
   paymentDate: Date;
+  
 }
 export const PaymentSchema = SchemaFactory.createForClass(Payment);

@@ -34,6 +34,8 @@ const notification_gateway_1 = require("../notification/notification/notificatio
 const notification_module_1 = require("../notification/notification.module");
 const notification_service_1 = require("../notification/notification.service");
 const notification_schema_1 = require("../notification/notification.schema");
+const gmail_module_1 = require("../gmail/gmail.module");
+const gmail_service_1 = require("../gmail/gmail.service");
 const jwtConstant = {
     secret: 'jwtsecret',
 };
@@ -51,6 +53,7 @@ exports.PropertyModule = PropertyModule = __decorate([
             review_service_1.ReviewService,
             notification_gateway_1.NotificationGateway,
             notification_service_1.NotificationService,
+            gmail_service_1.GmailService,
         ],
         imports: [
             mongoose_1.MongooseModule.forFeature([
@@ -82,6 +85,7 @@ exports.PropertyModule = PropertyModule = __decorate([
             (0, common_1.forwardRef)(() => session_module_1.SessionModule),
             (0, common_1.forwardRef)(() => room_module_1.RoomModule),
             (0, common_1.forwardRef)(() => notification_module_1.NotificationModule),
+            (0, common_1.forwardRef)(() => gmail_module_1.GmailModule),
             review_module_1.ReviewModule,
             user_module_1.UserModule,
             promotion_module_1.PromotionModule,

@@ -48,10 +48,12 @@ const review_module_1 = require("./review/review.module");
 const payment_module_1 = require("./payment/payment.module");
 const amentites_module_1 = require("./amentites/amentites.module");
 const admin = __importStar(require("firebase-admin"));
-const serviceAccount = __importStar(require("./config/booking-app-1edf4-4dd703c8105b.json"));
+const serviceAccount = __importStar(require("./config/booking-app-1edf4-6fd333d27011.json"));
 const promotion_module_1 = require("./promotion/promotion.module");
 const notification_module_1 = require("./notification/notification.module");
 const notification_gateway_1 = require("./notification/notification/notification.gateway");
+const gmail_service_1 = require("./gmail/gmail.service");
+const gmail_module_1 = require("./gmail/gmail.module");
 const jwtConstant = {
     secret: 'jwtsecret',
 };
@@ -80,6 +82,7 @@ exports.AppModule = AppModule = __decorate([
             amentites_module_1.AmentitesModule,
             promotion_module_1.PromotionModule,
             notification_module_1.NotificationModule,
+            gmail_module_1.GmailModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [
@@ -97,7 +100,8 @@ exports.AppModule = AppModule = __decorate([
                     });
                 },
             },
-            notification_gateway_1.NotificationGateway
+            notification_gateway_1.NotificationGateway,
+            gmail_service_1.GmailService,
         ],
         exports: ['FIREBASE_ADMIN'],
     })

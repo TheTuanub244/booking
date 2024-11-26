@@ -61,6 +61,7 @@ let PropertyService = class PropertyService {
     }
     async uploadImageToCloudinary(filePath) {
         try {
+            console.log(filePath);
             const result = await cloudinary_1.v2.uploader.upload(filePath);
             fs.unlink(filePath, (err) => {
                 if (err) {
@@ -269,7 +270,7 @@ let PropertyService = class PropertyService {
         };
     }
     async getPropertyById(id) {
-        return this.propertySchema.findById(id);
+        return this.propertySchema.findById(new mongoose_2.Types.ObjectId(id));
     }
     async getPropertiesSortedByRate() {
         const properties = await this.propertySchema
@@ -278,7 +279,7 @@ let PropertyService = class PropertyService {
             .limit(4);
         const propertiesWithRate = [];
         await Promise.all(properties.map(async (property) => {
-            const review = await this.reviewService.findReviewWithProperty(property._id);
+            const review = await this.reviewService.countReviewWithProperty(property._id.toString());
             propertiesWithRate.push({
                 property,
                 numberReviews: review,
@@ -297,8 +298,47 @@ let PropertyService = class PropertyService {
             property_type: type,
         });
     }
+    async getRateOfProperties() {
+        const findRate = await this.propertySchema.aggregate([
+            {
+                $group: {
+                    _id: '$rate',
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    rate: '$_id',
+                    count: 1,
+                    _id: 0,
+                },
+            },
+        ]);
+        const formattedRate = findRate.map(({ count, rate }) => ({
+            count,
+            rate: Math.ceil(rate),
+        }));
+        return formattedRate;
+    }
     async getAllTypeOfProperties() {
-        return this.propertySchema.distinct('property_type');
+        return this.propertySchema.aggregate([
+            {
+                $group: {
+                    _id: '$property_type',
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    name: '$_id',
+                    count: 1,
+                    _id: 0,
+                },
+            },
+            {
+                $sort: { count: -1 },
+            },
+        ]);
     }
     deg2rad(deg) {
         return deg * (Math.PI / 180);

@@ -13,7 +13,16 @@ export declare class ReviewService {
     } & {
         __v?: number;
     }>;
-    findReviewWithProperty(property_id: mongoose.Types.ObjectId): Promise<number>;
+    findReviewWithProperty(property_id: string, page?: number, limit?: number): Promise<{
+        reviews: (mongoose.Document<unknown, {}, Review> & Review & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v?: number;
+        })[];
+        totalPages: number;
+        currentPage: number;
+    }>;
+    countReviewWithProperty(property_id: string): Promise<number>;
     getMonthlyRating(owner_id: string): Promise<{
         [key: number]: number;
     }>;

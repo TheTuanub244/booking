@@ -36,8 +36,7 @@ export const createPropertyWithPartner = async (formData, token) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error creating property:", error);
-    throw error;
+    return error;
   }
 };
 export const getAllProperty = async () => {
@@ -45,6 +44,7 @@ export const getAllProperty = async () => {
     `${process.env.REACT_APP_API_URL}/property/getAllProperty`,
     { withCredentials: true },
   );
+
   return respone.data;
 };
 export const getPropertyById = async (id) => {
@@ -52,6 +52,7 @@ export const getPropertyById = async (id) => {
     `${process.env.REACT_APP_API_URL}/property/getPropertyById/${id}`,
     { withCredentials: true },
   );
+  console.log(respone);
 
   return respone.data;
 };
@@ -96,7 +97,6 @@ export const getPropertyByRates = async () => {
   }
 };
 export const getAllTypeOfProperties = async () => {
-  console.log(process.env.REACT_APP_API_URL)
   const response = await axios.get(
     `${process.env.REACT_APP_API_URL}/property/getAllTypeOfProperties`,
     { withCredentials: true },
@@ -157,6 +157,25 @@ export const getPropertyByplace = async (place) => {
 export const getDistinctPlace = async () => {
   const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/property/getDistinctPlace`,
+  );
+  return respone.data;
+};
+
+export const getTransactionInformation = async () => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/payment/vnpay_return`,
+    );
+    return res.data;
+  } catch (error) {
+    const respone = error.response.data.message;
+
+    return respone;
+  }
+};
+export const getRateOfProperties = async () => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/property/getRateOfProperties`,
   );
   return respone.data;
 };

@@ -43,7 +43,7 @@ const jwtConstant = {
     ReviewService,
     NotificationGateway,
     NotificationService,
-    GmailService
+    GmailService,
   ],
   imports: [
     MongooseModule.forFeature([
@@ -76,7 +76,6 @@ const jwtConstant = {
     forwardRef(() => RoomModule),
     forwardRef(() => NotificationModule),
     forwardRef(() => GmailModule),
-
 
     ReviewModule,
     UserModule,

@@ -6,6 +6,7 @@ import PartnerNavbar from "../../../componets/partner/partnerNavbar/partnerNavba
 import { useState } from "react";
 const PartnerPropertyDetailPage = () => {
   const params = useParams();
+
   const [tab, setTab] = useState("info");
 
   return (

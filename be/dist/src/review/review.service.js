@@ -94,13 +94,33 @@ let ReviewService = class ReviewService {
             return updateRoom.save();
         }
     }
-    async findReviewWithProperty(property_id) {
+    async findReviewWithProperty(property_id, page = 1, limit = 10) {
         const rooms = await this.roomSchema.find({ property_id });
         const roomIds = rooms.map((room) => room._id);
+        const skip = (page - 1) * limit;
+        const reviews = await this.reviewSchema
+            .find({ roomId: { $in: roomIds } })
+            .sort({ rating: -1 })
+            .skip(skip)
+            .limit(limit)
+            .populate('userId')
+            .populate('roomId')
+            .exec();
         const reviewCount = await this.reviewSchema
             .countDocuments({ room_id: { $in: roomIds } })
             .exec();
-        return reviewCount;
+        return {
+            reviews,
+            totalPages: Math.ceil(reviewCount / limit),
+            currentPage: page,
+        };
+    }
+    async countReviewWithProperty(property_id) {
+        const rooms = await this.roomSchema.find({ property_id });
+        const roomIds = rooms.map((room) => room._id);
+        return this.reviewSchema
+            .countDocuments({ room_id: { $in: roomIds } })
+            .exec();
     }
     async getMonthlyRating(owner_id) {
         const reviews = await this.reviewSchema

@@ -14,13 +14,16 @@ export declare class UserController {
     } & {
         __v?: number;
     }>;
-    signUpWithEmail(signup: any): Promise<import("mongoose").Document<unknown, {}, import("./user.schema").User> & import("./user.schema").User & {
+    signUpWithEmail(signup: any): Promise<{
+        jwtToken: string;
+    }>;
+    confirmSignUpWithEmail(signup: any): Promise<import("mongoose").Document<unknown, {}, import("./user.schema").User> & import("./user.schema").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v?: number;
     }>;
     signIn(user: any, response: Response): Promise<Response<any, Record<string, any>>>;
-    checkEmail(email: any): Promise<true | (import("mongoose").Document<unknown, {}, import("./user.schema").User> & import("./user.schema").User & {
+    checkEmail(email: any): Promise<false | (import("mongoose").Document<unknown, {}, import("./user.schema").User> & import("./user.schema").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v?: number;
@@ -39,4 +42,21 @@ export declare class UserController {
         __v?: number;
     }>;
     updateInformationForGoogle(user: any, response: Response): Promise<Response<any, Record<string, any>>>;
+    getPendingUser(): Promise<(import("mongoose").Document<unknown, {}, import("./user.schema").User> & import("./user.schema").User & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v?: number;
+    })[]>;
+    requestTopartner(id: string): Promise<import("mongoose").Document<unknown, {}, import("./user.schema").User> & import("./user.schema").User & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v?: number;
+    }>;
+    checkRequest(id: string): Promise<boolean>;
+    updateResetPasswordToken(userId: string, email: string): Promise<string>;
+    checkResetPasswordToken(userId: string, token: string, user: any): Promise<{
+        message: string;
+    } | {
+        message: boolean;
+    }>;
 }

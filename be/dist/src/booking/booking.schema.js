@@ -17,6 +17,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = __importDefault(require("mongoose"));
 const user_schema_1 = require("../user/user.schema");
 const bookingStatus_enum_1 = require("./enum/bookingStatus.enum");
+const paymentStatus_enum_1 = require("./enum/paymentStatus.enum");
 const property_schema_1 = require("../property/property.schema");
 let Booking = class Booking {
 };
@@ -70,10 +71,18 @@ __decorate([
     (0, mongoose_1.Prop)({
         required: true,
         enum: bookingStatus_enum_1.BookingStatus,
-        default: bookingStatus_enum_1.BookingStatus.CONFIRMED,
+        default: bookingStatus_enum_1.BookingStatus.PENDING,
     }),
     __metadata("design:type", String)
 ], Booking.prototype, "booking_status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        required: true,
+        enum: paymentStatus_enum_1.PaymentStatus,
+        default: paymentStatus_enum_1.PaymentStatus.UNPAID,
+    }),
+    __metadata("design:type", String)
+], Booking.prototype, "payment_status", void 0);
 __decorate([
     (0, mongoose_1.Prop)({}),
     __metadata("design:type", String)

@@ -61,7 +61,7 @@ let UserService = class UserService {
         if (existEmail) {
             return existEmail;
         }
-        return true;
+        return false;
     }
     async createUser(createUserDto) {
         const { userName, password, dob, email, address, phoneNumber } = createUserDto;
@@ -144,7 +144,6 @@ let UserService = class UserService {
         const { userName, password } = user;
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(userName)) {
-            console.log(2);
             const existUser = await this.userSchema
                 .findOne({
                 userName: userName,
@@ -168,19 +167,20 @@ let UserService = class UserService {
             const signInfo = { userName, role: existUser.role };
             return {
                 access_token: this.jwtSerivce.sign({ signInfo }, { expiresIn: '1h' }),
+                displayName: existUser.userName,
                 _id: existUser._id,
                 refreshToken: newSession.refreshToken,
             };
         }
         else {
-            console.log(1);
             const existEmail = await this.userSchema.findOne({
                 email: userName,
             });
+            console.log(existEmail);
             if (!existEmail) {
                 throw new common_1.UnauthorizedException('Invalid username or password');
             }
-            console.log(firebase_config_1.auth);
+            console.log(1);
             try {
                 const userCredential = await (0, auth_1.signInWithEmailAndPassword)(firebase_config_1.auth, userName, password);
                 const signInfo = { userName, role: existEmail.role };
@@ -195,16 +195,18 @@ let UserService = class UserService {
                     lastBooking: null,
                     recent_search: [],
                 });
+                console.log(newSession);
                 return {
                     access_token: jwtToken,
+                    displayName: existEmail.userName,
                     _id: existEmail._id,
                     refreshToken: newSession.refreshToken,
                 };
             }
             catch (err) {
-                console.log(err.message);
-                console.log(err.errorName);
-                throw err;
+                throw new common_1.BadRequestException({
+                    message: 'Wrong password!',
+                });
             }
         }
     }
@@ -242,23 +244,37 @@ let UserService = class UserService {
                 throw new common_1.BadRequestException('Username alread existed');
             }
             const userCredential = await (0, auth_1.createUserWithEmailAndPassword)(firebase_config_1.auth, email, password);
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
-            const newUser = new this.userSchema({
+            const jwtToken = await this.jwtSerivce.sign({
                 userName,
+                password,
                 dob,
-                password: hashedPassword,
                 email,
                 address,
                 phoneNumber,
                 uid: userCredential.user.uid,
             });
             await (0, auth_1.sendEmailVerification)(userCredential.user);
-            return newUser.save();
+            return { jwtToken };
         }
         catch (err) {
             throw err;
         }
+    }
+    async confirmSignUp(user) {
+        const { userName, password, dob, email, address, phoneNumber, uid } = user;
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const newUser = new this.userSchema({
+            userName,
+            dob,
+            password: hashedPassword,
+            email,
+            address,
+            phoneNumber,
+            uid: uid,
+        });
+        const savedUser = await newUser.save();
+        return savedUser;
     }
     async signInWithGoggle(user) {
         const { email, uid } = user;
@@ -290,28 +306,32 @@ let UserService = class UserService {
     }
     async resetPassword(resetPassword) {
         const { email, password } = resetPassword;
-        console.log(resetPassword);
         const findUser = await this.userSchema
             .findOne({
             email,
         })
             .select('+password')
             .exec();
-        firebase_admin_1.default
-            .auth()
-            .updateUser(findUser.uid, {
-            password: password,
-        })
-            .then(async (userRecord) => {
-            console.log('Successfully updated Firebase password for user:', userRecord.toJSON());
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
-            await this.userSchema.findOneAndUpdate({
-                email: email,
-            }, {
-                password: hashedPassword,
+        try {
+            firebase_admin_1.default
+                .auth()
+                .updateUser(findUser.uid, {
+                password: password,
+            })
+                .then(async (userRecord) => {
+                console.log('Successfully updated Firebase password for user:', userRecord.toJSON());
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password, salt);
+                await this.userSchema.findOneAndUpdate({
+                    email: email,
+                }, {
+                    password: hashedPassword,
+                });
             });
-        });
+        }
+        catch (err) {
+            throw err;
+        }
     }
     async updatePartnerAccount(partner) {
         const findUser = await this.userSchema.findOneAndUpdate({ email: partner.email }, {
@@ -344,6 +364,73 @@ let UserService = class UserService {
             _id: savedUser._id,
             refreshToken: newSession.refreshToken,
         };
+    }
+    async getPendingUser() {
+        return this.userSchema.find({
+            role: role_enum_1.ROLE.PARTNER,
+        });
+    }
+    async requestToPartner(userId) {
+        return this.userSchema.findByIdAndUpdate(new mongoose_2.Types.ObjectId(userId), {
+            $addToSet: {
+                role: role_enum_1.ROLE.PARTNER,
+            },
+        }, {
+            new: true,
+        });
+    }
+    async checkRequestPartner(userId) {
+        const findUser = await this.userSchema.find({
+            _id: new mongoose_2.Types.ObjectId(userId),
+            role: role_enum_1.ROLE.PARTNER,
+        });
+        if (findUser) {
+            return true;
+        }
+        return false;
+    }
+    async updateResetPasswordToken(userId, email) {
+        const resetToken = await this.jwtSerivce.sign({ email, timestamp: Date.now() }, { expiresIn: '1h' });
+        await this.userSchema.findByIdAndUpdate(new mongoose_2.Types.ObjectId(userId), {
+            $set: {
+                resetPasswordExpires: Date.now() + 3600000,
+                resetPasswordTokenStatus: 'unused',
+                resetPasswordToken: resetToken,
+            },
+        }, {
+            new: true,
+        });
+        return resetToken;
+    }
+    async checkResetPasswordToken(userId, newPassword, token) {
+        try {
+            const decoded = await this.jwtSerivce.verify(token, {
+                secret: process.env.JWT_SECRET,
+            });
+            const user = await this.userSchema.findOne({
+                _id: new mongoose_2.Types.ObjectId(userId),
+                resetPasswordToken: token,
+                resetPasswordTokenStatus: 'unused',
+                resetPasswordExpires: { $gt: new Date() },
+            });
+            if (!user) {
+                return {
+                    message: 'Token is invalid or has already been used',
+                };
+            }
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(newPassword, salt);
+            await this.userSchema.findByIdAndUpdate(new mongoose_2.Types.ObjectId(userId), {
+                password: hashedPassword,
+                resetPasswordTokenStatus: 'used',
+                resetPasswordToken: null,
+                resetPasswordExpires: null,
+            });
+            return { message: true };
+        }
+        catch (err) {
+            throw err;
+        }
     }
 };
 exports.UserService = UserService;

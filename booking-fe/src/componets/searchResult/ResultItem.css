@@ -159,12 +159,24 @@
   font-weight: 600;
 }
 .result-main {
-  width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center; /* Đảm bảo các phần tử nằm ngang hàng */
 }
 .main-right {
-  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+}
+.main-right p {
+  margin: 0;
+  text-align: right;
+  min-width: 100px; /* Đặt chiều rộng cố định cho số tiền */
+}
+
+.main-right .availability-button {
+  margin-top: 10px;
 }
 
 .rating-box {
@@ -194,6 +206,9 @@
     sans-serif;
   font-weight: 500;
   font-size: 20px;
+  width: 38px;
+  text-align: center;
+  height: 50px;
   color: #fff;
   background-color: #003b95;
   border-radius: 5px;

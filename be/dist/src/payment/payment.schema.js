@@ -17,7 +17,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = __importDefault(require("mongoose"));
 const booking_schema_1 = require("../booking/booking.schema");
 const paymentMethod_enum_1 = require("./enum/paymentMethod.enum");
-const paymentStatus_enum_1 = require("./enum/paymentStatus.enum");
 let Payment = class Payment {
 };
 exports.Payment = Payment;
@@ -34,9 +33,13 @@ __decorate([
     __metadata("design:type", String)
 ], Payment.prototype, "payment_method", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, enum: paymentStatus_enum_1.PaymentStatus }),
+    (0, mongoose_1.Prop)({ require: true }),
     __metadata("design:type", String)
-], Payment.prototype, "payment_status", void 0);
+], Payment.prototype, "paymentCode", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ require: true, type: Date }),
+    __metadata("design:type", Date)
+], Payment.prototype, "paymentDate", void 0);
 exports.Payment = Payment = __decorate([
     (0, mongoose_1.Schema)()
 ], Payment);

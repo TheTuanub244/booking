@@ -1,18 +1,38 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PropertyController = void 0;
@@ -23,7 +43,8 @@ const roles_guard_1 = require("../common/guards/roles.guard");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const role_enum_1 = require("../user/enum/role.enum");
 const platform_express_1 = require("@nestjs/platform-express");
-const multer_1 = __importDefault(require("multer"));
+const multer_1 = require("multer");
+const path = __importStar(require("path"));
 let PropertyController = class PropertyController {
     constructor(propertyService) {
         this.propertyService = propertyService;
@@ -112,6 +133,9 @@ let PropertyController = class PropertyController {
     async getDistinctPlace() {
         return this.propertyService.getDistinctPlace();
     }
+    async getRateOfProperties() {
+        return this.propertyService.getRateOfProperties();
+    }
 };
 exports.PropertyController = PropertyController;
 __decorate([
@@ -119,7 +143,15 @@ __decorate([
     (0, common_1.UseGuards)(validateToken_guard_1.ValidateTokenGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(role_enum_1.ROLE.ADMIN, role_enum_1.ROLE.PARTNER),
     (0, common_1.UseInterceptors)((0, platform_express_1.AnyFilesInterceptor)({
-        storage: multer_1.default.memoryStorage(),
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const ext = path.extname(file.originalname);
+                const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+                callback(null, filename);
+            },
+        }),
     })),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.UploadedFiles)()),
@@ -132,7 +164,15 @@ __decorate([
     (0, common_1.UseGuards)(validateToken_guard_1.ValidateTokenGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(role_enum_1.ROLE.ADMIN, role_enum_1.ROLE.PARTNER),
     (0, common_1.UseInterceptors)((0, platform_express_1.AnyFilesInterceptor)({
-        storage: multer_1.default.memoryStorage(),
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const ext = path.extname(file.originalname);
+                const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+                callback(null, filename);
+            },
+        }),
     })),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.UploadedFiles)()),
@@ -159,7 +199,7 @@ __decorate([
     (0, common_1.Get)('/getPropertyById/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PropertyController.prototype, "getPropertyById", null);
 __decorate([
@@ -217,6 +257,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PropertyController.prototype, "getDistinctPlace", null);
+__decorate([
+    (0, common_1.Get)('getRateOfProperties'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PropertyController.prototype, "getRateOfProperties", null);
 exports.PropertyController = PropertyController = __decorate([
     (0, common_1.Controller)('property'),
     __metadata("design:paramtypes", [property_service_1.PropertyService])

@@ -54,7 +54,7 @@ __decorate([
 exports.NotificationGateway = NotificationGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {
-            origin: 'http://localhost:3000',
+            origin: process.env.FRONT_END_URL,
             methods: ['GET', 'POST'],
             credentials: true,
         },

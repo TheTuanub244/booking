@@ -1,10 +1,8 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 const PropertyManage = () => {
-  return (
-    <Outlet/>
-  )
-}
+  return <Outlet />;
+};
 
-export default PropertyManage
+export default PropertyManage;

@@ -8,7 +8,7 @@ export declare class UserService {
     private jwtSerivce;
     private sessionService;
     constructor(userSchema: Model<User>, jwtSerivce: JwtService, sessionService: SessionService);
-    checkEmail(email: string): Promise<true | (import("mongoose").Document<unknown, {}, User> & User & {
+    checkEmail(email: string): Promise<false | (import("mongoose").Document<unknown, {}, User> & User & {
         _id: Types.ObjectId;
     } & {
         __v?: number;
@@ -32,6 +32,7 @@ export declare class UserService {
     }>;
     signIn(user: any): Promise<{
         access_token: string;
+        displayName: string;
         _id: Types.ObjectId;
         refreshToken: string;
     }>;
@@ -40,7 +41,10 @@ export declare class UserService {
     } & {
         __v?: number;
     }>;
-    signUpWithEmail(createUserDto: CreateUserDto): Promise<import("mongoose").Document<unknown, {}, User> & User & {
+    signUpWithEmail(createUserDto: CreateUserDto): Promise<{
+        jwtToken: string;
+    }>;
+    confirmSignUp(user: any): Promise<import("mongoose").Document<unknown, {}, User> & User & {
         _id: Types.ObjectId;
     } & {
         __v?: number;
@@ -60,5 +64,22 @@ export declare class UserService {
         access_token: string;
         _id: Types.ObjectId;
         refreshToken: string;
+    }>;
+    getPendingUser(): Promise<(import("mongoose").Document<unknown, {}, User> & User & {
+        _id: Types.ObjectId;
+    } & {
+        __v?: number;
+    })[]>;
+    requestToPartner(userId: string): Promise<import("mongoose").Document<unknown, {}, User> & User & {
+        _id: Types.ObjectId;
+    } & {
+        __v?: number;
+    }>;
+    checkRequestPartner(userId: string): Promise<boolean>;
+    updateResetPasswordToken(userId: string, email: string): Promise<string>;
+    checkResetPasswordToken(userId: string, newPassword: string, token: string): Promise<{
+        message: string;
+    } | {
+        message: boolean;
     }>;
 }

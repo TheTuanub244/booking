@@ -6,6 +6,9 @@ export declare class User {
     phoneNumber: string;
     gender: boolean;
     uid: string;
+    resetPasswordToken: string;
+    resetPasswordExpires: Date;
+    resetPasswordTokenStatus: 'unused' | 'used';
     address: {
         province: string;
         district: string;

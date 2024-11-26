@@ -10,45 +10,44 @@ const UserTable = () => {
     setData(data.filter((item) => item.id !== id));
   };
 
-
   const userColumn = [
     { field: "id", headerName: "ID", width: 50 },
-  {
-    field: "user",
-    headerName: "User",
-    width: 130,
-    renderCell: (params) => {
-      return (
-        <div className="cellWithImg">
-          <img className="cellImg" src={params.row.img} alt="avatar" />
-          {params.row.username}
-        </div>
-      );
+    {
+      field: "user",
+      headerName: "User",
+      width: 130,
+      renderCell: (params) => {
+        return (
+          <div className="cellWithImg">
+            <img className="cellImg" src={params.row.img} alt="avatar" />
+            {params.row.username}
+          </div>
+        );
+      },
     },
-  },
-  {
-    field: "email",
-    headerName: "Email",
-    width: 200,
-  },
+    {
+      field: "email",
+      headerName: "Email",
+      width: 200,
+    },
 
-  {
-    field: "age",
-    headerName: "Age",
-    width: 100,
-  },
-  {
-    field: "role",
-    headerName: "Role",
-    width: 160,
-    renderCell: (params) => {
-      return (
-        <div className={`cellWithRole ${params.row.role}`}>
-          {params.row.role}
-        </div>
-      );
+    {
+      field: "age",
+      headerName: "Age",
+      width: 100,
     },
-  },
+    {
+      field: "role",
+      headerName: "Role",
+      width: 160,
+      renderCell: (params) => {
+        return (
+          <div className={`cellWithRole ${params.row.role}`}>
+            {params.row.role}
+          </div>
+        );
+      },
+    },
     {
       field: "action",
       headerName: "Action",
@@ -56,7 +55,10 @@ const UserTable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to={`view/${params.row.id}`} style={{ textDecoration: "none" }}>
+            <Link
+              to={`view/${params.row.id}`}
+              style={{ textDecoration: "none" }}
+            >
               <div className="viewButton">View</div>
             </Link>
             <div
@@ -77,7 +79,6 @@ const UserTable = () => {
         <Link to="/admin/user/new" className="addNewButton">
           Add New
         </Link>
-
       </div>
       <DataGrid
         className="userTableGrid"

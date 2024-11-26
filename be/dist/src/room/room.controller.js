@@ -35,7 +35,7 @@ let RoomController = class RoomController {
         return this.roomService.findRoom(findRoomDto);
     }
     async findAvailableRoomWithSearch(data) {
-        return this.roomService.findAvailableRoomWithSearch(data.userId, data.place || data.province, data.check_in, data.check_out, data.capacity);
+        return this.roomService.findAvailableRoomWithSearch(data.userId, data.place || data.province, data.check_in, data.check_out, data.capacity, data.type);
     }
     async updateImageForRoom(data) {
         return this.roomService.updateImageForRoom(data.roomId, data.image);

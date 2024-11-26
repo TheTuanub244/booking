@@ -12,13 +12,15 @@ const payment_controller_1 = require("./payment.controller");
 const payment_service_1 = require("./payment.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const payment_schema_1 = require("./payment.schema");
+const gmail_service_1 = require("../gmail/gmail.service");
+const gmail_module_1 = require("../gmail/gmail.module");
 let PaymentModule = class PaymentModule {
 };
 exports.PaymentModule = PaymentModule;
 exports.PaymentModule = PaymentModule = __decorate([
     (0, common_1.Module)({
         controllers: [payment_controller_1.PaymentController],
-        providers: [payment_service_1.PaymentService],
+        providers: [payment_service_1.PaymentService, gmail_service_1.GmailService],
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 {
@@ -26,6 +28,7 @@ exports.PaymentModule = PaymentModule = __decorate([
                     schema: payment_schema_1.PaymentSchema,
                 },
             ]),
+            gmail_module_1.GmailModule
         ],
     })
 ], PaymentModule);

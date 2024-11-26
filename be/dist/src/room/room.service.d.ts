@@ -45,7 +45,7 @@ export declare class RoomService {
         __v?: number;
     })[]>;
     isDuplicateSearch(recentSearch: any[], newSearch: any): Promise<boolean>;
-    findAvailableRoomWithSearch(userId: any, place: any, check_in: any, check_out: any, capacity: any): Promise<any[]>;
+    findAvailableRoomWithSearch(userId: string, place: string, check_in: any, check_out: any, capacity: any, type: string): Promise<any[]>;
     findConflictingInBookings(room_id: mongoose.Types.ObjectId, property_id: mongoose.Types.ObjectId, check_in: Date, check_out: Date): Promise<string[]>;
     findRoom(findRoomDto: FindRoomDto): Promise<(mongoose.Document<unknown, {}, Room> & Room & {
         _id: Types.ObjectId;

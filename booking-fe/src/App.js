@@ -13,12 +13,14 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProperyList from "./pages/partner/propertylist/PropertyList";
 import InformationDashboard from "./pages/partner/informationDashboard/InformationDashboard";
 import Payment from "./pages/payment/Payment";
+import ResultPayment from "./pages/resultPayment/ResultPayment";
 import PartnerPropertyDetailPage from "./pages/partner/propertyDetail/PartnerPropertyDetailPage";
 import SearchResult from "./pages/searchResult/SearchResult";
 import { useEffect } from "react";
 import socketService from "./helpers/sockerService";
 import PartnerBookingDetail from "./pages/partner/partnerBookingDetail/PartnerBookingDetail";
-import 'bootstrap/dist/css/bootstrap.min.css';import DashBoard from "./pages/admin/contents/DashBoard/DashBoard";
+import "bootstrap/dist/css/bootstrap.min.css";
+import DashBoard from "./pages/admin/contents/DashBoard/DashBoard";
 import UserTable from "./pages/admin/component/UserTable/UserTable";
 import RoomTable from "./pages/admin/component/RoomsTable/RoomTable";
 import UserManage from "./pages/admin/contents/user/UserManage/UserManage";
@@ -62,7 +64,7 @@ function App() {
         <Route path="/property/:id" element={<Property />}></Route>
         <Route path="/admin" element={<AdminDashboard />}>
           <Route path="" element={<DashBoard />} />
-          <Route path="booking" element={<BookingManage />}/>
+          <Route path="booking" element={<BookingManage />} />
           <Route path="partnerRequest" element={<ViewPartnerRequest />}></Route>
           <Route path="user" element={<UserManage />}>
             <Route path="" element={<UserTable />} />
@@ -76,14 +78,17 @@ function App() {
             <Route path="view/:id" element={<ViewProperty />} />
             <Route path="edit/:id" element={<EditProperty />} />
           </Route>
-          <Route path="room" element={<RoomManage />} >
+          <Route path="room" element={<RoomManage />}>
             <Route path="" element={<RoomTable />} />
-              <Route path="new" element={<AddNewRoom />} />
-              <Route path="view/:id" element={<ViewRoom />} />
+            <Route path="new" element={<AddNewRoom />} />
+            <Route path="view/:id" element={<ViewRoom />} />
           </Route>
-          <Route path="analytic" element={<Analytics />}/>
+          <Route path="analytic" element={<Analytics />} />
         </Route>
-        <Route path="/partner/partnerDashboard" element={<PartnerDashboard />} />
+        <Route
+          path="/partner/partnerDashboard"
+          element={<PartnerDashboard />}
+        />
         <Route path="/partner/partnerRegister" element={<PartnerRegister />} />
         <Route path="/partner/propertyList/:id" element={<ProperyList />} />
         <Route
@@ -91,13 +96,16 @@ function App() {
           element={<InformationDashboard />}
         />
         <Route path="/payment" element={<Payment />}></Route>
+        <Route path="payment/vnpay_return" element={<ResultPayment />}></Route>
         <Route
           path="/partner/partnerPropertyDetailPage/:id"
           element={<PartnerPropertyDetailPage />}
         />
         <Route path="/searchResult" element={<SearchResult />} />
-        <Route path="/partnerBookingDetail/:id" element={<PartnerBookingDetail/>} />
-
+        <Route
+          path="/partnerBookingDetail/:id"
+          element={<PartnerBookingDetail />}
+        />
       </Routes>
     </BrowserRouter>
   );

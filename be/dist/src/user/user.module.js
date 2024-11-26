@@ -21,6 +21,7 @@ const jwt_auth_guard_1 = require("../common/guards/jwt-auth.guard");
 const session_schema_1 = require("../session/session.schema");
 const session_service_1 = require("../session/session.service");
 const ResetPassword_middleware_1 = require("../common/middleware/ResetPassword.middleware");
+const CheckPassword_middleware_1 = require("../common/middleware/CheckPassword.middleware");
 const jwtConstant = {
     secret: 'jwtsecret',
 };
@@ -32,7 +33,12 @@ let UserModule = class UserModule {
             .apply(CreateUser_middleware_1.CreateUserMiddleware)
             .forRoutes({ path: '/user/create-user', method: common_1.RequestMethod.POST }, { path: '/user/sign-up', method: common_1.RequestMethod.POST }, { path: '/user/update-user', method: common_1.RequestMethod.POST })
             .apply(ResetPassword_middleware_1.ResetPasswordMiddleware)
-            .forRoutes({ path: '/user/reset-password', method: common_1.RequestMethod.POST });
+            .forRoutes({ path: '/user/reset-password', method: common_1.RequestMethod.POST }, { path: '/user/checkResetPasswordToken', method: common_1.RequestMethod.POST })
+            .apply(CheckPassword_middleware_1.CheckPasswordMiddleware)
+            .forRoutes({
+            path: 'user/sign-up-with-email',
+            method: common_1.RequestMethod.POST,
+        });
     }
 };
 exports.UserModule = UserModule;

@@ -36,6 +36,18 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "uid", void 0);
 __decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "resetPasswordToken", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false, type: Date, default: null }),
+    __metadata("design:type", Object)
+], User.prototype, "resetPasswordExpires", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String, enum: ['unused', 'used'], default: 'unused' }),
+    __metadata("design:type", String)
+], User.prototype, "resetPasswordTokenStatus", void 0);
+__decorate([
     (0, mongoose_1.Prop)({
         type: {
             province: {
@@ -68,7 +80,7 @@ __decorate([
     __metadata("design:type", Object)
 ], User.prototype, "dob", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [String], enum: role_enum_1.ROLE, default: role_enum_1.ROLE.PARTNER }),
+    (0, mongoose_1.Prop)({ type: [String], enum: role_enum_1.ROLE, default: role_enum_1.ROLE.MEMBER }),
     __metadata("design:type", Array)
 ], User.prototype, "role", void 0);
 __decorate([

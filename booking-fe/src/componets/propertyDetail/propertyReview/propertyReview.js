@@ -4,6 +4,11 @@ import { useEffect, useState, useRef } from "react";
 import RatingProgressBar from "./ratingProgressBar/ratingProgressBar";
 import ReviewComment from "./reviewComment/reviewComment";
 import ReviewDetail from "./reviewDetail/reviewDetail";
+import {
+  findReviewWithProperty,
+  getMonthlyRateByProperty,
+} from "../../../api/reviewAPI";
+import Skeleton from "react-loading-skeleton";
 
 const PropertyReview = ({ property_id }) => {
   const [reviewPoint, setReviewPoint] = useState({
@@ -16,19 +21,126 @@ const PropertyReview = ({ property_id }) => {
     freewifi: 0,
   });
 
-  const [allReviewPopUp, setAllReviewPopUp] = useState(true);
+  const [reviewComment, setReviewComment] = useState([]);
+
+  const [allReviewComment, setAllReviewComment] = useState([]);
+
+  const [monthlyRate, setMonthlyRate] = useState({});
+
+  const [allReviewPopUp, setAllReviewPopUp] = useState(false);
 
   const reviewCommentRef = useRef(null);
 
-  useEffect(() => {}, [property_id]);
+  const allReviewRef = useRef(null);
 
-   
+  const [currentAllReviewPage, setCurrentAllReviewPage] = useState(1);
+
+  const [isLoadingReview, setIsLoadingReview] = useState(true);
+
+  const [isLoadingAllReview, setIsLoadingAllReview] = useState(true);
+
+  const [isLoadingRate, setIsLoadingRate] = useState(true);
+
+  useEffect(() => {
+    fetchTopComments();
+    fetchMonthlyRate();
+    console.log(reviewComment);
+  }, [property_id]);
+
+  async function handleViewAllReview() {
+    setIsLoadingAllReview(true);
+    document.body.style.overflow = "hidden";
+
+    try {
+      const reviewComments = await findReviewWithProperty(property_id, 1);
+      setAllReviewComment(reviewComments.reviews);
+      setIsLoadingAllReview(false);
+    } catch (e) {
+      console.log(`Error at fetching review comment ${e}`);
+    }
+  }
+
+  // Fetch reviews for a specific page
+  async function loadReviews(page) {
+    console.log("Loading");
+    setIsLoadingAllReview(true);
+    try {
+      const response = await findReviewWithProperty(property_id, page);
+      setAllReviewComment((prevReviews) => [
+        ...prevReviews,
+        ...response.reviews,
+      ]);
+      setCurrentAllReviewPage(page);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setIsLoadingAllReview(false);
+    }
+  }
+
+  // Handle scroll event
+  const handleScrollAllReview = (e) => {
+    const bottom =
+      e.target.scrollHeight === e.target.scrollTop + e.target.clientHeight;
+    if (bottom && !isLoadingAllReview) {
+      loadReviews(currentAllReviewPage + 1); // Load next page when reaching bottom
+    }
+  };
+
+  function handleCloseAllReview() {
+    document.body.style.overflow = "";
+  }
+
+  async function fetchTopComments() {
+    setIsLoadingReview(true);
+    try {
+      const reviewComments = await findReviewWithProperty(property_id, 1);
+      console.log(reviewComments);
+      setReviewComment(reviewComments.reviews);
+      setIsLoadingReview(false);
+    } catch (e) {
+      console.log(`Error at fetching review comment ${e}`);
+    }
+  }
+
+  async function fetchMonthlyRate() {
+    setIsLoadingRate(true);
+    try {
+      const monthRate = await getMonthlyRateByProperty(property_id);
+      console.log(monthRate["3"]);
+      let count =
+        monthRate["1"] +
+        monthRate["2"] +
+        monthRate["3"] +
+        monthRate["4"] +
+        monthRate["5"];
+      let avarage =
+        (0.0 +
+          monthRate["1"] +
+          monthRate["2"] * 2 +
+          monthRate["3"] * 3 +
+          monthRate["4"] * 4 +
+          monthRate["5"] * 5) /
+        count;
+      avarage = parseFloat(avarage.toFixed(1));
+      console.log(count, avarage);
+
+      setMonthlyRate({
+        review_count: count,
+        avarage: avarage,
+      });
+      console.log(monthRate);
+      setIsLoadingRate(false);
+    } catch (e) {
+      console.log(`Error at fetching review comment ${e}`);
+    }
+  }
+
   function scrollLeft() {
     if (reviewCommentRef.current) {
       reviewCommentRef.current.scrollBy({ left: -250, behavior: "smooth" });
     }
   }
-
 
   function scrollRight() {
     if (reviewCommentRef.current) {
@@ -41,13 +153,21 @@ const PropertyReview = ({ property_id }) => {
       <h2>Review</h2>
       <div className="overview-review">
         <div className="avarage-point">
-          <h4>9.9</h4>
+          {!isLoadingRate ? <b>{monthlyRate.avarage}</b> : <Skeleton />}
         </div>
         <div className="rate">
-          <h4>nice</h4>
+          {!isLoadingRate ? (
+            <b>{monthlyRate.avarage > 3 ? "NICE" : "AWFUL"}</b>
+          ) : (
+            <Skeleton />
+          )}
         </div>
         <div className="numberOfReviews">
-          <h4>9999 Reviews</h4>
+          {!isLoadingRate ? (
+            <b>{monthlyRate.review_count} Reviews</b>
+          ) : (
+            <Skeleton />
+          )}
         </div>
       </div>
       <div className="review-rating-container">
@@ -67,23 +187,33 @@ const PropertyReview = ({ property_id }) => {
 
       <div className="review-comment-container">
         <h4>Comment</h4>
-        <button class="left-button" onClick={(e) => {e.preventDefault();
-                                scrollLeft();}}>&#8592;</button>
+        <button
+          className="left-button"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollLeft();
+          }}
+        >
+          &#8592;
+        </button>
         <div className="review-comment" ref={reviewCommentRef}>
-         
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          <ReviewComment />
-          
+          {!isLoadingReview
+            ? reviewComment.map((review, index) => (
+                <ReviewComment key={index} review={review} />
+              ))
+            : Array(10)
+                .fill(null)
+                .map((_, index) => <ReviewComment key={index} />)}
         </div>
-        <button class="right-button" onClick={(e) => {e.preventDefault();
-                                 scrollRight();}}>&#8594;</button>
+        <button
+          className="right-button"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollRight();
+          }}
+        >
+          &#8594;
+        </button>
       </div>
 
       <button
@@ -91,6 +221,7 @@ const PropertyReview = ({ property_id }) => {
         onClick={(e) => {
           e.preventDefault();
           setAllReviewPopUp(true);
+          handleViewAllReview();
         }}
       >
         View all reviews
@@ -102,41 +233,23 @@ const PropertyReview = ({ property_id }) => {
             onClick={(e) => {
               e.preventDefault();
               setAllReviewPopUp(false);
+              handleCloseAllReview();
             }}
           ></div>
-          <div className="all-reviews">
-            <ReviewDetail />
-            <hr></hr>
-            <ReviewDetail />
-            <hr></hr>
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
-            <ReviewDetail />
+
+          <div
+            className="all-reviews"
+            onClick={(e) => e.stopPropagation()}
+            onScroll={(e) => handleScrollAllReview(e)}
+            ref={allReviewRef}
+          >
+            {allReviewComment.map((review, index) => (
+              <ReviewDetail key={index} review={review} />
+            ))}
+            {!isLoadingAllReview &&
+              Array(10)
+                .fill(null)
+                .map((_, index) => <ReviewDetail key={index} />)}
           </div>
         </>
       )}

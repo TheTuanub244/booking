@@ -31,11 +31,14 @@ let UserController = class UserController {
         return this.userService.signUp(createUserDto);
     }
     async signUpWithEmail(signup) {
+        console.log(signup);
         return this.userService.signUpWithEmail(signup);
+    }
+    async confirmSignUpWithEmail(signup) {
+        return this.userService.confirmSignUp(signup);
     }
     async signIn(user, response) {
         const data = await this.userService.signIn(user);
-        console.log(data);
         response.cookie('refreshToken', data.refreshToken, {
             httpOnly: true,
             sameSite: 'none',
@@ -45,6 +48,7 @@ let UserController = class UserController {
         return response.status(common_1.HttpStatus.OK).json({
             _id: data._id,
             accessToken: data.access_token,
+            displayName: data.displayName,
             refreshToken: data.refreshToken,
             message: 'Login successful',
         });
@@ -93,6 +97,21 @@ let UserController = class UserController {
             message: 'Login successful',
         });
     }
+    async getPendingUser() {
+        return this.userService.getPendingUser();
+    }
+    async requestTopartner(id) {
+        return this.userService.requestToPartner(id);
+    }
+    async checkRequest(id) {
+        return this.userService.checkRequestPartner(id);
+    }
+    async updateResetPasswordToken(userId, email) {
+        return this.userService.updateResetPasswordToken(userId, email);
+    }
+    async checkResetPasswordToken(userId, token, user) {
+        return this.userService.checkResetPasswordToken(userId, user.password, token);
+    }
 };
 exports.UserController = UserController;
 __decorate([
@@ -118,6 +137,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "signUpWithEmail", null);
+__decorate([
+    (0, common_1.Post)('/confirm-signup'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "confirmSignUpWithEmail", null);
 __decorate([
     (0, common_1.Post)('/sign-in'),
     __param(0, (0, common_1.Body)()),
@@ -178,6 +204,43 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateInformationForGoogle", null);
+__decorate([
+    (0, common_1.Get)('getPendingUser'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getPendingUser", null);
+__decorate([
+    (0, common_1.Get)('requestToPartner/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "requestTopartner", null);
+__decorate([
+    (0, common_1.Get)('checkRequest/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "checkRequest", null);
+__decorate([
+    (0, common_1.Get)('updateResetPasswordToken'),
+    __param(0, (0, common_1.Query)('userId')),
+    __param(1, (0, common_1.Query)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateResetPasswordToken", null);
+__decorate([
+    (0, common_1.Post)('checkResetPasswordToken'),
+    __param(0, (0, common_1.Query)('userId')),
+    __param(1, (0, common_1.Query)('token')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "checkResetPasswordToken", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])

@@ -16,6 +16,7 @@ let ResetPasswordMiddleware = class ResetPasswordMiddleware {
             { message: 'Password is required', field: 'password' },
             { message: 'Please re-enter the password', field: 'rePassword' },
         ];
+        console.log(req.body);
         const errors = requiredFields
             .filter(({ field }) => !req.body[field])
             .map(({ field, message }) => ({

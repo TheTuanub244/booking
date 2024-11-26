@@ -34,11 +34,10 @@ export class BookingController {
   async getMonthlyRevenueByProperty(@Param('id') id: string) {
     return this.bookingService.getMonthlyRevenueByProperty(id);
   }
-  @Get(`/getBooking/:id/:status`)
-  async getBooking(@Param('id') id: string, @Param('status') status: string) {
-    console.log(status);
+  @Get(`/getBookingByOwner/:id/`)
+  async getBookingByOwner(@Param('id') id: string) {
 
-    return this.bookingService.getBooking(id);
+    return this.bookingService.getBookingByOwner(id);
   }
   @Delete('/cancelBooking/:id')
   async cancelBooking(@Param('id') id: string) {

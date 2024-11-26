@@ -23,7 +23,7 @@ export declare class PropertyController {
         totalPages: number;
         currentPage: number;
     }>;
-    getPropertyById(id: ObjectId): Promise<import("mongoose").Document<unknown, {}, import("./property.schema").Property> & import("./property.schema").Property & {
+    getPropertyById(id: string): Promise<import("mongoose").Document<unknown, {}, import("./property.schema").Property> & import("./property.schema").Property & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v?: number;
@@ -35,7 +35,7 @@ export declare class PropertyController {
     } & {
         __v?: number;
     })[]>;
-    getAllTypeOfProperties(): Promise<import("./enum/type.enum").TYPE[]>;
+    getAllTypeOfProperties(): Promise<any[]>;
     getPropertyNear(data: any): Promise<any[]>;
     updateImageForProperty(data: any): Promise<import("mongoose").Document<unknown, {}, import("./property.schema").Property> & import("./property.schema").Property & {
         _id: import("mongoose").Types.ObjectId;
@@ -48,4 +48,8 @@ export declare class PropertyController {
         __v?: number;
     })[]>;
     getDistinctPlace(): Promise<string[]>;
+    getRateOfProperties(): Promise<{
+        count: any;
+        rate: number;
+    }[]>;
 }

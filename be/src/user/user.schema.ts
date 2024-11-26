@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Date } from 'mongoose';
+import { Date, SchemaTypes } from 'mongoose';
 import { ROLE } from './enum/role.enum';
 
 @Schema()
@@ -14,6 +14,12 @@ export class User {
   gender: boolean;
   @Prop()
   uid: string;
+  @Prop()
+  resetPasswordToken: string;
+  @Prop({ required: false, type: Date, default: null })
+  resetPasswordExpires: Date;
+  @Prop({ type: String, enum: ['unused', 'used'], default: 'unused' })
+  resetPasswordTokenStatus: 'unused' | 'used';
   @Prop({
     type: {
       province: {

@@ -1,10 +1,8 @@
-import React from 'react'
-import PartnerRequestTable from '../../../component/PartnerRequestTable/PartnerRequestTable'
+import React from "react";
+import PartnerRequestTable from "../../../component/PartnerRequestTable/PartnerRequestTable";
 
 const ViewPartnerRequest = () => {
-  return (
-    <PartnerRequestTable/>
-  )
-}
+  return <PartnerRequestTable />;
+};
 
-export default ViewPartnerRequest
+export default ViewPartnerRequest;

@@ -24,8 +24,11 @@ const room_schema_1 = require("../room/room.schema");
 const promotion_service_1 = require("../promotion/promotion.service");
 const notification_gateway_1 = require("../notification/notification/notification.gateway");
 const notification_service_1 = require("../notification/notification.service");
+const bookingStatus_enum_1 = require("./enum/bookingStatus.enum");
+const paymentStatus_enum_1 = require("./enum/paymentStatus.enum");
+const gmail_service_1 = require("../gmail/gmail.service");
 let BookingService = class BookingService {
-    constructor(bookingSchema, sessionSchema, sessionService, promotionSchema, roomSchema, promotionService, notificationGateway, notificationService) {
+    constructor(bookingSchema, sessionSchema, sessionService, promotionSchema, roomSchema, promotionService, notificationGateway, notificationService, gmailService) {
         this.bookingSchema = bookingSchema;
         this.sessionSchema = sessionSchema;
         this.sessionService = sessionService;
@@ -34,6 +37,109 @@ let BookingService = class BookingService {
         this.promotionService = promotionService;
         this.notificationGateway = notificationGateway;
         this.notificationService = notificationService;
+        this.gmailService = gmailService;
+    }
+    async getBookingById(booking_id) {
+        const findBooking = await this.bookingSchema.aggregate([
+            {
+                $match: {
+                    _id: new mongoose_2.Types.ObjectId(booking_id),
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user_id',
+                    foreignField: '_id',
+                    as: 'userDetails',
+                },
+            },
+            {
+                $unwind: '$userDetails',
+            },
+            {
+                $lookup: {
+                    from: 'rooms',
+                    localField: 'room_id',
+                    foreignField: '_id',
+                    as: 'roomDetails',
+                },
+            },
+            {
+                $unwind: '$roomDetails',
+            },
+            {
+                $lookup: {
+                    from: 'properties',
+                    localField: 'property',
+                    foreignField: '_id',
+                    as: 'propertyDetails',
+                },
+            },
+            {
+                $unwind: '$propertyDetails',
+            },
+        ]);
+        if (!findBooking) {
+            throw new common_1.NotFoundException(`Booking with ID ${booking_id} not found`);
+        }
+        return findBooking;
+    }
+    async cancelBooking(booking_id) {
+        const booking = await this.getBookingById(booking_id);
+        if (booking[0].booking_status === bookingStatus_enum_1.BookingStatus.PENDING) {
+            await this.bookingSchema.findByIdAndDelete(new mongoose_2.Types.ObjectId(booking_id));
+        }
+        else if (booking[0].booking_status === bookingStatus_enum_1.BookingStatus.COMPLETED) {
+            if (booking[0].payment_status === paymentStatus_enum_1.PaymentStatus.PAID) {
+                const subject = 'Booking Cancellation Confirmation';
+                const text = `Your booking has been cancelled. Here are the details:
+          - Property: ${booking[0].property.name}
+          - Room(s): ${Array.isArray(booking[0].roomDetails) ? booking[0].roomDetails?.map((room) => room.name).join(', ') : booking[0].roomDetails.name}
+          - Check-in Date: ${booking[0].check_in_date.toDateString()}
+          - Check-out Date: ${booking[0].check_out_date.toDateString()}
+          - Refund Amount: $${booking[0].total_price}`;
+                const cancelUrl = `${process.env.BACK_END_URL}/booking/confirm-cancellation?booking_id=${booking[0]._id}&redirect=${process.env.FRONT_END_URL}`;
+                const html = `
+          <h1>Booking Cancellation Confirmation</h1>
+          <p>We received your request to cancel the booking. Here are the details:</p>
+          <ul>
+            <li><strong>Property:</strong> ${booking[0].property.name}</li>
+            <li><strong>Room(s):</strong> ${Array.isArray(booking[0].roomDetails) ? booking[0].roomDetails?.map((room) => room.name).join(', ') : booking[0].roomDetails.name}</li>
+            <li><strong>Check-in Date:</strong> ${booking[0].check_in_date.toDateString()}</li>
+            <li><strong>Check-out Date:</strong> ${booking[0].check_out_date.toDateString()}</li>
+            <li><strong>Refund Amount:</strong> $${booking[0].total_price}</li>
+          </ul>
+          <p>Please click the button below to confirm cancellation</p>
+          <a href="${cancelUrl}" style="
+          display: inline-block;
+          padding: 10px 20px;
+          font-size: 16px;
+          color: white;
+          background-color: red;
+          text-decoration: none;
+          border-radius: 5px;
+        ">Confirm Cancellation</a>
+        <p>If you did not request this action, you can safely ignore this email.</p>
+          <p>We hope to serve you again in the future.</p>
+        `;
+                await this.gmailService.sendEmail(booking[0].userDetails.email, subject, text, html);
+            }
+        }
+    }
+    async finalizeCancellation(bookingId) {
+        const booking = await this.getBookingById(bookingId);
+        const message = `Your property ${booking[0].propertyDetails.name} has been canceled by ${booking[0].userDetails.email}`;
+        await this.notificationService.createNotification({
+            sender_id: booking[0].userDetails._id,
+            receiver_id: booking[0].propertyDetails.owner_id,
+            booking_id: booking[0]._id,
+            type: 'Booking',
+            message,
+        });
+        booking[0].booking_status = bookingStatus_enum_1.BookingStatus.CANCELED;
+        await booking[0].save();
+        return true;
     }
     async calculateTotalNightPrice(booking) {
         const findRoomPromotion = await this.promotionService.findRoomPromotionForBooking(booking.room_id);
@@ -89,13 +195,21 @@ let BookingService = class BookingService {
     }
     async createBooking(createBookingDto) {
         const customerId = createBookingDto.customerId;
+        const findExistedBooking = await this.bookingSchema
+            .findOne({
+            user_id: customerId,
+        })
+            .populate('user_id');
+        if (findExistedBooking.booking_status === bookingStatus_enum_1.BookingStatus.PENDING) {
+            throw new common_1.BadRequestException('');
+        }
         const findPartnerId = await this.roomSchema
             .findOne({
             property_id: createBookingDto.property_id,
         })
             .populate('property_id');
         const partnerId = findPartnerId.property_id.owner_id;
-        const message = `User ${customerId} has booked`;
+        const message = `Your property ${findPartnerId.property_id.name} has been booked by ${findExistedBooking.user_id.email}`;
         await this.notificationService.createNotification({
             sender_id: new mongoose_2.Types.ObjectId(customerId),
             receiver_id: partnerId,
@@ -104,7 +218,6 @@ let BookingService = class BookingService {
             message,
         });
         this.notificationGateway.sendNotificationToPartner(createBookingDto.partnerId.toString(), message);
-        return { success: true };
     }
     async findConflictingBookings(property, roomId, check_in, check_out) {
         const conflictingBookings = await this.bookingSchema.find({
@@ -317,7 +430,7 @@ let BookingService = class BookingService {
             yearlyRevenue: item.yearlyRevenue,
         }));
     }
-    async getBooking(owner_id) {
+    async getBookingByOwner(owner_id) {
         return this.bookingSchema.aggregate([
             {
                 $lookup: {
@@ -359,14 +472,44 @@ let BookingService = class BookingService {
                     total_price: 1,
                     booking_status: 1,
                     capacity: 1,
-                    'propertyDetails.name': 1,
-                    'propertyDetails.location': 1,
+                    propertyDetails: 1,
                     roomDetails: 1,
-                    'userDetails.userName': 1,
-                    'userDetails.email': 1,
+                    userDetails: 1,
                 },
             },
         ]);
+    }
+    async findUnfinishedBooking(userId) {
+        const findBooking = await this.bookingSchema.aggregate([
+            {
+                $match: {
+                    user_id: new mongoose_2.Types.ObjectId(userId),
+                },
+            },
+            {
+                $lookup: {
+                    from: 'rooms',
+                    localField: 'room_id',
+                    foreignField: '_id',
+                    as: 'roomDetails',
+                },
+            },
+            {
+                $unwind: '$roomDetails',
+            },
+            {
+                $lookup: {
+                    from: 'properties',
+                    localField: 'property',
+                    foreignField: '_id',
+                    as: 'propertyDetails',
+                },
+            },
+            {
+                $unwind: '$propertyDetails',
+            },
+        ]);
+        return findBooking;
     }
 };
 exports.BookingService = BookingService;
@@ -383,6 +526,7 @@ exports.BookingService = BookingService = __decorate([
         mongoose_2.Model,
         promotion_service_1.PromotionService,
         notification_gateway_1.NotificationGateway,
-        notification_service_1.NotificationService])
+        notification_service_1.NotificationService,
+        gmail_service_1.GmailService])
 ], BookingService);
 //# sourceMappingURL=booking.service.js.map

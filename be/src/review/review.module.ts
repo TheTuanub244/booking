@@ -44,7 +44,7 @@ const jwtConstant = {
     SessionService,
     NotificationGateway,
     NotificationService,
-    GmailService
+    GmailService,
   ],
   imports: [
     MongooseModule.forFeature([

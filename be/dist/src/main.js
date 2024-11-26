@@ -7,6 +7,10 @@ const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const validation_pipe_1 = require("@nestjs/common/pipes/validation.pipe");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const express_1 = __importDefault(require("express"));
+const app = (0, express_1.default)();
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.useGlobalPipes(new validation_pipe_1.ValidationPipe());

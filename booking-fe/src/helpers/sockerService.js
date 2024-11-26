@@ -8,8 +8,8 @@ class SocketService {
     if (!this.socket) {
       this.socket = io(process.env.REACT_APP_API_URL, {
         query: { partnerId },
-        withCredentials: true, 
-        transports: ['websocket'],
+        withCredentials: true,
+        transports: ["websocket"],
       });
       console.log("Socket connected!");
     }

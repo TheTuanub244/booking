@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./ResultItem.css";
 import { useLocation, useNavigate } from "react-router-dom";
 const ResultItem = ({ property, index }) => {
@@ -23,8 +23,12 @@ const ResultItem = ({ property, index }) => {
       currency: "VND",
     }).format(value);
   };
+
   return (
-    <div className={`result-item ${index === 0 && "first-index"}`}>
+    <div
+      className={`result-item ${index === 0 && "first-index"}`}
+      onClick={() => navigate(`/property/${property.property_id._id}`)}
+    >
       <img
         src={property.images[0]}
         alt={`${property.name}`}

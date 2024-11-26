@@ -33,6 +33,8 @@ const notification_module_1 = require("../notification/notification.module");
 const notification_gateway_1 = require("../notification/notification/notification.gateway");
 const notification_service_1 = require("../notification/notification.service");
 const notification_schema_1 = require("../notification/notification.schema");
+const gmail_service_1 = require("../gmail/gmail.service");
+const gmail_module_1 = require("../gmail/gmail.module");
 const jwtConstant = {
     secret: 'jwtsecret',
 };
@@ -50,6 +52,7 @@ exports.RoomModule = RoomModule = __decorate([
             promotion_service_1.PromotionService,
             notification_gateway_1.NotificationGateway,
             notification_service_1.NotificationService,
+            gmail_service_1.GmailService,
         ],
         exports: [room_service_1.RoomService],
         imports: [
@@ -69,6 +72,7 @@ exports.RoomModule = RoomModule = __decorate([
             }),
             (0, common_1.forwardRef)(() => session_module_1.SessionModule),
             (0, common_1.forwardRef)(() => notification_module_1.NotificationModule),
+            (0, common_1.forwardRef)(() => gmail_module_1.GmailModule),
             (0, common_1.forwardRef)(() => booking_module_1.BookingModule),
             (0, common_1.forwardRef)(() => user_module_1.UserModule),
             (0, common_1.forwardRef)(() => promotion_module_1.PromotionModule),

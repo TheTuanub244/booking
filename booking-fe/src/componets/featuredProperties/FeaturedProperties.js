@@ -27,7 +27,7 @@ function FeaturedProperties() {
       <Swiper
         spaceBetween={15} // Khoảng cách giữa các slide
         slidesPerView={4} // Số slide hiển thị một lúc
-        navigation // Thêm điều khiển điều hướng
+        navigation={locationList.length > 4} // Thêm điều khiển điều hướng
         pagination={{ clickable: true }} // Thêm phân trang
         modules={[Navigation, Pagination]} // Thêm các module vào đâyx
       >

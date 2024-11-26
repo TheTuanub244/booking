@@ -14,6 +14,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Session, SessionSchema } from 'src/session/session.schema';
 import { SessionService } from 'src/session/session.service';
 import { ResetPasswordMiddleware } from 'src/common/middleware/ResetPassword.middleware';
+import { CheckPasswordMiddleware } from 'src/common/middleware/CheckPassword.middleware';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -52,6 +53,14 @@ export class UserModule {
         { path: '/user/update-user', method: RequestMethod.POST },
       )
       .apply(ResetPasswordMiddleware)
-      .forRoutes({ path: '/user/reset-password', method: RequestMethod.POST });
+      .forRoutes(
+        { path: '/user/reset-password', method: RequestMethod.POST },
+        { path: '/user/checkResetPasswordToken', method: RequestMethod.POST },
+      )
+      .apply(CheckPasswordMiddleware)
+      .forRoutes({
+        path: 'user/sign-up-with-email',
+        method: RequestMethod.POST,
+      });
   }
 }

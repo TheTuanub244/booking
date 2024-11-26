@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Room } from 'src/room/room.schema';
 import { User } from 'src/user/user.schema';
 import { BookingStatus } from './enum/bookingStatus.enum';
+import { PaymentStatus } from './enum/paymentStatus.enum';
 import { Property } from 'src/property/property.schema';
 export declare class Booking {
     user_id: User;
@@ -19,6 +20,7 @@ export declare class Booking {
     };
     total_price: number;
     booking_status: BookingStatus;
+    payment_status: PaymentStatus;
     request: string;
 }
 export declare const BookingSchema: mongoose.Schema<Booking, mongoose.Model<Booking, any, any, any, mongoose.Document<unknown, any, Booking> & Booking & {

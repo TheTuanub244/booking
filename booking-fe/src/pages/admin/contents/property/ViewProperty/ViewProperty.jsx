@@ -67,3 +67,4 @@ const ViewProperty = () => {
 };
 
 export default ViewProperty;
+export default ViewProperty;

@@ -23,8 +23,8 @@ let ReviewController = class ReviewController {
     async createReview(createReviewDto) {
         return this.reviewService.createReview(createReviewDto);
     }
-    async findReviewWithProperty(property_id) {
-        return this.reviewService.findReviewWithProperty(property_id.property_id);
+    async findReviewWithProperty(property_id, page) {
+        return this.reviewService.findReviewWithProperty(property_id, page);
     }
     async getMonthlyRating(id) {
         return this.reviewService.getMonthlyRating(id);
@@ -42,10 +42,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ReviewController.prototype, "createReview", null);
 __decorate([
-    (0, common_1.Post)('/findReviewWithProperty'),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.Get)('/findReviewWithProperty/:property_id'),
+    __param(0, (0, common_1.Param)('property_id')),
+    __param(1, (0, common_1.Query)('page')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], ReviewController.prototype, "findReviewWithProperty", null);
 __decorate([

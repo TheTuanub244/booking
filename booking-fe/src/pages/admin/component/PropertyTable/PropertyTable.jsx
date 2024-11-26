@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const PropertyTable = ({properties}) => {
+const PropertyTable = ({ properties }) => {
   const [data, setData] = useState(properties);
 
   const handleDelete = (id) => {
@@ -13,17 +13,17 @@ const PropertyTable = ({properties}) => {
     ...property,
     id: property._id, // Map `_id` to `id`
   }));
-  
+
   function getOwnerName(ownerId) {
     // Placeholder function to get owner name by owner ID
     return "Owner";
   }
 
   const propertyColumn = [
-    { 
-      field: "_id", 
-      headerName: "ID", 
-      width: 50 
+    {
+      field: "_id",
+      headerName: "ID",
+      width: 50,
     },
     {
       field: "name",
@@ -77,14 +77,14 @@ const PropertyTable = ({properties}) => {
   ];
 
   return (
-      <DataGrid
-        className="propertyTableGrid"
-        rows={tableRows}
-        columns={propertyColumn}
-        pageSize={6}
-        rowsPerPageOptions={[6]}
-        checkboxSelection
-      />
+    <DataGrid
+      className="propertyTableGrid"
+      rows={tableRows}
+      columns={propertyColumn}
+      pageSize={6}
+      rowsPerPageOptions={[6]}
+      checkboxSelection
+    />
   );
 };
 

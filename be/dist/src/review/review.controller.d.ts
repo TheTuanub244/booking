@@ -8,7 +8,15 @@ export declare class ReviewController {
     } & {
         __v?: number;
     }>;
-    findReviewWithProperty(property_id: any): Promise<number>;
+    findReviewWithProperty(property_id: string, page: number): Promise<{
+        reviews: (import("mongoose").Document<unknown, {}, import("./review.schema").Review> & import("./review.schema").Review & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v?: number;
+        })[];
+        totalPages: number;
+        currentPage: number;
+    }>;
     getMonthlyRating(id: any): Promise<{
         [key: number]: number;
     }>;

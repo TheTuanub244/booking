@@ -28,9 +28,28 @@ let BookingController = class BookingController {
     async getMonthlyRevenueByProperty(id) {
         return this.bookingService.getMonthlyRevenueByProperty(id);
     }
-    async getBooking(id, status) {
-        console.log(status);
-        return this.bookingService.getBooking(id);
+    async getBookingByOwner(id) {
+        return this.bookingService.getBookingByOwner(id);
+    }
+    async cancelBooking(id) {
+        return this.bookingService.cancelBooking(id);
+    }
+    async confirmCancellation(booking_id, redirect, res) {
+        try {
+            const success = await this.bookingService.finalizeCancellation(booking_id);
+            if (success) {
+                return res.redirect(`${redirect}?status=success`);
+            }
+            else {
+                return res.redirect(`${redirect}?status=failure`);
+            }
+        }
+        catch (error) {
+            return res.redirect(`${redirect}?status=error`);
+        }
+    }
+    async findUnfinishedBooking(userId) {
+        return this.bookingService.findUnfinishedBooking(userId);
     }
 };
 exports.BookingController = BookingController;
@@ -56,13 +75,35 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], BookingController.prototype, "getMonthlyRevenueByProperty", null);
 __decorate([
-    (0, common_1.Get)(`/getBooking/:id/:status`),
+    (0, common_1.Get)(`/getBookingByOwner/:id/`),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Param)('status')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], BookingController.prototype, "getBooking", null);
+], BookingController.prototype, "getBookingByOwner", null);
+__decorate([
+    (0, common_1.Delete)('/cancelBooking/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], BookingController.prototype, "cancelBooking", null);
+__decorate([
+    (0, common_1.Get)('confirm-cancellation'),
+    __param(0, (0, common_1.Query)('booking_id')),
+    __param(1, (0, common_1.Query)('redirect')),
+    __param(2, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], BookingController.prototype, "confirmCancellation", null);
+__decorate([
+    (0, common_1.Get)(`/findUnfinishedBooking/:userId`),
+    __param(0, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], BookingController.prototype, "findUnfinishedBooking", null);
 exports.BookingController = BookingController = __decorate([
     (0, common_1.Controller)('booking'),
     __metadata("design:paramtypes", [booking_service_1.BookingService])

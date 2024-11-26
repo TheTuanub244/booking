@@ -52,6 +52,7 @@ export class RoomController {
       data.check_in,
       data.check_out,
       data.capacity,
+      data.type,
     );
   }
   @UseGuards(RolesGuard, ValidateTokenGuard)
@@ -81,5 +82,9 @@ export class RoomController {
       userId: data.userId,
       capacity: data.capacity,
     });
+  }
+  @Get('getAllRoomWithDetails')
+  async getAllRoomWithDetails(){
+    return this.roomService.getAllRoomWithDetails()
   }
 }

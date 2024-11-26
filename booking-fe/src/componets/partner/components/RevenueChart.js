@@ -19,11 +19,16 @@ const RevenueChart = ({ setTotalRevenue, type, property }) => {
     const result = await data;
     const revenueData = new Array(12).fill(0);
 
-    result[0].monthlyRevenues.forEach((item) => {
-      revenueData[item.month - 1] = item.revenue;
-    });
-    setMonthlyRevenue(revenueData);
-    setTotalRevenue(result[0].yearlyRevenue);
+    if (result.length !== 0) {
+      result[0].monthlyRevenues.forEach((item) => {
+        revenueData[item.month - 1] = item.revenue;
+      });
+      setMonthlyRevenue(revenueData);
+      setTotalRevenue(result[0].yearlyRevenue);
+    } else {
+      setMonthlyRevenue([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      setTotalRevenue(0);
+    }
   };
   useEffect(() => {
     handleGetMonthlyRevenue();

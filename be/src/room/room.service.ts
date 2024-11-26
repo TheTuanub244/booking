@@ -55,6 +55,14 @@ export class RoomService {
   async countRoomWithPropety(property_id: mongoose.Types.ObjectId) {
     return await this.roomSchema.countDocuments({ property_id });
   }
+  async getAllRoomWithDetails() {
+    return this.roomSchema.find().populate({
+      path: 'property_id',
+      populate: {
+        path: 'owner_id',
+      },
+    });
+  }
   async getAllRoomWithTotalPrice({
     check_in,
     check_out,
@@ -69,6 +77,7 @@ export class RoomService {
       check_in,
       check_out,
       capacity,
+      null,
     );
     availableRoom.forEach((item) => {
       const propertyId = item.value.property_id._id;
@@ -126,14 +135,19 @@ export class RoomService {
   }
   async findAvailableRoomWithSearch(
     userId: string,
-    place,
+    place: string,
     check_in,
     check_out,
     capacity,
+    type: string,
   ) {
     let findProperties;
     if (place === 'all') {
       findProperties = await this.propertySchema.find();
+    } else if (type !== undefined && type !== null && type !== '') {
+      findProperties = await this.propertySchema.find({
+        property_type: type,
+      });
     } else {
       findProperties = await this.propertySchema.find({
         'address.province': place,
@@ -171,12 +185,14 @@ export class RoomService {
       }),
     );
 
-    if (userId && place != 'all') {
-
+    if (
+      userId &&
+      place != 'all' &&
+      (type === null || type === undefined || type === '')
+    ) {
       const session = await this.sessionSchema.findOne({
         userId: new Types.ObjectId(userId),
       });
-      console.log(session);
 
       if (!session) throw new Error('Session not found');
 

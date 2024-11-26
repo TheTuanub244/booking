@@ -228,6 +228,8 @@ const SearchResult = () => {
                 option={option}
                 disableClick={true}
                 allowPositionChange={false}
+                showPropertyInfo={false}
+
               />
             </div>
             {showFullMap && (
@@ -246,6 +248,9 @@ const SearchResult = () => {
                   <PropertyMap
                     initialLocation={{ lat: latitude, lng: longitude }}
                     option={option}
+                    disableClick={true}
+
+                    showPropertyInfo={true}
                   />
                 </div>
               </div>

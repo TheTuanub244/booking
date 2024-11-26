@@ -1,6 +1,5 @@
 import "./PropertyTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import { propertyRows } from "../../data/propertyData";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 

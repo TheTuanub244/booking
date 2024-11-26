@@ -24,7 +24,7 @@ const PropertyManageList = () => {
 
     fetchProperties();
   }, []);
-
+  console.log(properties);
   const handleViewChange = (e) => {
     setViewMode(e.target.value);
   };

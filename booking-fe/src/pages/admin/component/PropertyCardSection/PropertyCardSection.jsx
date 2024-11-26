@@ -20,7 +20,7 @@ const PropertySection = ({ properties }) => {
       {properties.slice(0, 9).map((property) => (
         <Grid
           item
-          key={property.id}
+          key={property._id}
           xs={12}
           sm={6}
           md={4}

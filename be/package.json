@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "npx nest build",
+    "build": "npm ci && npx nest build",
     "format": "prettier --write \"**/*.{js,ts,tsx,jsx,json,html,css,scss,md}\"",
     "start": "node dist/src/main.js",
     "start:dev": "nodemon",

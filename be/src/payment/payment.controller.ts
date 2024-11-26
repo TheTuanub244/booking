@@ -1,4 +1,5 @@
 import { Controller, Post, Body, Req, Res, Query, Get } from '@nestjs/common';
+import { PaymentService } from './payment.service';
 import { Request, Response } from 'express';
 import moment from 'moment';
 import { config } from 'dotenv';
@@ -9,6 +10,16 @@ config(); // Load environment variables
 
 @Controller('payment')
 export class PaymentController {
+  constructor(private readonly paymentSevice: PaymentService) {}
+  @Post('save_payment')
+  async savePayment(
+    @Body() body: any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.paymentSevice.savePayment(body);
+  }
+
   @Post('create_payment')
   async createPaymentUrl(
     @Body() body: any,
@@ -143,9 +154,9 @@ export class PaymentController {
             res
               .status(200)
               .json({
-                RspCode: '02',
-                Message: 'This order has been updated to the payment status',
-              });
+              RspCode: '02',
+              Message: 'This order has been updated to the payment status',
+            });
           }
         } else {
           res.status(200).json({ RspCode: '04', Message: 'Amount invalid' });
@@ -160,10 +171,10 @@ export class PaymentController {
 
   // Hàm sắp xếp object
   private sortObject(obj: { [key: string]: any }): { [key: string]: string } {
-    let sorted: { [key: string]: string } = {}; // Định nghĩa kiểu dữ liệu cho đối tượng kết quả
-    let str: string[] = []; // Mảng chứa các khóa (keys)
+    const sorted: { [key: string]: string } = {}; // Định nghĩa kiểu dữ liệu cho đối tượng kết quả
+    const str: string[] = []; // Mảng chứa các khóa (keys)
 
-    for (let key in obj) {
+    for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
         str.push(encodeURIComponent(key)); // Thêm khóa đã mã hóa vào mảng
       }
@@ -171,7 +182,7 @@ export class PaymentController {
 
     str.sort(); // Sắp xếp các khóa
 
-    for (let key of str) {
+    for (const key of str) {
       // Thêm các cặp khóa-giá trị vào đối tượng sorted, giá trị được mã hóa và thay thế %20 bằng dấu cộng
       sorted[key] = encodeURIComponent(obj[key]).replace(/%20/g, '+');
     }

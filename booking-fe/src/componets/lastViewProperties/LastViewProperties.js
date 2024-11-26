@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 function LastViewProperties({ data }) {
   const navigate = useNavigate();
+  const items = data;
   useEffect(() => {
     console.log(data);
   }, [data]);
@@ -16,7 +17,7 @@ function LastViewProperties({ data }) {
       <Swiper
         spaceBetween={15} // Khoảng cách giữa các slide
         slidesPerView={4} // Số slide hiển thị một lúc
-        navigation // Thêm điều khiển điều hướng
+        navigation={items.length>4} // Thêm điều khiển điều hướng
         pagination={{ clickable: true }} // Thêm phân trang
         modules={[Navigation, Pagination]} // Thêm các module vào đâyx
       >

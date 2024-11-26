@@ -83,4 +83,8 @@ export class RoomController {
       capacity: data.capacity,
     });
   }
+  @Get('getAllRoomWithDetails')
+  async getAllRoomWithDetails(){
+    return this.roomService.getAllRoomWithDetails()
+  }
 }

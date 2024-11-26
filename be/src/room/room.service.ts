@@ -55,6 +55,14 @@ export class RoomService {
   async countRoomWithPropety(property_id: mongoose.Types.ObjectId) {
     return await this.roomSchema.countDocuments({ property_id });
   }
+  async getAllRoomWithDetails() {
+    return this.roomSchema.find().populate({
+      path: 'property_id',
+      populate: {
+        path: 'owner_id',
+      },
+    });
+  }
   async getAllRoomWithTotalPrice({
     check_in,
     check_out,

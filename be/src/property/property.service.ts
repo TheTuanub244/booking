@@ -251,6 +251,7 @@ export class PropertyService {
   async getAllProperty() {
     return this.propertySchema.find();
   }
+
   async getPropertyWithOwner(
     owner_id: ObjectId,
     page: number,

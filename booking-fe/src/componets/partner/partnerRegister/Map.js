@@ -71,7 +71,8 @@ const Map = ({
       option?.capacity,
       userId,
     );
-
+    console.log(respone);
+    
     if (respone) {
       setIsLoading(false);
       setProperties(respone);
@@ -90,6 +91,7 @@ const Map = ({
   const [properties, setProperties] = useState([]);
   const getProperties = async () => {
     const respone = await getAllProperty();
+    console.log(respone)
     setProperties(respone);
   };
   const [position, setPosition] = useState(null);

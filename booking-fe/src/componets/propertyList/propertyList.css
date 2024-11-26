@@ -9,7 +9,9 @@
   height: auto;
   overflow: hidden;
 }
-
+.pListItem{
+  cursor: pointer;
+}
 .pListImg {
   width: 100%;
   height: auto;

@@ -187,7 +187,7 @@ function Payment() {
                   onSubmit={handleSubmit}
                   id="payment_form"
                   accept-charset="UTF-8"
-                  action="http://localhost:8000/payment/create_payment"
+                  action={`${process.env.BACK_END_URL}/payment/create_payment`}
                   method="post"
                 >
                   <label>

@@ -32,7 +32,7 @@ const ViewProperty = () => {
 
     fetchProperty();
   }, [id]);
-
+  console.log(propertyData)
   if (loading) {
     return (
       <Box
@@ -66,5 +66,4 @@ const ViewProperty = () => {
   return <AdminPropertyDetail propertyData={propertyData} />;
 };
 
-export default ViewProperty;
 export default ViewProperty;

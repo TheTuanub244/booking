@@ -1,14 +1,29 @@
 import { Injectable } from '@nestjs/common';
 
 import { GmailService } from 'src/gmail/gmail.service';
+import { PaymentModule } from './payment.module';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Payment } from './payment.schema';
 @Injectable()
 export class PaymentService {
-  constructor(private readonly gmailService: GmailService) {}
+  constructor(
+    @InjectModel(Payment.name)
+    private readonly paymentModel: Model<Payment>,
+    private readonly gmailService: GmailService,
+  ) {}
+
+  async createPayment(data: any) {
+    const payment = new this.paymentModel(data);
+    payment.save();
+    return { message: 'Thành công' };
+  }
+
   async savePayment(data: any) {
     const username = data.username;
-    const transactionCode = data.vnp_TxnRef;
-    const transactionTime = data.vnp_PayDate;
-    const price = data.vnp_Amount;
+    const transactionCode = data.transactionCode;
+    const transactionTime = data.transactionTime;
+    const price = data.price;
     const hotelName = data.hotelName;
     const address = data.address;
     const checkInDate = data.checkInDate;
@@ -23,7 +38,7 @@ Chúng tôi vui mừng thông báo giao dịch thanh toán của anh/chị đã 
 Thông tin giao dịch:
 - Mã giao dịch: ${transactionCode}
 - Thời gian thanh toán: ${transactionTime}
-- Số tiền thanh toán: ${price} VND
+- Số tiền thanh toán: ${price.toLocaleString('vi-VN')} VND
 - Phương thức thanh toán: Thẻ ATM - Tài khoản ngân hàng nội địa 
 
 Thông tin đặt phòng:
@@ -119,5 +134,6 @@ Trân trọng cảm ơn,
   </div>
 </body>
 </html>`;
+    await this.gmailService.sendEmail(email, subject, text, html);
   }
 }

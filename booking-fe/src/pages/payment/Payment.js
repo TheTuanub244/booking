@@ -65,7 +65,7 @@ function Payment() {
     localStorage.setItem("email", formData.email);
     console.log(formData);
     axios
-      .post("http://localhost:8000/payment/create_payment", formData)
+      .post(`${process.env.REACT_APP_API_URL}/payment/create_payment`, formData)
       .then((res) => {
         console.log(res.data);
       })

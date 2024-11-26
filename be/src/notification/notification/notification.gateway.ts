@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000', // URL frontend
+    origin: process.env.FRONT_END_URL, // URL frontend
     methods: ['GET', 'POST'],
 
     credentials: true,

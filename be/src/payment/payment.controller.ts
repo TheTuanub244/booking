@@ -10,7 +10,7 @@ config(); // Load environment variables
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentSevice: PaymentService) {}
+  constructor(private readonly paymentSevice: PaymentService) { }
   @Post('save_payment')
   async savePayment(
     @Body() body: any,
@@ -21,6 +21,16 @@ export class PaymentController {
   }
 
   @Post('create_payment')
+  async createPayment(@Body() body: any, @Res() res: Response) {
+    try {
+      const result = await this.paymentSevice.createPayment(body);
+      return res.status(200).json({ message: result.message });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  @Post('create_transaction')
   async createPaymentUrl(
     @Body() body: any,
     @Req() req: Request,
@@ -104,6 +114,7 @@ export class PaymentController {
 
     if (secureHash === signed) {
       // Kiểm tra dữ liệu trong DB có hợp lệ hay không và thông báo kết quả
+
       return vnp_Params;
     } else {
       return vnp_Params;
@@ -154,9 +165,9 @@ export class PaymentController {
             res
               .status(200)
               .json({
-              RspCode: '02',
-              Message: 'This order has been updated to the payment status',
-            });
+                RspCode: '02',
+                Message: 'This order has been updated to the payment status',
+              });
           }
         } else {
           res.status(200).json({ RspCode: '04', Message: 'Amount invalid' });

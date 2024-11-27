@@ -10,6 +10,7 @@ import {
 } from "../../../api/reviewAPI";
 import Skeleton from "react-loading-skeleton";
 import Pagination from '@mui/material/Pagination';
+import { FaTimes } from 'react-icons/fa';
 
 const PropertyReview = ({ property_id }) => {
   const [reviewPoint, setReviewPoint] = useState({
@@ -251,9 +252,65 @@ const PropertyReview = ({ property_id }) => {
             ref={allReviewRef}
           >
             <div className="allReviews-header">
-              <div className="allReviews-topSection"></div>
-              <div className="allReviews-filter"></div>
-              <div className="allReviews-sorting"></div>
+              <div className="allReviews-topSection">
+                <h4>{"Toàn bộ đánh giá"}</h4>
+                <FaTimes
+                  style={{ fontSize: "24px", cursor: "pointer", color: "black" }}
+                />
+              </div>
+              <div className="allReviews-filter-sort">
+                <div className="allReviews-filter">
+                  <h5>{"Lọc"}</h5>
+                  <div className="filter-dropdown">
+                    
+                    <div>
+                      <label>{"Loại"}</label>
+                      <select>
+                        <option value="" disabled>
+                          Select an option
+                        </option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label>{"Điểm"}</label>
+                      <select>
+                        <option value="" disabled>
+                          Select an option
+                        </option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                      </select>
+                    </div>
+                    
+                  </div>
+                </div>
+
+                <div className="allReviews-sorting">
+                  <h5>{"Sắp xếp"}</h5>
+                  <div className="sorting-dropdown">
+                    <div>
+                      <label>{"Điểm"}</label>
+                      <select>
+                        <option value="" disabled>
+                          Select an option
+                        </option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  
+                </div>
+              </div>
+                
+              
             </div>
             <div className="allReviews-content">
               {!isLoadingAllReview ? (allReviewComment.map((review, index) => (

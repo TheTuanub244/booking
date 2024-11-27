@@ -121,3 +121,9 @@
   flex-direction: column;
   overflow-y: auto;
 }
+
+.review-pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

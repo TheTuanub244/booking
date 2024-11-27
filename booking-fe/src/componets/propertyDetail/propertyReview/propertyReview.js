@@ -9,6 +9,7 @@ import {
   getMonthlyRateByProperty,
 } from "../../../api/reviewAPI";
 import Skeleton from "react-loading-skeleton";
+import Pagination from '@mui/material/Pagination';
 
 const PropertyReview = ({ property_id }) => {
   const [reviewPoint, setReviewPoint] = useState({
@@ -47,8 +48,18 @@ const PropertyReview = ({ property_id }) => {
     console.log(reviewComment);
   }, [property_id]);
 
+  useEffect(() => {
+    
+
+    // Cleanup function
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   async function handleViewAllReview() {
     setIsLoadingAllReview(true);
+
     document.body.style.overflow = "hidden";
 
     try {
@@ -66,8 +77,7 @@ const PropertyReview = ({ property_id }) => {
     setIsLoadingAllReview(true);
     try {
       const response = await findReviewWithProperty(property_id, page);
-      setAllReviewComment((prevReviews) => [
-        ...prevReviews,
+      setAllReviewComment([
         ...response.reviews,
       ]);
       setCurrentAllReviewPage(page);
@@ -240,19 +250,35 @@ const PropertyReview = ({ property_id }) => {
           <div
             className="all-reviews"
             onClick={(e) => e.stopPropagation()}
-            onScroll={(e) => handleScrollAllReview(e)}
             ref={allReviewRef}
           >
             {allReviewComment.map((review, index) => (
               <ReviewDetail key={index} review={review} />
             ))}
-            {!isLoadingAllReview &&
-              Array(10)
-                .fill(null)
-                .map((_, index) => <ReviewDetail key={index} />)}
+            <div className="review-pagination">
+              <Pagination count={100}
+                          size="large"
+                          
+                          sx={{
+                            width: '80%',
+                            '& ul': {
+                              width: '100%',
+                              display: 'flex',
+                              justifyContent: 'space-between', // Space out buttons
+                            },
+                            '& .MuiPaginationItem-root': {
+                              flexGrow: 1, // Make each button stretch equally
+                              textAlign: 'center',
+                            },
+                          }}
+              />
+            </div>
           </div>
         </>
       )}
+      <div className="writeReview">
+        
+      </div>
     </div>
   );
 };

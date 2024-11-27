@@ -162,17 +162,7 @@ function Payment() {
             </div>
           </div>
           <div className="rightContent">
-            <div className="signIninfor">
-              <div className="img">
-                <FontAwesomeIcon icon={faUser} className="iconUser" />
-              </div>
-
-              <div className="information">
-                <div className="text">You are signed in</div>
-                <div className="email">tuanleminh2k3@gmail.com</div>
-              </div>
-            </div>
-
+      
             <div className="yourDetails">
               <h3>Enter your details</h3>
               <div className="alert">

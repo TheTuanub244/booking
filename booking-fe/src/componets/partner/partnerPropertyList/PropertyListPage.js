@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./PropertyListPage.css";
 import "../partnerRegister/PropertyDetailsForm.css";
-import { getPropertyByOwner } from "../../../api/propertyAPI";
+import { deletePropertyById, getPropertyByOwner } from "../../../api/propertyAPI";
 import { useNavigate, useParams } from "react-router-dom";
 import PropertyDetailsForm from "../partnerRegister/PropertyDetailsForm";
 import SearchBar from "./Components/SearchBar";
@@ -56,7 +56,7 @@ const PropertyListPage = () => {
 
   const handleDelete = async (propertyId) => {
     try {
-      //   await deleteProperty(propertyId);
+        await deletePropertyById(propertyId);
       setProperties((prevProperties) =>
         prevProperties.filter((p) => p._id !== propertyId),
       );
@@ -169,7 +169,7 @@ const PropertyListPage = () => {
                         </button>
                         <button
                           className="delete-button"
-                          onClick={() => handleDelete(property._id)}
+                          onClick={() => handleDelete(property.property._id)}
                         >
                           Xóa
                         </button>
@@ -225,7 +225,7 @@ const PropertyListPage = () => {
                         </button>
                         <button
                           className="delete-button"
-                          onClick={() => handleDelete(property._id)}
+                          onClick={() => handleDelete(property.property._id)}
                         >
                           Xóa
                         </button>

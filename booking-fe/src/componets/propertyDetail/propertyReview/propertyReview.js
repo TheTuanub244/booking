@@ -23,6 +23,8 @@ const PropertyReview = ({ property_id }) => {
 
   const [reviewComment, setReviewComment] = useState([]);
 
+  const[totalPageReview, setTotalPageReview] = useState(0);
+
   const [allReviewComment, setAllReviewComment] = useState([]);
 
   const [monthlyRate, setMonthlyRate] = useState({});
@@ -44,7 +46,6 @@ const PropertyReview = ({ property_id }) => {
   useEffect(() => {
     fetchTopComments();
     fetchMonthlyRate();
-    console.log(reviewComment);
   }, [property_id]);
 
   async function handleViewAllReview() {
@@ -55,6 +56,7 @@ const PropertyReview = ({ property_id }) => {
       const reviewComments = await findReviewWithProperty(property_id, 1);
       setAllReviewComment(reviewComments.reviews);
       setIsLoadingAllReview(false);
+      setTotalPageReview(reviewComment.totalPages)
     } catch (e) {
       console.log(`Error at fetching review comment ${e}`);
     }
@@ -95,7 +97,6 @@ const PropertyReview = ({ property_id }) => {
     setIsLoadingReview(true);
     try {
       const reviewComments = await findReviewWithProperty(property_id, 1);
-      console.log(reviewComments);
       setReviewComment(reviewComments.reviews);
       setIsLoadingReview(false);
     } catch (e) {

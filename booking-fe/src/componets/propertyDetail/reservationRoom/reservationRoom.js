@@ -32,6 +32,8 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const [numberOfGuestInput, setNumberOfGuestInput] = useState(false);
 
   const [showModal, setShowModal] = useState(false)
+
+
   const userId = localStorage.getItem("userId");
   const accessToken = localStorage.getItem("accessToken")
   const closeModal = () => {

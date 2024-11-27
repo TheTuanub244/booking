@@ -154,6 +154,13 @@ export const getPropertyByplace = async (place) => {
     return respone;
   }
 };
+export const deletePropertyById = async (id) => {
+  const respone = await axios.delete(
+    `${process.env.REACT_APP_API_URL}/property/deletePropertyById/${id}`,
+  );
+
+  return respone.data;
+}
 export const getDistinctPlace = async () => {
   const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/property/getDistinctPlace`,

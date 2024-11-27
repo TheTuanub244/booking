@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -192,5 +193,9 @@ export class PropertyController {
   @Get('getRateOfProperties')
   async getRateOfProperties() {
     return this.propertyService.getRateOfProperties();
+  }
+  @Delete('deletePropertyById/:id')
+  async deletePropertyById(@Param('id') id: string) {
+    return this.propertyService.deletePropertyById(id);
   }
 }

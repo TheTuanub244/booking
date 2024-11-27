@@ -72,17 +72,65 @@ export class ReviewService {
       return updateRoom.save();
     }
   }
+
   async findReviewWithProperty(
     property_id: string,
     page: number = 1,
     limit: number = 10,
   ) {
     const rooms = await this.roomSchema.find({ property_id });
-
+    const countReviewsRate = [
+      {
+        type: 'Awful',
+        count: 0,
+      },
+      {
+        type: 'Bad',
+        count: 0,
+      },
+      {
+        type: 'Normal',
+        count: 0,
+      },
+      {
+        type: 'Good',
+        count: 0,
+      },
+      {
+        type: 'Excellent',
+        count: 0,
+      },
+    ];
+    const countReviewsType = {};
     const roomIds = rooms.map((room) => room._id);
     const skip = (page - 1) * limit;
+    const totalReviews = await this.reviewSchema
+      .find({ roomId: { $in: roomIds } })
+      .populate('userId')
+      .populate('roomId')
+      .exec();
+    await Promise.all(
+      totalReviews.map((review) => {
+        if (review.rating <= 5 && review.rating >= 4) {
+          countReviewsRate[4].count++;
+        } else if (review.rating < 4 && review.rating >= 3) {
+          countReviewsRate[3].count++;
+        } else if (review.rating >= 2 && review.rating < 3) {
+          countReviewsRate[2].count++;
+        } else if (review.rating >= 1 && review.rating < 2) {
+          countReviewsRate[1].count++;
+        } else if (review.rating >= 0 && review.rating < 1) {
+          countReviewsRate[0].count++;
+        }
 
-    // Tìm các review liên quan và phân trang
+        if (countReviewsType[review.review_type]) {
+          countReviewsType[review.review_type]++;
+        } else {
+          countReviewsType[review.review_type] = 1;
+        }
+      }),
+    );
+    
     const reviews = await this.reviewSchema
       .find({ roomId: { $in: roomIds } })
       .sort({ rating: -1 })
@@ -91,14 +139,17 @@ export class ReviewService {
       .populate('userId')
       .populate('roomId')
       .exec();
+
     const reviewCount = await this.reviewSchema
-      .countDocuments({ room_id: { $in: roomIds } })
+      .countDocuments({ roomId: { $in: roomIds } })
       .exec();
 
     return {
       reviews,
       totalPages: Math.ceil(reviewCount / limit),
       currentPage: page,
+      countReviewsRate,
+      countReviewsType
     };
   }
   async countReviewWithProperty(property_id: string) {
@@ -169,5 +220,78 @@ export class ReviewService {
     });
 
     return ratingCounts;
+  }
+  async getReviewByType(
+    property_id: string,
+    review_type: string,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const rooms = await this.roomSchema.find({ property_id });
+    const roomIds = rooms.map((room) => room._id);
+    const skip = (page - 1) * limit;
+    const reviews = await this.reviewSchema
+      .find({ roomId: { $in: roomIds }, review_type })
+      .sort({ rating: -1 })
+      .skip(skip)
+      .populate('userId')
+      .populate('roomId')
+      .exec();
+    const reviewCount = await this.reviewSchema
+      .countDocuments({ roomId: { $in: roomIds }, review_type })
+      .exec();
+
+    return {
+      reviews,
+      totalPages: Math.ceil(reviewCount / limit),
+      currentPage: page,
+    };
+  }
+  async getReviewByRate(
+    property_id: string,
+    min: number,
+    max: number,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const rooms = await this.roomSchema.find({ property_id });
+    const roomIds = rooms.map((room) => room._id);
+    const skip = (page - 1) * limit;
+    const reviews = await this.reviewSchema
+      .find({
+        roomId: { $in: roomIds },
+        $and: [
+          {
+            rating: { $gte: min },
+          },
+          {
+            rating: { $lt: max },
+          },
+        ],
+      })
+      .skip(skip)
+      .populate('userId')
+      .populate('roomId')
+      .exec();
+
+    const reviewCount = await this.reviewSchema
+      .countDocuments({
+        roomId: { $in: roomIds },
+        $and: [
+          {
+            rating: { $gte: min },
+          },
+          {
+            rating: { $lt: max },
+          },
+        ],
+      })
+      .exec();
+
+    return {
+      reviews,
+      totalPages: Math.ceil(reviewCount / limit),
+      currentPage: page,
+    };
   }
 }

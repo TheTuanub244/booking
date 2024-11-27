@@ -428,4 +428,9 @@ export class PropertyService {
   async getDistinctPlace() {
     return this.propertySchema.distinct('address.province');
   }
+  async deletePropertyById(property_id: string) {
+    return this.propertySchema.findByIdAndDelete(
+      new Types.ObjectId(property_id),
+    );
+  }
 }

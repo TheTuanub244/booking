@@ -52,15 +52,17 @@ export class ReviewController {
       page,
     );
   }
-  @Post('getReviewByType/:property_id')
+  @Post('getReviewByRateAndType/:property_id')
   async getReviewByType(
     @Param('property_id') property_id: string,
     @Body() data: any,
     @Query('page') page: number,
   ) {
-    return this.reviewService.getReviewByType(
+    return this.reviewService.getReviewByRateAndType(
       property_id,
       data.review_type,
+      data.min,
+      data.max,
       page,
     );
   }

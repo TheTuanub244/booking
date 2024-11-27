@@ -39,3 +39,9 @@ export const getReviewByType = async (property_id, review_type, page) => {
   );
   return respone.data;
 }
+export const getReviewByRateAndType = async(property_id, review_type, min, max, page) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/review/getReviewByRateAndType/${property_id}?page=${page}`, {review_type, min, max}
+  );
+  return respone.data;
+}

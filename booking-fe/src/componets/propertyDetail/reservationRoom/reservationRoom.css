@@ -70,6 +70,7 @@
   width: 100vw; /* Full width of the viewport */
   height: 100vh; /* Full height of the viewport */
   z-index: 100;
+  background-color: #1a241a85;
 }
 
 .reservation-details input[type="date"],

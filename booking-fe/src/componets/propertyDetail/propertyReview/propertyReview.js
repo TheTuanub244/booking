@@ -88,13 +88,8 @@ const PropertyReview = ({ property_id }) => {
     }
   }
 
-  // Handle scroll event
-  const handleScrollAllReview = (e) => {
-    const bottom =
-      e.target.scrollHeight === e.target.scrollTop + e.target.clientHeight;
-    if (bottom && !isLoadingAllReview) {
-      loadReviews(currentAllReviewPage + 1); // Load next page when reaching bottom
-    }
+  const handlePageChange = (event, value) => {
+    loadReviews(value); // Update the page number when pagination changes
   };
 
   function handleCloseAllReview() {
@@ -241,7 +236,9 @@ const PropertyReview = ({ property_id }) => {
           <div
             className="blockInput"
             onClick={(e) => {
+              e.stopPropagation();
               e.preventDefault();
+              
               setAllReviewPopUp(false);
               handleCloseAllReview();
             }}
@@ -252,9 +249,12 @@ const PropertyReview = ({ property_id }) => {
             onClick={(e) => e.stopPropagation()}
             ref={allReviewRef}
           >
-            {allReviewComment.map((review, index) => (
-              <ReviewDetail key={index} review={review} />
-            ))}
+            {!isLoadingAllReview ? (allReviewComment.map((review, index) => (
+              <ReviewDetail key={index} review={review} />))) :
+              Array(10)
+                .fill(null)
+                .map((_, index) => <ReviewDetail key={index} />)
+            }
             <div className="review-pagination">
               <Pagination count={100}
                           size="large"
@@ -271,6 +271,8 @@ const PropertyReview = ({ property_id }) => {
                               textAlign: 'center',
                             },
                           }}
+
+                          onChange={handlePageChange}
               />
             </div>
           </div>

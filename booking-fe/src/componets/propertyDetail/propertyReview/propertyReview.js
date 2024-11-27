@@ -250,12 +250,20 @@ const PropertyReview = ({ property_id }) => {
             onClick={(e) => e.stopPropagation()}
             ref={allReviewRef}
           >
-            {!isLoadingAllReview ? (allReviewComment.map((review, index) => (
-              <ReviewDetail key={index} review={review} />))) :
-              Array(10)
-                .fill(null)
-                .map((_, index) => <ReviewDetail key={index} />)
-            }
+            <div className="allReviews-header">
+              <div className="allReviews-topSection"></div>
+              <div className="allReviews-filter"></div>
+              <div className="allReviews-sorting"></div>
+            </div>
+            <div className="allReviews-content">
+              {!isLoadingAllReview ? (allReviewComment.map((review, index) => (
+                <ReviewDetail key={index} review={review} />))) :
+                Array(10)
+                  .fill(null)
+                  .map((_, index) => <ReviewDetail key={index} />)
+              }
+            </div>
+            
             <div className="review-pagination">
               <Pagination count={100}
                           size="large"

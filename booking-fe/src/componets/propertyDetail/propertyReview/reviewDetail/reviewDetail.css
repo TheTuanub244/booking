@@ -43,6 +43,7 @@
 
   width: 30px;
   text-align: center;
+  border-radius: 15%;
 }
 
 .review-detail-rate > p {

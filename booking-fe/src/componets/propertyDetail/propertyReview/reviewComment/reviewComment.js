@@ -3,6 +3,7 @@ import "./reviewComment.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ReviewPopUp from "./reviewPopUp/reviewPopUp";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const ReviewComment = ({ review }) => {
   const [isReviewPopUp, setIsReviewPopUp] = useState(false);

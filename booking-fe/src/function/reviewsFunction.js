@@ -16,3 +16,23 @@ export const RateToText = (rate) => {
     return "";
 }
 
+export const TextToRate = (text) => {
+    if(text === RATE[0]) return ({min: 0, max: 1});
+    if(text === RATE[1]) return ({min: 1, max: 2});
+    if(text === RATE[2]) return ({min: 2, max: 3});
+    if(text === RATE[3]) return ({min: 3, max: 4});
+    if(text === RATE[4]) return ({min: 4, max: 5});
+
+    return ({min: 0, max: 5});
+}
+
+export const TextToRateText = (text) => {
+    if(text === RATE[0]) return ("Tệ (0 - 1)");
+    if(text === RATE[1]) return ("Kém (1 - 2)");
+    if(text === RATE[2]) return ("Ổn (2 - 3)");
+    if(text === RATE[3]) return ("Tốt (3 - 4)");
+    if(text === RATE[4]) return ("Tuyệt vời (4 - 5)");
+
+    return "";
+}
+

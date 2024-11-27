@@ -22,6 +22,10 @@
   border-radius: 10px;
 }
 
+.overview-review .avarage-point > b {
+  color: white;
+}
+
 .overview-review > div {
   flex: 1;
   display: flex;
@@ -41,7 +45,6 @@
 .overview-review .rate {
   margin-right: 10px;
 }
-
 .review-rating-container {
   margin-bottom: 20px;
   width: 100%;

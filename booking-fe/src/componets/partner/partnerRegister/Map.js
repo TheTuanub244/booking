@@ -71,7 +71,6 @@ const Map = ({
       option?.capacity,
       userId,
     );
-    console.log(respone);
     
     if (respone) {
       setIsLoading(false);
@@ -91,7 +90,6 @@ const Map = ({
   const [properties, setProperties] = useState([]);
   const getProperties = async () => {
     const respone = await getAllProperty();
-    console.log(respone)
     setProperties(respone);
   };
   const [position, setPosition] = useState(null);
@@ -131,9 +129,7 @@ const Map = ({
       </Marker>
     ) : null;
   };
-  useEffect(() => {
-    console.log(selectedProperty);
-  }, [selectedProperty]);
+
   return (
     <>
       {isLoading ? (

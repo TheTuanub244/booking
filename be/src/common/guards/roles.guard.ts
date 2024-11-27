@@ -25,13 +25,12 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    // If no roles are required, allow access
     if (!requiredRoles) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
-    const response = context.switchToHttp().getResponse();
+
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
@@ -40,29 +39,8 @@ export class RolesGuard implements CanActivate {
     let payload;
     try {
       payload = this.jwtService.verify(token);
-      console.log(payload);
     } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        const refreshToken = request.cookies['refreshToken'];
-        if (!refreshToken) {
-          throw new UnauthorizedException('Refresh token not found');
-        }
-        try {
-          // Gọi hàm refreshAccessToken với refreshToken để tạo access token mới
-          const { access_token: newAccessToken } =
-            await this.sessionService.refreshAccessToken(refreshToken);
-          response.setHeader('authorization', `Bearer ${newAccessToken}`);
-
-          // Xác thực lại với access token mới
-          payload = this.jwtService.verify(newAccessToken, {
-            secret: process.env.secret,
-          });
-        } catch (refreshError) {
-          throw new UnauthorizedException('Failed to refresh access token');
-        }
-      } else {
-        payload = await admin.auth().verifyIdToken(token);
-      }
+      payload = await admin.auth().verifyIdToken(token);
     }
 
     request.user = payload;

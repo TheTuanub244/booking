@@ -13,10 +13,13 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from 'src/user/enum/role.enum';
 import { ObjectId } from 'mongoose';
+import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 
 @Controller('review')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.MEMBER, ROLE.PARTNER)
   @Post('/createReview')
   async createReview(@Body() createReviewDto: CreateReviewDto) {
     return this.reviewService.createReview(createReviewDto);
@@ -35,5 +38,30 @@ export class ReviewController {
   @Get('getMonthlyRatingByProperty/:id')
   async getMonthlyRatingByProperty(@Param('id') id: any) {
     return this.reviewService.getMonthlyRatingByProperty(id);
+  }
+  @Post('getReviewByRate/:property_id')
+  async getReviewByRate(
+    @Param('property_id') property_id: string,
+    @Body() data: any,
+    @Query('page') page: number,
+  ) {
+    return this.reviewService.getReviewByRate(
+      property_id,
+      data.min,
+      data.max,
+      page,
+    );
+  }
+  @Post('getReviewByType/:property_id')
+  async getReviewByType(
+    @Param('property_id') property_id: string,
+    @Body() data: any,
+    @Query('page') page: number,
+  ) {
+    return this.reviewService.getReviewByType(
+      property_id,
+      data.review_type,
+      page,
+    );
   }
 }

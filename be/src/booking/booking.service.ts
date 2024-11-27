@@ -219,11 +219,13 @@ export class BookingService {
 
     // const newBooking = new this.bookingSchema(createBookingDto);
     // const savedBooking = await newBooking.save();
+    
     const findExistedBooking = await this.bookingSchema
       .findOne({
-        user_id: customerId,
+        user_id: new Types.ObjectId(customerId),
       })
       .populate('user_id');
+
     if (findExistedBooking.booking_status === BookingStatus.PENDING) {
       throw new BadRequestException('');
     }

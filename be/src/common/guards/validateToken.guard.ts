@@ -19,11 +19,12 @@ export class ValidateTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
     const token = request.cookies.refreshToken;
-    console.log(request.cookies);
 
     if (!token) {
       throw new UnauthorizedException('Sign In Required');
     }
+    console.log(1);
+    
     try {
       this.jwtService.verify(token, { secret: process.env.secret });
       return true;

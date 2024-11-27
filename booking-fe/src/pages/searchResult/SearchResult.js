@@ -358,7 +358,9 @@ const SearchResult = () => {
           <div className="main-content">
             <div className="header-search">
               <h1>
-                {params.get("place") ? params.get("place") : params.get("type")}
+                {params.get("place") ? params.get("place") : (
+                   params.get("type") ? ( params.get("type")) : (location.state?.option?.province)
+                )}
                 : {properties.length} properties found
               </h1>
             </div>

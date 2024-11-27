@@ -153,14 +153,21 @@ export class RoomService {
         'address.province': place,
       });
     }
+    
+    if (findProperties.length === 0) {
+      findProperties = await this.propertySchema.find({
+        name: { $regex: place, $options: 'i' },
+      });
+    }
 
     const availableRoom = [];
     await Promise.all(
       findProperties.map(async (property) => {
+        
         const findAvailableRoom = await this.findAvailableRoomWithProperty(
           property._id,
         );
-
+        
         await Promise.all(
           findAvailableRoom.map(async (value) => {
             const finalRespone = await this.findConflictingInBookings(
@@ -293,7 +300,6 @@ export class RoomService {
         match: { owner_id: new mongoose.Types.ObjectId(ownerId) },
       })
       .exec();
-    console.log(rooms);
 
     const validRooms = rooms.filter((room) => room.property_id !== null);
 

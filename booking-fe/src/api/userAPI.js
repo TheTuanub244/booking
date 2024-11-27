@@ -75,7 +75,6 @@ export const resetPassword = async (user) => {
       `${process.env.REACT_APP_API_URL}/user/reset-password`,
       user,
     );
-    console.log(respone);
 
     return respone.data;
   } catch (error) {
@@ -145,8 +144,7 @@ export const checkResetPasswordToken = async (userId, token, user) => {
     `${process.env.REACT_APP_API_URL}/user/checkResetPasswordToken/?userId=${userId}&token=${token}`,
     user,
   );
-  console.log(1);
-  console.log(respone);
+
 
   return respone.data;
 };

@@ -6,6 +6,7 @@ import { checkRoomDateBooking } from "../../../function/searchRoomInProperty";
 import SignInPopup from "./signInPopup";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createBooking } from "../../../api/bookingAPI";
+import { Button, Modal } from "react-bootstrap";
 
 const ReservationRoom = ({ roomData, partnerId }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
@@ -30,7 +31,9 @@ const ReservationRoom = ({ roomData, partnerId }) => {
 
   const [numberOfGuestInput, setNumberOfGuestInput] = useState(false);
 
+  const [showModal, setShowModal] = useState(false)
   const userId = localStorage.getItem("userId");
+  const accessToken = localStorage.getItem("accessToken")
   const closeModal = () => {
     setIsModalOpen(false);
     setModalRoom(null);
@@ -106,17 +109,27 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleReserveClick = async () => {
-    await createBooking(
-      userId,
-      partnerId,
-      "67349f6d8e44839e850b6366",
-      "67131b83495dc248e2715e5f",
-    );
-    if (!userId) {
-      setIsPopupOpen(true);
+    try{
+      await createBooking(
+        userId,
+        partnerId,
+        "67349f6d8e44839e850b6366",
+        "67131b83495dc248e2715e5f",
+        accessToken
+      );
+    } catch(err){
+      console.log(err);
+      
+      if(err.response.status === 401){
+        setShowModal(true)
+      }
     }
-  };
 
+  };
+  const handleCloseModal = async () => {
+    setShowModal(false);
+    navigate("/login");
+  };
   const searchRoom = () => {
     let dateSearch = {
       check_in_date: new Date(checkInDate),
@@ -143,6 +156,24 @@ const ReservationRoom = ({ roomData, partnerId }) => {
 
   return (
     <div className="ReservationForm">
+      <Modal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          centered
+          className="fix-modal"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Sign in required</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            You must sign in to reserve your room !
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={() => handleCloseModal()}>
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
       <h2>Reserve Your Room</h2>
       <form className="reservation-details">
         <label htmlFor="checkIn">Check-In Date:</label>

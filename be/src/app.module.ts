@@ -50,10 +50,6 @@ const jwtConstant = {
   providers: [
     AppService,
     {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-    {
       provide: 'FIREBASE_ADMIN',
       useFactory: () => {
         return admin.initializeApp({

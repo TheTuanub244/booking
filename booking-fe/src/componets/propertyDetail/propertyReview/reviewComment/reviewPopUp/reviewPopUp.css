@@ -7,4 +7,5 @@
     background-color: white;
     border: 0px solid #ccc;  /* Optional: border */
     padding: 20px;        /* Optional: padding inside the div */
+    max-width: 700px;
   }

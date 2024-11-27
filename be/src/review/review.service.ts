@@ -114,7 +114,7 @@ export class ReviewService {
       .exec();
     await Promise.all(
       totalReviews.map((review) => {
-        if (review.rating <= 5 && review.rating >= 4) {
+        if (review.rating < 5 && review.rating >= 4) {
           countReviewsRate[4].count++;
         } else if (review.rating < 4 && review.rating >= 3) {
           countReviewsRate[3].count++;
@@ -305,5 +305,111 @@ export class ReviewService {
       totalPages: Math.ceil(reviewCount / limit),
       currentPage: page,
     };
+  }
+  async getReviewByRateAndType(
+    property_id: string,
+    review_type: string,
+    min: number,
+    max: number,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const rooms = await this.roomSchema.find({ property_id });
+    const roomIds = rooms.map((room) => room._id);
+    const skip = (page - 1) * limit;
+    if (min && max && !review_type) {
+      const reviews = await this.reviewSchema
+        .find({
+          roomId: { $in: roomIds },
+          $and: [
+            {
+              rating: { $gte: min },
+            },
+            {
+              rating: { $lt: max },
+            },
+          ],
+        })
+        .skip(skip)
+        .populate('userId')
+        .populate('roomId')
+        .exec();
+
+      const reviewCount = await this.reviewSchema
+        .countDocuments({
+          roomId: { $in: roomIds },
+          $and: [
+            {
+              rating: { $gte: min },
+            },
+            {
+              rating: { $lt: max },
+            },
+          ],
+        })
+        .exec();
+
+      return {
+        reviews,
+        totalPages: Math.ceil(reviewCount / limit),
+        currentPage: page,
+      };
+    } else if ((!min && !max && min === 0 && max === 0) || review_type) {
+      const reviews = await this.reviewSchema
+        .find({ roomId: { $in: roomIds }, review_type })
+        .sort({ rating: -1 })
+        .skip(skip)
+        .populate('userId')
+        .populate('roomId')
+        .exec();
+      const reviewCount = await this.reviewSchema
+        .countDocuments({ roomId: { $in: roomIds }, review_type })
+        .exec();
+
+      return {
+        reviews,
+        totalPages: Math.ceil(reviewCount / limit),
+        currentPage: page,
+      };
+    } else {
+      const reviews = await this.reviewSchema
+        .find({
+          roomId: { $in: roomIds },
+          review_type,
+          $and: [
+            {
+              rating: { $gte: min },
+            },
+            {
+              rating: { $lt: max },
+            },
+          ],
+        })
+        .sort({ rating: -1 })
+        .skip(skip)
+        .populate('userId')
+        .populate('roomId')
+        .exec();
+      const reviewCount = await this.reviewSchema
+        .countDocuments({
+          roomId: { $in: roomIds },
+          review_type,
+          $and: [
+            {
+              rating: { $gte: min },
+            },
+            {
+              rating: { $lt: max },
+            },
+          ],
+        })
+        .exec();
+
+      return {
+        reviews,
+        totalPages: Math.ceil(reviewCount / limit),
+        currentPage: page,
+      };
+    }
   }
 }

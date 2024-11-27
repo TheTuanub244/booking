@@ -114,7 +114,6 @@ const PropertyDetail = ({ propertyData }) => {
                     width: '100%',
                     paddingTop: '56.25%', // 16:9 Aspect Ratio
                     overflow: 'hidden',
-                    borderRadius: 2,
                   }}
                 >
                   <img
@@ -137,7 +136,7 @@ const PropertyDetail = ({ propertyData }) => {
                   sx={{
                     height: 0,
                     paddingTop: '56.25%', // Maintain aspect ratio
-                    borderRadius: 2,
+                    
                   }}
                 />
               )}
@@ -155,7 +154,7 @@ const PropertyDetail = ({ propertyData }) => {
                           width: '100%',
                           paddingTop: '56.25%', // 16:9 Aspect Ratio
                           overflow: 'hidden',
-                          borderRadius: 2,
+                         
                         }}
                       >
                         <img
@@ -173,29 +172,9 @@ const PropertyDetail = ({ propertyData }) => {
                         />
                       </Box>
                     ) : (
-                      <Paper
-                        variant="outlined"
-                        sx={{
-                          height: 0,
-                          paddingTop: '56.25%', // Maintain aspect ratio
-                          borderRadius: 2,
-                        }}
+                      <div
                       />
                     )}
-                  </Grid>
-                ))}
-
-                {/* Render placeholders if there are fewer than 4 images */}
-                {Array.from({ length: placeholders }).map((_, index) => (
-                  <Grid item xs={4} key={`placeholder-${index}`}>
-                    <Paper
-                      variant="outlined"
-                      sx={{
-                        height: 0,
-                        paddingTop: '56.25%', // Maintain aspect ratio
-                        borderRadius: 2,
-                      }}
-                    />
                   </Grid>
                 ))}
               </Grid>

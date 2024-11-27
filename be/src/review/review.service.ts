@@ -78,6 +78,10 @@ export class ReviewService {
     page: number = 1,
     limit: number = 10,
   ) {
+    const countReviewsType: Record<
+      string,
+      { count: number; totalRating: number }
+    > = {};
     const rooms = await this.roomSchema.find({ property_id });
     const countReviewsRate = [
       {
@@ -101,7 +105,6 @@ export class ReviewService {
         count: 0,
       },
     ];
-    const countReviewsType = {};
     const roomIds = rooms.map((room) => room._id);
     const skip = (page - 1) * limit;
     const totalReviews = await this.reviewSchema
@@ -124,13 +127,21 @@ export class ReviewService {
         }
 
         if (countReviewsType[review.review_type]) {
-          countReviewsType[review.review_type]++;
+          countReviewsType[review.review_type].count++;
+          countReviewsType[review.review_type].totalRating += review.rating;
         } else {
-          countReviewsType[review.review_type] = 1;
+          countReviewsType[review.review_type] = {
+            count: 1,
+            totalRating: review.rating,
+          };
         }
       }),
     );
-    
+    const averageRatingsByType = {};
+
+    for (const [reviewType, stats] of Object.entries(countReviewsType)) {
+      averageRatingsByType[reviewType] = stats.totalRating / stats.count;
+    }
     const reviews = await this.reviewSchema
       .find({ roomId: { $in: roomIds } })
       .sort({ rating: -1 })
@@ -149,7 +160,8 @@ export class ReviewService {
       totalPages: Math.ceil(reviewCount / limit),
       currentPage: page,
       countReviewsRate,
-      countReviewsType
+      countReviewsType,
+      averageRatingsByType,
     };
   }
   async countReviewWithProperty(property_id: string) {

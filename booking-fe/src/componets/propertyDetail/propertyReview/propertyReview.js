@@ -7,6 +7,10 @@ import ReviewDetail from "./reviewDetail/reviewDetail";
 import {
   findReviewWithProperty,
   getMonthlyRateByProperty,
+  getReviewByRateAndType,
+  getReviewByType,
+  getReviewByRate,
+
 } from "../../../api/reviewAPI";
 import Skeleton from "react-loading-skeleton";
 import Pagination from '@mui/material/Pagination';
@@ -16,7 +20,6 @@ import { TextToRate, TextToRateText, RateToText } from "../../../function/review
 
 const PropertyReview = ({ property_id }) => {
   const RATE = [
-    "Tệ",
     "Kém",
     "Ổn",
     "Tốt",
@@ -34,13 +37,13 @@ const TYPE = {
 }
 
   const [reviewPoint, setReviewPoint] = useState({
-    staff: 0,
-    facilities: 0,
-    cleanliness: 0,
-    comfort: 0,
-    value_of_money: 0,
-    location: 0,
-    freewifi: 0,
+    Staff: 0,
+    Facilities: 0,
+    Cleanliness: 0,
+    Comfort: 0,
+    Value_of_money: 0,
+    Location: 0,
+    Freewifi: 0,
   });
 
   const [reviewComment, setReviewComment] = useState([]);
@@ -65,14 +68,13 @@ const TYPE = {
 
   const [isLoadingRate, setIsLoadingRate] = useState(true);
 
-  const [reviewFilterType, setReviewFilter] = useState("");
+  const [reviewFilterType, setReviewFilterType] = useState("");
 
-  const [reviewFilterMinMax, setReviewFilterMinMax] = useState({
-    min: 0,
-    max: 5,
-  });
+  const [reviewFilterRate, setReviewFilterRate] = useState("");
 
   const [reviewSorting, setReviewSorting] = useState(true);
+
+  const [reviewSotingDisabled, setReviewSortingDisabled] = useState(false);
 
 
   useEffect(() => {
@@ -88,6 +90,15 @@ const TYPE = {
       document.body.style.overflow = "";
     };
   }, []);
+
+  useEffect(() => {
+    setReviewSortingDisabled(reviewFilterType || reviewFilterRate);
+    setCurrentAllReviewPage(1);
+    loadReviews(1);
+    return () => {
+      setReviewSortingDisabled(false);
+    }
+  }, [reviewFilterType, reviewFilterRate]);
 
   async function handleViewAllReview() {
     setIsLoadingAllReview(true);
@@ -106,14 +117,28 @@ const TYPE = {
 
   // Fetch reviews for a specific page
   async function loadReviews(page) {
-    console.log("Loading");
     setIsLoadingAllReview(true);
     try {
-      const response = await findReviewWithProperty(property_id, page);
+      var response;
+      if(reviewFilterRate && reviewFilterType){
+        const {min, max} = TextToRate(reviewFilterRate);
+        response = await getReviewByRateAndType(property_id, reviewFilterType, min, max, page);
+      } else if(reviewFilterRate){
+        const {min, max} = TextToRate(reviewFilterRate);
+        response = await getReviewByRate(property_id, min, max, page);
+      } else if (reviewFilterType){
+        response = await getReviewByRateAndType(property_id, reviewFilterType, null, null, page);
+      } else {
+        response = await findReviewWithProperty(property_id, page);
+      }
+      
       setAllReviewComment([
         ...response.reviews,
       ]);
+      setTotalPageReview(response.totalPages);
       setCurrentAllReviewPage(page);
+
+      console.log(response);
     } catch (error) {
       console.error("Error fetching reviews:", error);
     } finally {
@@ -122,6 +147,7 @@ const TYPE = {
   }
 
   const handlePageChange = (event, value) => {
+    setCurrentAllReviewPage(value);
     loadReviews(value); // Update the page number when pagination changes
   };
 
@@ -134,6 +160,14 @@ const TYPE = {
     try {
       const reviewComments = await findReviewWithProperty(property_id, 1);
       setReviewComment(reviewComments.reviews);
+      const reviewPointRaw = reviewComments.countReviewsType;
+      const reviewPointAvg = {};
+      for(const type in reviewPointRaw) {
+        const { count, totalRating } = reviewPointRaw[type];
+        reviewPointAvg[type] = totalRating / count;
+      }
+      setReviewPoint(reviewPointAvg);
+      console.log(reviewPoint);
       setIsLoadingReview(false);
     } catch (e) {
       console.log(`Error at fetching review comment ${e}`);
@@ -185,6 +219,31 @@ const TYPE = {
     }
   }
 
+  function handleTypeFilterChange(e) {
+    e.preventDefault();
+    setReviewFilterType(e.target.value);
+  }
+
+  function handleRateFilterChange(e) {
+    e.preventDefault();
+    setReviewFilterRate(e.target.value);
+  }
+
+  function onFilterChange(){
+    if(reviewFilterRate && reviewFilterType){
+      setReviewSortingDisabled(true);
+      
+    } else{
+      setReviewSortingDisabled(false);
+    }
+  }
+
+  function handleReviewSortingChange(e) {
+    e.preventDefault();
+    setReviewSorting(e.target.value);
+
+  }
+
   return (
     <div className="propertyReview-container">
       <h2>Review</h2>
@@ -210,15 +269,9 @@ const TYPE = {
       <div className="review-rating-container">
         <h4>Rating</h4>
         <div class="rating-categories">
-          <RatingProgressBar categorize={"good"} point={9.0} />
-          <RatingProgressBar point={9.0} />
-          <RatingProgressBar point={9.0} />
-          <RatingProgressBar point={9.0} />
-          <RatingProgressBar point={9.0} />
-          <RatingProgressBar point={9.0} />
-          <RatingProgressBar point={9.0} />
-          <RatingProgressBar point={9.0} />
-          <RatingProgressBar point={9.0} />
+          {Object.keys(reviewPoint).map( (type) => (
+            <RatingProgressBar key={type} categorize={type} point={reviewPoint[type]} />
+          ))}
         </div>
       </div>
 
@@ -295,12 +348,12 @@ const TYPE = {
                     
                     <div>
                       <label>{"Loại"}</label>
-                      <select value={reviewFilterType}>
-                        <option value="" disabled>
+                      <select value={reviewFilterType} onChange={(e) => handleTypeFilterChange(e)}>
+                        <option value="">
                           Lựa chọn
                         </option>
                         {Object.keys(TYPE).map((key) => (
-                          <option key={key} value={key}>
+                          <option key={key} value={TYPE[key]}>
                             {TYPE[key]}
                           </option>
                         ))}
@@ -309,8 +362,8 @@ const TYPE = {
 
                     <div>
                       <label>{"Điểm"}</label>
-                      <select>
-                        <option value="" disabled>
+                      <select value={reviewFilterRate} onChange={(e) => handleRateFilterChange(e)}>
+                        <option value="">
                           Lựa chọn
                         </option>
                         {RATE.map((rate) => 
@@ -329,12 +382,12 @@ const TYPE = {
                   <div className="sorting-dropdown">
                     <div>
                       <label>{"Điểm"}</label>
-                      <select>
+                      <select value={reviewSorting} onChange={(e) => {handleReviewSortingChange(e)}} disabled={reviewSotingDisabled}>
                         <option value="" disabled>
                           Lựa chọn
                         </option>
-                        <option value={"true"}>Cao đến thấp</option>
-                        <option value={"false"}>Thấp đến cao</option>
+                        <option value={true}>Cao đến thấp</option>
+                        <option value={false}>Thấp đến cao</option>
                       </select>
                     </div>
                   </div>
@@ -355,7 +408,7 @@ const TYPE = {
             </div>
             
             <div className="review-pagination">
-              <Pagination count={100}
+              <Pagination count={totalPageReview}
                           size="large"
                           
                           sx={{
@@ -370,7 +423,7 @@ const TYPE = {
                               textAlign: 'center',
                             },
                           }}
-
+                          page={currentAllReviewPage}
                           onChange={handlePageChange}
               />
             </div>

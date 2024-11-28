@@ -20,7 +20,6 @@ import { TextToRate, TextToRateText, RateToText } from "../../../function/review
 
 const PropertyReview = ({ property_id }) => {
   const RATE = [
-    "Tệ",
     "Kém",
     "Ổn",
     "Tốt",
@@ -126,9 +125,9 @@ const TYPE = {
         response = await getReviewByRateAndType(property_id, reviewFilterType, min, max, page);
       } else if(reviewFilterRate){
         const {min, max} = TextToRate(reviewFilterRate);
-        response = await getReviewByRateAndType(property_id, min, max, page);
+        response = await getReviewByRate(property_id, min, max, page);
       } else if (reviewFilterType){
-        response = await getReviewByType(property_id, reviewFilterType, page);
+        response = await getReviewByRateAndType(property_id, reviewFilterType, null, null, page);
       } else {
         response = await findReviewWithProperty(property_id, page);
       }
@@ -136,7 +135,10 @@ const TYPE = {
       setAllReviewComment([
         ...response.reviews,
       ]);
+      setTotalPageReview(response.totalPages);
       setCurrentAllReviewPage(page);
+
+      console.log(response);
     } catch (error) {
       console.error("Error fetching reviews:", error);
     } finally {
@@ -406,7 +408,7 @@ const TYPE = {
             </div>
             
             <div className="review-pagination">
-              <Pagination count={100}
+              <Pagination count={totalPageReview}
                           size="large"
                           
                           sx={{

@@ -1,5 +1,4 @@
 const RATE = [
-    "Tệ",
     "Kém",
     "Ổn",
     "Tốt",
@@ -7,7 +6,6 @@ const RATE = [
 ];
 
 export const RateToText = (rate) => {
-    if(rate < 1) return RATE[0];
     if(rate < 2 && rate >= 1) return RATE[1];
     if(rate < 3 && rate >= 2) return RATE[2];
     if(rate < 4 && rate >= 3) return RATE[3];
@@ -17,21 +15,19 @@ export const RateToText = (rate) => {
 }
 
 export const TextToRate = (text) => {
-    if(text === RATE[0]) return ({min: 0, max: 1});
-    if(text === RATE[1]) return ({min: 1, max: 2});
-    if(text === RATE[2]) return ({min: 2, max: 3});
-    if(text === RATE[3]) return ({min: 3, max: 4});
-    if(text === RATE[4]) return ({min: 4, max: 5});
+    if(text === RATE[0]) return ({min: 1, max: 2});
+    if(text === RATE[1]) return ({min: 2, max: 3});
+    if(text === RATE[2]) return ({min: 3, max: 4});
+    if(text === RATE[3]) return ({min: 4, max: 5});
 
-    return ({min: 0, max: 5});
+    return ({min: null, max: null});
 }
 
 export const TextToRateText = (text) => {
-    if(text === RATE[0]) return ("Tệ (0 - 1)");
-    if(text === RATE[1]) return ("Kém (1 - 2)");
-    if(text === RATE[2]) return ("Ổn (2 - 3)");
-    if(text === RATE[3]) return ("Tốt (3 - 4)");
-    if(text === RATE[4]) return ("Tuyệt vời (4 - 5)");
+    if(text === RATE[0]) return ("Kém (1 - 2)");
+    if(text === RATE[1]) return ("Ổn (2 - 3)");
+    if(text === RATE[2]) return ("Tốt (3 - 4)");
+    if(text === RATE[3]) return ("Tuyệt vời (4 - 5)");
 
     return "";
 }

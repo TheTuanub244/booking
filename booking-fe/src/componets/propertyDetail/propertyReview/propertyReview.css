@@ -52,10 +52,10 @@
 
 .review-comment-container {
   margin-bottom: 20px;
-  position: relative; /* Allows absolute-positioned children to stay inside */
-  width: 100%; /* Full width */
-  overflow: hidden; /* Prevent overflow outside container */
-  padding: 10px 0; /* Optional padding */
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 10px 0;
 }
 
 .rating-categories {
@@ -192,6 +192,7 @@
   display: flex;
   flex-direction: column;
   margin-top: 20px;
+  min-width: 100%;
 }
 
 .review-pagination {

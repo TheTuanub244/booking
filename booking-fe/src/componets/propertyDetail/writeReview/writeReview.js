@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './writeReview.css';
+import { createReview } from "../../../api/reviewAPI";
 
-function WriteReview(){
+function WriteReview({rooms}){
     // Define TYPE enum inside the function
   const TYPE = {
     STAFF: 'Staff',
@@ -22,14 +23,19 @@ function WriteReview(){
 
   useEffect(() => {
     // Get userId from sessionStorage
-    const user = sessionStorage.getItem('userId');
+    const user = localStorage.getItem('userId');
+    console.log(rooms);
     if (user) {
       setUserId(user);
+      
+    }
+    if (rooms && rooms.length > 0) {
+      
+      setRoomId(rooms[0]._id); // Default to first roomId if available
     }
 
-    // Set roomId if it's passed as a prop or from the URL
-    if (rooms && rooms.length > 0) {
-      setRoomId(rooms[0].roomId); // Default to first roomId if available
+    return () => {
+      setIsSubmitting(false);
     }
   }, [rooms]);
 
@@ -41,18 +47,16 @@ function WriteReview(){
       userId,
       roomId,
       rating,
-      reviewText,
-      reviewType,
+      review_text: reviewText,
+      review_type: reviewType,
     };
 
-    // Replace with your API call to submit review
-    console.log('Review submitted:', reviewData);
+    await createReview(reviewData);
 
-    // Simulate a delay for submitting
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert('Review submitted successfully!');
-    }, 2000);
+    console.log('Review submitted:', reviewData);
+    
+    setIsSubmitting(false);
+    
   };
 
   return (
@@ -79,10 +83,12 @@ function WriteReview(){
           <select
             className="writeReview-select"
             value={roomId}
-            onChange={(e) => setRoomId(e.target.value)}
+            onChange={(e) => {
+              e.preventDefault();
+              setRoomId(e.target.value)}}
           >
             {rooms.map((room) => (
-              <option key={room.roomId} value={room.roomId}>
+              <option key={room._id} value={room._id}>
                 {room.name}
               </option>
             ))}

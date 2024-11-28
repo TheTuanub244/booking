@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faPlane } from "@fortawesome/free-solid-svg-icons";
 import Map from "../partner/partnerRegister/Map";
 import PropertyReview from "./propertyReview/propertyReview";
+import WriteReview from "./writeReview/writeReview";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -53,6 +54,8 @@ const PropertyDetail = () => {
           setLocation(`${street}, ${district}, ${province}`);
 
           const roomDatas = await findRoomByProperty(id);
+
+          console.log(roomDatas);
 
           setRoomData(roomDatas);
 
@@ -323,6 +326,9 @@ const PropertyDetail = () => {
           )}
           <div className="property-review">
             <PropertyReview property_id={id} />
+          </div>
+          <div className="property-writeReview">
+            <WriteReview rooms={roomData} />
           </div>
         </>
       )}

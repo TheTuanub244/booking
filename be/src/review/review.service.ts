@@ -354,7 +354,7 @@ export class ReviewService {
         totalPages: Math.ceil(reviewCount / limit),
         currentPage: page,
       };
-    } else if ((!min && !max && min === 0 && max === 0) || review_type) {
+    } else if ((!min && !max) || (min === 0 && max === 0 && review_type)) {
       const reviews = await this.reviewSchema
         .find({ roomId: { $in: roomIds }, review_type })
         .sort({ rating: -1 })
@@ -372,6 +372,9 @@ export class ReviewService {
         currentPage: page,
       };
     } else {
+      console.log(min);
+      console.log(max);
+
       const reviews = await this.reviewSchema
         .find({
           roomId: { $in: roomIds },

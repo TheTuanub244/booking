@@ -5,7 +5,9 @@
   display: flex;
   flex-direction: column;
   min-width: 300px;
+  max-width: 400px;
   flex-shrink: 0;
+  
 }
 
 .reviewer-profile {
@@ -19,14 +21,47 @@
   margin: 0;
 }
 
-.reviewer-comment {
+.reviewer-comment  {
   flex: 5;
   margin: 10px;
+  
+}
+
+.reviewer-comment p {
+  display: -webkit-box; 
+  -webkit-line-clamp: 3; 
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  margin: 0;
+  height: auto;
+}
+
+.reviewer-comment button {
+  background: none;              
+  border: none;                  
+  padding: 0;                      
+  color: inherit;                  
+  font: inherit;                   
+  text-decoration: none;           
+  cursor: pointer;                
+  display: inline;
+  color: green
+}
+
+.reviewer-comment button:focus {
+  outline: none;
+}
+
+.reviewer-comment button:hover {
+  color: rgb(177, 89, 189);
 }
 
 .reviewer-image {
   flex: 2;
-  max-width: 100px;
+  max-width: 50px;
   min-width: 50px;
 }
 

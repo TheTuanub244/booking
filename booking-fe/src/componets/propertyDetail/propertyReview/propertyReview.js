@@ -9,8 +9,30 @@ import {
   getMonthlyRateByProperty,
 } from "../../../api/reviewAPI";
 import Skeleton from "react-loading-skeleton";
+import Pagination from '@mui/material/Pagination';
+import { FaTimes } from 'react-icons/fa';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { TextToRate, TextToRateText, RateToText } from "../../../function/reviewsFunction";
 
 const PropertyReview = ({ property_id }) => {
+  const RATE = [
+    "Tệ",
+    "Kém",
+    "Ổn",
+    "Tốt",
+    "Tuyệt vời"
+];
+
+const TYPE = {
+  STAFF: 'Staff',
+  FACILITIES: 'Facilities',
+  CLEANLINESS: 'Cleaniless',
+  COMFORT: 'Comfort',
+  VALUE_OF_MONEY: 'Value of money',
+  LOCATION: 'Location',
+  FREEWIFI: 'Free wifi',
+}
+
   const [reviewPoint, setReviewPoint] = useState({
     staff: 0,
     facilities: 0,
@@ -43,13 +65,33 @@ const PropertyReview = ({ property_id }) => {
 
   const [isLoadingRate, setIsLoadingRate] = useState(true);
 
+  const [reviewFilterType, setReviewFilter] = useState("");
+
+  const [reviewFilterMinMax, setReviewFilterMinMax] = useState({
+    min: 0,
+    max: 5,
+  });
+
+  const [reviewSorting, setReviewSorting] = useState(true);
+
+
   useEffect(() => {
     fetchTopComments();
     fetchMonthlyRate();
   }, [property_id]);
 
+  useEffect(() => {
+    
+
+    // Cleanup function
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   async function handleViewAllReview() {
     setIsLoadingAllReview(true);
+
     document.body.style.overflow = "hidden";
 
     try {
@@ -68,8 +110,7 @@ const PropertyReview = ({ property_id }) => {
     setIsLoadingAllReview(true);
     try {
       const response = await findReviewWithProperty(property_id, page);
-      setAllReviewComment((prevReviews) => [
-        ...prevReviews,
+      setAllReviewComment([
         ...response.reviews,
       ]);
       setCurrentAllReviewPage(page);
@@ -80,13 +121,8 @@ const PropertyReview = ({ property_id }) => {
     }
   }
 
-  // Handle scroll event
-  const handleScrollAllReview = (e) => {
-    const bottom =
-      e.target.scrollHeight === e.target.scrollTop + e.target.clientHeight;
-    if (bottom && !isLoadingAllReview) {
-      loadReviews(currentAllReviewPage + 1); // Load next page when reaching bottom
-    }
+  const handlePageChange = (event, value) => {
+    loadReviews(value); // Update the page number when pagination changes
   };
 
   function handleCloseAllReview() {
@@ -232,7 +268,9 @@ const PropertyReview = ({ property_id }) => {
           <div
             className="blockInput"
             onClick={(e) => {
+              e.stopPropagation();
               e.preventDefault();
+              
               setAllReviewPopUp(false);
               handleCloseAllReview();
             }}
@@ -241,19 +279,107 @@ const PropertyReview = ({ property_id }) => {
           <div
             className="all-reviews"
             onClick={(e) => e.stopPropagation()}
-            onScroll={(e) => handleScrollAllReview(e)}
             ref={allReviewRef}
           >
-            {allReviewComment.map((review, index) => (
-              <ReviewDetail key={index} review={review} />
-            ))}
-            {!isLoadingAllReview &&
-              Array(10)
-                .fill(null)
-                .map((_, index) => <ReviewDetail key={index} />)}
+            <div className="allReviews-header">
+              <div className="allReviews-topSection">
+                <h4>{"Toàn bộ đánh giá"}</h4>
+                <FaTimes
+                  style={{ fontSize: "24px", cursor: "pointer", color: "black" }}
+                />
+              </div>
+              <div className="allReviews-filter-sort">
+                <div className="allReviews-filter">
+                  <h5>{"Lọc"}</h5>
+                  <div className="filter-dropdown">
+                    
+                    <div>
+                      <label>{"Loại"}</label>
+                      <select value={reviewFilterType}>
+                        <option value="" disabled>
+                          Lựa chọn
+                        </option>
+                        {Object.keys(TYPE).map((key) => (
+                          <option key={key} value={key}>
+                            {TYPE[key]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label>{"Điểm"}</label>
+                      <select>
+                        <option value="" disabled>
+                          Lựa chọn
+                        </option>
+                        {RATE.map((rate) => 
+                          <option key={rate} value={rate}>
+                            {TextToRateText(rate)}
+                          </option>
+                        )}
+                      </select>
+                    </div>
+                    
+                  </div>
+                </div>
+
+                <div className="allReviews-sorting">
+                  <h5>{"Sắp xếp"}</h5>
+                  <div className="sorting-dropdown">
+                    <div>
+                      <label>{"Điểm"}</label>
+                      <select>
+                        <option value="" disabled>
+                          Lựa chọn
+                        </option>
+                        <option value={"true"}>Cao đến thấp</option>
+                        <option value={"false"}>Thấp đến cao</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  
+                </div>
+              </div>
+                
+              
+            </div>
+            <div className="allReviews-content">
+              {!isLoadingAllReview ? (allReviewComment.map((review, index) => (
+                <ReviewDetail key={index} review={review} />))) :
+                Array(10)
+                  .fill(null)
+                  .map((_, index) => <ReviewDetail key={index} />)
+              }
+            </div>
+            
+            <div className="review-pagination">
+              <Pagination count={100}
+                          size="large"
+                          
+                          sx={{
+                            width: '80%',
+                            '& ul': {
+                              width: '100%',
+                              display: 'flex',
+                              justifyContent: 'space-between', // Space out buttons
+                            },
+                            '& .MuiPaginationItem-root': {
+                              flexGrow: 1, // Make each button stretch equally
+                              textAlign: 'center',
+                            },
+                          }}
+
+                          onChange={handlePageChange}
+              />
+            </div>
           </div>
         </>
       )}
+      <div className="writeReview">
+        
+      </div>
     </div>
   );
 };

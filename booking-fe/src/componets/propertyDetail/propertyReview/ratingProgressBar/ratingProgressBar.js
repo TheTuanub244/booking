@@ -2,7 +2,7 @@ import React from "react";
 import "./ratingProgressBar.css";
 
 const RatingProgressBar = ({ categorize, point }) => {
-  const percentage = point * 10;
+  const percentage = point * 5;
   return (
     <div className="progressBar-container">
       <div className="categorize-point">

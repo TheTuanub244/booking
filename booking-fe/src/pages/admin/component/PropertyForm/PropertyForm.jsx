@@ -42,7 +42,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
   const [success, setSuccess] = useState(false);
 
-  // Update propertyData when initialData changes (useful for EditProperty)
   useEffect(() => {
     if (initialData) {
       setPropertyData({

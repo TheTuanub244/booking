@@ -11,13 +11,15 @@ const ImageGallery = ({ images, name }) => {
   const totalImages = images.length;
 
   const handlePrevThumbnails = () => {
-    if (visibleStartIndex > 0) {
+    setSelectedImageIndex(selectedImageIndex -1);
+    if (visibleStartIndex > 0 && visibleStartIndex === selectedImageIndex) {
       setVisibleStartIndex(visibleStartIndex - 1);
     }
   };
 
   const handleNextThumbnails = () => {
-    if (visibleStartIndex + maxVisibleThumbnails < totalImages) {
+    setSelectedImageIndex(selectedImageIndex + 1);
+    if (visibleStartIndex + maxVisibleThumbnails === selectedImageIndex +1 && selectedImageIndex <   totalImages) {      
       setVisibleStartIndex(visibleStartIndex + 1);
     }
   };
@@ -26,8 +28,8 @@ const ImageGallery = ({ images, name }) => {
     setSelectedImageIndex(index);
   };
 
-  const canPrev = visibleStartIndex > 0;
-  const canNext = visibleStartIndex + maxVisibleThumbnails < totalImages;
+  const canPrev = selectedImageIndex > 0;
+  const canNext = selectedImageIndex +1 < totalImages;
 
   const visibleThumbnails = images.slice(visibleStartIndex, visibleStartIndex + maxVisibleThumbnails);
 

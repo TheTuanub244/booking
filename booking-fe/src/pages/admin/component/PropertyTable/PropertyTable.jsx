@@ -11,24 +11,19 @@ const PropertyTable = ({ properties }) => {
   };
   const tableRows = properties.map((property) => ({
     ...property,
-    id: property._id, // Map `_id` to `id`
+    id: property._id, 
   }));
 
   function getOwnerName(ownerId) {
-    // Placeholder function to get owner name by owner ID
+   
     return "Owner";
   }
 
   const propertyColumn = [
     {
-      field: "_id",
-      headerName: "ID",
-      width: 50,
-    },
-    {
       field: "name",
       headerName: "Name",
-      width: 150,
+      width: 170,
     },
     {
       field: "owner_id",
@@ -39,7 +34,7 @@ const PropertyTable = ({ properties }) => {
     {
       field: "address",
       headerName: "Address",
-      width: 250,
+      width: 280,
       valueGetter: (params) =>
         `${params.row.address?.province || ""}, ${params.row.address?.district || ""}, ${params.row.address?.ward || ""}, ${params.row.address?.street || ""}`,
     },
@@ -59,7 +54,7 @@ const PropertyTable = ({ properties }) => {
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 120,
       renderCell: (params) => (
         <div className="cellAction">
           <Link to={`view/${params.row.id}`} style={{ textDecoration: "none" }}>
@@ -83,7 +78,6 @@ const PropertyTable = ({ properties }) => {
       columns={propertyColumn}
       pageSize={6}
       rowsPerPageOptions={[6]}
-      checkboxSelection
     />
   );
 };

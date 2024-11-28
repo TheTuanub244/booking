@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './writeReview.css';
 import { createReview } from "../../../api/reviewAPI";
+import SuccessfullyDisplay from "../../successfullyDisplay/successfullyDisplay";
 
 function WriteReview({rooms}){
     // Define TYPE enum inside the function
@@ -21,6 +22,8 @@ function WriteReview({rooms}){
   const [reviewType, setReviewType] = useState(TYPE.STAFF); // Default review type
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [succesfullyPopUp, setSuccessfullyPopUp] = useState(false);
+
   useEffect(() => {
     // Get userId from sessionStorage
     const user = localStorage.getItem('userId');
@@ -36,8 +39,20 @@ function WriteReview({rooms}){
 
     return () => {
       setIsSubmitting(false);
+      setSuccessfullyPopUp(false);
     }
   }, [rooms]);
+
+  const handleTimeoutSuccessfullyDisplay = async () => {
+    // Set the state to true
+    setSuccessfullyPopUp(true);
+
+    // Wait for 2 seconds (2000 ms) using a Promise and setTimeout
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Set the state to false after 2 seconds
+    setSuccessfullyPopUp(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,6 +69,8 @@ function WriteReview({rooms}){
     await createReview(reviewData);
 
     console.log('Review submitted:', reviewData);
+
+    await handleTimeoutSuccessfullyDisplay();
     
     setIsSubmitting(false);
     
@@ -128,6 +145,7 @@ function WriteReview({rooms}){
           {isSubmitting ? 'Submitting...' : 'Submit Review'}
         </button>
       </form>
+      {succesfullyPopUp && <SuccessfullyDisplay text={"Tạo đánh giá thành công!"} />}
     </div>
   );
 }

@@ -17,6 +17,8 @@ import Pagination from '@mui/material/Pagination';
 import { FaTimes } from 'react-icons/fa';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { TextToRate, TextToRateText, RateToText } from "../../../function/reviewsFunction";
+import LoadingIndicator from "../../loadingIndicator/loadingIndicator";
+
 
 const PropertyReview = ({ property_id }) => {
   const RATE = [
@@ -109,7 +111,7 @@ const TYPE = {
       const reviewComments = await findReviewWithProperty(property_id, 1);
       setAllReviewComment(reviewComments.reviews);
       setIsLoadingAllReview(false);
-      setTotalPageReview(reviewComment.totalPages)
+      setTotalPageReview(reviewComments.totalPages);
     } catch (e) {
       console.log(`Error at fetching review comment ${e}`);
     }
@@ -247,6 +249,7 @@ const TYPE = {
   return (
     <div className="propertyReview-container">
       <h2>Review</h2>
+
       <div className="overview-review">
         <div className="avarage-point">
           {!isLoadingRate ? <b>{monthlyRate.avarage}</b> : <Skeleton />}
@@ -291,9 +294,7 @@ const TYPE = {
             ? reviewComment.map((review, index) => (
                 <ReviewComment key={index} review={review} />
               ))
-            : Array(10)
-                .fill(null)
-                .map((_, index) => <ReviewComment key={index} />)}
+            : <LoadingIndicator />}
         </div>
         <button
           className="right-button"
@@ -339,6 +340,8 @@ const TYPE = {
                 <h4>{"Toàn bộ đánh giá"}</h4>
                 <FaTimes
                   style={{ fontSize: "24px", cursor: "pointer", color: "black" }}
+                  onClick={(e) => {setAllReviewPopUp(false);
+                  handleCloseAllReview();}}
                 />
               </div>
               <div className="allReviews-filter-sort">
@@ -401,9 +404,7 @@ const TYPE = {
             <div className="allReviews-content">
               {!isLoadingAllReview ? (allReviewComment.map((review, index) => (
                 <ReviewDetail key={index} review={review} />))) :
-                Array(10)
-                  .fill(null)
-                  .map((_, index) => <ReviewDetail key={index} />)
+                <LoadingIndicator />
               }
             </div>
             
@@ -430,9 +431,7 @@ const TYPE = {
           </div>
         </>
       )}
-      <div className="writeReview">
-        
-      </div>
+      
     </div>
   );
 };

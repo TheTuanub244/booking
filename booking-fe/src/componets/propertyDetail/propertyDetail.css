@@ -203,3 +203,11 @@
   width: 90%;
   margin: 0 auto;
 }
+
+.property-writeReview {
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-start;
+  width: 90%;
+  margin: 0 auto;
+}

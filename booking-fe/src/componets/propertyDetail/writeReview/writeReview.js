@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './writeReview.css';
+import { createReview } from "../../../api/reviewAPI";
+import SuccessfullyDisplay from "../../successfullyDisplay/successfullyDisplay";
 
-function WriteReview(){
+function WriteReview({rooms}){
     // Define TYPE enum inside the function
   const TYPE = {
     STAFF: 'Staff',
@@ -20,18 +22,37 @@ function WriteReview(){
   const [reviewType, setReviewType] = useState(TYPE.STAFF); // Default review type
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [succesfullyPopUp, setSuccessfullyPopUp] = useState(false);
+
   useEffect(() => {
     // Get userId from sessionStorage
-    const user = sessionStorage.getItem('userId');
+    const user = localStorage.getItem('userId');
+    console.log(rooms);
     if (user) {
       setUserId(user);
+      
+    }
+    if (rooms && rooms.length > 0) {
+      
+      setRoomId(rooms[0]._id); // Default to first roomId if available
     }
 
-    // Set roomId if it's passed as a prop or from the URL
-    if (rooms && rooms.length > 0) {
-      setRoomId(rooms[0].roomId); // Default to first roomId if available
+    return () => {
+      setIsSubmitting(false);
+      setSuccessfullyPopUp(false);
     }
   }, [rooms]);
+
+  const handleTimeoutSuccessfullyDisplay = async () => {
+    // Set the state to true
+    setSuccessfullyPopUp(true);
+
+    // Wait for 2 seconds (2000 ms) using a Promise and setTimeout
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Set the state to false after 2 seconds
+    setSuccessfullyPopUp(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,18 +62,18 @@ function WriteReview(){
       userId,
       roomId,
       rating,
-      reviewText,
-      reviewType,
+      review_text: reviewText,
+      review_type: reviewType,
     };
 
-    // Replace with your API call to submit review
+    await createReview(reviewData);
+
     console.log('Review submitted:', reviewData);
 
-    // Simulate a delay for submitting
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert('Review submitted successfully!');
-    }, 2000);
+    await handleTimeoutSuccessfullyDisplay();
+    
+    setIsSubmitting(false);
+    
   };
 
   return (
@@ -79,10 +100,12 @@ function WriteReview(){
           <select
             className="writeReview-select"
             value={roomId}
-            onChange={(e) => setRoomId(e.target.value)}
+            onChange={(e) => {
+              e.preventDefault();
+              setRoomId(e.target.value)}}
           >
             {rooms.map((room) => (
-              <option key={room.roomId} value={room.roomId}>
+              <option key={room._id} value={room._id}>
                 {room.name}
               </option>
             ))}
@@ -122,6 +145,7 @@ function WriteReview(){
           {isSubmitting ? 'Submitting...' : 'Submit Review'}
         </button>
       </form>
+      {succesfullyPopUp && <SuccessfullyDisplay text={"Tạo đánh giá thành công!"} />}
     </div>
   );
 }

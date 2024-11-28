@@ -97,7 +97,7 @@ function Header({ type, places, promptData }) {
       },
     };
     data.province = data.place;
-
+    
     navigate("/searchResult", {
       state: { option: data, longitude, latitude },
     });

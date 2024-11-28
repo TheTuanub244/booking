@@ -77,3 +77,11 @@ export const getAllRoomWithTotalPrice = async (
 
   return respone.data;
 };
+export const getRoomWithPriceByProperty = async (property_id, check_in, check_out) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/room/getRoomWithPriceByProperty`,
+    { check_in, check_out, property_id },
+  );
+
+  return respone.data;
+}

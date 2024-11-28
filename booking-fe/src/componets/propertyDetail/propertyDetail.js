@@ -4,7 +4,7 @@ import ContentLoader from "react-content-loader";
 import "./propertyDetail.css";
 import ReservationRoom from "./reservationRoom/reservationRoom";
 import { getPropertyById } from "../../api/propertyAPI";
-import { findRoomByProperty } from "../../api/roomAPI";
+import { findRoomByProperty, getRoomWithPriceByProperty } from "../../api/roomAPI";
 import { updateLastProperties } from "../../api/sessionAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faPlane } from "@fortawesome/free-solid-svg-icons";
@@ -44,20 +44,18 @@ const PropertyDetail = () => {
     const fetchData = async () => {
       if (id) {
         const pId = id.toString();
-        console.log(`Fetching data for ID: ${id}`);
-
+        const check_in = JSON.parse(localStorage.getItem('option')).check_in
+        const check_out = JSON.parse(localStorage.getItem('option')).check_out
         try {
-          const data = await getPropertyById(pId);
-
+          const data = await getRoomWithPriceByProperty(pId, check_in, check_out)
+          console.log(data);
+          
           setPropertyData(data);
-          const { street, district, province } = data.address;
+          const { street, district, province } = data[0].room.property_id.address;
           setLocation(`${street}, ${district}, ${province}`);
 
-          const roomDatas = await findRoomByProperty(id);
 
-          console.log(roomDatas);
 
-          setRoomData(roomDatas);
 
           setLoading(false);
         } catch (e) {
@@ -221,7 +219,7 @@ const PropertyDetail = () => {
             </div>
             <div className="propertyDetail-header">
               <div className="propertyDetail-name">
-                <h1> {propertyData.name} </h1>
+                <h1> {propertyData[0].room.property_id.name} </h1>
                 <button
                   onClick={() =>
                     infoPrices.current.scrollIntoView({ behavior: "smooth" })
@@ -239,7 +237,7 @@ const PropertyDetail = () => {
             <div className="mapContainer">
               <div className="container-left-description">
                 <div className="propertyDetail-image">
-                  {propertyData.images.map((src, index) => (
+                  {propertyData[0].room.property_id.images.map((src, index) => (
                     <img
                       key={index}
                       src={src}
@@ -250,25 +248,25 @@ const PropertyDetail = () => {
 
                   {/* Add placeholders if there are fewer than 6 images */}
                   {Array.from({
-                    length: Math.max(6 - propertyData.images.length, 0),
+                    length: Math.max(6 - propertyData[0].room.property_id.images.length, 0),
                   }).map((_, index) => (
                     <div
                       key={`placeholder-${index}`}
-                      className={`placeholder ${propertyData.images.length === 0 && index === 0 ? "large" : ""}`}
+                      className={`placeholder ${propertyData[0].room.property_id.images.length === 0 && index === 0 ? "large" : ""}`}
                     />
                   ))}
                 </div>
 
                 <div className="propertyDetail-description">
-                  <p>{propertyData.description}</p>
+                  <p>{propertyData[0].room.property_id.description}</p>
                 </div>
               </div>
               <div className="mini-map">
                 <Map
                   onLocationSelect={() => {}}
                   initialLocation={{
-                    lat: propertyData.location.latitude,
-                    lng: propertyData.location.longitude,
+                    lat: propertyData[0].room.property_id.location.latitude,
+                    lng: propertyData[0].room.property_id.location.longitude,
                   }}
                   disableClick={true}
                   allowPositionChange={false}
@@ -303,8 +301,8 @@ const PropertyDetail = () => {
                     <Map
                       onLocationSelect={() => {}}
                       initialLocation={{
-                        lat: propertyData.location.latitude,
-                        lng: propertyData.location.longitude,
+                        lat: propertyData[0].room.property_id.location.latitude,
+                        lng: propertyData[0].room.property_id.location.longitude,
                       }}
                       disableClick={true}
                       allowPositionChange={false}
@@ -319,8 +317,8 @@ const PropertyDetail = () => {
           {propertyData && (
             <div ref={infoPrices} className="reservation-room">
               <ReservationRoom
-                roomData={roomData}
-                partnerId={propertyData.owner_id}
+                roomData={propertyData}
+                partnerId={propertyData[0].room.property_id.owner_id}
               />
             </div>
           )}
@@ -328,7 +326,7 @@ const PropertyDetail = () => {
             <PropertyReview property_id={id} />
           </div>
           <div className="property-writeReview">
-            <WriteReview rooms={roomData} />
+            <WriteReview rooms={propertyData} />
           </div>
         </>
       )}

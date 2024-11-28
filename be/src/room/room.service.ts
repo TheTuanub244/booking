@@ -63,6 +63,28 @@ export class RoomService {
       },
     });
   }
+  async getRoomWithPriceByProperty(property_id, check_out, check_in) {
+    const findProperty = await this.propertySchema.findById(
+      new Types.ObjectId(property_id),
+    );
+    const availableRoom = [];
+    const findAvailableRoom = await this.findAvailableRoomWithProperty(
+      findProperty._id,
+    );
+    await Promise.all(
+      findAvailableRoom.map(async (room) => {
+        const totalPriceNight =
+          await this.bookingService.calculateTotalNightPrice({
+            room_id: [room._id],
+            property: findProperty._id,
+            check_in_date: check_in,
+            check_out_date: check_out,
+          });
+        availableRoom.push({ room, totalPriceNight });
+      }),
+    );
+    return availableRoom;
+  }
   async getAllRoomWithTotalPrice({
     check_in,
     check_out,
@@ -153,7 +175,7 @@ export class RoomService {
         'address.province': place,
       });
     }
-    
+
     if (findProperties.length === 0) {
       findProperties = await this.propertySchema.find({
         name: { $regex: place, $options: 'i' },
@@ -163,11 +185,10 @@ export class RoomService {
     const availableRoom = [];
     await Promise.all(
       findProperties.map(async (property) => {
-        
         const findAvailableRoom = await this.findAvailableRoomWithProperty(
           property._id,
         );
-        
+
         await Promise.all(
           findAvailableRoom.map(async (value) => {
             const finalRespone = await this.findConflictingInBookings(

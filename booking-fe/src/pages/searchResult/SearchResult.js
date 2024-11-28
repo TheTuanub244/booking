@@ -49,7 +49,7 @@ const SearchResult = () => {
 
   const searchRoom = async () => {
     const response = await findAvailableRoomWithSearch(option);
-
+    
     setIsLoading(false);
     if (response?.length && response) {
       const uniqueProperties = Array.from(
@@ -106,7 +106,6 @@ const SearchResult = () => {
       }));
       setRates((prevRates) =>
         prevRates.map((item) => {
-          console.log(result);
 
           const match = ratesArray.find((r) => r.name === item.name);
 
@@ -114,6 +113,7 @@ const SearchResult = () => {
         }),
       );
       setPropertyTypes(propertyTypesArray);
+      
       setTotalProperties(sortedProperties);
       const paginatedProperties = sortedProperties.slice(
         currentPage - 1,

@@ -33,8 +33,9 @@ function WriteReview({rooms}){
       
     }
     if (rooms && rooms.length > 0) {
-      
-      setRoomId(rooms[0]._id); // Default to first roomId if available
+        console.log(rooms);
+        
+      setRoomId(rooms[0].room._id); // Default to first roomId if available
     }
 
     return () => {
@@ -105,7 +106,7 @@ function WriteReview({rooms}){
               setRoomId(e.target.value)}}
           >
             {rooms.map((room) => (
-              <option key={room._id} value={room._id}>
+              <option key={room.room._id} value={room.room._id}>
                 {room.name}
               </option>
             ))}

@@ -1,8 +1,10 @@
 import React from "react";
 import "./reservationRoom_items.css";
+import { formatCurrency } from "../../../helpers/currencyHelpers";
 
 function ReservationRoom_item({
   room,
+  totalPrice,
   numberOfNights,
   setSelectedRoom,
   setIsModalOpen,
@@ -62,7 +64,7 @@ function ReservationRoom_item({
         <div className="price">
           <span className="original-price">{room.originalPrice}</span>
           <span className="discounted-price">
-            {room.price_per_night && room.price_per_night * numberOfNights}
+            {formatCurrency(totalPrice)}
           </span>
         </div>
       </td>

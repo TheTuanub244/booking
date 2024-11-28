@@ -277,7 +277,7 @@ export class ReviewService {
             rating: { $gte: min },
           },
           {
-            rating: { $lt: max },
+            rating: { $lte: max },
           },
         ],
       })
@@ -294,7 +294,7 @@ export class ReviewService {
             rating: { $gte: min },
           },
           {
-            rating: { $lt: max },
+            rating: { $lte: max },
           },
         ],
       })
@@ -326,7 +326,7 @@ export class ReviewService {
               rating: { $gte: min },
             },
             {
-              rating: { $lt: max },
+              rating: { $lte: max },
             },
           ],
         })
@@ -343,7 +343,7 @@ export class ReviewService {
               rating: { $gte: min },
             },
             {
-              rating: { $lt: max },
+              rating: { $lte: max },
             },
           ],
         })
@@ -384,7 +384,7 @@ export class ReviewService {
               rating: { $gte: min },
             },
             {
-              rating: { $lt: max },
+              rating: { $lte: max },
             },
           ],
         })
@@ -402,7 +402,7 @@ export class ReviewService {
               rating: { $gte: min },
             },
             {
-              rating: { $lt: max },
+              rating: { $lte: max },
             },
           ],
         })

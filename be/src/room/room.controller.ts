@@ -84,7 +84,15 @@ export class RoomController {
     });
   }
   @Get('getAllRoomWithDetails')
-  async getAllRoomWithDetails(){
-    return this.roomService.getAllRoomWithDetails()
+  async getAllRoomWithDetails() {
+    return this.roomService.getAllRoomWithDetails();
+  }
+  @Post('getRoomWithPriceByProperty')
+  async getRoomWithPriceByProperty(@Body() data: any) {
+    return this.roomService.getRoomWithPriceByProperty(
+      data.property_id,
+      data.check_out,
+      data.check_in,
+    );
   }
 }

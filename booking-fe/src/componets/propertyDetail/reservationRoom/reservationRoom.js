@@ -7,6 +7,7 @@ import SignInPopup from "./signInPopup";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createBooking } from "../../../api/bookingAPI";
 import { Button, Modal } from "react-bootstrap";
+import { calculateNights } from "../../../helpers/dateHelpers";
 
 const ReservationRoom = ({ roomData, partnerId }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
@@ -17,7 +18,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     adults: 0,
     child: [],
   });
-
+  
   const [numberOfNights, setNumberOfNights] = useState(3);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +41,13 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     setIsModalOpen(false);
     setModalRoom(null);
   };
+  useEffect(() => {
+    const check_in = JSON.parse(localStorage.getItem('option')).check_in
+    const check_out = JSON.parse(localStorage.getItem('option')).check_out
 
+    const totalNights = calculateNights(check_in, check_out)
+    setNumberOfNights(totalNights)
+  }, [])
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Reservation Details:", {
@@ -140,7 +147,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
 
     setRoomSearch(
       roomData.filter((room) =>
-        checkRoomDateBooking(dateSearch, room.availability),
+        checkRoomDateBooking(dateSearch, room.room.availability),
       ),
     );
     setIsSearchRoom(true);
@@ -274,13 +281,14 @@ const ReservationRoom = ({ roomData, partnerId }) => {
               {!isSearchRoom
                 ? roomData.map((room) => (
                     <ReservationRoom_item
-                      key={room._id}
-                      room={room}
+                      key={room.room._id}
+                      room={room.room}
+                      totalPrice={room.totalPriceNight}
                       numberOfNights={numberOfNights}
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
                       setModalRoom={(room) => {
-                        setModalRoom(room);
+                        setModalRoom(room.room);
                         setIsModalOpen(true);
                       }}
                     />

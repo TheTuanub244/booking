@@ -201,7 +201,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           </Modal.Footer>
         </Modal>
       <h2>Reserve Your Room</h2>
-      <form className="reservation-details" onSubmit={e => {e.preventDefault();}}>
+      <form className="reservation-details" onSubmit={e => {}}>
         <label htmlFor="checkIn">Check-In Date:</label>
         <div className="checkIn-input">
           <div className="headerSearchItem iconCalendar">

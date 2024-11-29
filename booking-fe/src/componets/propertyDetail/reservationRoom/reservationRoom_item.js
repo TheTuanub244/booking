@@ -18,6 +18,7 @@ function ReservationRoom_item({
     setIsModalOpen(true);
     setModalRoom(room);
   };
+  
   const check_in_date = JSON.parse(localStorage.getItem('option')).check_in
   const check_out_date = JSON.parse(localStorage.getItem('option')).check_out
 

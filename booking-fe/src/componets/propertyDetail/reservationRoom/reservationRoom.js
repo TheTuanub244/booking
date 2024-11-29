@@ -18,7 +18,10 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const [checkOutDate, setCheckOutDate] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState({
     adults: 0,
-    child: [],
+    child: {
+      count: 0,
+      age: 0
+    },
   });
   
   const [numberOfNights, setNumberOfNights] = useState(3);
@@ -77,27 +80,35 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           [name]: value,
         };
       } else if (name === "child") {
-        if (e.target.value < prev.child.length) {
-          prev.child.pop();
-        } else {
-          prev.child.push({
-            index: prev.child.length,
-            age: 0,
-          });
+        if(value === 0){
+          return {
+            ...prev,
+            child: {
+              count: 0,
+              age: 0,
+            }
+          }
+        } 
+        return {
+          ...prev,
+          child: {
+            ...prev.child,
+            count: value
+          }
         }
-        return { ...prev };
       }
     });
   };
 
-  const handleChangeAgeOfChilds = (e, i) => {
+  const handleChangeAgeOfChilds = (e) => {
     e.stopPropagation();
     const { value } = e.target;
     setNumberOfGuests((prev) => ({
       ...prev,
-      child: prev.child.map((child) =>
-        child.index === i ? { ...child, age: Number(value) } : child,
-      ),
+      child: {
+        ...prev.child,
+        age: value
+      }
     }));
   };
 
@@ -195,7 +206,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           </Modal.Footer>
         </Modal>
       <h2>Reserve Your Room</h2>
-      <form className="reservation-details">
+      <form className="reservation-details" onSubmit={e => {e.preventDefault();}}>
         <label htmlFor="checkIn">Check-In Date:</label>
         <input
           type="date"
@@ -223,7 +234,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           }}
         >
           {numberOfGuests &&
-            `${numberOfGuests.adults} Adults + ${numberOfGuests.child.length} Childs`}
+            `${numberOfGuests.adults} Adults + ${numberOfGuests.child.count} Childs`}
           {numberOfGuestInput && (
             <>
               <div
@@ -246,24 +257,21 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                 <input
                   type="number"
                   name="child"
-                  value={numberOfGuests.child.length}
+                  value={numberOfGuests.child.count}
                   onChange={(e) => handleChangeNumberOfGuest(e)}
                 />
-                {numberOfGuests.child.length > 0 && (
+                {numberOfGuests.child.count > 0 && (
                   <>
                     <label>Childs Age: </label>
                     <div className="childAgeInput">
-                      {numberOfGuests.child.map((child) => (
-                        <input
-                          type="number"
-                          key={child.index}
-                          name={`childAge ${child.index}`}
-                          value={child.age}
-                          onChange={(e) => {
-                            handleChangeAgeOfChilds(e, child.index);
-                          }}
-                        />
-                      ))}
+                      <input
+                        type="number"
+                        name={`childAge`}
+                        value={numberOfGuests.child.age}
+                        onChange={(e) => {
+                          handleChangeAgeOfChilds(e);
+                        }}
+                      />
                     </div>
                   </>
                 )}

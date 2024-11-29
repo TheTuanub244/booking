@@ -15,7 +15,9 @@ function ResultPayment() {
   const payDate = queryParams.get("vnp_PayDate");
   const transactionCode = queryParams.get("vnp_TxnRef");
   const overViewData = JSON.parse(localStorage.getItem("overViewData"));
-  const {email,firstName,lastName,bookingId,checkInDate,checkOutDate,address,hotelName} = overViewData;
+  const { email, firstName, lastName, bookingId, checkInDate, checkOutDate, address, hotelName } = overViewData;
+  const [paymentMethod,setPaymentMethod] = useState("");
+  const bankCode = queryParams.get("vnp_BankCode");
 
   const [message, setMessage] = useState(true);
   const formatDateTime = (dateTimeString) => {
@@ -33,11 +35,20 @@ function ResultPayment() {
   const date = moment(dateString, "YYYYMMDDHHmmss").toDate();
 
   useEffect(() => {
+    if (bankCode === "VISA") {
+      setPaymentMethod("Thanh toán qua thẻ quốc tế");
+    } else if (bankCode === "VNMART") {
+      setPaymentMethod("Thanh toán qua ví điện tử VNMART");
+    } else {
+      setPaymentMethod("Thanh toán qua thẻ ngân hàng nội địa");
+    }
+
+
     if (transactionStatus === "00") {
       const paymentData = {
         booking_id: bookingId,
         amount: amount,
-        payment_method: "Thanh toán bằng thẻ ATM",
+        payment_method: paymentMethod,
         paymentCode: transactionCode,
         paymentDate: moment(payDate, "YYYYMMDDHHmmss").toDate()
       }
@@ -45,14 +56,14 @@ function ResultPayment() {
       const emailData = {
         firstname: firstName,
         lastname: lastName,
-        transactionCode:transactionCode,
+        transactionCode: transactionCode,
         transactionTime: formatDateTime(payDate),
         price: amount.toLocaleString("en-US"),
-        checkInDate:checkInDate,
-        checkOutDate:checkOutDate,
-        email:email,
-        hotelName:hotelName,
-        address:address
+        checkInDate: checkInDate,
+        checkOutDate: checkOutDate,
+        email: email,
+        hotelName: hotelName,
+        address: address
       }
 
       axios
@@ -63,10 +74,10 @@ function ResultPayment() {
         .catch((err) => console.log(err));
 
       axios
-        .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`,emailData)
+        .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
         .then((res) => {
           console.log(res.data);
-        }) 
+        })
         .catch((err) => console.log(err));
 
 

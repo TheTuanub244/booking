@@ -418,4 +418,57 @@ export class RoomService {
 
     return occupancyRates;
   }
+  async findRoomInReservation(
+    property_id: string,
+    capacity: any,
+    check_in_date: Date,
+    check_out_date: Date,
+  ) {
+    const findProperty = await this.propertySchema.findById(
+      new Types.ObjectId(property_id),
+    );
+    const availableRoom = [];
+    const findAvailableRoom = await this.findAvailableRoomWithProperty(
+      findProperty._id,
+    );
+    await Promise.all(
+      findAvailableRoom.map(async (value) => {
+        const checkFullRoom = await this.bookingService.checkFullRoom(
+          value._id.toString(),
+        );
+        if (checkFullRoom) {
+          const finalResponse = await this.findConflictingInBookings(
+            value._id,
+            findProperty._id,
+            check_in_date,
+            check_out_date,
+          );
+          if (finalResponse.length === 0) {
+            const totalPriceNight =
+              await this.bookingService.calculateTotalNightPrice({
+                room_id: [value._id],
+                property: findProperty._id,
+                check_in_date: check_in_date,
+                check_out_date: check_out_date,
+              });
+            availableRoom.push({ value, totalPriceNight });
+          }
+        } else {
+          const totalPriceNight =
+            await this.bookingService.calculateTotalNightPrice({
+              room_id: [value._id],
+              property: findProperty._id,
+              check_in_date: check_in_date,
+              check_out_date: check_out_date,
+            });
+          availableRoom.push({
+            value,
+            totalPriceNight,
+            numberOfAvailableRooms: value.capacity.room,
+          });
+        }
+      }),
+    );
+    return availableRoom;
+  }
 }

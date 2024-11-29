@@ -13,13 +13,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DateRange } from "react-date-range";
 import moment from "moment";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import { findRoomByProperty, findRoomInReservation } from "../../../api/roomAPI";
 
 const ReservationRoom = ({ roomData, partnerId }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
 
   const [numberOfGuests, setNumberOfGuests] = useState({
     adults: 0,
-    child: {
+    childs: {
       count: 0,
       age: 0
     },
@@ -53,26 +54,36 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const [totalPrice, setTotalPrice] = useState(0)
   const userId = localStorage.getItem("userId");
   const accessToken = localStorage.getItem("accessToken")
+  const check_in = JSON.parse(localStorage.getItem('option')).check_in;
+    const check_out = JSON.parse(localStorage.getItem('option')).check_out;
+    const adults = JSON.parse(localStorage.getItem('option')).capacity.adults
+    const children = JSON.parse(localStorage.getItem('option')).capacity.childs.count
+    const age = JSON.parse(localStorage.getItem('option')).capacity.childs.age || 0
   const closeModal = () => {
     setIsModalOpen(false);
     setModalRoom(null);
   };
   
   useEffect(() => {
-    const check_in = JSON.parse(localStorage.getItem('option')).check_in;
-    const check_out = JSON.parse(localStorage.getItem('option')).check_out;
-
-    //const formattedCheckIn = (new Date(check_in)).toISOString().split('T')[0];
-    //const formattedCheckOut = (new Date(check_out)).toISOString().split('T')[0];
-
+    
     setDate([{
       startDate: moment(check_in, "YYYY-MM-DD").toDate(),
       endDate: moment(check_out, "YYYY-MM-DD").toDate()
     }]);
-    
+    setNumberOfGuests({
+      adults: adults,
+      childs: {
+        count: children,
+        age: age
+      }
+    })
     const totalNights = calculateNights(check_in, check_out)
     setNumberOfNights(totalNights)
   }, [])
+  useEffect(() => {
+    
+    
+  }, [numberOfGuests])
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Reservation Details:", {
@@ -106,11 +117,11 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           ...prev,
           [name]: value,
         };
-      } else if (name === "child") {
+      } else if (name === "childs") {
         if(value === 0){
           return {
             ...prev,
-            child: {
+            childs: {
               count: 0,
               age: 0,
             }
@@ -118,8 +129,8 @@ const ReservationRoom = ({ roomData, partnerId }) => {
         } 
         return {
           ...prev,
-          child: {
-            ...prev.child,
+          childs: {
+            ...prev.childs,
             count: value
           }
         }
@@ -133,8 +144,8 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     if(value < 0) return;
     setNumberOfGuests((prev) => ({
       ...prev,
-      child: {
-        ...prev.child,
+      childs: {
+        ...prev.childs,
         age: value
       }
     }));
@@ -147,17 +158,17 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     try{
       
       const option = JSON.parse(localStorage.getItem('option'))
-      await createBooking(
-        userId,
-        partnerId,
-        roomData[0].room.property_id._id,
-        selectedRoom,
-        option.capacity,
-        option.check_in,
-        option.check_out,
-        totalPrice,
-        accessToken
-      );
+      // await createBooking(
+      //   userId,
+      //   partnerId,
+      //   roomData[0].room.property_id._id,
+      //   selectedRoom,
+      //   option.capacity,
+      //   option.check_in,
+      //   option.check_out,
+      //   totalPrice,
+      //   accessToken
+      // );
     } catch(err){
       console.log(err);
       if(err.response.status === 401){
@@ -180,6 +191,15 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     localStorage.setItem("redirectPath", location.pathname);
     navigate("/login");
   };
+  const handleUpdate = async (e) => {
+    e.preventDefault()
+    const response = await findRoomInReservation(roomData[0].room.property_id._id, check_in, check_out, {adults, childs: {
+      count: children,
+      age: age
+    }})
+    console.log(response);
+    
+  }
   return (
     <div className="ReservationForm">
       <Modal
@@ -239,7 +259,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           }}
         >
           {numberOfGuests &&
-            `${numberOfGuests.adults} Adults + ${numberOfGuests.child.count} Childs`}
+            `${numberOfGuests.adults} Adults + ${numberOfGuests.childs.count} Childs`}
           {numberOfGuestInput && (
             <>
               <div
@@ -266,19 +286,19 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                   <label>Childs: </label>
                   <input
                     type="number"
-                    name="child"
-                    value={numberOfGuests.child.count}
+                    name="childs"
+                    value={numberOfGuests.childs.count}
                     onChange={(e) => handleChangeNumberOfGuest(e)}
                   />
                 </div>
                 
-                {numberOfGuests.child.count > 0 && (
+                {numberOfGuests.childs.count > 0 && (
                   <div className="numberOfGuestInput-inputLabel">
                     <label>Childs Age: </label>
                     <input
                         type="number"
                         name={`childAge`}
-                        value={numberOfGuests.child.age}
+                        value={numberOfGuests.childs.age}
                         onChange={(e) => {
                           handleChangeAgeOfChilds(e);
                         }}
@@ -292,7 +312,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           )}
         </div>
 
-        <button type="submit" className="update">
+        <button type="submit" className="update" onClick={(e) => handleUpdate(e)}>
           Update
         </button>
       </form>

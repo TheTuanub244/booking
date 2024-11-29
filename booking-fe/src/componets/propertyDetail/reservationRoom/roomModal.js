@@ -7,8 +7,8 @@ const RoomModal = ({ isOpen, onClose, room }) => {
 
   return (
     room && (
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modalRoom-overlay" onClick={onClose}>
+        <div className="modalRoom-content" onClick={(e) => e.stopPropagation()}>
           <div>
             <h2>{room.name}</h2>
             <div className="close">
@@ -24,25 +24,25 @@ const RoomModal = ({ isOpen, onClose, room }) => {
                 <tbody>
                   <tr>
                     <td>
-                      <b>Type:</b>
+                      Type:
                     </td>
-                    <td>{room.type}</td>
+                    <td><b>{room.type}</b></td>
                   </tr>
                   <tr>
                     <td>
-                      <b>Rating:</b>
+                      Rating:
                     </td>
-                    <td>{room.rating}</td>
+                    <td><b>{room.rating}</b></td>
                   </tr>
                   <tr>
                     <td>
-                      <b>Capacity:</b>
+                      Capacity:
                     </td>
-                    <td>{room.capacity.room} guests</td>
+                    <td><b>{room.capacity.room} guests</b></td>
                   </tr>
                   <tr>
                     <td>
-                      <b>Price per Night:</b>
+                      Price per Night:
                     </td>
                     <td>
                       <span
@@ -53,9 +53,9 @@ const RoomModal = ({ isOpen, onClose, room }) => {
                             : ""
                         }
                       >
-                        {room.price_per_night.weekday} (Weekday)
+                        <b>{room.price_per_night.weekday} (Weekday)</b>
                       </span>
-                      /
+                      <b>/</b>
                       <span
                         className={
                           room.price_per_night.weekend <
@@ -64,7 +64,7 @@ const RoomModal = ({ isOpen, onClose, room }) => {
                             : ""
                         }
                       >
-                        {room.price_per_night.weekend} (Weekend)
+                        <b>{room.price_per_night.weekend} (Weekend)</b>
                       </span>
                     </td>
                   </tr>

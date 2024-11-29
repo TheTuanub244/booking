@@ -9,13 +9,15 @@ import { createBooking } from "../../../api/bookingAPI";
 import { Button, Modal } from "react-bootstrap";
 import { calculateNights } from "../../../helpers/dateHelpers";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DateRange } from "react-date-range";
 import moment from "moment";
+import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import { findRoomByProperty, findRoomInReservation } from "../../../api/roomAPI";
 
 const ReservationRoom = ({ roomData, partnerId }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
 
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState({
     adults: 0,
     childs: {
@@ -23,6 +25,16 @@ const ReservationRoom = ({ roomData, partnerId }) => {
       age: 0
     },
   });
+  const oneDayLater = new Date();
+  const [date, setDate] = useState([
+    {
+      startDate: new Date(),
+      endDate: oneDayLater.setDate(oneDayLater.getDate() + 1),
+      key: "selection",
+    },
+  ]);
+  
+  const [openDate, setOpenDate] = useState(false);
   
   const [numberOfNights, setNumberOfNights] = useState(3);
 
@@ -42,38 +54,58 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const [totalPrice, setTotalPrice] = useState(0)
   const userId = localStorage.getItem("userId");
   const accessToken = localStorage.getItem("accessToken")
+  const check_in = JSON.parse(localStorage.getItem('option')).check_in;
+    const check_out = JSON.parse(localStorage.getItem('option')).check_out;
+    const adults = JSON.parse(localStorage.getItem('option')).capacity.adults
+    const children = JSON.parse(localStorage.getItem('option')).capacity.childs.count
+    const age = JSON.parse(localStorage.getItem('option')).capacity.childs.age || 0
   const closeModal = () => {
     setIsModalOpen(false);
     setModalRoom(null);
   };
+  
   useEffect(() => {
-    const check_in = JSON.parse(localStorage.getItem('option')).check_in
-    const check_out = JSON.parse(localStorage.getItem('option')).check_out
-
-    const formattedCheckIn = (new Date(check_in)).toISOString().split('T')[0];
-    const formattedCheckOut = (new Date(check_out)).toISOString().split('T')[0];
-
-    setCheckInDate(formattedCheckIn)
-    setCheckOutDate(formattedCheckOut)
     
+    setDate([{
+      startDate: moment(check_in, "YYYY-MM-DD").toDate(),
+      endDate: moment(check_out, "YYYY-MM-DD").toDate()
+    }]);
+    setNumberOfGuests({
+      adults: adults,
+      childs: {
+        count: children,
+        age: age
+      }
+    })
     const totalNights = calculateNights(check_in, check_out)
     setNumberOfNights(totalNights)
   }, [])
   useEffect(() => {
-    console.log(numberOfGuests);
-    console.log(checkInDate);
-    console.log(checkOutDate);
     
-  }, [numberOfGuests, checkInDate, checkOutDate])
+    
+  }, [numberOfGuests])
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Reservation Details:", {
       selectedRoom,
-      checkInDate,
-      checkOutDate,
+      date,
       numberOfGuests,
     });
   };
+
+  const handleChangeDate = (item) => {
+    
+    setDate([item.selection || item.range1]);
+  }
+  function formatDate(date) {
+    const formattedDate = new Intl.DateTimeFormat("en-GB", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+    }).format(date);
+
+    return formattedDate.replace(",", ""); // Loại bỏ dấu phẩy
+  }
 
   const handleChangeNumberOfGuest = (e) => {
     e.stopPropagation();
@@ -85,10 +117,19 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           ...prev,
           [name]: value,
         };
-      } else if (name === "child") {
+      } else if (name === "childs") {
+        if(value === 0){
+          return {
+            ...prev,
+            childs: {
+              count: 0,
+              age: 0,
+            }
+          }
+        } 
         return {
           ...prev,
-          childs:{
+          childs: {
             ...prev.childs,
             count: value
           }
@@ -100,6 +141,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const handleChangeAgeOfChilds = (e) => {
     e.stopPropagation();
     const { value } = e.target;
+    if(value < 0) return;
     setNumberOfGuests((prev) => ({
       ...prev,
       childs: {
@@ -109,28 +151,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     }));
   };
 
-  const handleChangeDate = (e) => {
-    
-    let date1, date2;
-    if (e.target.id === "checkIn") {
-      setCheckInDate(e.target.value);
-      date1 = new Date(e.target.value);
-      if (checkOutDate) date2 = new Date(checkOutDate);
-    }
-    if (e.target.id === "checkOut") {
-      date2 = new Date(e.target.value);
-
-      if (checkInDate) date1 = new Date(checkInDate);
-
-      if (date2 - date1 < 0) return;
-
-      setCheckOutDate(e.target.value);
-    }
-    let miliseconds = Math.abs(date2 - date1);
-    let days = miliseconds / (1000 * 60 * 60 * 24);
-
-    if (days) setNumberOfNights(days);
-  };
+  
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleReserveClick = async () => {
@@ -159,19 +180,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     setShowModal(false);
     navigate("/login");
   };
-  const searchRoom = () => {
-    let dateSearch = {
-      check_in_date: new Date(checkInDate),
-      check_out_date: new Date(checkOutDate),
-    };
-
-    setRoomSearch(
-      roomData.filter((room) =>
-        checkRoomDateBooking(dateSearch, room.room.availability),
-      ),
-    );
-    setIsSearchRoom(true);
-  };
+  
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
@@ -182,6 +191,15 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     localStorage.setItem("redirectPath", location.pathname);
     navigate("/login");
   };
+  const handleUpdate = async (e) => {
+    e.preventDefault()
+    const response = await findRoomInReservation(roomData[0].room.property_id._id, check_in, check_out, {adults, childs: {
+      count: children,
+      age: age
+    }})
+    console.log(response);
+    
+  }
   return (
     <div className="ReservationForm">
       <Modal
@@ -203,24 +221,34 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           </Modal.Footer>
         </Modal>
       <h2>Reserve Your Room</h2>
-      <form className="reservation-details">
+      <form className="reservation-details" onSubmit={e => {}}>
         <label htmlFor="checkIn">Check-In Date:</label>
-        <input
-          type="date"
-          id="checkIn"
-          value={checkInDate}
-          onChange={(e) => handleChangeDate(e)}
-          required
-        />
-
-        <label htmlFor="checkOut">Check-Out Date:</label>
-        <input
-          type="date"
-          id="checkOut"
-          value={checkOutDate}
-          onChange={(e) => handleChangeDate(e)}
-          required
-        />
+        <div className="checkIn-input">
+          <div className="headerSearchItem iconCalendar">
+            <FontAwesomeIcon icon={faCalendarDays} className="headerIcon" />
+            <span
+              onClick={() => {
+                setOpenDate(!openDate);
+              }}
+              className="headerSearchText"
+            >{`${formatDate(date[0].startDate)} - ${formatDate(date[0].endDate)}`}</span>
+            {openDate && (
+              <div className="dateInput">
+                <div className="blockInput" onClick={e => {e.stopPropagation(); setOpenDate(!openDate)}}>
+                </div>
+                <DateRange
+                  editableDateInputs={true}
+                  onChange={(item) => handleChangeDate(item)}
+                  moveRangeOnFirstSelection={false}
+                  ranges={date}
+                  className="reservation-date"
+                />
+              </div>
+              
+            )}
+          </div>
+        </div>
+        
 
         <label htmlFor="guests">Number of Guests:</label>
         <div
@@ -243,42 +271,48 @@ const ReservationRoom = ({ roomData, partnerId }) => {
               ></div>
 
               <div className="numberOfGuestInput">
-                <label>Adults: </label>
-                <input
-                  type="number"
-                  name="adults"
-                  value={numberOfGuests.adults}
-                  onChange={(e) => handleChangeNumberOfGuest(e)}
-                />
-                <label>Childs: </label>
-                <input
-                  type="number"
-                  name="child"
-                  value={numberOfGuests.childs.count}
-                  onChange={(e) => handleChangeNumberOfGuest(e)}
-                />
+                <div className="numberOfGuestInput-inputLabel">
+                  <label>Adults: </label>
+                  <input
+                    
+                    type="number"
+                    name="adults"
+                    value={numberOfGuests.adults}
+                    onChange={(e) => handleChangeNumberOfGuest(e)}
+                  />
+                </div>
+                
+                <div className="numberOfGuestInput-inputLabel">
+                  <label>Childs: </label>
+                  <input
+                    type="number"
+                    name="childs"
+                    value={numberOfGuests.childs.count}
+                    onChange={(e) => handleChangeNumberOfGuest(e)}
+                  />
+                </div>
+                
                 {numberOfGuests.childs.count > 0 && (
-                  <>
+                  <div className="numberOfGuestInput-inputLabel">
                     <label>Childs Age: </label>
-                    <div className="childAgeInput">
-                      {numberOfGuests.childs.count > 0 && 
-                        (<input
-                          type="number"
-                          value={numberOfGuests.childs.age}
-                          onChange={(e) => {
-                            handleChangeAgeOfChilds(e);
-                          }}
-                        />)
-                      }
-                    </div>
-                  </>
+                    <input
+                        type="number"
+                        name={`childAge`}
+                        value={numberOfGuests.childs.age}
+                        onChange={(e) => {
+                          handleChangeAgeOfChilds(e);
+                        }}
+                      />
+                  </div>
                 )}
+                <button className="finishChoosing" onClick={(e) => {e.stopPropagation();
+                  setNumberOfGuestInput(false);}}>Done</button>
               </div>
             </>
           )}
         </div>
 
-        <button type="submit" className="update">
+        <button type="submit" className="update" onClick={(e) => handleUpdate(e)}>
           Update
         </button>
       </form>
@@ -307,7 +341,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
                       setModalRoom={(room) => {
-                        setModalRoom(room.room);
+                        setModalRoom(room);
                         setIsModalOpen(true);
                       }}
                     />
@@ -332,7 +366,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
         
         <div className="reserveButton">
           <div>
-            <h2>Total Price: {formatCurrency(totalPrice)}</h2>
+            <h4>Total Price: {formatCurrency(totalPrice)}</h4>
           </div>
           <button className="reserve" onClick={handleReserveClick}>
             Reserve Now

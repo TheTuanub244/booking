@@ -85,3 +85,11 @@ export const getRoomWithPriceByProperty = async (property_id, check_in, check_ou
 
   return respone.data;
 }
+export const findRoomInReservation = async (property_id, check_in_date, check_out_date, capacity) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/room/findRoomInReservation`,
+    { check_in_date, check_out_date, property_id, capacity },
+  );
+
+  return respone.data;
+}

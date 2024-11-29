@@ -1,5 +1,5 @@
 /* Overlay styling */
-.modal-overlay {
+.modalRoom-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -14,22 +14,22 @@
 }
 
 /* Modal container */
-.modal-content {
-  background: #ffffff; /* White background */
+.modalRoom-content {
+  background-color: #ffffff; /* White background */
   border-radius: 10px; /* Rounded corners */
   padding: 20px; /* Inner padding */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Subtle shadow */
   width: 80%; /* Responsive width */
-  max-width: 900px; /* Maximum width */
+  max-width: 1200px; /* Maximum width */
   display: flex; /* Flexible layout */
   flex-direction: column; /* Stack child elements */
   position: relative; /* For close button positioning */
   overflow-y: auto; /* Scrollable if content overflows */
-  max-height: 80%; /* Prevent modal from exceeding screen height */
+  max-height: 80%; /* Prevent modalRoom from exceeding screen height */
 }
 
 /* Header section */
-.modal-content h2 {
+.modalRoom-content h2 {
   font-size: 24px;
   color: #333333; /* Dark text */
   margin-bottom: 20px; /* Spacing below title */
@@ -38,13 +38,13 @@
 }
 
 /* Close button */
-.modal-content .close {
+.modalRoom-content .close {
   position: absolute;
   top: 15px;
   right: 15px;
 }
 
-.modal-content .close button {
+.modalRoom-content .close button {
   background-color: transparent;
   border: none;
   font-size: 24px; /* Larger size */
@@ -53,12 +53,12 @@
   transition: color 0.2s;
 }
 
-.modal-content .close button:hover {
+.modalRoom-content .close button:hover {
   color: #333333; /* Darker color on hover */
 }
 
 /* Parent div holding image and info */
-.modal-content > div {
+.modalRoom-content > div {
   display: flex;
   flex-direction: row; /* Align children side by side */
   gap: 20px; /* Add spacing between the image and info sections */
@@ -67,7 +67,7 @@
 }
 
 /* Image section */
-.modal-content .image {
+.modalRoom-content .image {
   flex: 1; /* Take equal space as info */
   display: flex;
   justify-content: center; /* Center the image */
@@ -76,14 +76,14 @@
   padding-right: 50px;
 }
 
-.modal-content .image img {
+.modalRoom-content .image img {
   max-width: 100%;
   border-radius: 10px; /* Rounded corners for the image */
   object-fit: cover; /* Ensure image maintains aspect ratio */
 }
 
 /* Information section */
-.modal-content .info {
+.modalRoom-content .info {
   flex: 1; /* Allow the info section to take up more space */
   display: flex;
   flex-direction: column;
@@ -102,7 +102,6 @@
 }
 
 .info-table td:first-child {
-  font-weight: bold; /* Bold for the first column */
   text-align: left; /* Left align */
   width: 35%; /* Adjust column width */
 }

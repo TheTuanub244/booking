@@ -6,41 +6,81 @@ import axios from "axios";
 import {
   faWifi,
   faPlaneDeparture,
-  faUser,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
-import { getBookingByOwner } from "../../api/bookingAPI";
 
-function Payment() {
-  const [location, setLocation] = useState("");
-  const [checkInDate,setCheckInDate] = useState("");
-  const [checkOutDate,setCheckOutDate] = useState("");
-  const [hotelName,setHotelName] = useState("");
-  const [totalPrice,setTotalPrice] = useState(0);
-  const [adults,setAdults] = useState("");
-  const [child,setChild] = useState("");
-  const [room,setRoom] = useState("");
+function Payment(
   
+  /*  address(chỗ này gửi được chuỗi đầy đủ như này luôn thì tốt "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam")
+      hotelName
+      checkInDate()
+      checkOutDate()
+      totalPrice(số tiền: ví dụ: 4000000)
+      capacity {
+        adults: (số lượng),
+        childs: {
+          count: (số lg),
+          age: (tuổi)
+        }
+      }
+      room(Mảng)
+      totalNight(số lượng: ví dụ:2)
+      review: {
+        total: (số lượng nhận xét)
+        point: (số điểm)
+        desc: (mô tả)
+      }
+
+  */
+) {
+
+  const [hasChild, setHasChild] = useState(false);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);  // Chuyển đổi chuỗi thành đối tượng Date
+  
+    // Các tùy chọn cho định dạng
+    const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+  
+    // Sử dụng toLocaleDateString để định dạng ngày
+    return date.toLocaleDateString('en-GB', options);  // Dùng 'en-GB' để có thứ ngày bằng tiếng Anh
+  };
+  
+
   const [errorPayment, setErrorPayment] = useState(
     "Please fill in your last name",
   );
 
-  useEffect(() => {
-    getData();
-    
-  },[])
-
-  async function getData() {
-    try {
-        const data = await getBookingByOwner('672f7626c4ad709978b765b3');
-        console.log(data[1]); // Đây là kết quả cuối cùng bạn muốn
-        const {province,district,ward,street } = data[1].propertyDetails.address;
-        setLocation(`${street}, ${ward}, ${district}, ${province}`);
-        
-    } catch (error) {
-        console.error(error);
+  const inforOfPayment = {
+    hotelName: "Nicecy NganHa Hotel",
+    address: "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam",
+    checkInDate: "2024-11-21",
+    checkOutDate: "2024-11-26",
+    totalNight: 5,
+    room: [1, 2],
+    capacity: {
+      adults: 2,
+      childs: {
+        count: 1,
+        age: 12
+      }
+    },
+    totalPrice: 4000000,
+    review: {
+      total: 141,
+      point: "4.0",
+      desc: "Good"
     }
-}
+  }
+
+useEffect(() => {
+  if (inforOfPayment.capacity.childs.count !== 0) {
+    setHasChild(true);
+  } else {
+    setHasChild(false);
+  }
+},[]);
+
+
 
   const [formData, setFormData] = useState({
     firstname: "",
@@ -91,19 +131,19 @@ function Payment() {
         <div className="paymentContainer">
           <div className="leftContent">
             <div className="bookingInformation">
-              <h3>Qcub1 Homestay</h3>
+              <h3>{inforOfPayment.hotelName}</h3>
               <div className="address">
-                57/13 Bùi Viện, District 1, Ho Chi Minh City, Vietnam
+                {inforOfPayment.address}
               </div>
-              <span>Excellent location — 9.0</span>
+              <span>{inforOfPayment.review.desc} Location</span>
               <div className="infoEvaluation">
                 <div className="infoScore">
-                  <div>5.0</div>
+                  <div>{inforOfPayment.review.point}</div>
                 </div>
 
                 <div className="infoRating">
-                  <div className="infoComment">Excellent</div>
-                  <div className="infoReview">141 reviews</div>
+                  <div className="infoComment">{inforOfPayment.review.desc}</div>
+                  <div className="infoReview">{inforOfPayment.review.total} reviews</div>
                 </div>
               </div>
 
@@ -128,25 +168,31 @@ function Payment() {
               <div className="timeBooking">
                 <div className="checkIn">
                   <div className="checkInTitle">Check-in</div>
-                  <div className="checkInTime">Wed 20 Nov 2024</div>
+                  <div className="checkInTime">{formatDate(inforOfPayment.checkInDate)}</div>
                   <div className="checkInFrom">From 14:00</div>
                 </div>
 
                 <div className="checkOut">
                   <div className="checkOutTitle">Check-out</div>
-                  <div className="checkOutTime">Fri 22 Nov 2024</div>
+                  <div className="checkOutTime">{formatDate(inforOfPayment.checkOutDate)}</div>
                   <div className="checkOutUntil">Until 11:00</div>
                 </div>
               </div>
               <div className="lengthStay">
                 <div className="lengthStayTitle">Total length of stay:</div>
-                <div className="totalNight">2 nights</div>
+                <div className="totalNight">{inforOfPayment.totalNight} nights</div>
               </div>
 
               <div className="selected">
                 <div className="selectedTitle">You selected</div>
 
-                <div className="mySelected">2 rooms for 2 adults</div>
+                {hasChild === true ? (
+                  <div className="mySelected">{inforOfPayment.room.length} rooms for {inforOfPayment.capacity.adults} adults, {inforOfPayment.capacity.childs.count} childs</div>
+                ) : (
+                  <div className="mySelected">{inforOfPayment.room.length} rooms for {inforOfPayment.capacity.adults} adults</div>
+                )
+
+                }
                 <button className="changeSelection">
                   Change your selection{" "}
                 </button>
@@ -157,12 +203,12 @@ function Payment() {
               <h3>Your price summary</h3>
               <div className="totalPrice">
                 <div className="textLeft">Total</div>
-                <div className="textRight">VND 1,360,800</div>
+                <div className="textRight">VND {inforOfPayment.totalPrice.toLocaleString("en-US")}</div>
               </div>
             </div>
           </div>
           <div className="rightContent">
-      
+
             <div className="yourDetails">
               <h3>Enter your details</h3>
               <div className="alert">

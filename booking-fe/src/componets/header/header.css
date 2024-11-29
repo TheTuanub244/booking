@@ -68,7 +68,8 @@
   border-radius: 5px;
   position: absolute;
   bottom: -20px;
-  right:240px;
+  left: 50%; /* Đưa phần tử vào giữa theo chiều ngang */
+  transform: translateX(-50%);
   width: 100%;
   max-width: 1024px;
 }

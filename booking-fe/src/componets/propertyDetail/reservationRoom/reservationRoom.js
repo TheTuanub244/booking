@@ -103,6 +103,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const handleChangeAgeOfChilds = (e) => {
     e.stopPropagation();
     const { value } = e.target;
+    if(value < 0) return;
     setNumberOfGuests((prev) => ({
       ...prev,
       child: {
@@ -246,25 +247,31 @@ const ReservationRoom = ({ roomData, partnerId }) => {
               ></div>
 
               <div className="numberOfGuestInput">
-                <label>Adults: </label>
-                <input
-                  type="number"
-                  name="adults"
-                  value={numberOfGuests.adults}
-                  onChange={(e) => handleChangeNumberOfGuest(e)}
-                />
-                <label>Childs: </label>
-                <input
-                  type="number"
-                  name="child"
-                  value={numberOfGuests.child.count}
-                  onChange={(e) => handleChangeNumberOfGuest(e)}
-                />
+                <div className="numberOfGuestInput-inputLabel">
+                  <label>Adults: </label>
+                  <input
+                    
+                    type="number"
+                    name="adults"
+                    value={numberOfGuests.adults}
+                    onChange={(e) => handleChangeNumberOfGuest(e)}
+                  />
+                </div>
+                
+                <div className="numberOfGuestInput-inputLabel">
+                  <label>Childs: </label>
+                  <input
+                    type="number"
+                    name="child"
+                    value={numberOfGuests.child.count}
+                    onChange={(e) => handleChangeNumberOfGuest(e)}
+                  />
+                </div>
+                
                 {numberOfGuests.child.count > 0 && (
-                  <>
+                  <div className="numberOfGuestInput-inputLabel">
                     <label>Childs Age: </label>
-                    <div className="childAgeInput">
-                      <input
+                    <input
                         type="number"
                         name={`childAge`}
                         value={numberOfGuests.child.age}
@@ -272,9 +279,10 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                           handleChangeAgeOfChilds(e);
                         }}
                       />
-                    </div>
-                  </>
+                  </div>
                 )}
+                <button className="finishChoosing" onClick={(e) => {e.stopPropagation();
+                  setNumberOfGuestInput(false);}}>Done</button>
               </div>
             </>
           )}
@@ -309,7 +317,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
                       setModalRoom={(room) => {
-                        setModalRoom(room.room);
+                        setModalRoom(room);
                         setIsModalOpen(true);
                       }}
                     />

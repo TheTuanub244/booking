@@ -253,6 +253,7 @@ export class BookingService {
     }
     const newBooking = new this.bookingSchema(createBookingDto);
     const savedBooking = await newBooking.save();
+
     await Promise.all(
       createBookingDto.roomData.map(async (room) => {
         await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
@@ -260,6 +261,12 @@ export class BookingService {
             room_id: room.roomId,
           },
         });
+        await this.roomSchema.findByIdAndUpdate(
+          room.roomId,
+          {
+            $inc: {'capacity.room': parseInt(room.numberOfRooms)}
+          }
+        )
       }),
     );
 
@@ -300,6 +307,15 @@ export class BookingService {
       );
       return savedBooking;
     }
+  }
+  async checkFullRoom(room_id: string){
+    const findFullRoom = await this.roomSchema.findById(room_id)
+    if(findFullRoom){
+      if(findFullRoom.capacity.room > 0){
+        return false;
+      }
+    }
+    return true
   }
   async findConflictingBookings(
     property: mongoose.Types.ObjectId,

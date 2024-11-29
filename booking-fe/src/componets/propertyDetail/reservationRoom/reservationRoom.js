@@ -18,7 +18,10 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const [checkOutDate, setCheckOutDate] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState({
     adults: 0,
-    child: [],
+    childs: {
+      count: 0,
+      age: 0
+    },
   });
   
   const [numberOfNights, setNumberOfNights] = useState(3);
@@ -56,6 +59,12 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     const totalNights = calculateNights(check_in, check_out)
     setNumberOfNights(totalNights)
   }, [])
+  useEffect(() => {
+    console.log(numberOfGuests);
+    console.log(checkInDate);
+    console.log(checkOutDate);
+    
+  }, [numberOfGuests, checkInDate, checkOutDate])
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Reservation Details:", {
@@ -77,27 +86,26 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           [name]: value,
         };
       } else if (name === "child") {
-        if (e.target.value < prev.child.length) {
-          prev.child.pop();
-        } else {
-          prev.child.push({
-            index: prev.child.length,
-            age: 0,
-          });
+        return {
+          ...prev,
+          childs:{
+            ...prev.childs,
+            count: value
+          }
         }
-        return { ...prev };
       }
     });
   };
 
-  const handleChangeAgeOfChilds = (e, i) => {
+  const handleChangeAgeOfChilds = (e) => {
     e.stopPropagation();
     const { value } = e.target;
     setNumberOfGuests((prev) => ({
       ...prev,
-      child: prev.child.map((child) =>
-        child.index === i ? { ...child, age: Number(value) } : child,
-      ),
+      childs: {
+        ...prev.childs,
+        age: value
+      }
     }));
   };
 
@@ -129,17 +137,17 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     try{
       
       const option = JSON.parse(localStorage.getItem('option'))
-      await createBooking(
-        userId,
-        partnerId,
-        roomData[0].room.property_id._id,
-        selectedRoom,
-        option.capacity,
-        option.check_in,
-        option.check_out,
-        totalPrice,
-        accessToken
-      );
+      // await createBooking(
+      //   userId,
+      //   partnerId,
+      //   roomData[0].room.property_id._id,
+      //   selectedRoom,
+      //   option.capacity,
+      //   option.check_in,
+      //   option.check_out,
+      //   totalPrice,
+      //   accessToken
+      // );
     } catch(err){
       console.log(err);
       if(err.response.status === 401){
@@ -223,7 +231,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
           }}
         >
           {numberOfGuests &&
-            `${numberOfGuests.adults} Adults + ${numberOfGuests.child.length} Childs`}
+            `${numberOfGuests.adults} Adults + ${numberOfGuests.childs.count} Childs`}
           {numberOfGuestInput && (
             <>
               <div
@@ -246,24 +254,22 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                 <input
                   type="number"
                   name="child"
-                  value={numberOfGuests.child.length}
+                  value={numberOfGuests.childs.count}
                   onChange={(e) => handleChangeNumberOfGuest(e)}
                 />
-                {numberOfGuests.child.length > 0 && (
+                {numberOfGuests.childs.count > 0 && (
                   <>
                     <label>Childs Age: </label>
                     <div className="childAgeInput">
-                      {numberOfGuests.child.map((child) => (
-                        <input
+                      {numberOfGuests.childs.count > 0 && 
+                        (<input
                           type="number"
-                          key={child.index}
-                          name={`childAge ${child.index}`}
-                          value={child.age}
+                          value={numberOfGuests.childs.age}
                           onChange={(e) => {
-                            handleChangeAgeOfChilds(e, child.index);
+                            handleChangeAgeOfChilds(e);
                           }}
-                        />
-                      ))}
+                        />)
+                      }
                     </div>
                   </>
                 )}

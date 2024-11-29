@@ -95,4 +95,13 @@ export class RoomController {
       data.check_in,
     );
   }
+  @Post('findRoomInReservation')
+  async findRoomInReservation(@Body() data: any) {
+    return this.roomService.findRoomInReservation(
+      data.property_id,
+      data.capacity,
+      data.check_in_date,
+      data.check_out_date,
+    );
+  }
 }

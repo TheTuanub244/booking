@@ -18,31 +18,39 @@ function ReservationRoom_item({
     setIsModalOpen(true);
     setModalRoom(room);
   };
+  
   const check_in_date = JSON.parse(localStorage.getItem('option')).check_in
   const check_out_date = JSON.parse(localStorage.getItem('option')).check_out
 
   const handleSelectedRoom = (e) => {
     const { value, name } = e.target;
+    const numberOfRooms = Number(value);
+  
     setSelectedRoom((prev) => {
       const existingRoomIndex = prev.findIndex((room) => room.roomId === name);
-
+  
       if (existingRoomIndex !== -1) {
-        console.log(value);
-        
-        // Create a new array with the updated room count
+        if (numberOfRooms === 0) {
+          
+          return prev.filter((room) => room.roomId !== name);
+        }
+  
         return prev.map((room, index) =>
           index === existingRoomIndex
-            ? { ...room, numberOfRooms: value }
-            : room,
+            ? { ...room, numberOfRooms }
+            : room
         );
       } else {
-        
-        // Add a new room entry
+        if (numberOfRooms === 0) {
+          
+          return prev;
+        }
+  
         return [
           ...prev,
           {
-            roomId: name, 
-            numberOfRooms: value,
+            roomId: name,
+            numberOfRooms,
           },
         ];
       }

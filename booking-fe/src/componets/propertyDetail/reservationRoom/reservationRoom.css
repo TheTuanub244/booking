@@ -60,8 +60,23 @@
   z-index: 101;
   background-color: white;
   padding: 20px;
-  border: 1px solid;
   border-radius: 10px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.numberOfGuestInput-inputLabel {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding-bottom: 10%
+}
+
+.numberOfGuestInput-inputLabel > input {
+  max-width: 50%;
 }
 
 .blockInput {
@@ -87,11 +102,37 @@
   background-color: white;
 }
 
+.checkIn-input {
+  flex: 1; /* Allow inputs to take available space */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 4px; /* Slightly rounded corners */
+  margin-right: 15px; /* Space between inputs */
+  font-size: 16px; /* Larger font size for readability */
+  background-color: white;
+}
+
 .reservation-details input[type="date"]:last-of-type,
 .reservation-details input[type="number"],
 .reservation-details input[type="text"],
 .guestInput :last-of-type {
   margin-right: 0; /* Remove margin from the last input */
+}
+
+
+
+.dateInput {
+  position: relative;
+  
+}
+
+.reservation-date {
+  position: absolute;
+  z-index: 101;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  top: 20px;
+  right: 50%;
 }
 
 .reservation-details .update {

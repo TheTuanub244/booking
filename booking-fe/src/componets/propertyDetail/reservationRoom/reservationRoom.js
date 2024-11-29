@@ -8,6 +8,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { createBooking } from "../../../api/bookingAPI";
 import { Button, Modal } from "react-bootstrap";
 import { calculateNights } from "../../../helpers/dateHelpers";
+import { formatCurrency } from "../../../helpers/currencyHelpers";
+import moment from "moment";
 
 const ReservationRoom = ({ roomData, partnerId }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
@@ -34,7 +36,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
 
   const [showModal, setShowModal] = useState(false)
 
-
+  const [totalPrice, setTotalPrice] = useState(0)
   const userId = localStorage.getItem("userId");
   const accessToken = localStorage.getItem("accessToken")
   const closeModal = () => {
@@ -45,6 +47,12 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     const check_in = JSON.parse(localStorage.getItem('option')).check_in
     const check_out = JSON.parse(localStorage.getItem('option')).check_out
 
+    const formattedCheckIn = (new Date(check_in)).toISOString().split('T')[0];
+    const formattedCheckOut = (new Date(check_out)).toISOString().split('T')[0];
+
+    setCheckInDate(formattedCheckIn)
+    setCheckOutDate(formattedCheckOut)
+    
     const totalNights = calculateNights(check_in, check_out)
     setNumberOfNights(totalNights)
   }, [])
@@ -94,6 +102,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   };
 
   const handleChangeDate = (e) => {
+    
     let date1, date2;
     if (e.target.id === "checkIn") {
       setCheckInDate(e.target.value);
@@ -109,7 +118,6 @@ const ReservationRoom = ({ roomData, partnerId }) => {
 
       setCheckOutDate(e.target.value);
     }
-    console.log(date1);
     let miliseconds = Math.abs(date2 - date1);
     let days = miliseconds / (1000 * 60 * 60 * 24);
 
@@ -119,21 +127,25 @@ const ReservationRoom = ({ roomData, partnerId }) => {
 
   const handleReserveClick = async () => {
     try{
+      
+      const option = JSON.parse(localStorage.getItem('option'))
       await createBooking(
         userId,
         partnerId,
-        "67349f6d8e44839e850b6366",
-        "67131b83495dc248e2715e5f",
+        roomData[0].room.property_id._id,
+        selectedRoom,
+        option.capacity,
+        option.check_in,
+        option.check_out,
+        totalPrice,
         accessToken
       );
     } catch(err){
       console.log(err);
-      
       if(err.response.status === 401){
         setShowModal(true)
       }
     }
-
   };
   const handleCloseModal = async () => {
     setShowModal(false);
@@ -162,7 +174,6 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     localStorage.setItem("redirectPath", location.pathname);
     navigate("/login");
   };
-
   return (
     <div className="ReservationForm">
       <Modal
@@ -284,7 +295,9 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                       key={room.room._id}
                       room={room.room}
                       totalPrice={room.totalPriceNight}
+                      selectedRoom={selectedRoom}
                       numberOfNights={numberOfNights}
+                      setTotalPrice={setTotalPrice}
                       setSelectedRoom={setSelectedRoom}
                       setIsModalOpen={setIsModalOpen}
                       setModalRoom={(room) => {
@@ -299,6 +312,7 @@ const ReservationRoom = ({ roomData, partnerId }) => {
                       room={room}
                       numberOfNights={numberOfNights}
                       setSelectedRoom={setSelectedRoom}
+                      setTotalPrice={setTotalPrice}
                       setIsModalOpen={setIsModalOpen}
                       setModalRoom={(room) => {
                         setModalRoom(room);
@@ -309,7 +323,11 @@ const ReservationRoom = ({ roomData, partnerId }) => {
             </tbody>
           </table>
         </div>
+        
         <div className="reserveButton">
+          <div>
+            <h2>Total Price: {formatCurrency(totalPrice)}</h2>
+          </div>
           <button className="reserve" onClick={handleReserveClick}>
             Reserve Now
           </button>

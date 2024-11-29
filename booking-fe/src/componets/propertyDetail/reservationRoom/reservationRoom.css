@@ -18,6 +18,7 @@
   list-style: none;
 }
 .reserveButton .reserve:hover {
+ 
   background-color: #003b95;
 }
 .table-responsive {
@@ -108,9 +109,9 @@
 
 .reserveButton {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  width: 100%;
+  width: 40%;
+  flex-direction: column;
+  right: 10px;
   margin-top: 20px;
 }
 
@@ -122,6 +123,7 @@
   border-radius: 4px; /* Slightly rounded corners */
   font-size: 16px; /* Larger font size for button */
   cursor: pointer; /* Pointer cursor on hover */
+  width: 50%;
   transition: background-color 0.3s; /* Smooth transition */
 }
 .update:hover {

@@ -19,7 +19,7 @@ import { ObjectId } from 'mongoose';
 import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 
 @Controller('booking')
-@UseGuards(ValidateTokenGuard, RolesGuard)
+// @UseGuards(ValidateTokenGuard, RolesGuard)
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
   @Post('createBooking')
@@ -71,5 +71,9 @@ export class BookingController {
   @Get(`/findUnfinishedBooking/:userId`)
   async findUnfinishedBooking(@Param('userId') userId: string) {
     return this.bookingService.findUnfinishedBooking(userId);
+  }
+  @Post('/calculateTotalNightPriceForReservation')
+  async calculateTotalNightPriceForReservation(@Body() data: any) {
+    return this.bookingService.calculateTotalNightPriceForReservation(data);
   }
 }

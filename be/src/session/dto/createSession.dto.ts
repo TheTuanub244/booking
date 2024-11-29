@@ -5,7 +5,7 @@ export class CreateSessionDto {
   userId: string;
   uid: string;
   lastViewProperties: ObjectId[];
-  lastBooking: ObjectId;
+  lastBooking: ObjectId[];
   recent_search: {
     province: string;
     check_in: Date;

@@ -19,10 +19,10 @@ export class Session {
   lastViewProperties: Property[];
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'Booking',
   })
-  lastBooking: Booking;
+  lastBooking: Booking[];
   @Prop({
     type: [
       {

@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./reservationRoom_items.css";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
+import { calculateTotalNightPriceForReservation } from "../../../api/bookingAPI";
+import { useLocation } from "react-router-dom";
 
 function ReservationRoom_item({
   room,
   totalPrice,
   numberOfNights,
+  setTotalPrice,
   setSelectedRoom,
+  selectedRoom,
   setIsModalOpen,
   setModalRoom,
 }) {
@@ -14,14 +18,17 @@ function ReservationRoom_item({
     setIsModalOpen(true);
     setModalRoom(room);
   };
+  const check_in_date = JSON.parse(localStorage.getItem('option')).check_in
+  const check_out_date = JSON.parse(localStorage.getItem('option')).check_out
 
   const handleSelectedRoom = (e) => {
     const { value, name } = e.target;
     setSelectedRoom((prev) => {
       const existingRoomIndex = prev.findIndex((room) => room.roomId === name);
 
-      // If room exists, update its numberOfRooms; otherwise, add a new entry
       if (existingRoomIndex !== -1) {
+        console.log(value);
+        
         // Create a new array with the updated room count
         return prev.map((room, index) =>
           index === existingRoomIndex
@@ -29,17 +36,25 @@ function ReservationRoom_item({
             : room,
         );
       } else {
+        
         // Add a new room entry
         return [
           ...prev,
           {
-            roomId: name, // Store roomId as a string
+            roomId: name, 
             numberOfRooms: value,
           },
         ];
       }
     });
   };
+  useEffect(() => {
+    const calculateTotalNightPrice = async () => {
+      const response = await calculateTotalNightPriceForReservation(selectedRoom, check_in_date, check_out_date)
+      setTotalPrice(response)
+    }
+    calculateTotalNightPrice()
+  }, [selectedRoom])
   return (
     <tr key={room._id}>
       <td>

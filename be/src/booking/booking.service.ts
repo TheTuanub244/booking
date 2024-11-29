@@ -145,6 +145,32 @@ export class BookingService {
     await booking[0].save();
     return true;
   }
+  async calculateTotalNightPriceForReservation(booking: any) {
+    let totalNightPrice = 0;
+    const checkInDate = new Date(booking.check_in_date);
+    const checkOutDate = new Date(booking.check_out_date);
+    await Promise.all(
+      booking.rooms.map(async (room) => {
+        const findRoom = await this.roomSchema.findById(room.roomId);
+        const pricePerNightWeekday = findRoom.price_per_night.weekday;
+        const pricePerNightWeekend = findRoom.price_per_night.weekend;
+
+        const currentDate = new Date(checkInDate);
+        while (currentDate < checkOutDate) {
+          const dayOfWeek = currentDate.getDay();
+          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+          totalNightPrice += isWeekend
+            ? pricePerNightWeekend
+            : pricePerNightWeekday;
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+        if (parseInt(room.numberOfRooms) > 0) {
+          totalNightPrice *= parseInt(room.numberOfRooms);
+        }
+      }),
+    );
+    return totalNightPrice;
+  }
   async calculateTotalNightPrice(booking: any) {
     const findRoomPromotion =
       await this.promotionService.findRoomPromotionForBooking(booking.room_id);
@@ -213,57 +239,67 @@ export class BookingService {
     return totalNightPrice;
   }
   async createBooking(createBookingDto: any) {
-    const customerId = createBookingDto.customerId;
-    // const totalNightPrice =
-    //   await this.calculateTotalNightPrice(createBookingDto);
+    const customerId = createBookingDto.user_id;
 
-    // const newBooking = new this.bookingSchema(createBookingDto);
-    // const savedBooking = await newBooking.save();
-    
     const findExistedBooking = await this.bookingSchema
       .findOne({
         user_id: new Types.ObjectId(customerId),
       })
       .populate('user_id');
-
-    if (findExistedBooking.booking_status === BookingStatus.PENDING) {
-      throw new BadRequestException('');
+    if (findExistedBooking) {
+      if (findExistedBooking.booking_status === BookingStatus.PENDING) {
+        throw new BadRequestException('');
+      }
     }
-    const findPartnerId = await this.roomSchema
-      .findOne({
-        property_id: createBookingDto.property_id,
-      })
-      .populate('property_id');
-    const partnerId = findPartnerId.property_id.owner_id;
-    const message = `Your property ${findPartnerId.property_id.name} has been booked by ${findExistedBooking.user_id.email}`;
-    await this.notificationService.createNotification({
-      sender_id: new Types.ObjectId(customerId),
-      receiver_id: partnerId,
-      booking_id: new Types.ObjectId(createBookingDto.booking_id),
-      type: 'Booking',
-      message,
-    });
-    this.notificationGateway.sendNotificationToPartner(
-      createBookingDto.partnerId.toString(),
-      message,
+    const newBooking = new this.bookingSchema(createBookingDto);
+    const savedBooking = await newBooking.save();
+    await Promise.all(
+      createBookingDto.roomData.map(async (room) => {
+        await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
+          $addToSet: {
+            room_id: room.roomId,
+          },
+        });
+      }),
     );
 
-    // await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
-    //   total_price: totalNightPrice,
-    // });
-    // await this.sessionSchema.findOneAndUpdate(
-    //   {
-    //     userId: createBookingDto.user_id,
-    //   },
-    //   {
-    //     $set: {
-    //       data: {
-    //         lastBooking: savedBooking._id,
-    //       },
-    //     },
-    //   },
-    // );
-    // return savedBooking;
+    if (savedBooking) {
+      const findPartnerId = await this.roomSchema
+        .findOne({
+          property_id: createBookingDto.property,
+        })
+        .populate({
+          path: 'property_id',
+          populate: 'owner_id',
+        });
+      const partnerId = findPartnerId.property_id.owner_id;
+      const message = `Your property ${findPartnerId.property_id.name} has been booked by ${findPartnerId.property_id.owner_id.email}`;
+      await this.notificationService.createNotification({
+        sender_id: new Types.ObjectId(customerId),
+        receiver_id: partnerId,
+        booking_id: new Types.ObjectId(savedBooking._id),
+        type: 'Booking',
+        message,
+      });
+      this.notificationGateway.sendNotificationToPartner(
+        createBookingDto.partnerId.toString(),
+        message,
+      );
+      await this.bookingSchema.findByIdAndUpdate(savedBooking._id, {
+        total_price: createBookingDto.totalPrice,
+      });
+      await this.sessionSchema.findOneAndUpdate(
+        {
+          userId: createBookingDto.user_id,
+        },
+        {
+          $addToSet: {
+            lastBooking: savedBooking._id,
+          },
+        },
+      );
+      return savedBooking;
+    }
   }
   async findConflictingBookings(
     property: mongoose.Types.ObjectId,

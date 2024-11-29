@@ -196,7 +196,7 @@ export class UserService {
           userId: existEmail._id.toString(),
           uid: null,
           lastViewProperties: [],
-          lastBooking: null,
+          lastBooking: [],
           recent_search: [],
         });
         console.log(newSession);

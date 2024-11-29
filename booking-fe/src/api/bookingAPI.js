@@ -28,20 +28,25 @@ export const getBooking = async (id, status) => {
   return respone.data;
 };
 export const createBooking = async (
-  customerId,
+  user_id,
   partnerId,
-  booking_id,
-  property_id,
+  property,
+  roomData,
+  capacity,
+  check_in_date,
+  check_out_date,
+  totalPrice,
   token
 ) => {
+  
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/booking/createBooking`,
-    { customerId, partnerId, booking_id, property_id },
+    { user_id, partnerId, property, roomData, capacity, check_in_date,  check_out_date, totalPrice },
     {
       headers: {
-        Authorization: `Bearer ${token}`, // Thêm token vào header
+        Authorization: `Bearer ${token}`, 
       },
-      withCredentials: true, // Giữ cookie nếu cần
+      withCredentials: true, 
     }
   );
   return respone.data;
@@ -59,6 +64,19 @@ export const findUnfinishedBooking = async (userId) => {
 export const getBookingByOwner = async (userId) => {
   const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/booking/getBookingByOwner/${userId}`,
+    {
+      withCredentials: true,
+    },
+  );
+
+  return respone.data;
+}
+export const calculateTotalNightPriceForReservation = async (rooms, check_in_date, check_out_date) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/booking/calculateTotalNightPriceForReservation`,
+    {
+      rooms, check_in_date, check_out_date
+    },
     {
       withCredentials: true,
     },

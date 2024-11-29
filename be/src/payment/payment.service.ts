@@ -20,7 +20,8 @@ export class PaymentService {
   }
 
   async savePayment(data: any) {
-    const username = data.username;
+    const firstname = data.firstname;
+    const lastname = data.lastname;
     const transactionCode = data.transactionCode;
     const transactionTime = data.transactionTime;
     const price = data.price;
@@ -31,14 +32,14 @@ export class PaymentService {
     const email = data.email;
 
     const subject = 'Thông báo giao dịch thành công';
-    const text = `Kính gửi anh/chị ${username},
+    const text = `Kính gửi anh/chị ${firstname} ${lastname},
 
 Chúng tôi vui mừng thông báo giao dịch thanh toán của anh/chị đã được xử lý thành công.
 
 Thông tin giao dịch:
 - Mã giao dịch: ${transactionCode}
 - Thời gian thanh toán: ${transactionTime}
-- Số tiền thanh toán: ${price.toLocaleString('vi-VN')} VND
+- Số tiền thanh toán: ${price} VND
 - Phương thức thanh toán: Thẻ ATM - Tài khoản ngân hàng nội địa 
 
 Thông tin đặt phòng:
@@ -113,7 +114,7 @@ Trân trọng cảm ơn,
       <h1>Thông báo giao dịch thành công</h1>
     </div>
     <div class="content">
-      <p>Kính gửi anh/chị <strong>${username}</strong>,</p>
+      <p>Kính gửi anh/chị <strong>${firstname} ${lastname}</strong>,</p>
       <p>Chúng tôi vui mừng thông báo giao dịch thanh toán của anh/chị đã được xử lý thành công.</p>
       <h2>Thông tin giao dịch:</h2>
       <p><strong>Mã giao dịch:</strong> ${transactionCode}</p>
@@ -135,5 +136,6 @@ Trân trọng cảm ơn,
 </body>
 </html>`;
     await this.gmailService.sendEmail(email, subject, text, html);
+    return { message: 'Gửi email thành công' };
   }
 }

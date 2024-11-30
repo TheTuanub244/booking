@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { redirect, useLocation, useNavigate } from "react-router-dom";
 import "./resultPayment.css";
 import axios from "axios";
+import moment from 'moment';
 
 function ResultPayment() {
   const location = useLocation(); // Lấy thông tin URL hiện tại
@@ -13,25 +14,73 @@ function ResultPayment() {
   const transactionStatus = queryParams.get("vnp_TransactionStatus");
   const payDate = queryParams.get("vnp_PayDate");
   const transactionCode = queryParams.get("vnp_TxnRef");
-  const email = localStorage.getItem("email");
+  const overViewData = JSON.parse(localStorage.getItem("overViewData"));
+  const { email, firstName, lastName, bookingId, checkInDate, checkOutDate, address, hotelName } = overViewData;
+  const [paymentMethod,setPaymentMethod] = useState("");
+  const bankCode = queryParams.get("vnp_BankCode");
+
   const [message, setMessage] = useState(true);
+  const formatDateTime = (dateTimeString) => {
+    const year = dateTimeString.slice(0, 4);
+    const month = dateTimeString.slice(4, 6);
+    const day = dateTimeString.slice(6, 8);
+    const hours = dateTimeString.slice(8, 10);
+    const minutes = dateTimeString.slice(10, 12);
+    const seconds = dateTimeString.slice(12, 14);
+
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+  };
+
+  const dateString = "20241125191328";
+  const date = moment(dateString, "YYYYMMDDHHmmss").toDate();
+
   useEffect(() => {
+    if (bankCode === "VISA") {
+      setPaymentMethod("Thanh toán qua thẻ quốc tế");
+    } else if (bankCode === "VNMART") {
+      setPaymentMethod("Thanh toán qua ví điện tử VNMART");
+    } else {
+      setPaymentMethod("Thanh toán qua thẻ ngân hàng nội địa");
+    }
+
+
     if (transactionStatus === "00") {
-      const data = {
-        booking_id:"",
-        amount:amount,
-        payment_method: "Thanh toán bằng thẻ ATM",
-        paymentCode:transactionCode,
-        paymentDate:"2021-12-20"
+      const paymentData = {
+        booking_id: bookingId,
+        amount: amount,
+        payment_method: paymentMethod,
+        paymentCode: transactionCode,
+        paymentDate: moment(payDate, "YYYYMMDDHHmmss").toDate()
+      }
+
+      const emailData = {
+        firstname: firstName,
+        lastname: lastName,
+        transactionCode: transactionCode,
+        transactionTime: formatDateTime(payDate),
+        price: amount.toLocaleString("en-US"),
+        checkInDate: checkInDate,
+        checkOutDate: checkOutDate,
+        email: email,
+        hotelName: hotelName,
+        address: address
       }
 
       axios
-      .post(`${process.env.REACT_APP_API_URL}/payment/create_payment`, data)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => console.log(err));
-   
+        .post(`${process.env.REACT_APP_API_URL}/payment/create_payment`, paymentData)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => console.log(err));
+
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => console.log(err));
+
+
       setMessage(true);
     } else {
       setMessage(false);
@@ -67,7 +116,7 @@ function ResultPayment() {
               </tr>
               <tr>
                 <td>Số tiền được thanh toán</td>
-                <td>{amount}</td>
+                <td>{amount.toLocaleString("en-US")} VND</td>
               </tr>
               <tr>
                 <td>Mã giao dịch</td>
@@ -76,7 +125,7 @@ function ResultPayment() {
 
               <tr>
                 <td>Thời gian giao dịch</td>
-                <td>{payDate}</td>
+                <td>{formatDateTime(payDate)}</td>
               </tr>
             </tbody>
           </table>

@@ -9,8 +9,8 @@ export class Payment {
   booking_id: Booking;
   @Prop({ required: true })
   amount: number;
-  @Prop({ required: true, enum: PaymentMethod })
-  payment_method: PaymentMethod;
+  @Prop({ required: true })
+  payment_method: string;
   @Prop({ require: true })
   paymentCode: string;
   @Prop({ require: true, type: Date })

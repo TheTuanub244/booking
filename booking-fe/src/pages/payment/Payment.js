@@ -3,6 +3,7 @@ import "./payment.css";
 import Navbar from "../../componets/navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import { createBooking } from "../../api/bookingAPI";
 import {
   faWifi,
   faPlaneDeparture,
@@ -10,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Payment(
-  
+  //object 
   /*  address(chỗ này gửi được chuỗi đầy đủ như này luôn thì tốt "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam")
       hotelName
       checkInDate()
@@ -23,14 +24,15 @@ function Payment(
           age: (tuổi)
         }
       }
-      room(Mảng)
+      roomData(Mảng)
       totalNight(số lượng: ví dụ:2)
       review: {
         total: (số lượng nhận xét)
         point: (số điểm)
         desc: (mô tả)
       }
-
+    parterId: (id)
+    property:(id)
   */
 ) {
 
@@ -69,7 +71,10 @@ function Payment(
       total: 141,
       point: "4.0",
       desc: "Good"
-    }
+    },
+    property: "",
+    partnerId:""
+    
   }
 
 useEffect(() => {
@@ -87,7 +92,6 @@ useEffect(() => {
     lastname: "",
     email: "",
     phone: "",
-    country: "",
     amount: 0,
     bankCode: "",
     language: "vn",
@@ -102,8 +106,30 @@ useEffect(() => {
   };
 
   const handleSubmit = (e) => {
+    
     localStorage.setItem("email", formData.email);
+
     console.log(formData);
+    const user_id = localStorage.getItem("userId");
+    const token = localStorage.getItem("accessToken");
+
+    // const booking = createBooking(user_id,inforOfPayment.partnerId,inforOfPayment.property,inforOfPayment.room,inforOfPayment.capacity,inforOfPayment.checkInDate,inforOfPayment.checkOutDate,inforOfPayment.totalPrice,token);
+    // console.log(booking);
+    // const overViewData = {
+    //   bookingId:booking._id,
+    //   email:formData.email,
+    //   firstName: formData.firstname,
+    //   lastName: formData.lastname,
+    //   address:inforOfPayment.address,
+    //   hotelName:inforOfPayment.hotelName,
+    //   checkInDate:inforOfPayment.checkInDate,
+    //   checkOutDate:inforOfPayment.checkOutDate,
+
+    // }
+
+    // localStorage.setItem('overViewData',JSON.stringify(overViewData));
+
+
     axios
       .post(`${process.env.REACT_APP_API_URL}/payment/create_transaction`, formData)
       .then((res) => {
@@ -112,18 +138,7 @@ useEffect(() => {
       .catch((err) => console.log(err));
   };
 
-  const [country, setCountry] = useState([
-    { name: "Vietnam" },
-    { name: "Turkey" },
-    { name: "United States" },
-    { name: "Canada" },
-    { name: "Australia" },
-    { name: "Germany" },
-    { name: "France" },
-    { name: "Japan" },
-    { name: "South Korea" },
-    { name: "India" },
-  ]);
+
   return (
     <div>
       <Navbar />
@@ -270,22 +285,7 @@ useEffect(() => {
                     required
                   />
 
-                  <label>
-                    Country/Region<span className="required">*</span>
-                  </label>
-                  <select
-                    className="country"
-                    name="country"
-                    onChange={handleChange}
-                  >
-                    {country.map((index) => (
-                      <option value={index.name} data-code={index.code}>
-                        {index.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  <label for="amount">Số tiền</label>
+                  <label for="amount">Số tiền<span className="required">*</span></label>
                   <input
                     class="form-control"
                     data-val="true"
@@ -297,7 +297,7 @@ useEffect(() => {
                     onChange={handleChange}
                   />
 
-                  <label for="bankcode">Ngân hàng</label>
+                  <label for="bankcode">Phương thức thanh toán</label>
                   <select
                     name="bankCode"
                     id="bankcode"
@@ -305,9 +305,8 @@ useEffect(() => {
                     onChange={handleChange}
                   >
                     <option value="">Không chọn </option>
-                    <option value="JCB">JCB</option>
-                    <option value="UPI">UPI</option>
-                    <option value="VIB">VIB</option>
+                    <option value="VNMART"> Vi dien tu VnMart</option>
+                    <option value="VISA">VISA</option>
                     <option value="VIETCAPITALBANK">VIETCAPITALBANK</option>
                     <option value="SCB">Ngan hang SCB</option>
                     <option value="NCB">Ngan hang NCB</option>
@@ -315,7 +314,6 @@ useEffect(() => {
                     <option value="EXIMBANK">Ngan hang EximBank </option>
                     <option value="MSBANK">Ngan hang MSBANK </option>
                     <option value="NAMABANK">Ngan hang NamABank </option>
-                    <option value="VNMART"> Vi dien tu VnMart</option>
                     <option value="VIETINBANK">Ngan hang Vietinbank </option>
                     <option value="VIETCOMBANK">Ngan hang VCB </option>
                     <option value="HDBANK">Ngan hang HDBank</option>
@@ -331,11 +329,10 @@ useEffect(() => {
                     <option value="OCB">Ngan hang OCB </option>
                     <option value="IVB">Ngan hang IVB </option>
                     <option value="SHB">Ngan hang SHB </option>
-                    <option value="APPLEPAY">Apple Pay </option>
-                    <option value="GOOGLEPAY">Google Pay </option>
+    
                   </select>
 
-                  <label for="language">Ngôn ngữ</label>
+                  <label for="language">Ngôn ngữ<span className="required">*</span></label>
                   <select
                     name="language"
                     id="language"

@@ -13,7 +13,7 @@
   border-radius: 50%;
   background-color: rgba(0, 122, 255, 0.4); /* Semi-transparent blue */
   animation: pulse 2s infinite;
-  z-index: -1; /* Places the glow behind the marker */
+  z-index: -1; 
 }
 
 /* The actual marker circle */

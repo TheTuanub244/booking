@@ -3,12 +3,12 @@ import sgMail from '@sendgrid/mail';
 @Injectable()
 export class GmailService {
   constructor() {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY); // Lấy từ file .env
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
 
   async sendEmail(to: string, subject: string, text: string, html: string) {
     const msg = {
-      to: 'tuanub244@gmail.com',
+      to: to,
       from: 'khuatvanviet17@gmail.com', 
       subject,
       text,

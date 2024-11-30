@@ -5,12 +5,14 @@ import "./propertyDetail.css";
 import ReservationRoom from "./reservationRoom/reservationRoom";
 import { getPropertyById } from "../../api/propertyAPI";
 import { findRoomByProperty, getRoomWithPriceByProperty } from "../../api/roomAPI";
+import { getMonthlyRateByProperty } from "../../api/reviewAPI";
 import { updateLastProperties } from "../../api/sessionAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faPlane } from "@fortawesome/free-solid-svg-icons";
 import Map from "../partner/partnerRegister/Map";
 import PropertyReview from "./propertyReview/propertyReview";
 import WriteReview from "./writeReview/writeReview";
+import { convertMonthlyRateData } from "../../function/reviewsFunction";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -23,6 +25,9 @@ const PropertyDetail = () => {
   const infoPrices = useRef(null);
   const overView = useRef(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
+  const [propertyInfo, setPropertyInfo] = useState({
+  });
+  const [reviewInfo, setReviewInfo] = useState(null);
 
   const handleOpenMap = () => {
     setIsMapOpen(true);
@@ -41,6 +46,23 @@ const PropertyDetail = () => {
   }, []);
 
   useEffect(() => {
+    if(propertyData && reviewInfo && location){
+      setPropertyInfo(() => ({
+        hotelName: propertyData[0].room.property_id.name,
+        address: location,
+        property: id,
+        reviews: {
+          total: reviewInfo.count,
+          point: reviewInfo.avarage
+        }
+      }));
+    }
+
+    console.log(propertyInfo);
+      
+  }, [propertyData, reviewInfo, location]);
+
+  useEffect(() => {
     const fetchData = async () => {
       if (id) {
         const pId = id.toString();
@@ -54,7 +76,11 @@ const PropertyDetail = () => {
           const { street, district, province } = data[0].room.property_id.address;
           setLocation(`${street}, ${district}, ${province}`);
 
+          const reviews = await getMonthlyRateByProperty(pId);
 
+          const convertReviews = convertMonthlyRateData(reviews);
+
+          setReviewInfo(convertReviews);
 
 
           setLoading(false);
@@ -319,6 +345,7 @@ const PropertyDetail = () => {
               <ReservationRoom
                 roomData={propertyData}
                 partnerId={propertyData[0].room.property_id.owner_id}
+                propertyInfo={propertyInfo}
               />
             </div>
           )}

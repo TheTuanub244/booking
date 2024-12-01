@@ -99,7 +99,8 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       property: propertyInfo.property
     });
     
-  }, [numberOfGuests, selectedRoom, date])
+  }, [numberOfGuests, selectedRoom, date]);
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -175,11 +176,11 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
     try{
       
       const option = JSON.parse(localStorage.getItem('option'));
+      
+      localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
 
       if(selectedRoom.length > 0) {
-        navigate('/payment', {
-          state: {reservationInfo: reservationInfo}
-        });
+        navigate('/payment');
       }
       
 

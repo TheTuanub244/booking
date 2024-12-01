@@ -9,7 +9,6 @@ import {
   faPlaneDeparture,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
-import { useLocation } from "react-router-dom";
 
 function Payment(
   //object 
@@ -36,9 +35,8 @@ function Payment(
     property:(id)
   */
 ) {
-  const location = useLocation();
-  const {reservationInfo} = location.state || {};
   const [hasChild, setHasChild] = useState(false);
+  const [reservationInfo, setReservationInfo] = useState({});
   const formatDate = (dateString) => {
     const date = new Date(dateString);  // Chuyển đổi chuỗi thành đối tượng Date
   
@@ -80,13 +78,18 @@ function Payment(
   }
 
 useEffect(() => {
-  console.log(reservationInfo);
+  var ri = localStorage.getItem('reservationInfo');
+  if(ri) {
+    ri = JSON.parse(ri);
+    setReservationInfo(ri);
+    console.log(ri);
+  }
   if (inforOfPayment.capacity.childs.count !== 0) {
     setHasChild(true);
   } else {
     setHasChild(false);
   }
-},[]);
+}, []);
 
 
 

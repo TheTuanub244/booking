@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   Res,
   UseGuards,
@@ -143,5 +144,9 @@ export class UserController {
       user.password,
       token,
     );
+  }
+  @Put('updateRequestPartner')
+  async updateRequestPartner(@Body() data: any){
+    return this.userService.updateRequestPartner(data.userId, data.status)
   }
 }

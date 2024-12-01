@@ -486,4 +486,9 @@ export class UserService {
       throw err;
     }
   }
+  async updateRequestPartner(userId: string, status: ROLE) {
+    return await this.userSchema.findByIdAndUpdate(new Types.ObjectId(userId), {
+      role: status,
+    });
+  }
 }

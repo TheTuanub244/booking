@@ -1,71 +1,28 @@
-.datatable {
-  height: 600px;
-  padding: 20px;
-}
-
-.datatable .datatableTitle {
-  width: 100%;
-  font-size: 24px;
-  color: gray;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.datatable {
-  height: auto;
-  width: auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.datatable .datagrid {
+.partnerRequestGrid {
   height: 100%;
   width: 100%;
 }
 
-.datatable .datatableTitle .link {
-  text-decoration: none;
-  color: green;
-  font-size: 16px;
-  font-weight: 400;
-  border: 1px solid green;
-  padding: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.datatable .cellWithImg {
-  display: flex;
-  align-items: center;
-}
-
-.datatable .cellWithImg .cellImg {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 20px;
-}
-
-.datatable .cellWithRole {
-  padding: 5px;
-  border-radius: 5px;
-}
-
-.datatable .cellAction {
+.cellAction {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.datatable .cellAction .acceptButton {
+/* .cellAction .viewButton {
+  padding: 2px 5px;
+  border-radius: 5px;
+  background-color: #1976d2; 
+  color: white;
+  border: 1px dotted rgba(25, 118, 210, 0.6);
+  cursor: pointer;
+}
+
+.cellAction .viewButton:hover {
+  background-color: #1565c0;
+} */
+
+.cellAction .acceptButton {
   padding: 2px 5px;
   border-radius: 5px;
   background-color: rgba(41, 165, 41, 0.96);
@@ -74,11 +31,19 @@
   cursor: pointer;
 }
 
-.datatable .cellAction .declineButton {
+.cellAction .acceptButton:hover {
+  background-color: rgba(41, 165, 41, 1);
+}
+
+.cellAction .declineButton {
   padding: 2px 5px;
   border-radius: 5px;
   background-color: crimson;
   color: white;
   border: 1px dotted rgba(220, 20, 60, 0.6);
   cursor: pointer;
+}
+
+.cellAction .declineButton:hover {
+  background-color: darkred;
 }

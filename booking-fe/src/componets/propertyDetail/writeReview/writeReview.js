@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import './writeReview.css';
 import { createReview } from "../../../api/reviewAPI";
 import SuccessfullyDisplay from "../../successfullyDisplay/successfullyDisplay";
+import FailedDisplay from "../../failedDisplay/failedDisplay";
 
 function WriteReview({rooms}){
     // Define TYPE enum inside the function
@@ -23,6 +24,7 @@ function WriteReview({rooms}){
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [succesfullyPopUp, setSuccessfullyPopUp] = useState(false);
+  const [failedPopUp, setFailedPopUp] = useState(false);
 
   useEffect(() => {
     // Get userId from sessionStorage
@@ -41,6 +43,7 @@ function WriteReview({rooms}){
     return () => {
       setIsSubmitting(false);
       setSuccessfullyPopUp(false);
+      setFailedPopUp(false);
     }
   }, [rooms]);
 
@@ -55,6 +58,14 @@ function WriteReview({rooms}){
     setSuccessfullyPopUp(false);
   };
 
+  const handleTimeoutFailedDisplay = async () => {
+    setFailedPopUp(true);
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    setFailedPopUp(false);
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -67,14 +78,23 @@ function WriteReview({rooms}){
       review_type: reviewType,
     };
 
-    await createReview(reviewData);
+    try {
+      await createReview(reviewData);
 
-    console.log('Review submitted:', reviewData);
+      console.log('Review submitted:', reviewData);
+  
+      await handleTimeoutSuccessfullyDisplay();
+      
+      
+    } catch (e) {
 
-    await handleTimeoutSuccessfullyDisplay();
+      await handleTimeoutFailedDisplay();
+
+    } finally {
+      
+    }
     
     setIsSubmitting(false);
-    
   };
 
   return (
@@ -147,6 +167,7 @@ function WriteReview({rooms}){
         </button>
       </form>
       {succesfullyPopUp && <SuccessfullyDisplay text={"Tạo đánh giá thành công!"} />}
+      {failedPopUp && <FailedDisplay text={"Vui lòng điền đầy đủ thông tin"} />}
     </div>
   );
 }

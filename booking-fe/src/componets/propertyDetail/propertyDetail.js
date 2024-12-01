@@ -29,6 +29,8 @@ const PropertyDetail = () => {
   });
   const [reviewInfo, setReviewInfo] = useState(null);
 
+  const [refreshReview, setRefreshReview] = useState(false);
+
   const handleOpenMap = () => {
     setIsMapOpen(true);
   };
@@ -165,6 +167,10 @@ const PropertyDetail = () => {
 
     fetchData();
   }, [id]); // Dependency on id
+
+  const refreshReviewSection = () => {
+    setRefreshReview(true);
+  }
 
   const handleTabClick = (tabNumber) => {
     setSelectedTab(tabNumber);
@@ -351,10 +357,10 @@ const PropertyDetail = () => {
             </div>
           )}
           <div className="property-review">
-            <PropertyReview property_id={id} />
+            <PropertyReview property_id={id} isRefresh={refreshReview} setIsRefresh={setRefreshReview}/>
           </div>
           <div className="property-writeReview">
-            <WriteReview rooms={propertyData} />
+            <WriteReview rooms={propertyData} refreshReviewSection={refreshReviewSection}/>
           </div>
         </>
       )}

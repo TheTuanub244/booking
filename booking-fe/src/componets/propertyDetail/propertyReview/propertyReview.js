@@ -20,7 +20,7 @@ import { TextToRate, TextToRateText, RateToText } from "../../../function/review
 import LoadingIndicator from "../../loadingIndicator/loadingIndicator";
 
 
-const PropertyReview = ({ property_id }) => {
+const PropertyReview = ({ property_id, isRefresh, setIsRefresh }) => {
   const RATE = [
     "Kém",
     "Ổn",
@@ -80,9 +80,10 @@ const TYPE = {
 
 
   useEffect(() => {
+    setIsRefresh(false);
     fetchTopComments();
     fetchMonthlyRate();
-  }, [property_id]);
+  }, [property_id, isRefresh]);
 
   useEffect(() => {
     

@@ -15,6 +15,7 @@ import moment from "moment";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { findRoomByProperty, findRoomInReservation } from "../../../api/roomAPI";
 import { set } from "date-fns";
+import FailedDisplay from "../../failedDisplay/failedDisplay";
 
 
 const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
@@ -53,7 +54,10 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
 
   const [numberOfGuestInput, setNumberOfGuestInput] = useState(false);
 
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+
+
+  const [reserveFailed, setReserveFailed] = useState(false);
 
   const [totalPrice, setTotalPrice] = useState(0)
   const userId = localStorage.getItem("userId");
@@ -100,6 +104,10 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
     });
     
   }, [numberOfGuests, selectedRoom, date]);
+
+  const handleTimeoutFailedDisplay = async () => {
+    setReserveFailed(true);
+  }
   
 
   const handleSubmit = (event) => {
@@ -183,6 +191,8 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
 
       if(selectedRoom.length > 0) {
         navigate('/payment');
+      } else {
+        await handleTimeoutFailedDisplay();
       }
       
 
@@ -418,6 +428,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
         onClose={handleClosePopup}
         onSignIn={handleSignIn}
       />
+      {reserveFailed && <FailedDisplay text={"Vui lòng chọn phòng để đặt"} isOpen={reserveFailed} setIsOpen={setReserveFailed}/>}
     </div>
   );
 };

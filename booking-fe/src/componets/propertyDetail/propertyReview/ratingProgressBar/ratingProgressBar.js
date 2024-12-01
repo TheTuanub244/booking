@@ -9,7 +9,9 @@ const RatingProgressBar = ({ categorize, point }) => {
     const interval = setInterval(() => {
       setDisplayedPoint((prev) => {
         if (prev < point) {
-          return Math.min(prev + 1, point); // Increase until reaching target point
+          let newPoint = Math.min(prev + 1, point);
+          newPoint = parseFloat(newPoint.toFixed(1));
+          return newPoint; // Increase until reaching target point
         } else {
           clearInterval(interval); // Stop the interval when we reach the target point
           return point;

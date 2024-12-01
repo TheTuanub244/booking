@@ -36,7 +36,20 @@ function Payment(
   */
 ) {
   const [hasChild, setHasChild] = useState(false);
-  const [reservationInfo, setReservationInfo] = useState({});
+  const [reservationInfo, setReservationInfo] = useState({
+    address: "",
+    hotelName: "",
+    checkInDate: "",
+    checkOutDate: "",
+    totalPrice: "",
+    capacity: {},
+    roomData: [],
+    totalNight: 0,
+    reviews: {},
+    partnerId: "",
+    property: "propertyInfo.property"
+  });
+  const [iloading,setIloading]=useState(false);
   const formatDate = (dateString) => {
     const date = new Date(dateString);
   
@@ -57,25 +70,34 @@ function Payment(
   );
   let totalRoom = 0;
 
-useEffect(() => {
-
-  var ri = localStorage.getItem('reservationInfo');
-  if(ri) {
-    ri = JSON.parse(ri);
-    setReservationInfo(ri);
-    console.log(ri);
+  const loadData = async () => {
+    var ri = localStorage.getItem('reservationInfo');
+    if(ri) {
+      ri = JSON.parse(ri);
+      setReservationInfo(ri);
+    }
   }
+
+  const editData = async () => {
+    await loadData();
+    setIloading(true);
+    console.log(reservationInfo);
+
+    reservationInfo.roomData.forEach((room) => {
+      totalRoom += room.numberOfRooms;
+    });
   
-  reservationInfo.roomData.forEach((room) => {
-    totalRoom += room.numberOfRooms;
-  });
-
-  console.log(reservationInfo);
-  if (reservationInfo.capacity.childs.count !== 0) {
-    setHasChild(true);
-  } else {
-    setHasChild(false);
+    if (reservationInfo.capacity.childs.count !== 0) {
+      setHasChild(true);
+    } else {
+      setHasChild(false);
+    }
   }
+
+useEffect(() => {
+  
+  editData()
+  console.log(reservationInfo);
 }, []);
 
 
@@ -195,9 +217,9 @@ useEffect(() => {
                 <div className="selectedTitle">You selected</div>
 
                 {hasChild === true ? (
-                  <div className="mySelected">{reservationInfo.roomData.length} rooms for {reservationInfo.capacity.adults} adults, {reservationInfo.capacity.childs.count} childs</div>
+                  <div className="mySelected">{totalRoom} rooms for {reservationInfo.capacity.adults} adults, {reservationInfo.capacity.childs.count} childs</div>
                 ) : (
-                  <div className="mySelected">{reservationInfo.roomData.length} rooms for {reservationInfo.capacity.adults} adults</div>
+                  <div className="mySelected">{totalRoom} rooms for {reservationInfo.capacity.adults} adults</div>
                 )
 
                 }
@@ -211,7 +233,7 @@ useEffect(() => {
               <h3>Your price summary</h3>
               <div className="totalPrice">
                 <div className="textLeft">Total</div>
-                <div className="textRight">VND {reservationInfo.totalPrice.toLocaleString("en-US")}</div>
+                <div className="textRight">VND {reservationInfo?.totalPrice?.toLocaleString("en-US")}</div>
               </div>
             </div>
           </div>

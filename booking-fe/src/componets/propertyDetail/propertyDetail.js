@@ -305,6 +305,7 @@ const PropertyDetail = () => {
                         lng: propertyData[0].room.property_id.location.longitude,
                       }}
                       disableClick={true}
+                      setOpenMap={setIsMapOpen}
                       allowPositionChange={false}
                       showPropertyInfo={true}
                     />

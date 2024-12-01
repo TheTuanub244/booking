@@ -316,7 +316,7 @@ const TYPE = {
           handleViewAllReview();
         }}
       >
-        View all reviews
+        Toàn bộ đánh giá
       </button>
       {allReviewPopUp && (
         <>

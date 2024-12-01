@@ -91,7 +91,7 @@ function WriteReview({rooms}){
       await handleTimeoutFailedDisplay();
 
     } finally {
-      
+
     }
     
     setIsSubmitting(false);
@@ -125,9 +125,9 @@ function WriteReview({rooms}){
               e.preventDefault();
               setRoomId(e.target.value)}}
           >
-            {rooms.map((room) => (
-              <option key={room.room._id} value={room.room._id}>
-                {room.name}
+            {rooms.map((r) => (
+              <option key={r.room._id} value={r.room._id}>
+                {r.room.name}
               </option>
             ))}
           </select>

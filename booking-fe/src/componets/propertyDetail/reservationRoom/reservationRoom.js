@@ -232,6 +232,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
     console.log(response);
     
   }
+
   return (
     <div className="ReservationForm">
       <Modal

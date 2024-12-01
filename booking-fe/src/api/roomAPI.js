@@ -93,3 +93,10 @@ export const findRoomInReservation = async (property_id, check_in_date, check_ou
 
   return respone.data;
 }
+export const getAllRoomWithDetails = async () => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/room/getAllRoomWithDetails`,
+  );
+
+  return respone.data;
+}

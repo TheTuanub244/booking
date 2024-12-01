@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./reservationRoom_items.css";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
 import { calculateTotalNightPriceForReservation } from "../../../api/bookingAPI";
@@ -21,40 +21,66 @@ function ReservationRoom_item({
   
   const check_in_date = JSON.parse(localStorage.getItem('option')).check_in
   const check_out_date = JSON.parse(localStorage.getItem('option')).check_out
-
-  const handleSelectedRoom = (e) => {
-    const { value, name } = e.target;
+  const [showNumberOfRoom, setShowNumberOfRoom] = useState(false)
+  const [numberOfRoom, setNumberOfRoom] = useState([0])
+  let rooms = JSON.parse(localStorage.getItem('option')).capacity.room
+  const totalRoomsSelected = selectedRoom.reduce((acc, room) => acc + room.numberOfRooms, 0);
+  const handleSelectedRoom = (value, name) => {
+    
     const numberOfRooms = Number(value);
-  
+    
+    if (numberOfRooms > rooms) {
+      alert(`Bạn chỉ có thể chọn tối đa ${rooms} phòng.`);
+      return;
+    }
     setSelectedRoom((prev) => {
       const existingRoomIndex = prev.findIndex((room) => room.roomId === name);
-  
       if (existingRoomIndex !== -1) {
-        if (numberOfRooms === 0) {
-          
+        if (value === 0) {
           return prev.filter((room) => room.roomId !== name);
         }
-  
-        return prev.map((room, index) =>
-          index === existingRoomIndex
-            ? { ...room, numberOfRooms }
-            : room
-        );
-      } else {
-        if (numberOfRooms === 0) {
-          
-          return prev;
+        if (numberOfRooms > prev[existingRoomIndex].numberOfRooms) {
+          const updatedSelectedRooms = prev.map((room, index) =>
+            index === existingRoomIndex
+              ? { ...room, numberOfRooms: value }  
+              : room
+          );
+    
+          rooms = rooms - (value - prev[existingRoomIndex].numberOfRooms);
+    
+          return updatedSelectedRooms;
+        } else {
+          return prev.map((room, index) =>
+            index === existingRoomIndex
+              ? { ...room, numberOfRooms: value }
+              : room
+          );
         }
-  
+      } else {
         return [
           ...prev,
           {
             roomId: name,
-            numberOfRooms,
+            numberOfRooms: value,
           },
         ];
       }
-    });
+    }
+  );
+    setShowNumberOfRoom(false);
+  };
+  useEffect(() => {
+    if (rooms >= 0 && !numberOfRoom.includes(rooms)) {
+      const updatedRooms = Array.from({ length: rooms + 1 }, (_, index) => index);
+      setNumberOfRoom(updatedRooms);
+    }
+  }, [])
+  
+
+  const getSelectedRoomCount = (roomId) => {
+    const selectedRoomItem = selectedRoom.find((room) => room.roomId === roomId);
+    
+    return selectedRoomItem ? selectedRoomItem.numberOfRooms : 0;
   };
   useEffect(() => {
     const calculateTotalNightPrice = async () => {
@@ -62,6 +88,8 @@ function ReservationRoom_item({
       setTotalPrice(response)
     }
     calculateTotalNightPrice()
+    console.log(selectedRoom);
+    
   }, [selectedRoom])
   return (
     <tr key={room._id}>
@@ -82,7 +110,6 @@ function ReservationRoom_item({
       </td>
       <td>{room.rating}</td>
       <td>👤 {room.guests}</td>
-
       <td>
         <div className="price">
           <span className="original-price">{room.originalPrice}</span>
@@ -92,14 +119,33 @@ function ReservationRoom_item({
         </div>
       </td>
       <td>
-        <input
-          type="number"
-          min="0"
-          max={room.capacity.room}
-          name={room._id}
-          onChange={(e) => handleSelectedRoom(e)}
-        />
-      </td>
+      <div className="roomDropdown">
+        <div className="selectedRoom" onClick={() => setShowNumberOfRoom(!showNumberOfRoom)}>
+          {getSelectedRoomCount(room._id) > 0 ? `${getSelectedRoomCount(room._id)}` : 'Chọn số phòng'}
+        </div>
+        {showNumberOfRoom && numberOfRoom && (
+          <div className="numberRoomDropdown">
+            {numberOfRoom.map((number) => {
+              const isDisabled = ((totalRoomsSelected - getSelectedRoomCount(room._id))  +  number > rooms);
+              return (
+                <div
+                  key={number}
+                  className={`roomItem ${isDisabled ? 'disabled' : ''}`}
+                  onClick={() => {
+                    // Cho phép chọn khi không bị disable
+                    if (!isDisabled) {
+                      handleSelectedRoom(number, room._id);
+                    }
+                  }}
+                >
+                  {number}
+                </div>
+              );
+})}
+          </div>
+        )}
+      </div>
+    </td>
     </tr>
   );
 }

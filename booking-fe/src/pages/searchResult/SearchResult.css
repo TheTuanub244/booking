@@ -4,12 +4,15 @@
   flex-direction: row;
   margin-left: 20%;
 }
-
+.search-container-left{
+  z-index: 1px;
+}
 .map-container {
   width: 90%;
   height: 200px;
   background-color: #f0f0f0;
   margin-right: 20px;
+  z-index: 1;
 }
 
 .main-content {

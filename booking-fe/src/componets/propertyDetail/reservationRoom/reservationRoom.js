@@ -14,9 +14,13 @@ import { DateRange } from "react-date-range";
 import moment from "moment";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { findRoomByProperty, findRoomInReservation } from "../../../api/roomAPI";
+import { set } from "date-fns";
 
-const ReservationRoom = ({ roomData, partnerId }) => {
+
+const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
+
+  const [reservationInfo, setReservationInfo] = useState({});
 
   const [numberOfGuests, setNumberOfGuests] = useState({
     adults: 0,
@@ -81,9 +85,23 @@ const ReservationRoom = ({ roomData, partnerId }) => {
     setNumberOfNights(totalNights)
   }, [])
   useEffect(() => {
+    setReservationInfo({
+      address: propertyInfo.address,
+      hotelName: propertyInfo.hotelName,
+      checkInDate: date[0].startDate,
+      checkOutDate: date[0].endDate,
+      totalPrice: totalPrice,
+      capacity: numberOfGuests,
+      roomData: selectedRoom,
+      totalNight: numberOfNights,
+      reviews: propertyInfo.reviews,
+      partnerId: partnerId,
+      property: propertyInfo.property
+    });
     
-    
-  }, [numberOfGuests])
+  }, [numberOfGuests, selectedRoom, date]);
+  
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Reservation Details:", {
@@ -157,7 +175,15 @@ const ReservationRoom = ({ roomData, partnerId }) => {
   const handleReserveClick = async () => {
     try{
       
-      const option = JSON.parse(localStorage.getItem('option'))
+      const option = JSON.parse(localStorage.getItem('option'));
+      
+      localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
+
+      if(selectedRoom.length > 0) {
+        navigate('/payment');
+      }
+      
+
       // await createBooking(
       //   userId,
       //   partnerId,
@@ -169,6 +195,12 @@ const ReservationRoom = ({ roomData, partnerId }) => {
       //   totalPrice,
       //   accessToken
       // );
+
+
+
+
+
+
     } catch(err){
       console.log(err);
       if(err.response.status === 401){

@@ -35,8 +35,8 @@ function Payment(
     property:(id)
   */
 ) {
-
   const [hasChild, setHasChild] = useState(false);
+  const [reservationInfo, setReservationInfo] = useState({});
   const formatDate = (dateString) => {
     const date = new Date(dateString);  // Chuyển đổi chuỗi thành đối tượng Date
   
@@ -78,12 +78,18 @@ function Payment(
   }
 
 useEffect(() => {
+  var ri = localStorage.getItem('reservationInfo');
+  if(ri) {
+    ri = JSON.parse(ri);
+    setReservationInfo(ri);
+    console.log(ri);
+  }
   if (inforOfPayment.capacity.childs.count !== 0) {
     setHasChild(true);
   } else {
     setHasChild(false);
   }
-},[]);
+}, []);
 
 
 

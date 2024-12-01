@@ -32,3 +32,26 @@ export const TextToRateText = (text) => {
     return "";
 }
 
+export const convertMonthlyRateData = (monthRate) => {
+    let count =
+        monthRate["1"] +
+        monthRate["2"] +
+        monthRate["3"] +
+        monthRate["4"] +
+        monthRate["5"];
+    let avarage =
+    (0.0 +
+        monthRate["1"] +
+        monthRate["2"] * 2 +
+        monthRate["3"] * 3 +
+        monthRate["4"] * 4 +
+        monthRate["5"] * 5) / count;
+
+    avarage = parseFloat(avarage.toFixed(1));
+
+    return ({
+        count,
+        avarage
+    });
+}
+

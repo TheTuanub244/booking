@@ -249,7 +249,7 @@ const SearchResult = () => {
                     initialLocation={{ lat: latitude, lng: longitude }}
                     option={option}
                     disableClick={true}
-
+                    setOpenMap={setShowFullMap}
                     showPropertyInfo={true}
                   />
                 </div>

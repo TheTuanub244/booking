@@ -58,6 +58,8 @@ const Map = ({
   option,
   allowPositionChange,
   showPropertyInfo,
+  setOpenMap
+
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -201,9 +203,12 @@ const Map = ({
                     </div>
                     <button
                       onClick={() =>
+                      {
                         navigate(
                           `/property/${selectedProperty.value.property_id._id}`,
                         )
+                        setOpenMap(false)
+                      }
                       }
                     >
                       View

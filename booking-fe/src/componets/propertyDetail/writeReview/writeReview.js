@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import './writeReview.css';
 import { createReview } from "../../../api/reviewAPI";
 import SuccessfullyDisplay from "../../successfullyDisplay/successfullyDisplay";
+import FailedDisplay from "../../failedDisplay/failedDisplay";
+import { faI } from "@fortawesome/free-solid-svg-icons";
 
 function WriteReview({rooms}){
     // Define TYPE enum inside the function
@@ -23,6 +25,7 @@ function WriteReview({rooms}){
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [succesfullyPopUp, setSuccessfullyPopUp] = useState(false);
+  const [failedPopUp, setFailedPopUp] = useState(false);
 
   useEffect(() => {
     // Get userId from sessionStorage
@@ -41,19 +44,17 @@ function WriteReview({rooms}){
     return () => {
       setIsSubmitting(false);
       setSuccessfullyPopUp(false);
+      setFailedPopUp(false);
     }
   }, [rooms]);
 
   const handleTimeoutSuccessfullyDisplay = async () => {
-    // Set the state to true
     setSuccessfullyPopUp(true);
-
-    // Wait for 2 seconds (2000 ms) using a Promise and setTimeout
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Set the state to false after 2 seconds
-    setSuccessfullyPopUp(false);
   };
+
+  const handleTimeoutFailedDisplay = async () => {
+    setFailedPopUp(true);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,14 +68,23 @@ function WriteReview({rooms}){
       review_type: reviewType,
     };
 
-    await createReview(reviewData);
+    try {
+      await createReview(reviewData);
 
-    console.log('Review submitted:', reviewData);
+      console.log('Review submitted:', reviewData);
+  
+      await handleTimeoutSuccessfullyDisplay();
+      
+      
+    } catch (e) {
 
-    await handleTimeoutSuccessfullyDisplay();
+      await handleTimeoutFailedDisplay();
+
+    } finally {
+
+    }
     
     setIsSubmitting(false);
-    
   };
 
   return (
@@ -105,9 +115,9 @@ function WriteReview({rooms}){
               e.preventDefault();
               setRoomId(e.target.value)}}
           >
-            {rooms.map((room) => (
-              <option key={room.room._id} value={room.room._id}>
-                {room.name}
+            {rooms.map((r) => (
+              <option key={r.room._id} value={r.room._id}>
+                {r.room.name}
               </option>
             ))}
           </select>
@@ -146,7 +156,8 @@ function WriteReview({rooms}){
           {isSubmitting ? 'Submitting...' : 'Submit Review'}
         </button>
       </form>
-      {succesfullyPopUp && <SuccessfullyDisplay text={"Tạo đánh giá thành công!"} />}
+      {succesfullyPopUp && <SuccessfullyDisplay text={"Tạo đánh giá thành công!"} isOpen={succesfullyPopUp} setIsOpen={setSuccessfullyPopUp}/>}
+      {failedPopUp && <FailedDisplay text={"Vui lòng điền đầy đủ thông tin"} isOpen={failedPopUp} setIsOpen={setFailedPopUp}/>}
     </div>
   );
 }

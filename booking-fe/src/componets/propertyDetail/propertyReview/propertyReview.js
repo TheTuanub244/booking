@@ -166,7 +166,8 @@ const TYPE = {
       const reviewPointAvg = {};
       for(const type in reviewPointRaw) {
         const { count, totalRating } = reviewPointRaw[type];
-        reviewPointAvg[type] = totalRating / count;
+        let avg = totalRating / count;
+        reviewPointAvg[type] = parseFloat(avg.toFixed(1));
       }
       setReviewPoint(reviewPointAvg);
       console.log(reviewPoint);
@@ -315,7 +316,7 @@ const TYPE = {
           handleViewAllReview();
         }}
       >
-        View all reviews
+        Toàn bộ đánh giá
       </button>
       {allReviewPopUp && (
         <>

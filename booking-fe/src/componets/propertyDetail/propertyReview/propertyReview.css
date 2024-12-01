@@ -109,6 +109,25 @@
   right: 0px;
 }
 
+.view-all-review-button {
+  background-color: #28a745;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.view-all-review-button:hover {
+  background-color: #218838;
+}
+
+.view-all-review-button:active {
+  background-color: #1e7e34;
+}
+
 .all-reviews {
   position: fixed;
   top: 0;

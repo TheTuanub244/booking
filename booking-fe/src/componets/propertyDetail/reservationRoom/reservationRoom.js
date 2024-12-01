@@ -179,6 +179,8 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       
       localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
 
+      console.log(reservationInfo);
+
       if(selectedRoom.length > 0) {
         navigate('/payment');
       }

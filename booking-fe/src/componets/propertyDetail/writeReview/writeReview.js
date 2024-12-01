@@ -155,6 +155,7 @@ function WriteReview({rooms}){
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
             placeholder="Write your review here..."
+            required
           />
         </div>
 

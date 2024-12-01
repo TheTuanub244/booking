@@ -40,48 +40,33 @@ function Payment(
   const {reservationInfo} = location.state || {};
   const [hasChild, setHasChild] = useState(false);
   const formatDate = (dateString) => {
-    const date = new Date(dateString);  // Chuyển đổi chuỗi thành đối tượng Date
+    const date = new Date(dateString);
   
-    // Các tùy chọn cho định dạng
-    const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+    // Kiểm tra nếu chuỗi ngày không hợp lệ
+    if (isNaN(date)) return "Invalid Date";
   
-    // Sử dụng toLocaleDateString để định dạng ngày
-    return date.toLocaleDateString('en-GB', options);  // Dùng 'en-GB' để có thứ ngày bằng tiếng Anh
+    const dayName = date.toLocaleString("en-US", { weekday: "short" });
+    const day = date.getDate();
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const year = date.getFullYear();
+  
+    return `${dayName}, ${day} ${month} ${year}`;
   };
   
 
   const [errorPayment, setErrorPayment] = useState(
     "Please fill in your last name",
   );
-
-  const inforOfPayment = {
-    hotelName: "Nicecy NganHa Hotel",
-    address: "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam",
-    checkInDate: "2024-11-21",
-    checkOutDate: "2024-11-26",
-    totalNight: 5,
-    room: [1, 2],
-    capacity: {
-      adults: 2,
-      childs: {
-        count: 1,
-        age: 12
-      }
-    },
-    totalPrice: 4000000,
-    review: {
-      total: 141,
-      point: "4.0",
-      desc: "Good"
-    },
-    property: "",
-    partnerId:""
-    
-  }
+  let totalRoom = 0;
 
 useEffect(() => {
+  
+  reservationInfo.roomData.forEach((room) => {
+    totalRoom += room.numberOfRooms;
+  });
+
   console.log(reservationInfo);
-  if (inforOfPayment.capacity.childs.count !== 0) {
+  if (reservationInfo.capacity.childs.count !== 0) {
     setHasChild(true);
   } else {
     setHasChild(false);
@@ -116,21 +101,21 @@ useEffect(() => {
     const user_id = localStorage.getItem("userId");
     const token = localStorage.getItem("accessToken");
 
-    // const booking = createBooking(user_id,inforOfPayment.partnerId,inforOfPayment.property,inforOfPayment.room,inforOfPayment.capacity,inforOfPayment.checkInDate,inforOfPayment.checkOutDate,inforOfPayment.totalPrice,token);
-    // console.log(booking);
-    // const overViewData = {
-    //   bookingId:booking._id,
-    //   email:formData.email,
-    //   firstName: formData.firstname,
-    //   lastName: formData.lastname,
-    //   address:inforOfPayment.address,
-    //   hotelName:inforOfPayment.hotelName,
-    //   checkInDate:inforOfPayment.checkInDate,
-    //   checkOutDate:inforOfPayment.checkOutDate,
+    const booking = createBooking(user_id,reservationInfo.partnerId,reservationInfo.property,reservationInfo.roomData,reservationInfo.capacity,reservationInfo.checkInDate,reservationInfo.checkOutDate,reservationInfo.totalPrice,token);
+    console.log(booking);
+    const overViewData = {
+      bookingId:booking._id,
+      email:formData.email,
+      firstName: formData.firstname,
+      lastName: formData.lastname,
+      address:reservationInfo.address,
+      hotelName:reservationInfo.hotelName,
+      checkInDate:reservationInfo.checkInDate,
+      checkOutDate:reservationInfo.checkOutDate,
 
-    // }
+    }
 
-    // localStorage.setItem('overViewData',JSON.stringify(overViewData));
+    localStorage.setItem('overViewData',JSON.stringify(overViewData));
 
 
     axios
@@ -149,19 +134,19 @@ useEffect(() => {
         <div className="paymentContainer">
           <div className="leftContent">
             <div className="bookingInformation">
-              <h3>{inforOfPayment.hotelName}</h3>
+              <h3>{reservationInfo.hotelName}</h3>
               <div className="address">
-                {inforOfPayment.address}
+                {reservationInfo.address}
               </div>
-              <span>{inforOfPayment.review.desc} Location</span>
+              <span>{reservationInfo?.review?.desc || "Good"} Location</span>
               <div className="infoEvaluation">
                 <div className="infoScore">
-                  <div>{inforOfPayment.review.point}</div>
+                  <div>{reservationInfo?.review?.point ||"4.0"}</div>
                 </div>
 
                 <div className="infoRating">
-                  <div className="infoComment">{inforOfPayment.review.desc}</div>
-                  <div className="infoReview">{inforOfPayment.review.total} reviews</div>
+                  <div className="infoComment">{reservationInfo?.review?.desc|| "Good"}</div>
+                  <div className="infoReview">{reservationInfo?.review?.total || 141} reviews</div>
                 </div>
               </div>
 
@@ -186,28 +171,28 @@ useEffect(() => {
               <div className="timeBooking">
                 <div className="checkIn">
                   <div className="checkInTitle">Check-in</div>
-                  <div className="checkInTime">{formatDate(inforOfPayment.checkInDate)}</div>
+                  <div className="checkInTime">{formatDate(reservationInfo.checkInDate)}</div>
                   <div className="checkInFrom">From 14:00</div>
                 </div>
 
                 <div className="checkOut">
                   <div className="checkOutTitle">Check-out</div>
-                  <div className="checkOutTime">{formatDate(inforOfPayment.checkOutDate)}</div>
+                  <div className="checkOutTime">{formatDate(reservationInfo.checkOutDate)}</div>
                   <div className="checkOutUntil">Until 11:00</div>
                 </div>
               </div>
               <div className="lengthStay">
                 <div className="lengthStayTitle">Total length of stay:</div>
-                <div className="totalNight">{inforOfPayment.totalNight} nights</div>
+                <div className="totalNight">{reservationInfo.totalNight} nights</div>
               </div>
 
               <div className="selected">
                 <div className="selectedTitle">You selected</div>
 
                 {hasChild === true ? (
-                  <div className="mySelected">{inforOfPayment.room.length} rooms for {inforOfPayment.capacity.adults} adults, {inforOfPayment.capacity.childs.count} childs</div>
+                  <div className="mySelected">{reservationInfo.roomData.length} rooms for {reservationInfo.capacity.adults} adults, {reservationInfo.capacity.childs.count} childs</div>
                 ) : (
-                  <div className="mySelected">{inforOfPayment.room.length} rooms for {inforOfPayment.capacity.adults} adults</div>
+                  <div className="mySelected">{reservationInfo.roomData.length} rooms for {reservationInfo.capacity.adults} adults</div>
                 )
 
                 }
@@ -221,7 +206,7 @@ useEffect(() => {
               <h3>Your price summary</h3>
               <div className="totalPrice">
                 <div className="textLeft">Total</div>
-                <div className="textRight">VND {inforOfPayment.totalPrice.toLocaleString("en-US")}</div>
+                <div className="textRight">VND {reservationInfo.totalPrice.toLocaleString("en-US")}</div>
               </div>
             </div>
           </div>
@@ -288,7 +273,7 @@ useEffect(() => {
                     required
                   />
 
-                  <label for="amount">Số tiền<span className="required">*</span></label>
+                  <label for="amount">Total price<span className="required">*</span></label>
                   <input
                     class="form-control"
                     data-val="true"
@@ -300,7 +285,7 @@ useEffect(() => {
                     onChange={handleChange}
                   />
 
-                  <label for="bankcode">Phương thức thanh toán</label>
+                  <label for="bankcode">Payment method</label>
                   <select
                     name="bankCode"
                     id="bankcode"
@@ -335,7 +320,7 @@ useEffect(() => {
     
                   </select>
 
-                  <label for="language">Ngôn ngữ<span className="required">*</span></label>
+                  <label for="language">Language<span className="required">*</span></label>
                   <select
                     name="language"
                     id="language"

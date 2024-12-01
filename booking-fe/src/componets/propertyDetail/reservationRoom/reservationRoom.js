@@ -94,7 +94,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       capacity: numberOfGuests,
       roomData: selectedRoom,
       totalNight: numberOfNights,
-      review: propertyInfo.review,
+      reviews: propertyInfo.reviews,
       partnerId: partnerId,
       property: propertyInfo.property
     });

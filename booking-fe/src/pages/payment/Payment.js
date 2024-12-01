@@ -9,7 +9,6 @@ import {
   faPlaneDeparture,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
-import { useLocation } from "react-router-dom";
 
 function Payment(
   //object 
@@ -36,9 +35,8 @@ function Payment(
     property:(id)
   */
 ) {
-  const location = useLocation();
-  const {reservationInfo} = location.state || {};
   const [hasChild, setHasChild] = useState(false);
+  const [reservationInfo, setReservationInfo] = useState({});
   const formatDate = (dateString) => {
     const date = new Date(dateString);
   
@@ -60,6 +58,13 @@ function Payment(
   let totalRoom = 0;
 
 useEffect(() => {
+
+  var ri = localStorage.getItem('reservationInfo');
+  if(ri) {
+    ri = JSON.parse(ri);
+    setReservationInfo(ri);
+    console.log(ri);
+  }
   
   reservationInfo.roomData.forEach((room) => {
     totalRoom += room.numberOfRooms;
@@ -71,7 +76,7 @@ useEffect(() => {
   } else {
     setHasChild(false);
   }
-},[]);
+}, []);
 
 
 

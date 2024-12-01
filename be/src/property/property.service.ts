@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Property } from './property.schema';
 
 import { Model, ObjectId, Types } from 'mongoose';
-import { CreatePropertyDto } from './dto/createProperty.dto';
 import { BookingService } from 'src/booking/booking.service';
 import { RoomService } from 'src/room/room.service';
 import { Review } from 'src/review/review.schema';
@@ -249,7 +248,7 @@ export class PropertyService {
   }
 
   async getAllProperty() {
-    return this.propertySchema.find();
+    return this.propertySchema.find().populate('owner_id');
   }
 
   async getPropertyWithOwner(

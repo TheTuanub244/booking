@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import { Grid, Pagination } from "@mui/material";
-import PropertyCard from "../PropertyCard/PropertyCard";
+import RoomCard from "../RoomCard/RoomCard"; 
 
-const PropertySection = ({ properties }) => {
+const RoomSection = ({ rooms }) => {
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6; // Number of cards per page
+  const itemsPerPage = 6; 
 
-  // Calculate start and end index for the current page
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentProperties = properties.slice(startIndex, endIndex);
+  const currentRooms = rooms.slice(startIndex, endIndex);
 
-  // Handle page change
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
-  if (!properties.length) {
-    return <p>No properties available.</p>;
+  if (!rooms.length) {
+    return <p>No rooms available.</p>;
   }
 
   return (
@@ -30,10 +28,10 @@ const PropertySection = ({ properties }) => {
           maxWidth: "100%",
         }}
       >
-        {currentProperties.map((property) => (
+        {currentRooms.map((room) => (
           <Grid
             item
-            key={property._id}
+            key={room._id}
             xs={12}
             sm={6}
             md={4}
@@ -42,14 +40,13 @@ const PropertySection = ({ properties }) => {
               justifyContent: "center",
             }}
           >
-            <PropertyCard property={property} />
+            <RoomCard room={room} />
           </Grid>
         ))}
       </Grid>
 
-      {/* Pagination */}
       <Pagination
-        count={Math.ceil(properties.length / itemsPerPage)} // Number of pages
+        count={Math.ceil(rooms.length / itemsPerPage)}
         page={page}
         onChange={handlePageChange}
         sx={{
@@ -62,4 +59,4 @@ const PropertySection = ({ properties }) => {
   );
 };
 
-export default PropertySection;
+export default RoomSection;

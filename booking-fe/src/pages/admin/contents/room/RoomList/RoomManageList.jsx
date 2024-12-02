@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import PropertyTable from "../../../component/PropertyTable/PropertyTable";
-import PropertySection from "../../../component/PropertyCardSection/PropertyCardSection";
-import { getAllProperty } from "../../../../../api/propertyAPI";
-import { Box, Typography, Select, MenuItem, FormControl, InputLabel, CircularProgress,Button } from "@mui/material";
+import RoomTable from "../../../component/RoomsTable/RoomTable";  
+import RoomSection from "../../../component/RoomCardSection/RoomCardSection"; 
+import { findRoomByProperty,findAvailableRoomWithSearch } from "../../../../../api/roomAPI"; 
+import { Box, Typography, Select, MenuItem, FormControl, InputLabel, CircularProgress, Button } from "@mui/material";
 
-const PropertyManageList = () => {
+const RoomManageList = () => {
   const [viewMode, setViewMode] = useState("cards");
-  const [properties, setProperties] = useState([]);
+  const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProperties = async () => {
+    const fetchRooms = async () => {
       try {
-        const data = await getAllProperty();
-        setProperties(data);
+        const data = await findRoomByProperty("67330d931e768dcfe6999375");
+        setRooms(data);
+    
       } catch (error) {
-        console.error("Error fetching properties:", error);
+        console.error("Error fetching rooms:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProperties();
+    fetchRooms();
   }, []);
-
+  console.log({rooms})
   const handleViewChange = (e) => {
     setViewMode(e.target.value);
   };
 
   return (
     <Box
-      className="propertyManageList"
+      className="roomManageList"
       sx={{
         height: 'auto',
         padding: 3,
@@ -42,8 +43,8 @@ const PropertyManageList = () => {
         flexDirection: 'column',
       }}
     >
-      <Box className="propertyManageListTitle" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" color="textSecondary">Property Management</Typography>
+      <Box className="roomManageListTitle" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5" color="textSecondary">Room Management</Typography>
         <Button
           component={Link}
           to="new"
@@ -74,19 +75,20 @@ const PropertyManageList = () => {
         </FormControl>
       </Box>
 
-      <Box className="propertyContent" sx={{ flexGrow: 1, overflowY: 'auto' }}>
+      <Box className="roomContent" sx={{ flexGrow: 1, overflowY: 'auto' }}>
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <CircularProgress />
           </Box>
         ) : viewMode === "cards" ? (
-          <PropertySection properties={properties} />
+          
+          <RoomSection rooms={rooms} />
         ) : (
-          <PropertyTable properties={properties} />
+          <RoomTable rooms={rooms} />
         )}
       </Box>
     </Box>
   );
 };
 
-export default PropertyManageList;
+export default RoomManageList;

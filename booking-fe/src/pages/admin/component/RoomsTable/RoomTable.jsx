@@ -1,86 +1,61 @@
 import "./RoomTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import { roomRows } from "../../data/roomdata";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
-const RoomTable = () => {
-  const [data, setData] = useState(roomRows);
-  console.log(data);
+const RoomTable = ({ rooms }) => {
+  const [data, setData] = useState(rooms);
 
   const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+    setData(data.filter((item) => item._id !== id));
   };
-  const roomColumns = [
-    { field: "id", headerName: "ID", width: 50 },
+
+  const tableRows = rooms.map((room) => ({
+    ...room,
+    id: room._id, 
+  }));
+
+  const getPricePerNight = (price) => {
+    if (!price) return "N/A";
+    return `Weekday: ${price.weekday.toLocaleString()} VND / Weekend: ${price.weekend.toLocaleString()} VND`;
+  };
+
+  const roomColumn = [
     {
       field: "name",
-      headerName: "Name",
-      width: 150,
+      headerName: "Room Name",
+      width: 200,
     },
     {
       field: "property_id",
-      headerName: "Property ID",
-      width: 150,
-      valueGetter: (params) =>
-        params.row.property_id?.name || params.row.property_id,
+      headerName: "Property Name",
+      width: 200,
+      renderCell: (params) => params.row.property_id?.name || "Unknown Property",
     },
     {
-      field: "size",
-      headerName: "Size (sqm)",
-      width: 100,
-    },
-    {
-      field: "price_per_night",
-      headerName: "Price per Night",
-      width: 180,
-      valueGetter: (params) =>
-        `Weekday: $${params.row.price_per_night?.weekday || 0}, Weekend: $${params.row.price_per_night?.weekend || 0}`,
+      field: "type",
+      headerName: "Room Type",
+      width: 130,
+      renderCell: (params) => params.row.type || "N/A", 
     },
     {
       field: "capacity",
       headerName: "Capacity",
-      width: 200,
-      valueGetter: (params) => {
-        const { adults, children, room } = params.row.capacity || {};
-        return `Adults: ${adults || 0}, Children: ${children?.count || 0} (Age: ${children?.age || "N/A"}), Rooms: ${room || 0}`;
-      },
-    },
-    {
-      field: "facility",
-      headerName: "Facilities",
-      width: 200,
-      valueGetter: (params) => params.row.facility?.join(", ") || "N/A",
-    },
-    {
-      field: "images",
-      headerName: "Images",
-      width: 200,
+      width: 150,
       renderCell: (params) => (
-        <div className="cellWithImages">
-          {params.row.images?.slice(0, 3).map((img, idx) => (
-            <img
-              key={idx}
-              src={img}
-              alt={`room-${params.row.id}-${idx}`}
-              className="cellImg"
-            />
-          ))}
-        </div>
+        `${params.row.capacity?.adults || 0} Adults / ${params.row.capacity?.childs?.count || 0} Childs`
       ),
     },
     {
-      field: "rating",
-      headerName: "Rating",
-      width: 80,
-      renderCell: (params) => (
-        <div className="rateCell">{params.row.rating || "N/A"}</div>
-      ),
+      field: "price_per_night",
+      headerName: "Price per Night (Weekday/Weekend)",
+      width: 350,
+      renderCell: (params) => getPricePerNight(params.row.price_per_night),
     },
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 120,
       renderCell: (params) => (
         <div className="cellAction">
           <Link to={`view/${params.row.id}`} style={{ textDecoration: "none" }}>
@@ -98,22 +73,13 @@ const RoomTable = () => {
   ];
 
   return (
-    <div className="datatable">
-      <div className="datatableTitle">
-        Room Management
-        <Link to="/admin/room/new" className="link">
-          Add New
-        </Link>
-      </div>
-      <DataGrid
-        className="datagrid"
-        rows={data}
-        columns={roomColumns} // Updated to use roomColumns
-        pageSize={9}
-        rowsPerPageOptions={[9]}
-        checkboxSelection
-      />
-    </div>
+    <DataGrid
+      className="roomTableGrid"
+      rows={tableRows}
+      columns={roomColumn}
+      pageSize={6}
+      rowsPerPageOptions={[6]}
+    />
   );
 };
 

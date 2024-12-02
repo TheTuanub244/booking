@@ -58,7 +58,7 @@ export class Property {
   @Prop({ type: String, enum: TYPE })
   property_type: TYPE;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: 0 })
   rate: number;
   @Prop({ type: [String] })
   images: string[];

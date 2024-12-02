@@ -11,7 +11,7 @@ export class Review {
   @Prop({ require: true, type: mongoose.Schema.ObjectId, ref: 'Room' })
   roomId: Room;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: 0 })
   rating: number;
   @Prop({ required: true })
   review_text: string;

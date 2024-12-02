@@ -3,8 +3,9 @@ import './writeReview.css';
 import { createReview } from "../../../api/reviewAPI";
 import SuccessfullyDisplay from "../../successfullyDisplay/successfullyDisplay";
 import FailedDisplay from "../../failedDisplay/failedDisplay";
+import { faI } from "@fortawesome/free-solid-svg-icons";
 
-function WriteReview({rooms}){
+function WriteReview({rooms, refreshReviewSection}){
     // Define TYPE enum inside the function
   const TYPE = {
     STAFF: 'Staff',
@@ -48,22 +49,11 @@ function WriteReview({rooms}){
   }, [rooms]);
 
   const handleTimeoutSuccessfullyDisplay = async () => {
-    // Set the state to true
     setSuccessfullyPopUp(true);
-
-    // Wait for 2 seconds (2000 ms) using a Promise and setTimeout
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Set the state to false after 2 seconds
-    setSuccessfullyPopUp(false);
   };
 
   const handleTimeoutFailedDisplay = async () => {
     setFailedPopUp(true);
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    setFailedPopUp(false);
   }
 
   const handleSubmit = async (e) => {
@@ -85,6 +75,7 @@ function WriteReview({rooms}){
   
       await handleTimeoutSuccessfullyDisplay();
       
+      refreshReviewSection();
       
     } catch (e) {
 
@@ -155,7 +146,6 @@ function WriteReview({rooms}){
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
             placeholder="Write your review here..."
-            required
           />
         </div>
 
@@ -167,8 +157,8 @@ function WriteReview({rooms}){
           {isSubmitting ? 'Submitting...' : 'Submit Review'}
         </button>
       </form>
-      {succesfullyPopUp && <SuccessfullyDisplay text={"Tạo đánh giá thành công!"} />}
-      {failedPopUp && <FailedDisplay text={"Vui lòng điền đầy đủ thông tin"} />}
+      {succesfullyPopUp && <SuccessfullyDisplay text={"Tạo đánh giá thành công!"} isOpen={succesfullyPopUp} setIsOpen={setSuccessfullyPopUp}/>}
+      {failedPopUp && <FailedDisplay text={"Vui lòng điền đầy đủ thông tin"} isOpen={failedPopUp} setIsOpen={setFailedPopUp}/>}
     </div>
   );
 }

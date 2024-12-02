@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./reservationRoom_items.css";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
 import { calculateTotalNightPriceForReservation } from "../../../api/bookingAPI";
+import { FaUser, FaChild } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 function ReservationRoom_item({
@@ -23,7 +24,7 @@ function ReservationRoom_item({
   const check_out_date = JSON.parse(localStorage.getItem('option')).check_out
   const [showNumberOfRoom, setShowNumberOfRoom] = useState(false)
   const [numberOfRoom, setNumberOfRoom] = useState([0])
-  let rooms = JSON.parse(localStorage.getItem('option')).capacity.room
+  let rooms = JSON.parse(localStorage.getItem('option')).capacity.room;
   const totalRoomsSelected = selectedRoom.reduce((acc, room) => acc + room.numberOfRooms, 0);
   const handleSelectedRoom = (value, name) => {
     
@@ -50,6 +51,7 @@ function ReservationRoom_item({
     
           return updatedSelectedRooms;
         } else {
+          
           return prev.map((room, index) =>
             index === existingRoomIndex
               ? { ...room, numberOfRooms: value }
@@ -57,6 +59,9 @@ function ReservationRoom_item({
           );
         }
       } else {
+        if (value === 0) {
+          return prev.filter((room) => room.roomId !== name);
+        }
         return [
           ...prev,
           {
@@ -109,7 +114,15 @@ function ReservationRoom_item({
         </div>
       </td>
       <td>{room.rating}</td>
-      <td>👤 {room.guests}</td>
+      <td>
+        {Array.from({ length: room.capacity.adults }, (_, index) => (
+          <FaUser key={index} />
+        ))}
+        +
+        {Array.from({ length: room.capacity.childs.count }, (_, index) => (
+          <FaChild key={index} />
+        ))}
+      </td>
       <td>
         <div className="price">
           <span className="original-price">{room.originalPrice}</span>

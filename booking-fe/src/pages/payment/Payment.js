@@ -136,13 +136,18 @@ function Payment(
     const user_id = localStorage.getItem("userId");
     const token = localStorage.getItem("accessToken");
     console.log(`${user_id} ${token}`);
+    const capacity = {...reservationInfo.capacity,room:Number(totalRoomRef.current)};
+    const roomData = [];
+    reservationInfo.roomData.forEach((room) => {
+      roomData.push(room.roomId);
+    })
     try {
       const booking = await createBooking(
         user_id,
         reservationInfo.partnerId,
         reservationInfo.property,
-        reservationInfo.roomData,
-        reservationInfo.capacity,
+        roomData,
+        capacity,
         reservationInfo.checkInDate,
         reservationInfo.checkOutDate,
         reservationInfo.totalPrice,
@@ -406,7 +411,7 @@ function Payment(
 
                     </div>
                   </form>
-                  <button onClick={handleSubmit}>huhu</button>
+                  {/* <button onClick={handleSubmit}>huhu</button> */}
 
                 </div>
               </div>

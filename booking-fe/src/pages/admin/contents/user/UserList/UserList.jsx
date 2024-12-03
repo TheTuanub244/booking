@@ -1,5 +1,7 @@
+// UserList.jsx
+
 import React, { useState, useEffect } from "react";
-import PartnerRequestTable from "../../../component/PartnerRequestTable/PartnerRequestTable";
+import UserTable from "../../../component/UserTable/UserTable";
 import { getPendingUser } from "../../../../../api/userAPI"; 
 import {
   Box,
@@ -9,55 +11,45 @@ import {
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-const PartnerRequestList = () => {
-  const [pendingUsers, setPendingUsers] = useState([]);
+const UserList = () => {
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
 
-  const fetchPendingUsers = async () => {
+  const fetchUsers = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getPendingUser();
-      setPendingUsers(data);
+      const data = await getPendingUser(); 
+      setUsers(data);
     } catch (err) {
-      console.error("Error fetching pending users:", err);
-      setError("Failed to load partner requests. Please try again later.");
+      console.error("Error fetching users:", err);
+      setError("Failed to load users. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPendingUsers();
+    fetchUsers();
   }, []);
 
-  const handleAccept = async (id) => {
+  const handleDelete = async (id) => {
     try {
-      //await acceptPartnerRequest(id); 
-      setPendingUsers((prev) => prev.filter((user) => user._id !== id));
-      alert("Partner request accepted successfully.");
+      // await deleteUser(id); 
+      setUsers((prev) => prev.filter((user) => user._id !== id));
+      alert("User deleted successfully.");
     } catch (err) {
-      console.error("Error accepting partner request:", err);
-      alert("Failed to accept the request. Please try again.");
+      console.error("Error deleting user:", err);
+      alert("Failed to delete the user. Please try again.");
     }
   };
 
-  const handleDecline = async (id) => {
-    try {
-      //await declinePartnerRequest(id);
-      setPendingUsers((prev) => prev.filter((user) => user._id !== id));
-      alert("Partner request declined successfully.");
-    } catch (err) {
-      console.error("Error declining partner request:", err);
-      alert("Failed to decline the request. Please try again.");
-    }
-  };
 
   return (
     <Box
-    sx={{
+      sx={{
         padding: 4,
         backgroundColor: "#f5f5f5",
         borderRadius: 2,
@@ -65,10 +57,10 @@ const PartnerRequestList = () => {
         minHeight: "70vh",
         display: 'flex',
         flexDirection: 'column',
-    }}
->
+      }}
+    >
       <Typography variant="h4" gutterBottom>
-        Partner Requests
+        User Management
       </Typography>
 
       {loading ? (
@@ -77,7 +69,7 @@ const PartnerRequestList = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "60vh",
+            flexGrow: 1,
           }}
         >
           <CircularProgress />
@@ -96,24 +88,25 @@ const PartnerRequestList = () => {
             variant="contained"
             color="primary"
             startIcon={<RefreshIcon />}
-            onClick={fetchPendingUsers}
+            onClick={fetchUsers}
           >
             Retry
           </Button>
         </Box>
-      ) : pendingUsers.length === 0 ? (
+      ) : users.length === 0 ? (
         <Typography variant="h6" align="center" mt={4}>
-          No pending partner requests.
+          No users found.
         </Typography>
       ) : (
-        <PartnerRequestTable
-          partnerRequests={pendingUsers}
-          onAccept={handleAccept}
-          onDecline={handleDecline}
-        />
+        <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+          <UserTable
+            users={users}
+            onDelete={handleDelete}
+          />
+        </Box>
       )}
     </Box>
   );
 };
 
-export default PartnerRequestList;
+export default UserList;

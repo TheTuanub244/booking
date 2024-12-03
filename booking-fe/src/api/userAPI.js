@@ -162,3 +162,15 @@ export const declineRequestPartner = async (userId) => {
   );
   return respone.data;
 }
+export const getAllUser = async (token) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/getAllUser`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`, //acessToken
+      },
+      withCredentials: true, 
+    }
+  );
+  return respone.data;
+}

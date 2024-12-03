@@ -8,7 +8,7 @@ import {
   Popup,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { getAllProperty } from "../../../api/propertyAPI";
+import { getAllProperty, getPropertyAndPriceByDistance } from "../../../api/propertyAPI";
 import L from "leaflet";
 import "./Map.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,7 @@ import { getAllRoomWithTotalPrice } from "../../../api/roomAPI";
 import Loading from "../../loading/Loading";
 import { calculateNights } from "../../../helpers/dateHelpers";
 import { useNavigate } from "react-router-dom";
+import { Range } from "react-range";
 const createUserMarkerIcon = () => {
   return L.divIcon({
     className: "user-marker-container",
@@ -63,6 +64,8 @@ const Map = ({
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState(null);
+  const [maxDistance, setMaxDistance] = useState(10);
+  const [isFilterEnabled, setIsFilterEnabled] = useState(false);
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
   const getRoomWithPrice = async () => {
@@ -89,6 +92,9 @@ const Map = ({
       currency: "VND",
     }).format(value);
   };
+  const handleFilterChange = (e) => {
+    setIsFilterEnabled(e.target.value === "enable");
+  };
   const [properties, setProperties] = useState([]);
   const getProperties = async () => {
     const respone = await getAllProperty();
@@ -114,6 +120,7 @@ const Map = ({
       },
     });
 
+
     return position ? (
       <Marker
         position={position}
@@ -138,7 +145,6 @@ const Map = ({
         <Loading />
       ) : (
         <>
-          {/* Hiển thị thông tin property được chọn ở góc trên trái */}
           <div
             style={{
               position: "absolute",
@@ -225,8 +231,6 @@ const Map = ({
               </>
             )}
           </div>
-
-          {/* Chỉ render MapContainer khi `position` đã được khởi tạo */}
           {position && (
             <MapContainer
               center={position}

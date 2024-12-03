@@ -7,7 +7,7 @@ import SignInPopup from "./signInPopup";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createBooking } from "../../../api/bookingAPI";
 import { Button, Modal } from "react-bootstrap";
-import { calculateNights } from "../../../helpers/dateHelpers";
+import { calculateNights, formatDateDayMonthAndYear } from "../../../helpers/dateHelpers";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DateRange } from "react-date-range";
@@ -58,6 +58,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
 
 
   const [reserveFailed, setReserveFailed] = useState(false);
+  const option = JSON.parse(localStorage.getItem('option'))
 
   const [totalPrice, setTotalPrice] = useState(0)
   const userId = localStorage.getItem("userId");
@@ -121,6 +122,10 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
 
   const handleChangeDate = (item) => {
     
+    option.check_in = moment(item.range1.startDate).format("YYYY-MM-DD")
+    option.check_out = moment(item.range1.endDate).format("YYYY-MM-DD")
+    localStorage.setItem('option', JSON.stringify(option))
+    
     setDate([item.selection || item.range1]);
   }
   function formatDate(date) {
@@ -130,7 +135,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       month: "short",
     }).format(date);
 
-    return formattedDate.replace(",", ""); // Loại bỏ dấu phẩy
+    return formattedDate.replace(",", ""); 
   }
 
   const handleChangeNumberOfGuest = (e) => {
@@ -207,11 +212,6 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       //   accessToken
       // );
 
-
-
-
-
-
     } catch(err){
       console.log(err);
       if(err.response.status === 401){
@@ -240,8 +240,8 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       count: children,
       age: age
     }})
-    console.log(response);
-    
+    setIsSearchRoom(true)
+    setRoomSearch(response)
   }
 
   return (
@@ -350,7 +350,18 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
                   </div>
                 )}
                 <button className="finishChoosing" onClick={(e) => {e.stopPropagation();
-                  setNumberOfGuestInput(false);}}>Done</button>
+                  setNumberOfGuestInput(false);
+                  const capacity = {
+                    adults: parseInt(numberOfGuests.adults),
+                    childs:{
+                      count: parseInt(numberOfGuests.childs.count),
+                      age: parseInt(numberOfGuests.childs.age)
+                    }
+                  }
+                  option.capacity.childs = capacity.childs
+                  option.capacity.adults = capacity.adults
+                  localStorage.setItem('option', JSON.stringify(option))
+                  }}>Done</button>
               </div>
             </>
           )}

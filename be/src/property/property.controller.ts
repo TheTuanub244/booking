@@ -198,4 +198,19 @@ export class PropertyController {
   async deletePropertyById(@Param('id') id: string) {
     return this.propertyService.deletePropertyById(id);
   }
+  @Post('getPropertyAndPriceByDistance')
+  async getPropertyAndPriceByDistance(
+    @Query('distance') distance: number,
+    @Query('longitude') longitude: number,
+    @Query('latitude') latitude: number,
+    @Body() data: any,
+  ) {
+    return this.propertyService.getPropertyAndPriceByDistance(
+      longitude,
+      latitude,
+      data.check_in,
+      data.check_out,
+      distance,
+    );
+  }
 }

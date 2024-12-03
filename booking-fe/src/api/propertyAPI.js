@@ -186,3 +186,12 @@ export const getRateOfProperties = async () => {
   );
   return respone.data;
 };
+export const getPropertyAndPriceByDistance = async (longitude,  latitude, distance, check_in, check_out) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/property/getPropertyAndPriceByDistance?distance=${distance}&longitude=${longitude}&latitude=${latitude}`,
+    {
+      check_in, check_out
+    }
+  );
+  return respone.data;
+}

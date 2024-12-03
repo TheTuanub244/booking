@@ -137,16 +137,13 @@ function Payment(
     const token = localStorage.getItem("accessToken");
     console.log(`${user_id} ${token}`);
     const capacity = {...reservationInfo.capacity,room:Number(totalRoomRef.current)};
-    const roomData = [];
-    reservationInfo.roomData.forEach((room) => {
-      roomData.push(room.roomId);
-    })
+ 
     try {
       const booking = await createBooking(
         user_id,
         reservationInfo.partnerId,
         reservationInfo.property,
-        roomData,
+        reservationInfo.roomData,
         capacity,
         reservationInfo.checkInDate,
         reservationInfo.checkOutDate,
@@ -154,7 +151,22 @@ function Payment(
         token
       );
       console.log('Booking created:', booking);
-      // Xử lý sau khi tạo booking thành công (chuyển hướng, hiển thị thông báo, v.v.)
+
+      localStorage.setItem("email", formData.email);
+ 
+      const overViewData = {
+        bookingId: booking._id,
+        email: formData.email,
+        firstName: formData.firstname,
+        lastName: formData.lastname,
+        address: reservationInfo.address,
+        hotelName: reservationInfo.hotelName,
+        checkInDate: reservationInfo.checkInDate,
+        checkOutDate: reservationInfo.checkOutDate,
+  
+      }
+
+         localStorage.setItem('overViewData', JSON.stringify(overViewData));
     } catch (error) {
       console.error('Error creating booking:', error);
       // Xử lý lỗi
@@ -162,33 +174,14 @@ function Payment(
   };
 
   const handleSubmit = (e) => {
-
-    localStorage.setItem("email", formData.email);
-    // const user_id = localStorage.getItem("userId");
-    // const token = localStorage.getItem("accessToken");
-    // const booking = createBooking(user_id, reservationInfo.partnerId, reservationInfo.property, reservationInfo.roomData, reservationInfo.capacity, reservationInfo.checkInDate, reservationInfo.checkOutDate, reservationInfo.totalPrice, token);
-    // console.log(booking);
-    // const overViewData = {
-    //   bookingId: booking._id,
-    //   email: formData.email,
-    //   firstName: formData.firstname,
-    //   lastName: formData.lastname,
-    //   address: reservationInfo.address,
-    //   hotelName: reservationInfo.hotelName,
-    //   checkInDate: reservationInfo.checkInDate,
-    //   checkOutDate: reservationInfo.checkOutDate,
-
-    // }
     handleCreateBooking();
-    // localStorage.setItem('overViewData', JSON.stringify(overViewData));
 
-
-    // axios
-    //   .post(`${process.env.REACT_APP_API_URL}/payment/create_transaction`, formData)
-    //   .then((res) => {
-    //     console.log(res.data);
-    //   })
-    //   .catch((err) => console.log(err));
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/payment/create_transaction`, formData)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
   };
 
 
@@ -290,11 +283,11 @@ function Payment(
                 </div>
                 <div className="formInput">
                   <form
-                    // onSubmit={handleSubmit}
+                    onSubmit={handleSubmit}
                     id="payment_form"
                     accept-charset="UTF-8"
-                    // action="http://localhost:8000/payment/create_transaction"
-                    // method="post"
+                    action="http://localhost:8000/payment/create_transaction"
+                    method="post"
                   >
                     <label>
                       First name<span className="required">*</span>
@@ -405,13 +398,12 @@ function Payment(
                     )}
 
                     <div className="btnDiv">
-                      <button type="submit" className="btnSub" onClick={handleSubmit}>
+                      <button type="submit" className="btnSub">
                         Next: Final details
                       </button>
 
                     </div>
                   </form>
-                  {/* <button onClick={handleSubmit}>huhu</button> */}
 
                 </div>
               </div>

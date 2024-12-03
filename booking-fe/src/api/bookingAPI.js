@@ -84,3 +84,14 @@ export const calculateTotalNightPriceForReservation = async (rooms, check_in_dat
 
   return respone.data;
 }
+
+export const updateBookingStatus = async (bookingId,status) => {
+  const response = await axios.post(
+    `${process.env.REACT_APP_API_URL}/booking/updateBookingStates/${bookingId}`,
+    status,
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+}

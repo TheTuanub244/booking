@@ -24,7 +24,7 @@ export class PaymentController {
   async createPayment(@Body() body: any, @Res() res: Response) {
     try {
       const result = await this.paymentSevice.createPayment(body);
-      return res.status(200).json({ message: result.message });
+      return res.status(200).json(result);
     } catch (error) {
       console.log(error.message);
     }

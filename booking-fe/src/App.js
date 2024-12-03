@@ -40,6 +40,9 @@ import AddNewRoom from "./pages/admin/contents/room/AddNewRoom/AddNewRoom";
 import AddNewUser from "./pages/admin/contents/user/AddNewUser/AddNewUser";
 import PropertyManageList from "./pages/admin/contents/property/PropertyList/PropertyManageList";
 import RoomManageList from "./pages/admin/contents/room/RoomList/RoomManageList";
+import PartnerRequestManage from "./pages/admin/contents/partnerRequest/PartnerRequestManage/PartnerRequestManage";
+import PartnerRequestTable from "./pages/admin/component/PartnerRequestTable/PartnerRequestTable";
+import PartnerRequestList from "./pages/admin/contents/partnerRequest/ParnerRequestList/ParnerRequestList";
 
 function App() {
   const userId = localStorage.getItem("userId");
@@ -66,7 +69,9 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />}>
           <Route path="" element={<DashBoard />} />
           <Route path="booking" element={<BookingManage />} />
-          <Route path="partnerRequest" element={<ViewPartnerRequest />}></Route>
+          <Route path="partnerRequest" element={<PartnerRequestManage />}>
+          <Route path="" element={<PartnerRequestList/>} />
+          </Route>
           <Route path="user" element={<UserManage />}>
             <Route path="" element={<UserTable />} />
             <Route path="new" element={<AddNewUser />} />

@@ -468,6 +468,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
           text={"Vui lòng chọn phòng để đặt"}
           isOpen={reserveFailed}
           setIsOpen={setReserveFailed}
+          bookingData={bookingData}
         />
       )}
       {pendingBooking && (

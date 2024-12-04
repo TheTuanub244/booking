@@ -166,7 +166,7 @@ export const getAllUser = async (token) => {
     `${process.env.REACT_APP_API_URL}/user/getAllUser`,
     {
       headers: {
-        Authorization: `Bearer ${token}`, //acessToken
+        Authorization: `Bearer ${token}`, 
       },
       withCredentials: true,
     },

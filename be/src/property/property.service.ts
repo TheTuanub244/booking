@@ -115,7 +115,7 @@ export class PropertyService {
           );
           return {
             ...room,
-            image: roomImages, // Lưu URL của ảnh sau khi upload
+            image: roomImages, 
           };
         }),
       );

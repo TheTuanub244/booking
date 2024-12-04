@@ -198,4 +198,8 @@ export class PaymentController {
 
     return sorted; // Trả về đối tượng đã sắp xếp
   }
+  @Get('/getAllPayment')
+  async getAllPayment(){
+    return this.paymentSevice.getAllPayment
+  }
 }

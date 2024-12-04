@@ -109,3 +109,15 @@ export const updateBookingStatus = async (bookingId, status) => {
   );
   return response.data;
 };
+export const getAllBooking = async (token) => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/getAllBooking`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}

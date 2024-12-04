@@ -86,4 +86,10 @@ export class BookingController {
   ) {
     return this.bookingService.updateBookingStatus(bookingId, data);
   }
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  @Get('/getAllBooking')
+  async getAllBooking(){
+    return this.bookingService.getAllBooking()
+  }
 }

@@ -635,4 +635,11 @@ export class BookingService {
 
     return findBooking;
   }
+  async getAllBooking() {
+    return await this.bookingSchema
+      .find({})
+      .populate('user_id')
+      .populate('room_id')
+      .populate('property');
+  }
 }

@@ -426,12 +426,28 @@ const PropertyDetailsForm = ({
       }
     });
     try {
+      const property = JSON.parse(localStorage.getItem("property"));
+
       const respone = await updatePropertyWithPartner(formData, accessToken);
       if (respone) {
+        const data = await getPropertyById(property._id);
+        const rooms = await findRoomByProperty(property._id);
+
+        if (data) {
+          data.rooms = rooms;
+          data.location.lat = data.location.latitude;
+          data.location.lng = data.location.longitude;
+        }
+    setPropertyData(data);
         setTab("info");
       }
     } catch (error) {
-      console.error("Failed to add property:", error);
+      console.log(error);
+      
+      if(error.response.status === 401){
+        await handleSignOut()    
+        navigate('/login')    
+      }
     }
   };
   const addProperty = async () => {

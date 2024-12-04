@@ -466,6 +466,7 @@ const PropertyDetailsForm = ({
         },
       })),
     });
+    
     const formData = new FormData();
 
     formData.append("_id", propertyData._id);
@@ -478,7 +479,6 @@ const PropertyDetailsForm = ({
     formData.append("location", JSON.stringify(propertyData.location));
     formData.append("address", JSON.stringify(propertyData.address));
 
-    // Add main property image if available
     if (propertyData.images) {
       formData.append("images", propertyData.images);
     }
@@ -488,7 +488,6 @@ const PropertyDetailsForm = ({
 
     // Add room details, including each room’s image
     propertyData.rooms.forEach((room, index) => {
-      // Append individual room fields
       formData.append(`rooms[${index}][name]`, room.name);
       formData.append(`rooms[${index}][type]`, room.type);
       formData.append(`rooms[${index}][size]`, room.size);
@@ -509,13 +508,8 @@ const PropertyDetailsForm = ({
         formData.append(`rooms[${index}][image]`, room.image);
       }
     });
-    const respone = await createPropertyWithPartner(formData, accessToken);
-    console.log(respone);
-    // Send FormData to backend
     try {
       const respone = await createPropertyWithPartner(formData, accessToken);
-      console.log(respone);
-
       getAllPropetyByOwner(userId);
       setActiveTab("list");
     } catch (error) {

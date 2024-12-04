@@ -238,6 +238,10 @@ export class BookingService {
 
     return totalNightPrice;
   }
+  async createBookingWithAdmin(createBookingDto: any) {
+    const newBooking = new this.bookingSchema(createBookingDto);
+    return await newBooking.save();
+  }
   async createBooking(createBookingDto: any) {
     const customerId = createBookingDto.user_id;
 
@@ -285,7 +289,7 @@ export class BookingService {
         type: 'Booking',
         message,
       });
-      this.notificationGateway.sendNotificationToPartner(
+      await this.notificationGateway.sendNotificationToPartner(
         createBookingDto.partnerId.toString(),
         message,
       );
@@ -631,6 +635,17 @@ export class BookingService {
       {
         $unwind: '$propertyDetails',
       },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $unwind: '$userDetails',
+      },
     ]);
 
     return findBooking;
@@ -641,5 +656,16 @@ export class BookingService {
       .populate('user_id')
       .populate('room_id')
       .populate('property');
+  }
+  async deleteBookingById(bookingId: string) {
+    return await this.bookingSchema.findByIdAndDelete(
+      new Types.ObjectId(bookingId),
+    );
+  }
+  async updateBookingById(bookingId: string, bookingDto: any) {
+    return await this.bookingSchema.findByIdAndUpdate(
+      new Types.ObjectId(bookingId),
+      bookingDto,
+    );
   }
 }

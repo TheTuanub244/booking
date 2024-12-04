@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Res,
   UseGuards,
@@ -89,7 +90,19 @@ export class BookingController {
   @UseGuards(ValidateTokenGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
   @Get('/getAllBooking')
-  async getAllBooking(){
-    return this.bookingService.getAllBooking()
+  async getAllBooking() {
+    return this.bookingService.getAllBooking();
+  }
+  @Post('/createBookingWithAdmin')
+  async createBookingWithAdmin(@Body() data: any) {
+    return this.bookingService.createBookingWithAdmin(data);
+  }
+  @Delete('/deleteBookingById/:id')
+  async deleteBookingById(@Param('id') id: string) {
+    return this.bookingService.deleteBookingById(id);
+  }
+  @Put('updateBookingById/:id')
+  async updateBookingById(@Query('id') id: string, @Body() data: any) {
+    return this.bookingService.updateBookingById(id, data.data);
   }
 }

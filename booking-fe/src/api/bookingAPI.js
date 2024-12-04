@@ -121,3 +121,33 @@ export const getAllBooking = async (token) => {
   );
   return response.data;
 }
+export const createBookingWithAdmin = async (data) => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/createBookingWithAdmin`,{data}
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+} 
+export const deleteBookingByAdmin = async(bookingId) => {
+  const response = await axios.delete(
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}
+export const updateBookingWithAdmin = async(bookingId, data) => {
+  const response = await axios.put(
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`, {data}
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}

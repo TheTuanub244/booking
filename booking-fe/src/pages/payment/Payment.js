@@ -187,7 +187,6 @@ function Payment() {
         formData,
       )
       .then((res) => {
-        console.log(res.data);
         if (localStorage.getItem("overViewData")) {
           window.location.href = res.data.paymentUrl;
         }

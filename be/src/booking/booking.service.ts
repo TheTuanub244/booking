@@ -277,7 +277,7 @@ export class BookingService {
           populate: 'owner_id',
         });
       const partnerId = findPartnerId.property_id.owner_id;
-      const message = `Your property ${findPartnerId.property_id.name} has been booked by ${findPartnerId.property_id.owner_id.email}`;
+      const message = `Your property ${findPartnerId.property_id.name} has been booked by ${customerId}`;
       await this.notificationService.createNotification({
         sender_id: new Types.ObjectId(customerId),
         receiver_id: partnerId,

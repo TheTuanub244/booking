@@ -113,6 +113,9 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       partnerId: partnerId,
       property: propertyInfo.property,
     });
+
+    localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
+    
   }, [numberOfGuests, selectedRoom, date]);
 
   const handleTimeoutFailedDisplay = async () => {
@@ -192,10 +195,11 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleReserveClick = async () => {
-    try {
-      const option = JSON.parse(localStorage.getItem("option"));
-
-      localStorage.setItem("reservationInfo", JSON.stringify(reservationInfo));
+    try{
+      
+      const option = JSON.parse(localStorage.getItem('option'));
+      
+      
 
       const checkPendingBooking = await findUnfinishedBooking(userId);
       if (checkPendingBooking.length !== 0) {

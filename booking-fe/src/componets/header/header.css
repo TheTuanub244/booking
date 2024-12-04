@@ -72,7 +72,7 @@
   transform: translateX(-50%);
   width: 100%;
   max-width: 1024px;
-  z-index: 1000px;
+  z-index: 1000;
 }
 
 .headerIcon {
@@ -130,11 +130,11 @@
 .date {
   position: absolute;
   top: 46px;
-  z-index: 2;
+  z-index: 10;
 }
 
 .options {
-  z-index: 2;
+  z-index: 10;
   position: absolute;
   top: 50px;
   background-color: white;

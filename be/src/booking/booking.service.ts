@@ -238,6 +238,10 @@ export class BookingService {
 
     return totalNightPrice;
   }
+  async createBookingWithAdmin(createBookingDto: any) {
+    const newBooking = new this.bookingSchema(createBookingDto);
+    return await newBooking.save();
+  }
   async createBooking(createBookingDto: any) {
     const customerId = createBookingDto.user_id;
 
@@ -637,11 +641,11 @@ export class BookingService {
           localField: 'user_id',
           foreignField: '_id',
           as: 'userDetails',
-        }
+        },
       },
       {
-        $unwind: '$userDetails'
-      }
+        $unwind: '$userDetails',
+      },
     ]);
 
     return findBooking;
@@ -652,5 +656,16 @@ export class BookingService {
       .populate('user_id')
       .populate('room_id')
       .populate('property');
+  }
+  async deleteBookingById(bookingId: string) {
+    return await this.bookingSchema.findByIdAndDelete(
+      new Types.ObjectId(bookingId),
+    );
+  }
+  async updateBookingById(bookingId: string, bookingDto: any) {
+    return await this.bookingSchema.findByIdAndUpdate(
+      new Types.ObjectId(bookingId),
+      bookingDto,
+    );
   }
 }

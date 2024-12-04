@@ -173,3 +173,30 @@ export const getAllUser = async (token) => {
   );
   return respone.data;
 };
+export const createUserWithAdmin = async (data) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/create-user`, {data}
+    {
+      withCredentials: true,
+    },
+  );
+  return respone.data;
+}
+export const updateUserWithAdmin = async(userId, data) => {
+  const respone = await axios.put(
+    `${process.env.REACT_APP_API_URL}/user/updateUserById/${userId}`, {data}
+    {
+      withCredentials: true,
+    },
+  );
+  return respone.data;
+}
+export const deleteUserWithAdmin = async(userId) => {
+  const respone = await axios.delete(
+    `${process.env.REACT_APP_API_URL}/user/updateUserById/${userId}`
+    {
+      withCredentials: true,
+    },
+  );
+  return respone.data;
+}

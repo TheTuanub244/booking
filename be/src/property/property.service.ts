@@ -92,7 +92,7 @@ export class PropertyService {
       }
     }
 
-    return validImages; // Trả về mảng các ảnh hợp lệ
+    return validImages; 
   }
   async updateProperty(property: any) {
     if (property.image) {

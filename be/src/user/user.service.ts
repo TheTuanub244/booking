@@ -44,7 +44,6 @@ export class UserService {
         userName: userName,
       })
       .exec();
-    console.log(address);
 
     if (existedUser) {
       throw new HttpException('User already exists', HttpStatus.CONFLICT);
@@ -60,6 +59,18 @@ export class UserService {
       phoneNumber,
     });
     return newUser.save();
+  }
+  async deleteUserById(userId: string) {
+    return await this.userSchema.findByIdAndDelete(new Types.ObjectId(userId), {
+      new: true,
+    });
+  }
+  async updateUserById(userId: string, userDto: any) {
+    return await this.userSchema.findByIdAndUpdate(
+      new Types.ObjectId(userId),
+      userDto,
+      { new: true },
+    );
   }
   async updatePassword(password: string, email: string) {
     const salt = await bcrypt.genSalt(10);

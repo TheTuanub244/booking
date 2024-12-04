@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -22,10 +23,16 @@ import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post('/create-user')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(ROLE.ADMIN)
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
+  }
+  @Delete('/deleteUserById/:id')
+  async deleteUserById(@Query('id') id: string) {
+    return this.userService.deleteUserById(id);
+  }
+  @Put('/updateUserById/:id')
+  async updateUserById(@Query('id') id: string, @Body() data: any) {
+    return this.userService.updateUserById(id, data);
   }
   @Post('/sign-up')
   async signUp(@Body() createUserDto: CreateUserDto) {

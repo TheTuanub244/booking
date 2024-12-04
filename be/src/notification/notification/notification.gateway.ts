@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONT_END_URL, // URL frontend
+    origin: process.env.FRONT_END_URL,
     methods: ['GET', 'POST'],
 
     credentials: true,
@@ -37,8 +37,6 @@ export class NotificationGateway
   }
 
   sendNotificationToPartner(partnerId: string, notification: any) {
-    console.log(partnerId);
-
     this.server.to(partnerId).emit('notifyPartner', notification);
   }
 

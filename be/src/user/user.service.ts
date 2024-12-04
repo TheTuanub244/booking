@@ -302,7 +302,7 @@ export class UserService {
       const session = await this.sessionService.createSession({
         userId: findEmail._id.toString(),
         lastViewProperties: [],
-        lastBooking: null,
+        lastBooking: [],
         uid,
         recent_search: [],
       });

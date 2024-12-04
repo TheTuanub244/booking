@@ -11,13 +11,17 @@ export class Notification {
   receiver_id: User;
 
   @Prop({
-    required: true,
+    required: false,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Booking',
   })
   booking_id: Booking;
 
-  @Prop({ required: true, enum: ['Booking', 'Payment'], default: 'Booking' })
+  @Prop({
+    required: true,
+    enum: ['Booking', 'Payment', 'Partner'],
+    default: 'Booking',
+  })
   type: string;
 
   @Prop({ required: true })

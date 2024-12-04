@@ -7,13 +7,14 @@ import {
   Param,
   Post,
   Put,
+  Req,
   Res,
 } from '@nestjs/common';
 import { SessionService } from './session.service';
 import { CreateSessionDto } from './dto/createSession.dto';
 import { Session } from './session.schema';
 import { ObjectId } from 'mongoose';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('session')
 export class SessionController {
@@ -59,5 +60,9 @@ export class SessionController {
   @Get('/getSessionHistory/:id')
   async getSessionHistory(@Param('id') id: ObjectId) {
     return this.sessionService.getSessionHistory(id);
+  }
+  @Get('/refreshAccessToken')
+  async refreshAccessToken(@Req() request: Request) {
+    return this.sessionService.refreshAccessToken(request.cookies.refreshToken);
   }
 }

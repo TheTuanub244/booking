@@ -285,7 +285,7 @@ export class BookingService {
         type: 'Booking',
         message,
       });
-      this.notificationGateway.sendNotificationToPartner(
+      await this.notificationGateway.sendNotificationToPartner(
         createBookingDto.partnerId.toString(),
         message,
       );
@@ -631,6 +631,17 @@ export class BookingService {
       {
         $unwind: '$propertyDetails',
       },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'userDetails',
+        }
+      },
+      {
+        $unwind: '$userDetails'
+      }
     ]);
 
     return findBooking;

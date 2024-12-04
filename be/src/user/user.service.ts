@@ -150,7 +150,7 @@ export class UserService {
       const newSession = await this.sessionService.createSession({
         userId: existUser._id.toString(),
         lastViewProperties: [],
-        lastBooking: null,
+        lastBooking: [],
         recent_search: [],
         uid: null,
       });
@@ -392,7 +392,7 @@ export class UserService {
     const newSession = await this.sessionService.createSession({
       uid: user.uid,
       userId: savedUser._id.toString(),
-      lastBooking: null,
+      lastBooking: [],
       lastViewProperties: [],
       recent_search: [],
     });
@@ -405,7 +405,7 @@ export class UserService {
   }
   async getPendingUser() {
     return this.userSchema.find({
-      role: ROLE.PARTNER,
+      role: ROLE.PENDING,
     });
   }
   async requestToPartner(userId: string) {

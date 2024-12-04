@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Payment, PaymentSchema } from './payment.schema';
 import { GmailService } from 'src/gmail/gmail.service';
 import { GmailModule } from 'src/gmail/gmail.module';
+import { Booking, BookingSchema } from 'src/booking/booking.schema';
 
 @Module({
   controllers: [PaymentController],
@@ -15,6 +16,10 @@ import { GmailModule } from 'src/gmail/gmail.module';
         name: Payment.name,
         schema: PaymentSchema,
       },
+      {
+        name: Booking.name,
+        schema: BookingSchema
+      }
     ]),
     GmailModule
   ],

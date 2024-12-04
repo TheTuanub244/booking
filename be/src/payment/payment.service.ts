@@ -5,12 +5,15 @@ import { PaymentModule } from './payment.module';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Payment } from './payment.schema';
+import { Booking } from 'src/booking/booking.schema';
 @Injectable()
 export class PaymentService {
   constructor(
     @InjectModel(Payment.name)
     private readonly paymentModel: Model<Payment>,
     private readonly gmailService: GmailService,
+    @InjectModel(Booking.name)
+    private readonly bookingSchema: Model<Booking>
   ) {}
 
   async createPayment(data: any) {

@@ -147,14 +147,12 @@ export class UserController {
       token,
     );
   }
-  @UseGuards(ValidateTokenGuard, RolesGuard)
-  @Roles(ROLE.ADMIN)
+
   @Put('updateRequestPartner')
   async updateRequestPartner(@Body() data: any) {
     return this.userService.updateRequestPartner(data.userId, data.status);
   }
-  @UseGuards(ValidateTokenGuard, RolesGuard)
-  @Roles(ROLE.ADMIN)
+
   @Get('getAllUser')
   async getAllUser() {
     return this.userService.getAllUser();

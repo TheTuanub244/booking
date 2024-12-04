@@ -405,7 +405,7 @@ export class UserService {
   }
   async getPendingUser() {
     return this.userSchema.find({
-      role: ROLE.PARTNER,
+      role: ROLE.PENDING,
     });
   }
   async requestToPartner(userId: string) {

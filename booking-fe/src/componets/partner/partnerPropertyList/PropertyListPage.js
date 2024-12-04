@@ -59,10 +59,15 @@ const PropertyListPage = () => {
 
   const handleDelete = async (propertyId) => {
     try {
-      await deletePropertyById(propertyId);
-      setProperties((prevProperties) =>
-        prevProperties.filter((p) => p._id !== propertyId),
+      const newProperties = await deletePropertyById(
+        propertyId,
+        userId,
+        currentPage,
+        5,
       );
+
+      setProperties(newProperties.properties);
+      setTotalPages(newProperties.totalPages);
       alert("Xóa bất động sản thành công!");
     } catch (error) {
       console.error("Failed to delete property:", error);
@@ -262,6 +267,7 @@ const PropertyListPage = () => {
         longitude={longitude}
         latitude={latitude}
         initialData={propertyToEdit}
+        setActiveTab={setActiveTab}
       />
     </div>
   );

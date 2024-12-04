@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./payment.css";
 import Navbar from "../../componets/navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +9,7 @@ import {
   faPlaneDeparture,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 function Payment() {
 //object
@@ -40,7 +41,7 @@ function Payment() {
     hotelName: "",
     checkInDate: "",
     checkOutDate: "",
-    totalPrice: "",
+    totalPrice: 0,
     capacity: {
       adults: 0,
       childs: {},
@@ -49,9 +50,20 @@ function Payment() {
     totalNight: 0,
     reviews: {},
     partnerId: "",
-    property: "propertyInfo.property",
+    property: "",
   });
-  const [isloading, setIsloading] = useState(true);
+
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+    amount: 0,
+    bankCode: "",
+    language: "vn",
+  });
+
+  const [isLoading, setIsLoading] = useState(true);
   const formatDate = (dateString) => {
     const date = new Date(dateString);
 
@@ -66,49 +78,46 @@ function Payment() {
     return `${dayName}, ${day} ${month} ${year}`;
   };
 
+  const navigate = useNavigate();
   const [errorPayment, setErrorPayment] = useState(
     "Please fill in your last name",
   );
-  let totalRoom = 0;
+  const totalRoomRef = useRef(0);
 
-  const loadData = async () => {
-    var ri = localStorage.getItem("reservationInfo");
-    if (ri) {
-      ri = JSON.parse(ri);
-      await setReservationInfo(ri);
-    }
+  const loadData = () => {
+    const ri = localStorage.getItem("reservationInfo");
+    console.log(ri);
+    return ri ? JSON.parse(ri) : null;
   };
 
-  const editData = async () => {
-    await loadData();
-    setIsloading(false);
-    console.log(reservationInfo);
+  const editData = () => {
+    let totalRoom = 0;
+    const data = loadData();
+    if (data) {
+      setReservationInfo(data); // Cập nhật state
+      // Xử lý logic trực tiếp với dữ liệu mới
+      data.roomData.forEach((room) => {
+        totalRoom += room.numberOfRooms;
+      });
 
-    reservationInfo.roomData.forEach((room) => {
-      totalRoom += room.numberOfRooms;
-    });
-
-    if (reservationInfo.capacity.childs.count !== 0) {
-      setHasChild(true);
-    } else {
-      setHasChild(false);
+      totalRoomRef.current = totalRoom; // Cập nhật giá trị vào ref
+      console.log(data.totalPrice);
+      if (data.capacity.childs.count !== 0) {
+        setHasChild(true);
+      } else {
+        setHasChild(false);
+      }
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     editData();
-    console.log(reservationInfo);
   }, []);
 
-  const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    phone: "",
-    amount: 0,
-    bankCode: "",
-    language: "vn",
-  });
+  const handleChangeSelection = () => {
+    navigate(-1);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -116,39 +125,54 @@ function Payment() {
       ...formData,
       [name]: value,
     });
+    console.log(formData);
+  };
+
+  const handleCreateBooking = async () => {
+    const user_id = localStorage.getItem("userId");
+    const token = localStorage.getItem("accessToken");
+    console.log(`${user_id} ${token}`);
+    const capacity = {
+      ...reservationInfo.capacity,
+      room: Number(totalRoomRef.current),
+    };
+
+    try {
+      const booking = await createBooking(
+        user_id,
+        reservationInfo.partnerId,
+        reservationInfo.property,
+        reservationInfo.roomData,
+        capacity,
+        reservationInfo.checkInDate,
+        reservationInfo.checkOutDate,
+        reservationInfo.totalPrice,
+        token,
+      );
+      console.log("Booking created:", booking);
+
+      localStorage.setItem("email", formData.email);
+
+      const overViewData = {
+        bookingId: booking._id,
+        email: formData.email,
+        firstName: formData.firstname,
+        lastName: formData.lastname,
+        address: reservationInfo.address,
+        hotelName: reservationInfo.hotelName,
+        checkInDate: reservationInfo.checkInDate,
+        checkOutDate: reservationInfo.checkOutDate,
+      };
+
+      localStorage.setItem("overViewData", JSON.stringify(overViewData));
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      // Xử lý lỗi
+    }
   };
 
   const handleSubmit = (e) => {
-    localStorage.setItem("email", formData.email);
-
-    console.log(formData);
-    const user_id = localStorage.getItem("userId");
-    const token = localStorage.getItem("accessToken");
-
-    const booking = createBooking(
-      user_id,
-      reservationInfo.partnerId,
-      reservationInfo.property,
-      reservationInfo.roomData,
-      reservationInfo.capacity,
-      reservationInfo.checkInDate,
-      reservationInfo.checkOutDate,
-      reservationInfo.totalPrice,
-      token,
-    );
-    console.log(booking);
-    const overViewData = {
-      bookingId: booking._id,
-      email: formData.email,
-      firstName: formData.firstname,
-      lastName: formData.lastname,
-      address: reservationInfo.address,
-      hotelName: reservationInfo.hotelName,
-      checkInDate: reservationInfo.checkInDate,
-      checkOutDate: reservationInfo.checkOutDate,
-    };
-
-    localStorage.setItem("overViewData", JSON.stringify(overViewData));
+    handleCreateBooking();
 
     axios
       .post(
@@ -163,7 +187,7 @@ function Payment() {
 
   return (
     <div>
-      {!isloading && (
+      {!isLoading && (
         <>
           <Navbar />
           <div className="payment">
@@ -177,15 +201,15 @@ function Payment() {
                   </span>
                   <div className="infoEvaluation">
                     <div className="infoScore">
-                      <div>{reservationInfo?.review?.point || "4.0"}</div>
+                      <div>{reservationInfo.reviews.point}</div>
                     </div>
 
                     <div className="infoRating">
                       <div className="infoComment">
-                        {reservationInfo?.review?.desc || "Good"}
+                        {reservationInfo?.reviews?.desc || "Good"}
                       </div>
                       <div className="infoReview">
-                        {reservationInfo?.review?.total || 141} reviews
+                        {reservationInfo.reviews.total} reviews
                       </div>
                     </div>
                   </div>
@@ -237,16 +261,20 @@ function Payment() {
 
                     {hasChild === true ? (
                       <div className="mySelected">
-                        {totalRoom} rooms for {reservationInfo.capacity.adults}{" "}
-                        adults, {reservationInfo.capacity.childs.count} childs
+                        {totalRoomRef.current} rooms for{" "}
+                        {reservationInfo.capacity.adults} adults,{" "}
+                        {reservationInfo.capacity.childs.count} childs
                       </div>
                     ) : (
                       <div className="mySelected">
-                        {totalRoom} rooms for {reservationInfo.capacity.adults}{" "}
-                        adults
+                        {totalRoomRef.current} rooms for{" "}
+                        {reservationInfo.capacity.adults} adults
                       </div>
                     )}
-                    <button className="changeSelection">
+                    <button
+                      className="changeSelection"
+                      onClick={handleChangeSelection}
+                    >
                       Change your selection{" "}
                     </button>
                   </div>
@@ -305,7 +333,6 @@ function Payment() {
                       </label>
                       <input
                         type="email"
-                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
                         class="form-control form-control-lg"
                         name="email"
                         onChange={handleChange}
@@ -335,10 +362,12 @@ function Payment() {
                         id="amount"
                         name="amount"
                         type="number"
+                        readOnly
+                        value={reservationInfo.totalPrice}
                         onChange={handleChange}
                       />
 
-                      <label for="bankcode">Payment method</label>
+                      <label htmlFor="bankcode">Payment method</label>
                       <select
                         name="bankCode"
                         id="bankcode"
@@ -376,7 +405,7 @@ function Payment() {
                         <option value="SHB">Ngan hang SHB </option>
                       </select>
 
-                      <label for="language">
+                      <label htmlFor="language">
                         Language<span className="required">*</span>
                       </label>
                       <select

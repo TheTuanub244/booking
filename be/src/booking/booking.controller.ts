@@ -25,6 +25,8 @@ export class BookingController {
   @Post('createBooking')
   @Roles(ROLE.MEMBER, ROLE.PARTNER)
   async createBooking(@Body() createBookingDto: any) {
+    console.log(createBookingDto);
+
     return this.bookingService.createBooking(createBookingDto);
   }
   @Roles(ROLE.PARTNER)
@@ -75,5 +77,13 @@ export class BookingController {
   @Post('/calculateTotalNightPriceForReservation')
   async calculateTotalNightPriceForReservation(@Body() data: any) {
     return this.bookingService.calculateTotalNightPriceForReservation(data);
+  }
+
+  @Post(`/updateBookingStatus/:bookingId`)
+  async updateBookingStatus(
+    @Param('bookingId') bookingId: string,
+    @Body() data: any,
+  ) {
+    return this.bookingService.updateBookingStatus(bookingId, data);
   }
 }

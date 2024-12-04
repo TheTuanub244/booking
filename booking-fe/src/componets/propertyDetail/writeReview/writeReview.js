@@ -5,7 +5,7 @@ import SuccessfullyDisplay from "../../successfullyDisplay/successfullyDisplay";
 import FailedDisplay from "../../failedDisplay/failedDisplay";
 import { faI } from "@fortawesome/free-solid-svg-icons";
 
-function WriteReview({ rooms }) {
+function WriteReview({ rooms, refreshReviewSection }) {
   // Define TYPE enum inside the function
   const TYPE = {
     STAFF: "Staff",
@@ -73,6 +73,8 @@ function WriteReview({ rooms }) {
       console.log("Review submitted:", reviewData);
 
       await handleTimeoutSuccessfullyDisplay();
+
+      refreshReviewSection();
     } catch (e) {
       await handleTimeoutFailedDisplay();
     } finally {

@@ -17,6 +17,7 @@ import { ROLE } from './enum/role.enum';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Response } from 'express';
+import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -122,6 +123,7 @@ export class UserController {
   async requestTopartner(@Param('id') id: string) {
     return this.userService.requestToPartner(id);
   }
+
   @Get('checkRequest/:id')
   async checkRequest(@Param('id') id: string) {
     return this.userService.checkRequestPartner(id);
@@ -145,8 +147,16 @@ export class UserController {
       token,
     );
   }
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
   @Put('updateRequestPartner')
-  async updateRequestPartner(@Body() data: any){
-    return this.userService.updateRequestPartner(data.userId, data.status)
+  async updateRequestPartner(@Body() data: any) {
+    return this.userService.updateRequestPartner(data.userId, data.status);
+  }
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  @Get('getAllUser')
+  async getAllUser() {
+    return this.userService.getAllUser();
   }
 }

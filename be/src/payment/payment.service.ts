@@ -5,18 +5,20 @@ import { PaymentModule } from './payment.module';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Payment } from './payment.schema';
+import { Booking } from 'src/booking/booking.schema';
 @Injectable()
 export class PaymentService {
   constructor(
     @InjectModel(Payment.name)
     private readonly paymentModel: Model<Payment>,
     private readonly gmailService: GmailService,
+    @InjectModel(Booking.name)
+    private readonly bookingSchema: Model<Booking>,
   ) {}
 
   async createPayment(data: any) {
     const payment = new this.paymentModel(data);
-    payment.save();
-    return { message: 'Thành công' };
+    return payment.save();
   }
 
   async savePayment(data: any) {
@@ -30,6 +32,7 @@ export class PaymentService {
     const checkInDate = data.checkInDate;
     const checkOutDate = data.checkOutDate;
     const email = data.email;
+    const paymentMethod = data.paymentMethod;
 
     const subject = 'Thông báo giao dịch thành công';
     const text = `Kính gửi anh/chị ${firstname} ${lastname},
@@ -120,7 +123,7 @@ Trân trọng cảm ơn,
       <p><strong>Mã giao dịch:</strong> ${transactionCode}</p>
       <p><strong>Thời gian thanh toán:</strong>${transactionTime}</p>
       <p><strong>Số tiền thanh toán:</strong> ${price} VND</p>
-      <p><strong>Phương thức thanh toán:</strong> Thẻ ATM - Tài khoản ngân hàng nội địa</p>
+      <p><strong>Phương thức thanh toán:</strong> ${paymentMethod}</p>
       <h2>Thông tin đặt phòng:</h2>
       <p><strong>Khách sạn:</strong> ${hotelName}</p>
       <p><strong>Địa chỉ:</strong> ${address}</p>

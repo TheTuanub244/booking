@@ -22,7 +22,7 @@ import {
 } from "../../../function/reviewsFunction";
 import LoadingIndicator from "../../loadingIndicator/loadingIndicator";
 
-const PropertyReview = ({ property_id }) => {
+const PropertyReview = ({ property_id, isRefresh, setIsRefresh }) => {
   const RATE = ["Kém", "Ổn", "Tốt", "Tuyệt vời"];
 
   const TYPE = {
@@ -76,9 +76,10 @@ const PropertyReview = ({ property_id }) => {
   const [reviewSotingDisabled, setReviewSortingDisabled] = useState(false);
 
   useEffect(() => {
+    setIsRefresh(false);
     fetchTopComments();
     fetchMonthlyRate();
-  }, [property_id]);
+  }, [property_id, isRefresh]);
 
   useEffect(() => {
     // Cleanup function

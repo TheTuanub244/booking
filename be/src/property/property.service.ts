@@ -240,6 +240,9 @@ export class PropertyService {
         images: propertyImageUrl,
         rooms: [],
       };
+      if (!propertyData._id || propertyData._id === 'undefined') {
+        delete propertyData._id;
+      }
       const newProperty = new this.propertySchema(propertyData);
 
       const savedProperty = await newProperty.save();
@@ -383,6 +386,71 @@ export class PropertyService {
 
     return EARTH_RADIUS * c;
   }
+  async getPropertyAndPriceByDistance(
+    longitude: number,
+    latitude: number,
+    check_in: any,
+    check_out: any,
+    userDistance: number,
+  ) {
+    const properties = await this.propertySchema.find({});
+    const perfectProperties = [];
+    const uniqueMap = new Map();
+
+    for (const property of properties) {
+      const findAvailableRoom =
+        await this.roomService.findAvailableRoomWithProperty(property._id);
+
+      for (const value of findAvailableRoom) {
+        const finalRespone = await this.roomService.findConflictingInBookings(
+          value._id,
+          property._id,
+          check_in,
+          check_out,
+        );
+
+        if (finalRespone.length === 0) {
+          const totalPriceNight =
+            await this.bookingService.calculateTotalNightPrice({
+              room_id: [value._id],
+              property: property._id,
+              check_in_date: check_in,
+              check_out_date: check_out,
+            });
+          const distance = this.calculateDistance(
+            latitude,
+            longitude,
+            property.location.latitude,
+            property.location.longitude,
+          );
+          const roundedNumber = distance.toFixed(1);
+
+          if (distance <= userDistance) {
+            perfectProperties.push({
+              distance: roundedNumber,
+              value,
+              totalPriceNight,
+            });
+            const propertyId = property._id;
+            if (!uniqueMap.has(propertyId)) {
+              uniqueMap.set(propertyId, {
+                distance: roundedNumber,
+                value,
+                totalPriceNight,
+              });
+              console.log(uniqueMap); // Đây sẽ log đúng các giá trị trong uniqueMap
+            }
+          }
+        }
+      }
+    }
+
+    const uniquedProperties = Array.from(uniqueMap.values());
+
+    console.log(uniquedProperties); // Log danh sách các property đã được unique
+
+    return uniquedProperties;
+  }
   async getPropertyNear(longitude: number, latitude: number) {
     const properties = await this.propertySchema.find({});
     const perfectProperties = [];
@@ -427,9 +495,24 @@ export class PropertyService {
   async getDistinctPlace() {
     return this.propertySchema.distinct('address.province');
   }
-  async deletePropertyById(property_id: string) {
-    return this.propertySchema.findByIdAndDelete(
+  async deletePropertyById(
+    property_id: string,
+    owner_id: ObjectId,
+    page: number,
+    limit: number,
+  ) {
+    await this.propertySchema.findByIdAndDelete(
       new Types.ObjectId(property_id),
+      {
+        new: true,
+      },
     );
+
+    const newPropertiesList = await this.getPropertyWithOwner(
+      owner_id,
+      page,
+      limit,
+    );
+    return newPropertiesList;
   }
 }

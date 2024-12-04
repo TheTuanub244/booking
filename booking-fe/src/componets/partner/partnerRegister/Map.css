@@ -1,4 +1,3 @@
-/* Wrapper for the user marker with a glowing effect */
 .user-marker-container {
   position: relative;
   display: flex;
@@ -8,19 +7,18 @@
 
 .user-marker-glow {
   position: absolute;
-  width: 60px; /* Adjust the size of the glow */
+  width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: rgba(0, 122, 255, 0.4); /* Semi-transparent blue */
+  background-color: rgba(0, 122, 255, 0.4);
   animation: pulse 2s infinite;
   z-index: -1;
 }
 
-/* The actual marker circle */
 .user-marker {
   width: 20px;
   height: 20px;
-  background-color: #007aff; /* Blue color for the marker */
+  background-color: #007aff;
   border: 2px solid white;
   border-radius: 50%;
   position: relative;
@@ -274,4 +272,8 @@
     transform: translateY(0px);
     opacity: 1; /* Fade in */
   }
+}
+.filter-container {
+  height: 150px;
+  width: 23%;
 }

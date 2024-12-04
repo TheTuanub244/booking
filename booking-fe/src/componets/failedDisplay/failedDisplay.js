@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import "./failedDisplay.css";
 import red_cross from "../../assets/images/red_cross.png";
+import { useNavigate } from "react-router-dom";
 
-function FailedDisplay({ text, isOpen, setIsOpen }) {
+function FailedDisplay({ text, isOpen, setIsOpen, bookingData }) {
   const handleTimeoutFailedDisplay = async () => {
     setIsOpen(true);
 
@@ -10,7 +11,7 @@ function FailedDisplay({ text, isOpen, setIsOpen }) {
 
     setIsOpen(false);
   };
-
+  const navigate = useNavigate();
   useEffect(() => {
     handleTimeoutFailedDisplay();
   }, [isOpen]);
@@ -26,6 +27,14 @@ function FailedDisplay({ text, isOpen, setIsOpen }) {
             <div className="failedDisplay-text">
               <p>{text}</p>
             </div>
+            {bookingData.length !== 0 && (
+              <button
+                className="go-to-payment"
+                onClick={() => navigate("/payment")}
+              >
+                Đi đến cổng thanh toán
+              </button>
+            )}
           </div>
         </div>
       )}

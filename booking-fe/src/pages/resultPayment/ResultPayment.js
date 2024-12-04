@@ -27,6 +27,7 @@ function ResultPayment() {
   } = overViewData;
   const [paymentMethod, setPaymentMethod] = useState("");
   const bankCode = queryParams.get("vnp_BankCode");
+  const [isApiCalled, setIsApiCalled] = useState(false);
 
   const [message, setMessage] = useState(true);
   const formatDateTime = (dateTimeString) => {
@@ -43,7 +44,7 @@ function ResultPayment() {
   const dateString = "20241125191328";
   const date = moment(dateString, "YYYYMMDDHHmmss").toDate();
 
-  useEffect(() => {
+  const method = () => {
     if (bankCode === "VISA") {
       setPaymentMethod("Thanh toán qua thẻ quốc tế");
     } else if (bankCode === "VNMART") {
@@ -51,7 +52,9 @@ function ResultPayment() {
     } else {
       setPaymentMethod("Thanh toán qua thẻ ngân hàng nội địa");
     }
+  };
 
+  const sendData = () => {
     if (transactionStatus === "00") {
       const paymentData = {
         booking_id: bookingId,
@@ -66,40 +69,66 @@ function ResultPayment() {
         lastname: lastName,
         transactionCode: transactionCode,
         transactionTime: formatDateTime(payDate),
-        price: amount.toLocaleString("en-US"),
-        checkInDate: checkInDate,
-        checkOutDate: checkOutDate,
+        price: amount.toLocaleString("vi-VN"),
+        checkInDate: moment(checkInDate).format("DD-MM-YYYY"),
+        checkOutDate: moment(checkOutDate).format("DD-MM-YYYY"),
         email: email,
         hotelName: hotelName,
         address: address,
+        paymentMethod: paymentMethod,
       };
+      const updateData = {
+        booking_status: "Completed",
+        payment_status: "Paid",
+      };
+      if (!isApiCalled) {
+        axios
+          .post(
+            `${process.env.REACT_APP_API_URL}/payment/create_payment`,
+            paymentData,
+          )
+          .then((res) => {
+            console.log(res.data);
+            setIsApiCalled(true);
+          })
+          .catch((err) => console.log(err));
 
-      axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/payment/create_payment`,
-          paymentData,
-        )
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => console.log(err));
+        // axios
+        //   .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
+        //   .then((res) => {
+        //     console.log(res.data);
+        //      setIsApiCalled(true);
+        //   })
+        //   .catch((err) => console.log(err));
 
-      axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/payment/save_payment`,
-          emailData,
-        )
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => console.log(err));
+        axios
+          .post(
+            `${process.env.REACT_APP_API_URL}/booking/updateBookingStatus/${bookingId}`,
+            updateData,
+          )
+          .then((res) => {
+            console.log(res.data);
+            setIsApiCalled(true);
+          })
+          .catch((err) => console.log(err));
+      }
 
       setMessage(true);
     } else {
       setMessage(false);
     }
+  };
+
+  useEffect(() => {
+    method();
   }, []);
 
+  useEffect(() => {
+    if (paymentMethod !== "") {
+      console.log(paymentMethod);
+      sendData();
+    }
+  }, [paymentMethod]);
   const handleReturnHome = () => {
     navigate("/");
   };

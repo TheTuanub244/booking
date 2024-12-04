@@ -10,7 +10,7 @@ config(); // Load environment variables
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentSevice: PaymentService) { }
+  constructor(private readonly paymentSevice: PaymentService) {}
   @Post('save_payment')
   async savePayment(
     @Body() body: any,
@@ -24,7 +24,7 @@ export class PaymentController {
   async createPayment(@Body() body: any, @Res() res: Response) {
     try {
       const result = await this.paymentSevice.createPayment(body);
-      return res.status(200).json({ message: result.message });
+      return res.status(200).json(result);
     } catch (error) {
       console.log(error.message);
     }
@@ -162,12 +162,10 @@ export class PaymentController {
             }
           } else {
             // eslint-disable-next-line prettier/prettier
-            res
-              .status(200)
-              .json({
-                RspCode: '02',
-                Message: 'This order has been updated to the payment status',
-              });
+            res.status(200).json({
+              RspCode: '02',
+              Message: 'This order has been updated to the payment status',
+            });
           }
         } else {
           res.status(200).json({ RspCode: '04', Message: 'Amount invalid' });

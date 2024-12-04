@@ -9,32 +9,32 @@ import {
   faPlaneDeparture,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 
 function Payment() {
-//object
-/*  address(chỗ này gửi được chuỗi đầy đủ như này luôn thì tốt "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam")
-      hotelName
-      checkInDate()
-      checkOutDate()
-      totalPrice(số tiền: ví dụ: 4000000)
-      capacity {
-        adults: (số lượng),
-        childs: {
-          count: (số lg),
-          age: (tuổi)
+  //object
+  /*  address(chỗ này gửi được chuỗi đầy đủ như này luôn thì tốt "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam")
+        hotelName
+        checkInDate()
+        checkOutDate()
+        totalPrice(số tiền: ví dụ: 4000000)
+        capacity {
+          adults: (số lượng),
+          childs: {
+            count: (số lg),
+            age: (tuổi)
+          }
         }
-      }
-      roomData(Mảng)
-      totalNight(số lượng: ví dụ:2)
-      review: {
-        total: (số lượng nhận xét)
-        point: (số điểm)
-        desc: (mô tả)
-      }
-    parterId: (id)
-    property:(id)
-  */
+        roomData(Mảng)
+        totalNight(số lượng: ví dụ:2)
+        review: {
+          total: (số lượng nhận xét)
+          point: (số điểm)
+          desc: (mô tả)
+        }
+      parterId: (id)
+      property:(id)
+    */
   const [hasChild, setHasChild] = useState(false);
   const [reservationInfo, setReservationInfo] = useState({
     address: "",
@@ -85,8 +85,7 @@ function Payment() {
   const totalRoomRef = useRef(0);
 
   const loadData = () => {
-    const ri = localStorage.getItem("reservationInfo");
-    console.log(ri);
+    const ri = localStorage.getItem('reservationInfo');
     return ri ? JSON.parse(ri) : null;
   };
 
@@ -101,7 +100,7 @@ function Payment() {
       });
 
       totalRoomRef.current = totalRoom; // Cập nhật giá trị vào ref
-      console.log(data.totalPrice);
+      // console.log(data.totalPrice);
       if (data.capacity.childs.count !== 0) {
         setHasChild(true);
       } else {
@@ -128,52 +127,51 @@ function Payment() {
     console.log(formData);
   };
 
+
+  let overViewData = {};
+
   const handleCreateBooking = async () => {
+
+    localStorage.removeItem("overViewData");
     const user_id = localStorage.getItem("userId");
     const token = localStorage.getItem("accessToken");
-    console.log(`${user_id} ${token}`);
-    const capacity = {
-      ...reservationInfo.capacity,
-      room: Number(totalRoomRef.current),
-    };
+    // console.log(`${user_id} ${token}`);
+    const capacity = { ...reservationInfo.capacity, room: Number(totalRoomRef.current) };
 
-    try {
-      const booking = await createBooking(
-        user_id,
-        reservationInfo.partnerId,
-        reservationInfo.property,
-        reservationInfo.roomData,
-        capacity,
-        reservationInfo.checkInDate,
-        reservationInfo.checkOutDate,
-        reservationInfo.totalPrice,
-        token,
-      );
-      console.log("Booking created:", booking);
+    const booking = await createBooking(
+      user_id,
+      reservationInfo.partnerId,
+      reservationInfo.property,
+      reservationInfo.roomData,
+      capacity,
+      reservationInfo.checkInDate,
+      reservationInfo.checkOutDate,
+      reservationInfo.totalPrice,
+      token
+    );
+    console.log('Booking created:', booking);
 
-      localStorage.setItem("email", formData.email);
+    overViewData = {
+      bookingId: booking._id,
+      email: formData.email,
+      firstName: formData.firstname,
+      lastName: formData.lastname,
+      address: reservationInfo.address,
+      hotelName: reservationInfo.hotelName,
+      checkInDate: reservationInfo.checkInDate,
+      checkOutDate: reservationInfo.checkOutDate,
 
-      const overViewData = {
-        bookingId: booking._id,
-        email: formData.email,
-        firstName: formData.firstname,
-        lastName: formData.lastname,
-        address: reservationInfo.address,
-        hotelName: reservationInfo.hotelName,
-        checkInDate: reservationInfo.checkInDate,
-        checkOutDate: reservationInfo.checkOutDate,
-      };
-
-      localStorage.setItem("overViewData", JSON.stringify(overViewData));
-    } catch (error) {
-      console.error("Error creating booking:", error);
-      // Xử lý lỗi
     }
+    localStorage.setItem('overViewData', JSON.stringify(overViewData));
+
+    console.log(overViewData);
+
   };
 
-  const handleSubmit = (e) => {
-    handleCreateBooking();
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await handleCreateBooking();
+    formData.amount = reservationInfo.totalPrice;
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/payment/create_transaction`,
@@ -181,8 +179,13 @@ function Payment() {
       )
       .then((res) => {
         console.log(res.data);
+        if (localStorage.getItem("overViewData")) {
+          window.location.href = res.data.paymentUrl;
+        }
       })
       .catch((err) => console.log(err));
+
+
   };
 
   return (
@@ -284,13 +287,12 @@ function Payment() {
                   <h3>Your price summary</h3>
                   <div className="totalPrice">
                     <div className="textLeft">Total</div>
-                    <div className="textRight">
-                      VND {reservationInfo?.totalPrice?.toLocaleString("en-US")}
-                    </div>
+                    <div className="textRight">VND {reservationInfo?.totalPrice?.toLocaleString("en-US")}</div>
                   </div>
                 </div>
               </div>
               <div className="rightContent">
+
                 <div className="yourDetails">
                   <h3>Enter your details</h3>
                   <div className="alert">
@@ -305,8 +307,8 @@ function Payment() {
                       onSubmit={handleSubmit}
                       id="payment_form"
                       accept-charset="UTF-8"
-                      action="http://localhost:8000/payment/create_transaction"
-                      method="post"
+                    // action="http://localhost:8000/payment/create_transaction"
+                    // method="post"
                     >
                       <label>
                         First name<span className="required">*</span>
@@ -422,9 +424,10 @@ function Payment() {
                       )}
 
                       <div className="btnDiv">
-                        <button type="submit" className="btnSub">
+                        <button className="btnSub" onClick={handleSubmit}>
                           Next: Final details
                         </button>
+
                       </div>
                     </form>
                   </div>

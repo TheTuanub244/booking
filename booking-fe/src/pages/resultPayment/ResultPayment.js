@@ -93,13 +93,13 @@ function ResultPayment() {
           })
           .catch((err) => console.log(err));
 
-        // axios
-        //   .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
-        //   .then((res) => {
-        //     console.log(res.data);
-        //      setIsApiCalled(true);
-        //   })
-        //   .catch((err) => console.log(err));
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
+        .then((res) => {
+          console.log(res.data);
+           setIsApiCalled(true);
+        })
+        .catch((err) => console.log(err));
 
         axios
           .post(

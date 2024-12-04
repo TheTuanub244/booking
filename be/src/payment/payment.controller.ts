@@ -90,7 +90,8 @@ export class PaymentController {
     // Tạo URL chuyển hướng
     const paymentUrl = `${vnpUrl}?${qs.stringify(sortedParams, { encode: false })}`;
 
-    res.redirect(paymentUrl);
+    return res.status(200).json({ paymentUrl: paymentUrl });
+    // res.redirect(paymentUrl);
   }
 
   @Get('vnpay_return')
@@ -162,7 +163,9 @@ export class PaymentController {
             }
           } else {
             // eslint-disable-next-line prettier/prettier
-            res.status(200).json({
+            res
+              .status(200)
+              .json({
               RspCode: '02',
               Message: 'This order has been updated to the payment status',
             });

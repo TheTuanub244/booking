@@ -238,6 +238,20 @@ export class BookingService {
 
     return totalNightPrice;
   }
+
+  async updateBookingStatus(bookingId: string, data: any) {
+    const updateBooking = await this.bookingSchema.findByIdAndUpdate(
+      bookingId,
+      { $set: data },
+      { new: true },
+    );
+    if (!updateBooking) {
+      throw new NotFoundException(`Booking with ID ${bookingId} not found`);
+    }
+
+    return updateBooking;
+  }
+
   async createBooking(createBookingDto: any) {
     const customerId = createBookingDto.user_id;
 
@@ -261,12 +275,9 @@ export class BookingService {
             room_id: room.roomId,
           },
         });
-        await this.roomSchema.findByIdAndUpdate(
-          room.roomId,
-          {
-            $inc: {'capacity.room': parseInt(room.numberOfRooms)}
-          }
-        )
+        await this.roomSchema.findByIdAndUpdate(room.roomId, {
+          $inc: { 'capacity.room': parseInt(room.numberOfRooms) },
+        });
       }),
     );
 
@@ -308,14 +319,14 @@ export class BookingService {
       return savedBooking;
     }
   }
-  async checkFullRoom(room_id: string){
-    const findFullRoom = await this.roomSchema.findById(room_id)
-    if(findFullRoom){
-      if(findFullRoom.capacity.room > 0){
+  async checkFullRoom(room_id: string) {
+    const findFullRoom = await this.roomSchema.findById(room_id);
+    if (findFullRoom) {
+      if (findFullRoom.capacity.room > 0) {
         return false;
       }
     }
-    return true
+    return true;
   }
   async findConflictingBookings(
     property: mongoose.Types.ObjectId,

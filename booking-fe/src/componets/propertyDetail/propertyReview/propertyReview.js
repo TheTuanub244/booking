@@ -10,33 +10,30 @@ import {
   getReviewByRateAndType,
   getReviewByType,
   getReviewByRate,
-
 } from "../../../api/reviewAPI";
 import Skeleton from "react-loading-skeleton";
-import Pagination from '@mui/material/Pagination';
-import { FaTimes } from 'react-icons/fa';
-import 'react-loading-skeleton/dist/skeleton.css';
-import { TextToRate, TextToRateText, RateToText } from "../../../function/reviewsFunction";
+import Pagination from "@mui/material/Pagination";
+import { FaTimes } from "react-icons/fa";
+import "react-loading-skeleton/dist/skeleton.css";
+import {
+  TextToRate,
+  TextToRateText,
+  RateToText,
+} from "../../../function/reviewsFunction";
 import LoadingIndicator from "../../loadingIndicator/loadingIndicator";
 
-
 const PropertyReview = ({ property_id }) => {
-  const RATE = [
-    "Kém",
-    "Ổn",
-    "Tốt",
-    "Tuyệt vời"
-];
+  const RATE = ["Kém", "Ổn", "Tốt", "Tuyệt vời"];
 
-const TYPE = {
-  STAFF: 'Staff',
-  FACILITIES: 'Facilities',
-  CLEANLINESS: 'Cleaniless',
-  COMFORT: 'Comfort',
-  VALUE_OF_MONEY: 'Value of money',
-  LOCATION: 'Location',
-  FREEWIFI: 'Free wifi',
-}
+  const TYPE = {
+    STAFF: "Staff",
+    FACILITIES: "Facilities",
+    CLEANLINESS: "Cleaniless",
+    COMFORT: "Comfort",
+    VALUE_OF_MONEY: "Value of money",
+    LOCATION: "Location",
+    FREEWIFI: "Free wifi",
+  };
 
   const [reviewPoint, setReviewPoint] = useState({
     Staff: 0,
@@ -50,7 +47,7 @@ const TYPE = {
 
   const [reviewComment, setReviewComment] = useState([]);
 
-  const[totalPageReview, setTotalPageReview] = useState(0);
+  const [totalPageReview, setTotalPageReview] = useState(0);
 
   const [allReviewComment, setAllReviewComment] = useState([]);
 
@@ -78,15 +75,12 @@ const TYPE = {
 
   const [reviewSotingDisabled, setReviewSortingDisabled] = useState(false);
 
-
   useEffect(() => {
     fetchTopComments();
     fetchMonthlyRate();
   }, [property_id]);
 
   useEffect(() => {
-    
-
     // Cleanup function
     return () => {
       document.body.style.overflow = "";
@@ -99,7 +93,7 @@ const TYPE = {
     loadReviews(1);
     return () => {
       setReviewSortingDisabled(false);
-    }
+    };
   }, [reviewFilterType, reviewFilterRate]);
 
   async function handleViewAllReview() {
@@ -122,21 +116,31 @@ const TYPE = {
     setIsLoadingAllReview(true);
     try {
       var response;
-      if(reviewFilterRate && reviewFilterType){
-        const {min, max} = TextToRate(reviewFilterRate);
-        response = await getReviewByRateAndType(property_id, reviewFilterType, min, max, page);
-      } else if(reviewFilterRate){
-        const {min, max} = TextToRate(reviewFilterRate);
+      if (reviewFilterRate && reviewFilterType) {
+        const { min, max } = TextToRate(reviewFilterRate);
+        response = await getReviewByRateAndType(
+          property_id,
+          reviewFilterType,
+          min,
+          max,
+          page,
+        );
+      } else if (reviewFilterRate) {
+        const { min, max } = TextToRate(reviewFilterRate);
         response = await getReviewByRate(property_id, min, max, page);
-      } else if (reviewFilterType){
-        response = await getReviewByRateAndType(property_id, reviewFilterType, null, null, page);
+      } else if (reviewFilterType) {
+        response = await getReviewByRateAndType(
+          property_id,
+          reviewFilterType,
+          null,
+          null,
+          page,
+        );
       } else {
         response = await findReviewWithProperty(property_id, page);
       }
-      
-      setAllReviewComment([
-        ...response.reviews,
-      ]);
+
+      setAllReviewComment([...response.reviews]);
       setTotalPageReview(response.totalPages);
       setCurrentAllReviewPage(page);
 
@@ -164,7 +168,7 @@ const TYPE = {
       setReviewComment(reviewComments.reviews);
       const reviewPointRaw = reviewComments.countReviewsType;
       const reviewPointAvg = {};
-      for(const type in reviewPointRaw) {
+      for (const type in reviewPointRaw) {
         const { count, totalRating } = reviewPointRaw[type];
         let avg = totalRating / count;
         reviewPointAvg[type] = parseFloat(avg.toFixed(1));
@@ -232,11 +236,10 @@ const TYPE = {
     setReviewFilterRate(e.target.value);
   }
 
-  function onFilterChange(){
-    if(reviewFilterRate && reviewFilterType){
+  function onFilterChange() {
+    if (reviewFilterRate && reviewFilterType) {
       setReviewSortingDisabled(true);
-      
-    } else{
+    } else {
       setReviewSortingDisabled(false);
     }
   }
@@ -244,7 +247,6 @@ const TYPE = {
   function handleReviewSortingChange(e) {
     e.preventDefault();
     setReviewSorting(e.target.value);
-
   }
 
   return (
@@ -273,8 +275,12 @@ const TYPE = {
       <div className="review-rating-container">
         <h4>Rating</h4>
         <div class="rating-categories">
-          {Object.keys(reviewPoint).map( (type) => (
-            <RatingProgressBar key={type} categorize={type} point={reviewPoint[type]} />
+          {Object.keys(reviewPoint).map((type) => (
+            <RatingProgressBar
+              key={type}
+              categorize={type}
+              point={reviewPoint[type]}
+            />
           ))}
         </div>
       </div>
@@ -291,11 +297,13 @@ const TYPE = {
           &#8592;
         </button>
         <div className="review-comment" ref={reviewCommentRef}>
-          {!isLoadingReview
-            ? reviewComment.map((review, index) => (
-                <ReviewComment key={index} review={review} />
-              ))
-            : <LoadingIndicator />}
+          {!isLoadingReview ? (
+            reviewComment.map((review, index) => (
+              <ReviewComment key={index} review={review} />
+            ))
+          ) : (
+            <LoadingIndicator />
+          )}
         </div>
         <button
           className="right-button"
@@ -325,7 +333,7 @@ const TYPE = {
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              
+
               setAllReviewPopUp(false);
               handleCloseAllReview();
             }}
@@ -340,22 +348,28 @@ const TYPE = {
               <div className="allReviews-topSection">
                 <h4>{"Toàn bộ đánh giá"}</h4>
                 <FaTimes
-                  style={{ fontSize: "24px", cursor: "pointer", color: "black" }}
-                  onClick={(e) => {setAllReviewPopUp(false);
-                  handleCloseAllReview();}}
+                  style={{
+                    fontSize: "24px",
+                    cursor: "pointer",
+                    color: "black",
+                  }}
+                  onClick={(e) => {
+                    setAllReviewPopUp(false);
+                    handleCloseAllReview();
+                  }}
                 />
               </div>
               <div className="allReviews-filter-sort">
                 <div className="allReviews-filter">
                   <h5>{"Lọc"}</h5>
                   <div className="filter-dropdown">
-                    
                     <div>
                       <label>{"Loại"}</label>
-                      <select value={reviewFilterType} onChange={(e) => handleTypeFilterChange(e)}>
-                        <option value="">
-                          Lựa chọn
-                        </option>
+                      <select
+                        value={reviewFilterType}
+                        onChange={(e) => handleTypeFilterChange(e)}
+                      >
+                        <option value="">Lựa chọn</option>
                         {Object.keys(TYPE).map((key) => (
                           <option key={key} value={TYPE[key]}>
                             {TYPE[key]}
@@ -366,18 +380,18 @@ const TYPE = {
 
                     <div>
                       <label>{"Điểm"}</label>
-                      <select value={reviewFilterRate} onChange={(e) => handleRateFilterChange(e)}>
-                        <option value="">
-                          Lựa chọn
-                        </option>
-                        {RATE.map((rate) => 
+                      <select
+                        value={reviewFilterRate}
+                        onChange={(e) => handleRateFilterChange(e)}
+                      >
+                        <option value="">Lựa chọn</option>
+                        {RATE.map((rate) => (
                           <option key={rate} value={rate}>
                             {TextToRateText(rate)}
                           </option>
-                        )}
+                        ))}
                       </select>
                     </div>
-                    
                   </div>
                 </div>
 
@@ -386,7 +400,13 @@ const TYPE = {
                   <div className="sorting-dropdown">
                     <div>
                       <label>{"Điểm"}</label>
-                      <select value={reviewSorting} onChange={(e) => {handleReviewSortingChange(e)}} disabled={reviewSotingDisabled}>
+                      <select
+                        value={reviewSorting}
+                        onChange={(e) => {
+                          handleReviewSortingChange(e);
+                        }}
+                        disabled={reviewSotingDisabled}
+                      >
                         <option value="" disabled>
                           Lựa chọn
                         </option>
@@ -395,44 +415,42 @@ const TYPE = {
                       </select>
                     </div>
                   </div>
-                  
-                  
                 </div>
               </div>
-                
-              
             </div>
             <div className="allReviews-content">
-              {!isLoadingAllReview ? (allReviewComment.map((review, index) => (
-                <ReviewDetail key={index} review={review} />))) :
+              {!isLoadingAllReview ? (
+                allReviewComment.map((review, index) => (
+                  <ReviewDetail key={index} review={review} />
+                ))
+              ) : (
                 <LoadingIndicator />
-              }
+              )}
             </div>
-            
+
             <div className="review-pagination">
-              <Pagination count={totalPageReview}
-                          size="large"
-                          
-                          sx={{
-                            width: '80%',
-                            '& ul': {
-                              width: '100%',
-                              display: 'flex',
-                              justifyContent: 'space-between', // Space out buttons
-                            },
-                            '& .MuiPaginationItem-root': {
-                              flexGrow: 1, // Make each button stretch equally
-                              textAlign: 'center',
-                            },
-                          }}
-                          page={currentAllReviewPage}
-                          onChange={handlePageChange}
+              <Pagination
+                count={totalPageReview}
+                size="large"
+                sx={{
+                  width: "80%",
+                  "& ul": {
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between", // Space out buttons
+                  },
+                  "& .MuiPaginationItem-root": {
+                    flexGrow: 1, // Make each button stretch equally
+                    textAlign: "center",
+                  },
+                }}
+                page={currentAllReviewPage}
+                onChange={handlePageChange}
               />
             </div>
           </div>
         </>
       )}
-      
     </div>
   );
 };

@@ -6,16 +6,16 @@ import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog";
 
 const UserTable = ({ users, onDelete }) => {
   const [data, setData] = useState([]);
-  
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentAction, setCurrentAction] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedUserName, setSelectedUserName] = useState(""); // Store user name to display in dialog
+  const [selectedUserName, setSelectedUserName] = useState("");
 
   useEffect(() => {
     const tableRows = users.map((user) => ({
       ...user,
-      id: user._id, 
+      id: user._id,
     }));
     setData(tableRows);
   }, [users]);
@@ -24,13 +24,13 @@ const UserTable = ({ users, onDelete }) => {
     {
       field: "userName",
       headerName: "User Name",
-      width: 200,
+      width: 180,
       renderCell: (params) => <div>{params.row.userName}</div>,
     },
     {
       field: "email",
       headerName: "Email",
-      width: 250,
+      width: 200,
     },
     {
       field: "phoneNumber",
@@ -49,8 +49,12 @@ const UserTable = ({ users, onDelete }) => {
     {
       field: "role",
       headerName: "Role",
-      width: 150,
-      renderCell: (params) => <div className={`cellWithRole ${params.row.role}`}>{params.row.role}</div>,
+      width: 120,
+      renderCell: (params) => (
+        <div className={`cellWithRole ${params.row.role}`}>
+          {params.row.role}
+        </div>
+      ),
     },
     {
       field: "action",
@@ -65,7 +69,9 @@ const UserTable = ({ users, onDelete }) => {
           </Link>
           <div
             className="deleteButton"
-            onClick={() => handleDeleteClick(params.row.id, params.row.userName)}
+            onClick={() =>
+              handleDeleteClick(params.row.id, params.row.userName)
+            }
           >
             Delete
           </div>
@@ -73,8 +79,6 @@ const UserTable = ({ users, onDelete }) => {
       ),
     },
   ];
-
-
 
   const handleDeleteClick = (id, userName) => {
     setSelectedId(id);
@@ -89,19 +93,19 @@ const UserTable = ({ users, onDelete }) => {
     }
     setDialogOpen(false);
     setSelectedId(null);
-    setSelectedUserName(""); // Clear the selected username after action
+    setSelectedUserName("");
     setCurrentAction(null);
   };
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setSelectedId(null);
-    setSelectedUserName(""); // Clear the selected username on close
+    setSelectedUserName("");
     setCurrentAction(null);
   };
 
   return (
-    <div className={`userTableGridContainer ${dialogOpen ? "blurred" : ""}`}> {/* Apply blur only when dialog is open */}
+    <div className={`userTableGridContainer ${dialogOpen ? "blurred" : ""}`}>
       <DataGrid
         className="userTableGrid"
         rows={data}

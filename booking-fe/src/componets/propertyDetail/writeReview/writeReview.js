@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
-import './writeReview.css';
+import "./writeReview.css";
 import { createReview } from "../../../api/reviewAPI";
 import SuccessfullyDisplay from "../../successfullyDisplay/successfullyDisplay";
 import FailedDisplay from "../../failedDisplay/failedDisplay";
 import { faI } from "@fortawesome/free-solid-svg-icons";
 
-function WriteReview({rooms}){
-    // Define TYPE enum inside the function
+function WriteReview({ rooms }) {
+  // Define TYPE enum inside the function
   const TYPE = {
-    STAFF: 'Staff',
-    FACILITIES: 'Facilities',
-    CLEANLINESS: 'Cleanliness',
-    COMFORT: 'Comfort',
-    VALUE_OF_MONEY: 'Value of money',
-    LOCATION: 'Location',
-    FREE_WIFI: 'Free wifi',
+    STAFF: "Staff",
+    FACILITIES: "Facilities",
+    CLEANLINESS: "Cleanliness",
+    COMFORT: "Comfort",
+    VALUE_OF_MONEY: "Value of money",
+    LOCATION: "Location",
+    FREE_WIFI: "Free wifi",
   };
 
   const [userId, setUserId] = useState(null);
   const [roomId, setRoomId] = useState(null); // This will be set based on room selection
   const [rating, setRating] = useState(1); // Default to 1 star
-  const [reviewText, setReviewText] = useState('');
+  const [reviewText, setReviewText] = useState("");
   const [reviewType, setReviewType] = useState(TYPE.STAFF); // Default review type
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -29,15 +29,14 @@ function WriteReview({rooms}){
 
   useEffect(() => {
     // Get userId from sessionStorage
-    const user = localStorage.getItem('userId');
+    const user = localStorage.getItem("userId");
     console.log(rooms);
     if (user) {
       setUserId(user);
-      
     }
     if (rooms && rooms.length > 0) {
-        console.log(rooms);
-        
+      console.log(rooms);
+
       setRoomId(rooms[0].room._id); // Default to first roomId if available
     }
 
@@ -45,7 +44,7 @@ function WriteReview({rooms}){
       setIsSubmitting(false);
       setSuccessfullyPopUp(false);
       setFailedPopUp(false);
-    }
+    };
   }, [rooms]);
 
   const handleTimeoutSuccessfullyDisplay = async () => {
@@ -54,7 +53,7 @@ function WriteReview({rooms}){
 
   const handleTimeoutFailedDisplay = async () => {
     setFailedPopUp(true);
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,19 +70,14 @@ function WriteReview({rooms}){
     try {
       await createReview(reviewData);
 
-      console.log('Review submitted:', reviewData);
-  
+      console.log("Review submitted:", reviewData);
+
       await handleTimeoutSuccessfullyDisplay();
-      
-      
     } catch (e) {
-
       await handleTimeoutFailedDisplay();
-
     } finally {
-
     }
-    
+
     setIsSubmitting(false);
   };
 
@@ -97,7 +91,7 @@ function WriteReview({rooms}){
             {[1, 2, 3, 4, 5].map((star) => (
               <span
                 key={star}
-                className={`writeReview-star ${star <= rating ? 'writeReview-filled' : ''}`}
+                className={`writeReview-star ${star <= rating ? "writeReview-filled" : ""}`}
                 onClick={() => setRating(star)}
               >
                 ★
@@ -113,7 +107,8 @@ function WriteReview({rooms}){
             value={roomId}
             onChange={(e) => {
               e.preventDefault();
-              setRoomId(e.target.value)}}
+              setRoomId(e.target.value);
+            }}
           >
             {rooms.map((r) => (
               <option key={r.room._id} value={r.room._id}>
@@ -153,11 +148,23 @@ function WriteReview({rooms}){
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting...' : 'Submit Review'}
+          {isSubmitting ? "Submitting..." : "Submit Review"}
         </button>
       </form>
-      {succesfullyPopUp && <SuccessfullyDisplay text={"Tạo đánh giá thành công!"} isOpen={succesfullyPopUp} setIsOpen={setSuccessfullyPopUp}/>}
-      {failedPopUp && <FailedDisplay text={"Vui lòng điền đầy đủ thông tin"} isOpen={failedPopUp} setIsOpen={setFailedPopUp}/>}
+      {succesfullyPopUp && (
+        <SuccessfullyDisplay
+          text={"Tạo đánh giá thành công!"}
+          isOpen={succesfullyPopUp}
+          setIsOpen={setSuccessfullyPopUp}
+        />
+      )}
+      {failedPopUp && (
+        <FailedDisplay
+          text={"Vui lòng điền đầy đủ thông tin"}
+          isOpen={failedPopUp}
+          setIsOpen={setFailedPopUp}
+        />
+      )}
     </div>
   );
 }

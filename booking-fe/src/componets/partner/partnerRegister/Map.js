@@ -58,8 +58,7 @@ const Map = ({
   option,
   allowPositionChange,
   showPropertyInfo,
-  setOpenMap
-
+  setOpenMap,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -73,7 +72,7 @@ const Map = ({
       option?.capacity,
       userId,
     );
-    
+
     if (respone) {
       setIsLoading(false);
       setProperties(respone);
@@ -202,14 +201,12 @@ const Map = ({
                       </p>
                     </div>
                     <button
-                      onClick={() =>
-                      {
+                      onClick={() => {
                         navigate(
                           `/property/${selectedProperty.value.property_id._id}`,
-                        )
-                        setOpenMap(false)
-                      }
-                      }
+                        );
+                        setOpenMap(false);
+                      }}
                     >
                       View
                     </button>

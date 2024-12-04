@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { redirect, useLocation, useNavigate } from "react-router-dom";
 import "./resultPayment.css";
 import axios from "axios";
-import moment from 'moment';
+import moment from "moment";
 
 function ResultPayment() {
   const location = useLocation(); // Lấy thông tin URL hiện tại
@@ -15,8 +15,17 @@ function ResultPayment() {
   const payDate = queryParams.get("vnp_PayDate");
   const transactionCode = queryParams.get("vnp_TxnRef");
   const overViewData = JSON.parse(localStorage.getItem("overViewData"));
-  const { email, firstName, lastName, bookingId, checkInDate, checkOutDate, address, hotelName } = overViewData;
-  const [paymentMethod,setPaymentMethod] = useState("");
+  const {
+    email,
+    firstName,
+    lastName,
+    bookingId,
+    checkInDate,
+    checkOutDate,
+    address,
+    hotelName,
+  } = overViewData;
+  const [paymentMethod, setPaymentMethod] = useState("");
   const bankCode = queryParams.get("vnp_BankCode");
 
   const [message, setMessage] = useState(true);
@@ -43,15 +52,14 @@ function ResultPayment() {
       setPaymentMethod("Thanh toán qua thẻ ngân hàng nội địa");
     }
 
-
     if (transactionStatus === "00") {
       const paymentData = {
         booking_id: bookingId,
         amount: amount,
         payment_method: paymentMethod,
         paymentCode: transactionCode,
-        paymentDate: moment(payDate, "YYYYMMDDHHmmss").toDate()
-      }
+        paymentDate: moment(payDate, "YYYYMMDDHHmmss").toDate(),
+      };
 
       const emailData = {
         firstname: firstName,
@@ -63,23 +71,28 @@ function ResultPayment() {
         checkOutDate: checkOutDate,
         email: email,
         hotelName: hotelName,
-        address: address
-      }
+        address: address,
+      };
 
       axios
-        .post(`${process.env.REACT_APP_API_URL}/payment/create_payment`, paymentData)
+        .post(
+          `${process.env.REACT_APP_API_URL}/payment/create_payment`,
+          paymentData,
+        )
         .then((res) => {
           console.log(res.data);
         })
         .catch((err) => console.log(err));
 
       axios
-        .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
+        .post(
+          `${process.env.REACT_APP_API_URL}/payment/save_payment`,
+          emailData,
+        )
         .then((res) => {
           console.log(res.data);
         })
         .catch((err) => console.log(err));
-
 
       setMessage(true);
     } else {

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./PropertyListPage.css";
 import "../partnerRegister/PropertyDetailsForm.css";
-import { deletePropertyById, getPropertyByOwner } from "../../../api/propertyAPI";
+import {
+  deletePropertyById,
+  getPropertyByOwner,
+} from "../../../api/propertyAPI";
 import { useNavigate, useParams } from "react-router-dom";
 import PropertyDetailsForm from "../partnerRegister/PropertyDetailsForm";
 import SearchBar from "./Components/SearchBar";
@@ -56,7 +59,7 @@ const PropertyListPage = () => {
 
   const handleDelete = async (propertyId) => {
     try {
-        await deletePropertyById(propertyId);
+      await deletePropertyById(propertyId);
       setProperties((prevProperties) =>
         prevProperties.filter((p) => p._id !== propertyId),
       );

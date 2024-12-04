@@ -28,7 +28,10 @@ const RatingProgressBar = ({ categorize, point }) => {
         <p>{displayedPoint}</p>
       </div>
       <div className="progress-bar">
-        <div className="fill" style={{ width: `${displayedPoint * 20}%` }}></div>
+        <div
+          className="fill"
+          style={{ width: `${displayedPoint * 20}%` }}
+        ></div>
       </div>
     </div>
   );

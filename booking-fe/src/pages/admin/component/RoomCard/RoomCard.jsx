@@ -1,5 +1,12 @@
 import React from "react";
-import { Card, CardMedia, CardContent, Typography, Box, Tooltip } from "@mui/material";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Box,
+  Tooltip,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 
 const RoomCard = ({ room }) => {
@@ -11,8 +18,8 @@ const RoomCard = ({ room }) => {
       component={Link}
       to={`view/${room._id}`}
       sx={{
-        width: 320,  
-        height: 350, 
+        width: 320,
+        height: 350,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -26,8 +33,8 @@ const RoomCard = ({ room }) => {
     >
       <CardMedia
         component="img"
-        height="160" 
-        image={images[0] || 'https://via.placeholder.com/320x160'} 
+        height="160"
+        image={images[0] || "https://via.placeholder.com/320x160"}
         alt={name}
         sx={{ objectFit: "cover" }}
       />
@@ -49,7 +56,11 @@ const RoomCard = ({ room }) => {
           </Typography>
         </Tooltip>
 
-        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.875rem" }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontSize: "0.875rem" }}
+        >
           Property: {propertyName}
         </Typography>
 
@@ -66,19 +77,37 @@ const RoomCard = ({ room }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-end",
-          fontSize: "0.875rem", 
+          fontSize: "0.875rem",
         }}
       >
-        <Typography variant="body2" color="text.primary" sx={{ fontSize: "0.875rem", fontWeight: "bold" }}>
+        <Typography
+          variant="body2"
+          color="text.primary"
+          sx={{ fontSize: "0.875rem", fontWeight: "bold" }}
+        >
           Price per Night
         </Typography>
 
-        <Typography variant="body2" color="primary" sx={{ fontSize: "0.875rem" }}>
-          Weekday: {price_per_night?.weekday ? `${price_per_night.weekday.toLocaleString()} VND` : "N/A"}
+        <Typography
+          variant="body2"
+          color="primary"
+          sx={{ fontSize: "0.875rem" }}
+        >
+          Weekday:{" "}
+          {price_per_night?.weekday
+            ? `${price_per_night.weekday.toLocaleString()} VND`
+            : "N/A"}
         </Typography>
 
-        <Typography variant="body2" color="primary" sx={{ fontSize: "0.875rem" }}>
-          Weekend: {price_per_night?.weekend ? `${price_per_night.weekend.toLocaleString()} VND` : "N/A"}
+        <Typography
+          variant="body2"
+          color="primary"
+          sx={{ fontSize: "0.875rem" }}
+        >
+          Weekend:{" "}
+          {price_per_night?.weekend
+            ? `${price_per_night.weekend.toLocaleString()} VND`
+            : "N/A"}
         </Typography>
       </Box>
     </Card>

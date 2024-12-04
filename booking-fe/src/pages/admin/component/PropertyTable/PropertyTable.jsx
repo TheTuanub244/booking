@@ -11,11 +11,10 @@ const PropertyTable = ({ properties }) => {
   };
   const tableRows = properties.map((property) => ({
     ...property,
-    id: property._id, 
+    id: property._id,
   }));
 
   function getOwnerName(ownerId) {
-   
     return "Owner";
   }
 

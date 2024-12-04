@@ -1,7 +1,7 @@
 .userTableGridContainer {
   height: 100%;
   width: 100%;
-  overflow: auto; 
+  overflow: auto;
 }
 
 .userTableGrid {
@@ -19,7 +19,7 @@
 .cellAction .viewButton {
   padding: 2px 5px;
   border-radius: 5px;
-  background-color: #1976d2; 
+  background-color: #1976d2;
   color: white;
   border: 1px dotted rgba(25, 118, 210, 0.6);
   cursor: pointer;
@@ -33,7 +33,7 @@
 .cellAction .editButton {
   padding: 2px 5px;
   border-radius: 5px;
-  background-color: #ffa726; 
+  background-color: #ffa726;
   color: white;
   border: 1px dotted rgba(255, 167, 38, 0.6);
   cursor: pointer;
@@ -43,7 +43,6 @@
 .cellAction .editButton:hover {
   background-color: #fb8c00;
 }
-
 
 .cellAction .deleteButton {
   padding: 2px 5px;
@@ -56,7 +55,7 @@
 }
 
 .cellAction .deleteButton:hover {
-  background-color: darkred; 
+  background-color: darkred;
 }
 
 .cellWithRole {
@@ -74,14 +73,14 @@
   color: rgba(33, 150, 243, 0.8); /* Blue */
 }
 
-.cellWithRole.Partner{
+.cellWithRole.Partner {
   color: rgba(0, 200, 83, 0.8); /* Green */
 }
 
 .userTableGridContainer.blurred {
   position: relative;
-  filter: blur(5px); 
-  pointer-events: none; 
+  filter: blur(5px);
+  pointer-events: none;
 }
 
 .userTableGridContainer {
@@ -90,6 +89,5 @@
 
 .MuiBackdrop-root {
   backdrop-filter: blur(10px);
-  background-color: rgba(0, 0, 0, 0.4); 
+  background-color: rgba(0, 0, 0, 0.4);
 }
-

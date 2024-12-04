@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 const ResultItem = ({ property, index }) => {
   const location = useLocation();
 
-
   const checkAdults =
     location.state?.option.capacity.adults > 1 ? "adults" : "adult";
   const checkRooms =

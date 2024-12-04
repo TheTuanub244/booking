@@ -1,5 +1,12 @@
 import React from "react";
-import { Card, CardMedia, CardContent, Typography, Box, Tooltip } from "@mui/material";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Box,
+  Tooltip,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 
 const PropertyCard = ({ property }) => {
@@ -10,7 +17,7 @@ const PropertyCard = ({ property }) => {
       component={Link}
       to={`view/${propertyId}`}
       sx={{
-        width: 280,  // Fixed width
+        width: 280, // Fixed width
         height: 170, // Fixed height
         display: "flex",
         flexDirection: "column",
@@ -37,8 +44,8 @@ const PropertyCard = ({ property }) => {
         {/* Title with tooltip */}
         <Tooltip title={property.name} placement="top" arrow>
           <Typography
-            variant="body2"  // Smaller font size
-            noWrap  // Ensures that the text overflows with ellipsis if too long
+            variant="body2" // Smaller font size
+            noWrap // Ensures that the text overflows with ellipsis if too long
             sx={{
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -52,9 +59,13 @@ const PropertyCard = ({ property }) => {
         </Tooltip>
 
         {/* Address with tooltip */}
-        <Tooltip title={`${property.address.street}, ${property.address.ward}, ${property.address.district}, ${property.address.province}`} placement="top" arrow>
+        <Tooltip
+          title={`${property.address.street}, ${property.address.ward}, ${property.address.district}, ${property.address.province}`}
+          placement="top"
+          arrow
+        >
           <Typography
-            variant="body2"  // Smaller font size
+            variant="body2" // Smaller font size
             color="text.secondary"
             sx={{
               overflow: "hidden",
@@ -63,7 +74,8 @@ const PropertyCard = ({ property }) => {
               fontSize: "0.875rem", // Custom smaller size for address
             }}
           >
-            {property.address.street}, {property.address.ward}, {property.address.district}, {property.address.province}
+            {property.address.street}, {property.address.ward},{" "}
+            {property.address.district}, {property.address.province}
           </Typography>
         </Tooltip>
       </CardContent>
@@ -79,7 +91,11 @@ const PropertyCard = ({ property }) => {
           right: 10,
         }}
       >
-        <Typography variant="body2" color="primary" sx={{ fontSize: "0.875rem" }}>
+        <Typography
+          variant="body2"
+          color="primary"
+          sx={{ fontSize: "0.875rem" }}
+        >
           ⭐ {property.rate}
         </Typography>
       </Box>

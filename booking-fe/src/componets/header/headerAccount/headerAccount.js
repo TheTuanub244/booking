@@ -120,9 +120,13 @@ function HeaderAccount() {
             </div>
             <div className="dropdown-bodyy">
               {notifications.length === 0 ? (
-                <p style={{
-                  marginLeft: "3%"
-                }}>Không có thông báo nào</p>
+                <p
+                  style={{
+                    marginLeft: "3%",
+                  }}
+                >
+                  Không có thông báo nào
+                </p>
               ) : (
                 notifications.map((notif, index) => (
                   <div

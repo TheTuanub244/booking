@@ -3,7 +3,7 @@ import "./reviewComment.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ReviewPopUp from "./reviewPopUp/reviewPopUp";
-import 'react-loading-skeleton/dist/skeleton.css';
+import "react-loading-skeleton/dist/skeleton.css";
 
 const ReviewComment = ({ review }) => {
   const [isReviewPopUp, setIsReviewPopUp] = useState(false);
@@ -11,7 +11,7 @@ const ReviewComment = ({ review }) => {
   const handleMoreInfoButton = (e) => {
     e.preventDefault();
     setIsReviewPopUp(true);
-  }
+  };
   return (
     <div className="reviewComment-container">
       <div className="reviewer-profile">
@@ -38,19 +38,23 @@ const ReviewComment = ({ review }) => {
       <div className="reviewer-comment">
         <p>{review?.review_text || <Skeleton count={3} />}</p>
         <button onClick={(e) => handleMoreInfoButton(e)}>Tìm hiểu thêm</button>
-        
       </div>
-      
-        <div>
-          {isReviewPopUp && <><div
-          className="blockInput"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setIsReviewPopUp(false);
-          }}
-        ></div><ReviewPopUp review={review} /></>}
-        </div>
+
+      <div>
+        {isReviewPopUp && (
+          <>
+            <div
+              className="blockInput"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsReviewPopUp(false);
+              }}
+            ></div>
+            <ReviewPopUp review={review} />
+          </>
+        )}
+      </div>
     </div>
   );
 };

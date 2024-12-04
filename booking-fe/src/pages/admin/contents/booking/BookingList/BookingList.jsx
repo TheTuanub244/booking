@@ -1,40 +1,42 @@
 import React, { useState, useEffect } from "react";
-import UserTable from "../../../component/UserTable/UserTable";
-import { getPendingUser } from "../../../../../api/userAPI";
+import BookingTable from "../../../component/BookingTable/BookingTable";
+import { getBooking } from "../../../../../api/bookingAPI";
+import { mockBookings } from "../../../data/bookingdata";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-const UserList = () => {
-  const [users, setUsers] = useState([]);
+const BookingList = () => {
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchUsers = async () => {
+  const fetchBookings = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getPendingUser();
-      setUsers(data);
+      //const data = await getBooking();
+      const data = mockBookings;
+      setBookings(data);
     } catch (err) {
-      console.error("Error fetching users:", err);
-      setError("Failed to load users. Please try again later.");
+      console.error("Error fetching bookings:", err);
+      setError("Failed to load bookings. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchBookings();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      // await deleteUser(id);
-      setUsers((prev) => prev.filter((user) => user._id !== id));
-      alert("User deleted successfully.");
+      // await deleteBooking(id);
+      setBookings((prev) => prev.filter((booking) => booking._id !== id));
+      alert("Booking deleted successfully.");
     } catch (err) {
-      console.error("Error deleting user:", err);
-      alert("Failed to delete the user. Please try again.");
+      console.error("Error deleting booking:", err);
+      alert("Failed to delete the booking. Please try again.");
     }
   };
 
@@ -51,7 +53,7 @@ const UserList = () => {
       }}
     >
       <Typography variant="h4" gutterBottom>
-        User Management
+        Booking Management
       </Typography>
 
       {loading ? (
@@ -79,22 +81,22 @@ const UserList = () => {
             variant="contained"
             color="primary"
             startIcon={<RefreshIcon />}
-            onClick={fetchUsers}
+            // onClick={fetchBookings}
           >
             Retry
           </Button>
         </Box>
-      ) : users.length === 0 ? (
+      ) : bookings.length === 0 ? (
         <Typography variant="h6" align="center" mt={4}>
-          No users found.
+          No bookings found.
         </Typography>
       ) : (
         <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
-          <UserTable users={users} onDelete={handleDelete} />
+          <BookingTable bookings={bookings} onDelete={handleDelete} />
         </Box>
       )}
     </Box>
   );
 };
 
-export default UserList;
+export default BookingList;

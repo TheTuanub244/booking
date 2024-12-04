@@ -1,32 +1,29 @@
+// src/components/PropertyTable/PropertyTable.jsx
+
+import React, { useState, useEffect } from "react";
 import "./PropertyTable.css";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog";
 
-const PropertyTable = ({ properties }) => {
-  const [data, setData] = useState(properties);
+const PropertyTable = ({ properties, onDelete }) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item._id !== id));
-  };
   const tableRows = properties.map((property) => ({
     ...property,
     id: property._id,
   }));
 
-  function getOwnerName(ownerId) {
-    return "Owner";
-  }
-
-  const propertyColumn = [
+  const propertyColumns = [
     {
       field: "name",
       headerName: "Name",
-      width: 170,
+      width: 200,
     },
     {
       field: "owner_id",
-      headerName: "Owner Name",
+      headerName: "Owner",
       width: 200,
       renderCell: (params) => getOwnerName(params.row.owner_id),
     },
@@ -39,7 +36,7 @@ const PropertyTable = ({ properties }) => {
     },
     {
       field: "property_type",
-      headerName: "Property Type",
+      headerName: "Type",
       width: 130,
     },
     {
@@ -47,37 +44,73 @@ const PropertyTable = ({ properties }) => {
       headerName: "Rate",
       width: 80,
       renderCell: (params) => (
-        <div className="rateCell">{params.row.rate || "N/A"}</div>
+        <div className="propertyRateCell">{params.row.rate || "N/A"}</div>
       ),
     },
     {
       field: "action",
       headerName: "Action",
-      width: 120,
+      width: 200,
+      sortable: false,
+      filterable: false,
       renderCell: (params) => (
-        <div className="cellAction">
+        <div className="propertyCellAction">
           <Link to={`view/${params.row.id}`} style={{ textDecoration: "none" }}>
-            <div className="viewButton">View</div>
+            <button className="propertyViewButton">View</button>
           </Link>
-          <div
-            className="deleteButton"
-            onClick={() => handleDelete(params.row.id)}
+          <button
+            className="propertyDeleteButton"
+            onClick={() => handleDeleteClick(params.row)}
           >
             Delete
-          </div>
+          </button>
         </div>
       ),
     },
   ];
 
+  function getOwnerName(ownerId) {
+    return "Owner";
+  }
+
+  const handleDeleteClick = (property) => {
+    setSelectedProperty(property);
+    setDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedProperty) {
+      onDelete(selectedProperty._id);
+    }
+    setDialogOpen(false);
+    setSelectedProperty(null);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSelectedProperty(null);
+  };
+
   return (
-    <DataGrid
-      className="propertyTableGrid"
-      rows={tableRows}
-      columns={propertyColumn}
-      pageSize={6}
-      rowsPerPageOptions={[6]}
-    />
+    <div
+      className={`propertyTableGridContainer ${dialogOpen ? "blurred" : ""}`}
+    >
+      <DataGrid
+        className="propertyTableGrid"
+        rows={tableRows}
+        columns={propertyColumns}
+        pageSize={6}
+        disableSelectionOnClick
+      />
+
+      <ConfirmationDialog
+        open={dialogOpen}
+        handleClose={handleCloseDialog}
+        handleConfirm={handleConfirmDelete}
+        title="Delete Property"
+        content={`Are you sure you want to delete the property "${selectedProperty?.name}"? This action cannot be undone.`}
+      />
+    </div>
   );
 };
 

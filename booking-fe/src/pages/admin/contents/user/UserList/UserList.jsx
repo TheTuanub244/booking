@@ -22,7 +22,7 @@ const UserList = () => {
       setLoading(false);
     }
   };
-
+  console.log({ users });
   useEffect(() => {
     fetchUsers();
   }, []);

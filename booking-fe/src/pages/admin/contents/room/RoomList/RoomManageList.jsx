@@ -5,6 +5,7 @@ import RoomSection from "../../../component/RoomCardSection/RoomCardSection";
 import {
   findRoomByProperty,
   findAvailableRoomWithSearch,
+  getAllRoomWithDetails,
 } from "../../../../../api/roomAPI";
 import {
   Box,
@@ -25,6 +26,7 @@ const RoomManageList = () => {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
+        // const data = await getAllRoomWithDetails();
         const data = await findRoomByProperty("67330d931e768dcfe6999375");
         setRooms(data);
       } catch (error) {

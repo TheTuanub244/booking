@@ -23,27 +23,25 @@ const RoomModal = ({ isOpen, onClose, room }) => {
               <table className="info-table">
                 <tbody>
                   <tr>
+                    <td>Type:</td>
                     <td>
-                      Type:
+                      <b>{room.type}</b>
                     </td>
-                    <td><b>{room.type}</b></td>
                   </tr>
                   <tr>
+                    <td>Rating:</td>
                     <td>
-                      Rating:
+                      <b>{room.rating}</b>
                     </td>
-                    <td><b>{room.rating}</b></td>
                   </tr>
                   <tr>
+                    <td>Capacity:</td>
                     <td>
-                      Capacity:
+                      <b>{room.capacity.room} guests</b>
                     </td>
-                    <td><b>{room.capacity.room} guests</b></td>
                   </tr>
                   <tr>
-                    <td>
-                      Price per Night:
-                    </td>
+                    <td>Price per Night:</td>
                     <td>
                       <span
                         className={

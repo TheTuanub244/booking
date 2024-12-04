@@ -1,7 +1,8 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 
 const BookingManage = () => {
-  return <div></div>;
+  return <Outlet />;
 };
 
 export default BookingManage;

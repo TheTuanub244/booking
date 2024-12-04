@@ -24,6 +24,7 @@ import LastViewProperties from "../../componets/lastViewProperties/LastViewPrope
 import { useNavigate } from "react-router-dom";
 import { findUnfinishedBooking } from "../../api/bookingAPI";
 import BookingPopup from "../../componets/bookingPopup/BookingPopup";
+import { getAllUser } from "../../api/userAPI";
 
 function Home() {
   const [sessionHistory, setSessionHistory] = useState();

@@ -1,18 +1,13 @@
 // src/components/ViewProperty.js
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getPropertyById } from '../../../../../api/propertyAPI';
-import {
-  CircularProgress,
-  Box,
-  Alert,
-} from '@mui/material';
-import AdminPropertyDetail from '../../../component/PropertyDetail/PropertyDetail';
-
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getPropertyById } from "../../../../../api/propertyAPI";
+import { CircularProgress, Box, Alert } from "@mui/material";
+import AdminPropertyDetail from "../../../component/PropertyDetail/PropertyDetail";
 
 const ViewProperty = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [propertyData, setPropertyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -23,7 +18,7 @@ const ViewProperty = () => {
         const data = await getPropertyById(id);
         setPropertyData(data);
       } catch (err) {
-        console.error('Error fetching property data:', err);
+        console.error("Error fetching property data:", err);
         setError(true);
       } finally {
         setLoading(false);
@@ -32,15 +27,15 @@ const ViewProperty = () => {
 
     fetchProperty();
   }, [id]);
-  console.log(propertyData)
+  console.log(propertyData);
   if (loading) {
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '80vh',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
         }}
       >
         <CircularProgress />
@@ -52,7 +47,7 @@ const ViewProperty = () => {
     return (
       <Box
         sx={{
-          textAlign: 'center',
+          textAlign: "center",
           padding: 4,
         }}
       >

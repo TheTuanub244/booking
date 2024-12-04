@@ -24,7 +24,7 @@ export class ValidateTokenGuard implements CanActivate {
       throw new UnauthorizedException('Sign In Required');
     }
     console.log(1);
-    
+
     try {
       this.jwtService.verify(token, { secret: process.env.secret });
       return true;

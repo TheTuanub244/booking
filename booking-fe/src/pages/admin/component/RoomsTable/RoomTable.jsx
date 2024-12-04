@@ -12,7 +12,7 @@ const RoomTable = ({ rooms }) => {
 
   const tableRows = rooms.map((room) => ({
     ...room,
-    id: room._id, 
+    id: room._id,
   }));
 
   const getPricePerNight = (price) => {
@@ -30,21 +30,21 @@ const RoomTable = ({ rooms }) => {
       field: "property_id",
       headerName: "Property Name",
       width: 200,
-      renderCell: (params) => params.row.property_id?.name || "Unknown Property",
+      renderCell: (params) =>
+        params.row.property_id?.name || "Unknown Property",
     },
     {
       field: "type",
       headerName: "Room Type",
       width: 130,
-      renderCell: (params) => params.row.type || "N/A", 
+      renderCell: (params) => params.row.type || "N/A",
     },
     {
       field: "capacity",
       headerName: "Capacity",
       width: 150,
-      renderCell: (params) => (
-        `${params.row.capacity?.adults || 0} Adults / ${params.row.capacity?.childs?.count || 0} Childs`
-      ),
+      renderCell: (params) =>
+        `${params.row.capacity?.adults || 0} Adults / ${params.row.capacity?.childs?.count || 0} Childs`,
     },
     {
       field: "price_per_night",

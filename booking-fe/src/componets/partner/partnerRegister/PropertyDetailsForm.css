@@ -24,6 +24,7 @@
   margin-top: 30px;
   border-radius: 8px;
   overflow: hidden;
+  z-index: 1;
 }
 .container-left {
   display: flex;
@@ -203,6 +204,11 @@ input {
   background-color: #c82333;
 }
 .open-map-button {
+  position: absolute;
+  bottom: 100px;
+  right: 520px;
+  z-index: 900;
+
   margin-top: 15px;
   padding: 10px 20px;
   background-color: #0071c2;

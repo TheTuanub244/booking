@@ -11,6 +11,7 @@ config(); // Load environment variables
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentSevice: PaymentService) {}
+  constructor(private readonly paymentSevice: PaymentService) {}
   @Post('save_payment')
   async savePayment(
     @Body() body: any,
@@ -200,5 +201,9 @@ export class PaymentController {
     }
 
     return sorted; // Trả về đối tượng đã sắp xếp
+  }
+  @Get('/getAllPayment')
+  async getAllPayment(){
+    return this.paymentSevice.getAllPayment
   }
 }

@@ -1,18 +1,12 @@
 // src/pages/EditProperty.jsx
 
-import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Grid,
-  Button,
-  CircularProgress,
-  Alert,
-} from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { getPropertyById } from '../../../../../api/propertyAPI';
-import PropertyForm from '../../../component/PropertyForm/PropertyForm';
+import React, { useState, useEffect } from "react";
+import { Box, Grid, Button, CircularProgress, Alert } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { getPropertyById } from "../../../../../api/propertyAPI";
+import PropertyForm from "../../../component/PropertyForm/PropertyForm";
 
 const EditProperty = () => {
   const { id } = useParams();
@@ -28,7 +22,7 @@ const EditProperty = () => {
         const data = await getPropertyById(id);
         setInitialData(data);
       } catch (err) {
-        console.error('Error fetching property data:', err);
+        console.error("Error fetching property data:", err);
         setError(true);
       } finally {
         setLoading(false);
@@ -48,10 +42,10 @@ const EditProperty = () => {
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '80vh',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
         }}
       >
         <CircularProgress />
@@ -63,7 +57,7 @@ const EditProperty = () => {
     return (
       <Box
         sx={{
-          textAlign: 'center',
+          textAlign: "center",
           padding: 4,
         }}
       >
@@ -78,15 +72,15 @@ const EditProperty = () => {
     <Box
       sx={{
         padding: 4,
-        backgroundColor: '#fff',
-        maxHeight: '100vh',
-        overflowY: 'auto',
+        backgroundColor: "#fff",
+        maxHeight: "100vh",
+        overflowY: "auto",
       }}
     >
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'flex-start',
+          display: "flex",
+          justifyContent: "flex-start",
           mb: 2,
         }}
       >

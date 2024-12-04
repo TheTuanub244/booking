@@ -491,4 +491,7 @@ export class UserService {
       role: status,
     });
   }
+  async getAllUser() {
+    return await this.userSchema.find({});
+  }
 }

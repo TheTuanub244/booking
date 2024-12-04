@@ -1,7 +1,7 @@
 import React from "react";
 import "./reviewDetail.css";
 import Skeleton from "react-loading-skeleton";
-import 'react-loading-skeleton/dist/skeleton.css';
+import "react-loading-skeleton/dist/skeleton.css";
 
 const ReviewDetail = ({ review }) => {
   return (

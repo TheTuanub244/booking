@@ -1,5 +1,5 @@
-import { signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { signOut } from "../api/userAPI";
+
 export const getRoleFromToken = (token, role) => {
   const payload = JSON.parse(atob(token.split(".")[1]));
   const isRole = payload.signInfo.role.some((value) => value === role);

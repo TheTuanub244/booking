@@ -4,7 +4,10 @@ import ContentLoader from "react-content-loader";
 import "./propertyDetail.css";
 import ReservationRoom from "./reservationRoom/reservationRoom";
 import { getPropertyById } from "../../api/propertyAPI";
-import { findRoomByProperty, getRoomWithPriceByProperty } from "../../api/roomAPI";
+import {
+  findRoomByProperty,
+  getRoomWithPriceByProperty,
+} from "../../api/roomAPI";
 import { getMonthlyRateByProperty } from "../../api/reviewAPI";
 import { updateLastProperties } from "../../api/sessionAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,8 +28,7 @@ const PropertyDetail = () => {
   const infoPrices = useRef(null);
   const overView = useRef(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
-  const [propertyInfo, setPropertyInfo] = useState({
-  });
+  const [propertyInfo, setPropertyInfo] = useState({});
   const [reviewInfo, setReviewInfo] = useState(null);
 
   const [refreshReview, setRefreshReview] = useState(false);
@@ -48,34 +50,38 @@ const PropertyDetail = () => {
   }, []);
 
   useEffect(() => {
-    if(propertyData && reviewInfo && location){
+    if (propertyData && reviewInfo && location) {
       setPropertyInfo(() => ({
         hotelName: propertyData[0].room.property_id.name,
         address: location,
         property: id,
         reviews: {
           total: reviewInfo.count,
-          point: reviewInfo.avarage
-        }
+          point: reviewInfo.avarage,
+        },
       }));
     }
 
     console.log(propertyInfo);
-      
   }, [propertyData, reviewInfo, location]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
         const pId = id.toString();
-        const check_in = JSON.parse(localStorage.getItem('option')).check_in
-        const check_out = JSON.parse(localStorage.getItem('option')).check_out
+        const check_in = JSON.parse(localStorage.getItem("option")).check_in;
+        const check_out = JSON.parse(localStorage.getItem("option")).check_out;
         try {
-          const data = await getRoomWithPriceByProperty(pId, check_in, check_out)
+          const data = await getRoomWithPriceByProperty(
+            pId,
+            check_in,
+            check_out,
+          );
           console.log(data);
-          
+
           setPropertyData(data);
-          const { street, district, province } = data[0].room.property_id.address;
+          const { street, district, province } =
+            data[0].room.property_id.address;
           setLocation(`${street}, ${district}, ${province}`);
 
           const reviews = await getMonthlyRateByProperty(pId);
@@ -83,7 +89,6 @@ const PropertyDetail = () => {
           const convertReviews = convertMonthlyRateData(reviews);
 
           setReviewInfo(convertReviews);
-
 
           setLoading(false);
         } catch (e) {
@@ -170,7 +175,7 @@ const PropertyDetail = () => {
 
   const refreshReviewSection = () => {
     setRefreshReview(true);
-  }
+  };
 
   const handleTabClick = (tabNumber) => {
     setSelectedTab(tabNumber);
@@ -280,7 +285,10 @@ const PropertyDetail = () => {
 
                   {/* Add placeholders if there are fewer than 6 images */}
                   {Array.from({
-                    length: Math.max(6 - propertyData[0].room.property_id.images.length, 0),
+                    length: Math.max(
+                      6 - propertyData[0].room.property_id.images.length,
+                      0,
+                    ),
                   }).map((_, index) => (
                     <div
                       key={`placeholder-${index}`}
@@ -334,7 +342,8 @@ const PropertyDetail = () => {
                       onLocationSelect={() => {}}
                       initialLocation={{
                         lat: propertyData[0].room.property_id.location.latitude,
-                        lng: propertyData[0].room.property_id.location.longitude,
+                        lng: propertyData[0].room.property_id.location
+                          .longitude,
                       }}
                       disableClick={true}
                       setOpenMap={setIsMapOpen}
@@ -357,10 +366,17 @@ const PropertyDetail = () => {
             </div>
           )}
           <div className="property-review">
-            <PropertyReview property_id={id} isRefresh={refreshReview} setIsRefresh={setRefreshReview}/>
+            <PropertyReview
+              property_id={id}
+              isRefresh={refreshReview}
+              setIsRefresh={setRefreshReview}
+            />
           </div>
           <div className="property-writeReview">
-            <WriteReview rooms={propertyData} refreshReviewSection={refreshReviewSection}/>
+            <WriteReview
+              rooms={propertyData}
+              refreshReviewSection={refreshReviewSection}
+            />
           </div>
         </>
       )}

@@ -36,18 +36,26 @@ export const createBooking = async (
   check_in_date,
   check_out_date,
   totalPrice,
-  token
+  token,
 ) => {
-  
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/booking/createBooking`,
-    { user_id, partnerId, property, roomData, capacity, check_in_date,  check_out_date, totalPrice },
+    {
+      user_id,
+      partnerId,
+      property,
+      roomData,
+      capacity,
+      check_in_date,
+      check_out_date,
+      totalPrice,
+    },
     {
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
-      withCredentials: true, 
-    }
+      withCredentials: true,
+    },
   );
   return respone.data;
 };
@@ -70,12 +78,18 @@ export const getBookingByOwner = async (userId) => {
   );
 
   return respone.data;
-}
-export const calculateTotalNightPriceForReservation = async (rooms, check_in_date, check_out_date) => {
+};
+export const calculateTotalNightPriceForReservation = async (
+  rooms,
+  check_in_date,
+  check_out_date,
+) => {
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/booking/calculateTotalNightPriceForReservation`,
     {
-      rooms, check_in_date, check_out_date
+      rooms,
+      check_in_date,
+      check_out_date,
     },
     {
       withCredentials: true,
@@ -83,15 +97,27 @@ export const calculateTotalNightPriceForReservation = async (rooms, check_in_dat
   );
 
   return respone.data;
-}
+};
 
-export const updateBookingStatus = async (bookingId,status) => {
+export const updateBookingStatus = async (bookingId, status) => {
   const response = await axios.post(
     `${process.env.REACT_APP_API_URL}/booking/updateBookingStates/${bookingId}`,
     status,
     {
       withCredentials: true,
-    }
+    },
+  );
+  return response.data;
+};
+export const getAllBooking = async (token) => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/getAllBooking`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+      withCredentials: true,
+    },
   );
   return response.data;
 }

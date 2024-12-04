@@ -1,9 +1,9 @@
-import React from 'react';
-import { Box, Grid, Typography, Button } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
-import ImageGallery from '../Image/ImageGallery';
+import React from "react";
+import { Box, Grid, Typography, Button } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocationDot, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+import ImageGallery from "../Image/ImageGallery";
 
 const PropertyDetail = ({ propertyData }) => {
   const {
@@ -23,15 +23,15 @@ const PropertyDetail = ({ propertyData }) => {
     <Box
       sx={{
         padding: 4,
-        backgroundColor: '#fff',
-        maxHeight: '100vh',
-        overflowY: 'auto',
+        backgroundColor: "#fff",
+        maxHeight: "100vh",
+        overflowY: "auto",
       }}
     >
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'flex-start',
+          display: "flex",
+          justifyContent: "flex-start",
           mb: 2,
         }}
       >

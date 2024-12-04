@@ -11,9 +11,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { redirect, useNavigate } from "react-router-dom";
 
-function Payment(
-  //object 
-  /*  address(chỗ này gửi được chuỗi đầy đủ như này luôn thì tốt "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam")
+function Payment() {
+//object
+/*  address(chỗ này gửi được chuỗi đầy đủ như này luôn thì tốt "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam")
       hotelName
       checkInDate()
       checkOutDate()
@@ -35,7 +35,6 @@ function Payment(
     parterId: (id)
     property:(id)
   */
-) {
   const [hasChild, setHasChild] = useState(false);
   const [reservationInfo, setReservationInfo] = useState({
     address: "",
@@ -45,13 +44,13 @@ function Payment(
     totalPrice: 0,
     capacity: {
       adults: 0,
-      childs: {}
+      childs: {},
     },
     roomData: [],
     totalNight: 0,
     reviews: {},
     partnerId: "",
-    property: ""
+    property: "",
   });
 
   const [formData, setFormData] = useState({
@@ -113,14 +112,11 @@ function Payment(
 
   useEffect(() => {
     editData();
-
   }, []);
-
-
 
   const handleChangeSelection = () => {
     navigate(-1);
-  }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -177,7 +173,10 @@ function Payment(
     await handleCreateBooking();
     formData.amount = reservationInfo.totalPrice;
     axios
-      .post(`${process.env.REACT_APP_API_URL}/payment/create_transaction`, formData)
+      .post(
+        `${process.env.REACT_APP_API_URL}/payment/create_transaction`,
+        formData,
+      )
       .then((res) => {
         console.log(res.data);
         if (localStorage.getItem("overViewData")) {
@@ -189,83 +188,100 @@ function Payment(
 
   };
 
-
   return (
-
     <div>
-      {!isLoading && <>
-        <Navbar />
-        <div className="payment">
-          <div className="paymentContainer">
-            <div className="leftContent">
-              <div className="bookingInformation">
-                <h3>{reservationInfo.hotelName}</h3>
-                <div className="address">
-                  {reservationInfo.address}
-                </div>
-                <span>{reservationInfo?.review?.desc || "Good"} Location</span>
-                <div className="infoEvaluation">
-                  <div className="infoScore">
-                    <div>{reservationInfo.reviews.point}</div>
+      {!isLoading && (
+        <>
+          <Navbar />
+          <div className="payment">
+            <div className="paymentContainer">
+              <div className="leftContent">
+                <div className="bookingInformation">
+                  <h3>{reservationInfo.hotelName}</h3>
+                  <div className="address">{reservationInfo.address}</div>
+                  <span>
+                    {reservationInfo?.review?.desc || "Good"} Location
+                  </span>
+                  <div className="infoEvaluation">
+                    <div className="infoScore">
+                      <div>{reservationInfo.reviews.point}</div>
+                    </div>
+
+                    <div className="infoRating">
+                      <div className="infoComment">
+                        {reservationInfo?.reviews?.desc || "Good"}
+                      </div>
+                      <div className="infoReview">
+                        {reservationInfo.reviews.total} reviews
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="infoRating">
-                    <div className="infoComment">{reservationInfo?.reviews?.desc || "Good"}</div>
-                    <div className="infoReview">{reservationInfo.reviews.total} reviews</div>
+                  <div className="infoExtra">
+                    <div className="wifi">
+                      <FontAwesomeIcon icon={faWifi} className="iconWifi" />
+                      <span>Free WiFi</span>
+                    </div>
+
+                    <div className="airport">
+                      <FontAwesomeIcon
+                        icon={faPlaneDeparture}
+                        className="iconPlane"
+                      />
+                      <span>Airport shuttle</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="infoExtra">
-                  <div className="wifi">
-                    <FontAwesomeIcon icon={faWifi} className="iconWifi" />
-                    <span>Free WiFi</span>
+                <div className="bookingDetails">
+                  <h3>Your booking details</h3>
+                  <div className="timeBooking">
+                    <div className="checkIn">
+                      <div className="checkInTitle">Check-in</div>
+                      <div className="checkInTime">
+                        {formatDate(reservationInfo.checkInDate)}
+                      </div>
+                      <div className="checkInFrom">From 14:00</div>
+                    </div>
+
+                    <div className="checkOut">
+                      <div className="checkOutTitle">Check-out</div>
+                      <div className="checkOutTime">
+                        {formatDate(reservationInfo.checkOutDate)}
+                      </div>
+                      <div className="checkOutUntil">Until 11:00</div>
+                    </div>
+                  </div>
+                  <div className="lengthStay">
+                    <div className="lengthStayTitle">Total length of stay:</div>
+                    <div className="totalNight">
+                      {reservationInfo.totalNight} nights
+                    </div>
                   </div>
 
-                  <div className="airport">
-                    <FontAwesomeIcon
-                      icon={faPlaneDeparture}
-                      className="iconPlane"
-                    />
-                    <span>Airport shuttle</span>
+                  <div className="selected">
+                    <div className="selectedTitle">You selected</div>
+
+                    {hasChild === true ? (
+                      <div className="mySelected">
+                        {totalRoomRef.current} rooms for{" "}
+                        {reservationInfo.capacity.adults} adults,{" "}
+                        {reservationInfo.capacity.childs.count} childs
+                      </div>
+                    ) : (
+                      <div className="mySelected">
+                        {totalRoomRef.current} rooms for{" "}
+                        {reservationInfo.capacity.adults} adults
+                      </div>
+                    )}
+                    <button
+                      className="changeSelection"
+                      onClick={handleChangeSelection}
+                    >
+                      Change your selection{" "}
+                    </button>
                   </div>
                 </div>
-              </div>
-
-              <div className="bookingDetails">
-                <h3>Your booking details</h3>
-                <div className="timeBooking">
-                  <div className="checkIn">
-                    <div className="checkInTitle">Check-in</div>
-                    <div className="checkInTime">{formatDate(reservationInfo.checkInDate)}</div>
-                    <div className="checkInFrom">From 14:00</div>
-                  </div>
-
-                  <div className="checkOut">
-                    <div className="checkOutTitle">Check-out</div>
-                    <div className="checkOutTime">{formatDate(reservationInfo.checkOutDate)}</div>
-                    <div className="checkOutUntil">Until 11:00</div>
-                  </div>
-                </div>
-                <div className="lengthStay">
-                  <div className="lengthStayTitle">Total length of stay:</div>
-                  <div className="totalNight">{reservationInfo.totalNight} nights</div>
-                </div>
-
-                <div className="selected">
-                  <div className="selectedTitle">You selected</div>
-
-                  {hasChild === true ? (
-                    <div className="mySelected">{totalRoomRef.current} rooms for {reservationInfo.capacity.adults} adults, {reservationInfo.capacity.childs.count} childs</div>
-                  ) : (
-                    <div className="mySelected">{totalRoomRef.current} rooms for {reservationInfo.capacity.adults} adults</div>
-                  )
-
-                  }
-                  <button className="changeSelection" onClick={handleChangeSelection}>
-                    Change your selection{" "}
-                  </button>
-                </div>
-              </div>
 
               <div className="priceSummary">
                 <h3>Your price summary</h3>
@@ -337,70 +353,75 @@ function Payment(
                       required
                     />
 
-                    <label for="amount">Total price<span className="required">*</span></label>
-                    <input
-                      class="form-control"
-                      data-val="true"
-                      data-val-number="The field Amount must be a number."
-                      data-val-required="The Amount field is required."
-                      id="amount"
-                      name="amount"
-                      type="number"
-                      readOnly
-                      value={reservationInfo.totalPrice}
-                      onChange={handleChange}
-                    />
+                      <label for="amount">
+                        Total price<span className="required">*</span>
+                      </label>
+                      <input
+                        class="form-control"
+                        data-val="true"
+                        data-val-number="The field Amount must be a number."
+                        data-val-required="The Amount field is required."
+                        id="amount"
+                        name="amount"
+                        type="number"
+                        readOnly
+                        value={reservationInfo.totalPrice}
+                        onChange={handleChange}
+                      />
 
+                      <label htmlFor="bankcode">Payment method</label>
+                      <select
+                        name="bankCode"
+                        id="bankcode"
+                        class="form-control"
+                        onChange={handleChange}
+                      >
+                        <option value="">Không chọn </option>
+                        <option value="VNMART"> Vi dien tu VnMart</option>
+                        <option value="VISA">VISA</option>
+                        <option value="VIETCAPITALBANK">VIETCAPITALBANK</option>
+                        <option value="SCB">Ngan hang SCB</option>
+                        <option value="NCB">Ngan hang NCB</option>
+                        <option value="SACOMBANK">Ngan hang SacomBank </option>
+                        <option value="EXIMBANK">Ngan hang EximBank </option>
+                        <option value="MSBANK">Ngan hang MSBANK </option>
+                        <option value="NAMABANK">Ngan hang NamABank </option>
+                        <option value="VIETINBANK">
+                          Ngan hang Vietinbank{" "}
+                        </option>
+                        <option value="VIETCOMBANK">Ngan hang VCB </option>
+                        <option value="HDBANK">Ngan hang HDBank</option>
+                        <option value="DONGABANK">Ngan hang Dong A</option>
+                        <option value="TPBANK">Ngân hàng TPBank </option>
+                        <option value="OJB">Ngân hàng OceanBank</option>
+                        <option value="BIDV">Ngân hàng BIDV </option>
+                        <option value="TECHCOMBANK">
+                          Ngân hàng Techcombank{" "}
+                        </option>
+                        <option value="VPBANK">Ngan hang VPBank </option>
+                        <option value="AGRIBANK">Ngan hang Agribank </option>
+                        <option value="MBBANK">Ngan hang MBBank </option>
+                        <option value="ACB">Ngan hang ACB </option>
+                        <option value="OCB">Ngan hang OCB </option>
+                        <option value="IVB">Ngan hang IVB </option>
+                        <option value="SHB">Ngan hang SHB </option>
+                      </select>
 
-
-                    <label htmlFor="bankcode">Payment method</label>
-                    <select
-                      name="bankCode"
-                      id="bankcode"
-                      class="form-control"
-                      onChange={handleChange}
-                    >
-                      <option value="">Không chọn </option>
-                      <option value="VNMART"> Vi dien tu VnMart</option>
-                      <option value="VISA">VISA</option>
-                      <option value="VIETCAPITALBANK">VIETCAPITALBANK</option>
-                      <option value="SCB">Ngan hang SCB</option>
-                      <option value="NCB">Ngan hang NCB</option>
-                      <option value="SACOMBANK">Ngan hang SacomBank </option>
-                      <option value="EXIMBANK">Ngan hang EximBank </option>
-                      <option value="MSBANK">Ngan hang MSBANK </option>
-                      <option value="NAMABANK">Ngan hang NamABank </option>
-                      <option value="VIETINBANK">Ngan hang Vietinbank </option>
-                      <option value="VIETCOMBANK">Ngan hang VCB </option>
-                      <option value="HDBANK">Ngan hang HDBank</option>
-                      <option value="DONGABANK">Ngan hang Dong A</option>
-                      <option value="TPBANK">Ngân hàng TPBank </option>
-                      <option value="OJB">Ngân hàng OceanBank</option>
-                      <option value="BIDV">Ngân hàng BIDV </option>
-                      <option value="TECHCOMBANK">Ngân hàng Techcombank </option>
-                      <option value="VPBANK">Ngan hang VPBank </option>
-                      <option value="AGRIBANK">Ngan hang Agribank </option>
-                      <option value="MBBANK">Ngan hang MBBank </option>
-                      <option value="ACB">Ngan hang ACB </option>
-                      <option value="OCB">Ngan hang OCB </option>
-                      <option value="IVB">Ngan hang IVB </option>
-                      <option value="SHB">Ngan hang SHB </option>
-
-                    </select>
-
-                    <label htmlFor="language">Language<span className="required">*</span></label>
-                    <select
-                      name="language"
-                      id="language"
-                      class="form-control"
-                      onChange={handleChange}
-                    >
-                      <option value="vn">Tiếng Việt</option>
-                      <option value="en">English</option>
-                    </select>
-                    {errorPayment && (
-                      <p className="errorMessage">{errorPayment}</p>
-                    )}
+                      <label htmlFor="language">
+                        Language<span className="required">*</span>
+                      </label>
+                      <select
+                        name="language"
+                        id="language"
+                        class="form-control"
+                        onChange={handleChange}
+                      >
+                        <option value="vn">Tiếng Việt</option>
+                        <option value="en">English</option>
+                      </select>
+                      {errorPayment && (
+                        <p className="errorMessage">{errorPayment}</p>
+                      )}
 
                     <div className="btnDiv">
                       <button type="submit" className="btnSub">
@@ -414,9 +435,8 @@ function Payment(
               </div>
             </div>
           </div>
-        </div>
-      </>}
-
+        </>
+      )}
     </div>
   );
 }

@@ -1,116 +1,61 @@
-export const bookingColumns = [
-  { field: "id", headerName: "ID", width: 50 },
+export const mockBookings = [
   {
-    field: "user_id",
-    headerName: "User",
-    width: 150,
-    renderCell: (params) => {
-      return (
-        <div className="cellWithImg">
-          <img className="cellImg" src={params.row.user_img} alt="avatar" />
-          {params.row.user_name}
-        </div>
-      );
+    _id: "booking1",
+    user_id: {
+      _id: "user1",
+      userName: "John Doe",
+      // Add other user fields as necessary
     },
-  },
-  {
-    field: "property",
-    headerName: "Property",
-    width: 200,
-  },
-  {
-    field: "room_count",
-    headerName: "Room Count",
-    width: 100,
-  },
-  {
-    field: "check_in_date",
-    headerName: "Check-In Date",
-    width: 150,
-  },
-  {
-    field: "check_out_date",
-    headerName: "Check-Out Date",
-    width: 150,
-  },
-  {
-    field: "adults",
-    headerName: "Adults",
-    width: 100,
-  },
-  {
-    field: "child_count",
-    headerName: "Child Count",
-    width: 120,
-  },
-  {
-    field: "child_age",
-    headerName: "Child Age",
-    width: 120,
-  },
-  {
-    field: "total_price",
-    headerName: "Total Price",
-    width: 120,
-  },
-  {
-    field: "booking_status",
-    headerName: "Booking Status",
-    width: 150,
-    renderCell: (params) => {
-      return (
-        <div className={`cellWithStatus ${params.row.booking_status}`}>
-          {params.row.booking_status}
-        </div>
-      );
+    room_id: [
+      { _id: "room1", name: "Deluxe Room" },
+      { _id: "room2", name: "Standard Room" },
+    ],
+    property: {
+      _id: "property1",
+      name: "Sunshine Apartments",
+      // Add other property fields as necessary
     },
+    check_in_date: "2023-09-15T00:00:00.000Z",
+    check_out_date: "2023-09-20T00:00:00.000Z",
+    capacity: {
+      adults: 2,
+      childs: {
+        count: 1,
+        age: 5,
+      },
+      room: 1,
+    },
+    total_price: 750,
+    booking_status: "CONFIRMED", // Possible values: PENDING, CONFIRMED, CANCELLED
+    payment_status: "PAID", // Possible values: UNPAID, PAID
+    request: "Late check-in, please.",
   },
-];
-
-export const bookingsRows = [
   {
-    id: 1,
-    user_id: "User 1",
-    user_img: "https://images8.alphacoders.com/657/657974.jpg",
-    user_name: "John Doe",
-    property: "Beachside Villa",
-    room_count: 2,
-    check_in_date: "2024-12-01",
-    check_out_date: "2024-12-05",
-    adults: 2,
-    child_count: 1,
-    child_age: 5,
+    _id: "booking2",
+    user_id: {
+      _id: "user2",
+      userName: "Jane Smith",
+      // Add other user fields as necessary
+    },
+    room_id: [{ _id: "room3", name: "Suite" }],
+    property: {
+      _id: "property2",
+      name: "Oceanview Resort",
+      // Add other property fields as necessary
+    },
+    check_in_date: "2023-10-01T00:00:00.000Z",
+    check_out_date: "2023-10-05T00:00:00.000Z",
+    capacity: {
+      adults: 4,
+      childs: {
+        count: 2,
+        age: 8,
+      },
+      room: 2,
+    },
     total_price: 1200,
-    booking_status: "CONFIRMED",
-  },
-  {
-    id: 2,
-    user_id: "User 2",
-    user_img: "https://images8.alphacoders.com/657/657974.jpg",
-    user_name: "Jane Smith",
-    property: "Mountain Cabin",
-    room_count: 1,
-    check_in_date: "2024-11-20",
-    check_out_date: "2024-11-25",
-    adults: 1,
-    child_count: 0,
-    child_age: null,
-    total_price: 800,
     booking_status: "PENDING",
-  },
-  {
-    id: 3,
-    user_id: "User 3",
-    user_img: "https://images8.alphacoders.com/657/657974.jpg",
-    user_name: "Alice Brown",
-    property: "City Apartment",
-    room_count: 3,
-    check_in_date: "2024-11-18",
-    check_out_date: "2024-11-22",
-    adults: 4,
-    child_count: 2,
-    child_age: 8,
-    total_price: 2000,
-    booking_status: "CANCELLED",
+    payment_status: "UNPAID",
+    request: "",
   },
 ];

@@ -11,6 +11,7 @@ import { ROLES_KEY } from '../decorators/roles.decorator';
 import { JwtService } from '@nestjs/jwt';
 import * as admin from 'firebase-admin';
 import { SessionService } from 'src/session/session.service';
+import { getAuth } from 'firebase/auth';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -40,7 +41,14 @@ export class RolesGuard implements CanActivate {
     try {
       payload = this.jwtService.verify(token);
     } catch (error) {
-      payload = await admin.auth().verifyIdToken(token);
+      console.log(error.name);
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException(
+          'You must sign in to perform this action',
+        );
+      } else {
+        payload = await admin.auth().verifyIdToken(token);
+      }
     }
 
     request.user = payload;

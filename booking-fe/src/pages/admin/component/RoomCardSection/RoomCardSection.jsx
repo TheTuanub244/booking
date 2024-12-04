@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Grid, Pagination } from "@mui/material";
-import RoomCard from "../RoomCard/RoomCard"; 
+import RoomCard from "../RoomCard/RoomCard";
 
 const RoomSection = ({ rooms }) => {
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6; 
+  const itemsPerPage = 6;
 
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;

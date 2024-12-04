@@ -77,26 +77,35 @@ export const getAllRoomWithTotalPrice = async (
 
   return respone.data;
 };
-export const getRoomWithPriceByProperty = async (property_id, check_in, check_out) => {
+export const getRoomWithPriceByProperty = async (
+  property_id,
+  check_in,
+  check_out,
+) => {
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/room/getRoomWithPriceByProperty`,
     { check_in, check_out, property_id },
   );
 
   return respone.data;
-}
-export const findRoomInReservation = async (property_id, check_in_date, check_out_date, capacity) => {
+};
+export const findRoomInReservation = async (
+  property_id,
+  check_in_date,
+  check_out_date,
+  capacity,
+) => {
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/room/findRoomInReservation`,
     { check_in_date, check_out_date, property_id, capacity },
   );
 
   return respone.data;
-}
+};
 export const getAllRoomWithDetails = async () => {
   const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/room/getAllRoomWithDetails`,
   );
 
   return respone.data;
-}
+};

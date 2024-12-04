@@ -5,18 +5,23 @@ import RoomModal from "./roomModal";
 import { checkRoomDateBooking } from "../../../function/searchRoomInProperty";
 import SignInPopup from "./signInPopup";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createBooking } from "../../../api/bookingAPI";
+import { createBooking, findUnfinishedBooking } from "../../../api/bookingAPI";
 import { Button, Modal } from "react-bootstrap";
-import { calculateNights } from "../../../helpers/dateHelpers";
+import {
+  calculateNights,
+  formatDateDayMonthAndYear,
+} from "../../../helpers/dateHelpers";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DateRange } from "react-date-range";
 import moment from "moment";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
-import { findRoomByProperty, findRoomInReservation } from "../../../api/roomAPI";
+import {
+  findRoomByProperty,
+  findRoomInReservation,
+} from "../../../api/roomAPI";
 import { set } from "date-fns";
 import FailedDisplay from "../../failedDisplay/failedDisplay";
-
 
 const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
   const [selectedRoom, setSelectedRoom] = useState([]);
@@ -27,7 +32,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
     adults: 0,
     childs: {
       count: 0,
-      age: 0
+      age: 0,
     },
   });
   const oneDayLater = new Date();
@@ -38,9 +43,9 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       key: "selection",
     },
   ]);
-  
+
   const [openDate, setOpenDate] = useState(false);
-  
+
   const [numberOfNights, setNumberOfNights] = useState(3);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,38 +61,44 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
 
   const [showModal, setShowModal] = useState(false);
 
-
   const [reserveFailed, setReserveFailed] = useState(false);
+  const [pendingBooking, setPendingBooking] = useState(false);
 
-  const [totalPrice, setTotalPrice] = useState(0)
+  const option = JSON.parse(localStorage.getItem("option"));
+
+  const [bookingData, setBookingData] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
   const userId = localStorage.getItem("userId");
-  const accessToken = localStorage.getItem("accessToken")
-  const check_in = JSON.parse(localStorage.getItem('option')).check_in;
-    const check_out = JSON.parse(localStorage.getItem('option')).check_out;
-    const adults = JSON.parse(localStorage.getItem('option')).capacity.adults
-    const children = JSON.parse(localStorage.getItem('option')).capacity.childs.count
-    const age = JSON.parse(localStorage.getItem('option')).capacity.childs.age || 0
+  const accessToken = localStorage.getItem("accessToken");
+  const check_in = JSON.parse(localStorage.getItem("option")).check_in;
+  const check_out = JSON.parse(localStorage.getItem("option")).check_out;
+  const adults = JSON.parse(localStorage.getItem("option")).capacity.adults;
+  const children = JSON.parse(localStorage.getItem("option")).capacity.childs
+    .count;
+  const age =
+    JSON.parse(localStorage.getItem("option")).capacity.childs.age || 0;
   const closeModal = () => {
     setIsModalOpen(false);
     setModalRoom(null);
   };
-  
+
   useEffect(() => {
-    
-    setDate([{
-      startDate: moment(check_in, "YYYY-MM-DD").toDate(),
-      endDate: moment(check_out, "YYYY-MM-DD").toDate()
-    }]);
+    setDate([
+      {
+        startDate: moment(check_in, "YYYY-MM-DD").toDate(),
+        endDate: moment(check_out, "YYYY-MM-DD").toDate(),
+      },
+    ]);
     setNumberOfGuests({
       adults: adults,
       childs: {
         count: children,
-        age: age
-      }
-    })
-    const totalNights = calculateNights(check_in, check_out)
-    setNumberOfNights(totalNights)
-  }, [])
+        age: age,
+      },
+    });
+    const totalNights = calculateNights(check_in, check_out);
+    setNumberOfNights(totalNights);
+  }, []);
   useEffect(() => {
     setReservationInfo({
       address: propertyInfo.address,
@@ -100,7 +111,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       totalNight: numberOfNights,
       reviews: propertyInfo.reviews,
       partnerId: partnerId,
-      property: propertyInfo.property
+      property: propertyInfo.property,
     });
 
     localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
@@ -109,8 +120,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
 
   const handleTimeoutFailedDisplay = async () => {
     setReserveFailed(true);
-  }
-  
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -122,9 +132,12 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
   };
 
   const handleChangeDate = (item) => {
-    
+    option.check_in = moment(item.range1.startDate).format("YYYY-MM-DD");
+    option.check_out = moment(item.range1.endDate).format("YYYY-MM-DD");
+    localStorage.setItem("option", JSON.stringify(option));
+
     setDate([item.selection || item.range1]);
-  }
+  };
   function formatDate(date) {
     const formattedDate = new Intl.DateTimeFormat("en-GB", {
       weekday: "short",
@@ -132,7 +145,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       month: "short",
     }).format(date);
 
-    return formattedDate.replace(",", ""); // Loại bỏ dấu phẩy
+    return formattedDate.replace(",", "");
   }
 
   const handleChangeNumberOfGuest = (e) => {
@@ -146,22 +159,22 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
           [name]: value,
         };
       } else if (name === "childs") {
-        if(value === 0){
+        if (value === 0) {
           return {
             ...prev,
             childs: {
               count: 0,
               age: 0,
-            }
-          }
-        } 
+            },
+          };
+        }
         return {
           ...prev,
           childs: {
             ...prev.childs,
-            count: value
-          }
-        }
+            count: value,
+          },
+        };
       }
     });
   };
@@ -169,17 +182,16 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
   const handleChangeAgeOfChilds = (e) => {
     e.stopPropagation();
     const { value } = e.target;
-    if(value < 0) return;
+    if (value < 0) return;
     setNumberOfGuests((prev) => ({
       ...prev,
       childs: {
         ...prev.childs,
-        age: value
-      }
+        age: value,
+      },
     }));
   };
 
-  
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleReserveClick = async () => {
@@ -189,13 +201,17 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       
       
 
-
-      if(selectedRoom.length > 0) {
-        navigate('/payment');
+      const checkPendingBooking = await findUnfinishedBooking(userId);
+      if (checkPendingBooking.length !== 0) {
+        setPendingBooking(true);
+        setBookingData(checkPendingBooking);
       } else {
-        await handleTimeoutFailedDisplay();
+        if (selectedRoom.length > 0) {
+          navigate("/payment");
+        } else {
+          await handleTimeoutFailedDisplay();
+        }
       }
-      
 
       // await createBooking(
       //   userId,
@@ -208,16 +224,10 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       //   totalPrice,
       //   accessToken
       // );
-
-
-
-
-
-
-    } catch(err){
+    } catch (err) {
       console.log(err);
-      if(err.response.status === 401){
-        setShowModal(true)
+      if (err.response.status === 401) {
+        setShowModal(true);
       }
     }
   };
@@ -225,7 +235,6 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
     setShowModal(false);
     navigate("/login");
   };
-  
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
@@ -237,37 +246,43 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
     navigate("/login");
   };
   const handleUpdate = async (e) => {
-    e.preventDefault()
-    const response = await findRoomInReservation(roomData[0].room.property_id._id, check_in, check_out, {adults, childs: {
-      count: children,
-      age: age
-    }})
-    console.log(response);
-    
-  }
+    e.preventDefault();
+    const response = await findRoomInReservation(
+      roomData[0].room.property_id._id,
+      check_in,
+      check_out,
+      {
+        adults,
+        childs: {
+          count: children,
+          age: age,
+        },
+      },
+    );
+    setIsSearchRoom(true);
+    setRoomSearch(response);
+  };
 
   return (
     <div className="ReservationForm">
       <Modal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          centered
-          className="fix-modal"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Sign in required</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            You must sign in to reserve your room !
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="primary" onClick={() => handleCloseModal()}>
-              OK
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        className="fix-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Sign in required</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>You must sign in to reserve your room !</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => handleCloseModal()}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <h2>Reserve Your Room</h2>
-      <form className="reservation-details" onSubmit={e => {}}>
+      <form className="reservation-details" onSubmit={(e) => {}}>
         <label htmlFor="checkIn">Check-In Date:</label>
         <div className="checkIn-input">
           <div className="headerSearchItem iconCalendar">
@@ -280,8 +295,13 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
             >{`${formatDate(date[0].startDate)} - ${formatDate(date[0].endDate)}`}</span>
             {openDate && (
               <div className="dateInput">
-                <div className="blockInput" onClick={e => {e.stopPropagation(); setOpenDate(!openDate)}}>
-                </div>
+                <div
+                  className="blockInput"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenDate(!openDate);
+                  }}
+                ></div>
                 <DateRange
                   editableDateInputs={true}
                   onChange={(item) => handleChangeDate(item)}
@@ -290,11 +310,9 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
                   className="reservation-date"
                 />
               </div>
-              
             )}
           </div>
         </div>
-        
 
         <label htmlFor="guests">Number of Guests:</label>
         <div
@@ -320,14 +338,13 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
                 <div className="numberOfGuestInput-inputLabel">
                   <label>Adults: </label>
                   <input
-                    
                     type="number"
                     name="adults"
                     value={numberOfGuests.adults}
                     onChange={(e) => handleChangeNumberOfGuest(e)}
                   />
                 </div>
-                
+
                 <div className="numberOfGuestInput-inputLabel">
                   <label>Childs: </label>
                   <input
@@ -337,28 +354,49 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
                     onChange={(e) => handleChangeNumberOfGuest(e)}
                   />
                 </div>
-                
+
                 {numberOfGuests.childs.count > 0 && (
                   <div className="numberOfGuestInput-inputLabel">
                     <label>Childs Age: </label>
                     <input
-                        type="number"
-                        name={`childAge`}
-                        value={numberOfGuests.childs.age}
-                        onChange={(e) => {
-                          handleChangeAgeOfChilds(e);
-                        }}
-                      />
+                      type="number"
+                      name={`childAge`}
+                      value={numberOfGuests.childs.age}
+                      onChange={(e) => {
+                        handleChangeAgeOfChilds(e);
+                      }}
+                    />
                   </div>
                 )}
-                <button className="finishChoosing" onClick={(e) => {e.stopPropagation();
-                  setNumberOfGuestInput(false);}}>Done</button>
+                <button
+                  className="finishChoosing"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setNumberOfGuestInput(false);
+                    const capacity = {
+                      adults: parseInt(numberOfGuests.adults),
+                      childs: {
+                        count: parseInt(numberOfGuests.childs.count),
+                        age: parseInt(numberOfGuests.childs.age),
+                      },
+                    };
+                    option.capacity.childs = capacity.childs;
+                    option.capacity.adults = capacity.adults;
+                    localStorage.setItem("option", JSON.stringify(option));
+                  }}
+                >
+                  Done
+                </button>
               </div>
             </>
           )}
         </div>
 
-        <button type="submit" className="update" onClick={(e) => handleUpdate(e)}>
+        <button
+          type="submit"
+          className="update"
+          onClick={(e) => handleUpdate(e)}
+        >
           Update
         </button>
       </form>
@@ -409,7 +447,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
             </tbody>
           </table>
         </div>
-        
+
         <div className="reserveButton">
           <div>
             <h4>Total Price: {formatCurrency(totalPrice)}</h4>
@@ -429,7 +467,22 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
         onClose={handleClosePopup}
         onSignIn={handleSignIn}
       />
-      {reserveFailed && <FailedDisplay text={"Vui lòng chọn phòng để đặt"} isOpen={reserveFailed} setIsOpen={setReserveFailed}/>}
+      {reserveFailed && (
+        <FailedDisplay
+          text={"Vui lòng chọn phòng để đặt"}
+          isOpen={reserveFailed}
+          setIsOpen={setReserveFailed}
+          bookingData={bookingData}
+        />
+      )}
+      {pendingBooking && (
+        <FailedDisplay
+          text={"Vui lòng hoàn tất thanh toán đang có"}
+          isOpen={pendingBooking}
+          setIsOpen={setPendingBooking}
+          bookingData={bookingData}
+        />
+      )}
     </div>
   );
 };

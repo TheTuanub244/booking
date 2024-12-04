@@ -1,4 +1,3 @@
-// PartnerRequestTable.jsx
 import React, { useState, useEffect } from "react";
 import "./PartnerRequestTable.css";
 import { DataGrid } from "@mui/x-data-grid";
@@ -9,7 +8,7 @@ const PartnerRequestTable = ({ partnerRequests, onAccept, onDecline }) => {
   useEffect(() => {
     const tableRows = partnerRequests.map((partnerRequest) => ({
       ...partnerRequest,
-      id: partnerRequest._id, 
+      id: partnerRequest._id,
     }));
     setData(tableRows);
   }, [partnerRequests]);
@@ -19,12 +18,7 @@ const PartnerRequestTable = ({ partnerRequests, onAccept, onDecline }) => {
       field: "userName",
       headerName: "User Name",
       width: 200,
-      renderCell: (params) => (
-        <div>
-          
-          {params.row.userName}
-        </div>
-      ),
+      renderCell: (params) => <div>{params.row.userName}</div>,
     },
     {
       field: "email",
@@ -53,11 +47,7 @@ const PartnerRequestTable = ({ partnerRequests, onAccept, onDecline }) => {
       filterable: false,
       renderCell: (params) => (
         <div className="cellAction">
-      
-          <div
-            className="acceptButton"
-            onClick={() => onAccept(params.row.id)}
-          >
+          <div className="acceptButton" onClick={() => onAccept(params.row.id)}>
             Accept
           </div>
           <div
@@ -78,7 +68,6 @@ const PartnerRequestTable = ({ partnerRequests, onAccept, onDecline }) => {
         rows={data}
         columns={columns}
         pageSize={9}
-        rowsPerPageOptions={[9, 15, 25]}
         disableSelectionOnClick
       />
     </div>

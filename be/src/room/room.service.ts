@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room } from './room.schema';
 import mongoose, { Model, ObjectId, Types } from 'mongoose';
@@ -10,6 +10,10 @@ import { Property } from 'src/property/property.schema';
 import { Session } from 'src/session/session.schema';
 import { Booking } from 'src/booking/booking.schema';
 import moment from 'moment';
+import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { ROLE } from 'src/user/enum/role.enum';
 
 @Injectable()
 export class RoomService {
@@ -55,6 +59,8 @@ export class RoomService {
   async countRoomWithPropety(property_id: mongoose.Types.ObjectId) {
     return await this.roomSchema.countDocuments({ property_id });
   }
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
   async getAllRoomWithDetails() {
     return this.roomSchema.find().populate({
       path: 'property_id',
@@ -436,14 +442,29 @@ export class RoomService {
         const checkFullRoom = await this.bookingService.checkFullRoom(
           value._id.toString(),
         );
-        if (checkFullRoom) {
-          const finalResponse = await this.findConflictingInBookings(
-            value._id,
-            findProperty._id,
-            check_in_date,
-            check_out_date,
-          );
-          if (finalResponse.length === 0) {
+        if (
+          value.capacity.adults >= capacity.adults &&
+          value.capacity.childs.age >= capacity.childs.age &&
+          value.capacity.childs.count >= capacity.childs.count
+        ) {
+          if (checkFullRoom) {
+            const finalResponse = await this.findConflictingInBookings(
+              value._id,
+              findProperty._id,
+              check_in_date,
+              check_out_date,
+            );
+            if (finalResponse.length === 0) {
+              const totalPriceNight =
+                await this.bookingService.calculateTotalNightPrice({
+                  room_id: [value._id],
+                  property: findProperty._id,
+                  check_in_date: check_in_date,
+                  check_out_date: check_out_date,
+                });
+              availableRoom.push({ value, totalPriceNight });
+            }
+          } else {
             const totalPriceNight =
               await this.bookingService.calculateTotalNightPrice({
                 room_id: [value._id],
@@ -451,21 +472,12 @@ export class RoomService {
                 check_in_date: check_in_date,
                 check_out_date: check_out_date,
               });
-            availableRoom.push({ value, totalPriceNight });
-          }
-        } else {
-          const totalPriceNight =
-            await this.bookingService.calculateTotalNightPrice({
-              room_id: [value._id],
-              property: findProperty._id,
-              check_in_date: check_in_date,
-              check_out_date: check_out_date,
+            availableRoom.push({
+              value,
+              totalPriceNight,
+              numberOfAvailableRooms: value.capacity.room,
             });
-          availableRoom.push({
-            value,
-            totalPriceNight,
-            numberOfAvailableRooms: value.capacity.room,
-          });
+          }
         }
       }),
     );

@@ -25,6 +25,8 @@ export class BookingController {
   @Post('createBooking')
   @Roles(ROLE.MEMBER, ROLE.PARTNER)
   async createBooking(@Body() createBookingDto: any) {
+    console.log(createBookingDto);
+
     return this.bookingService.createBooking(createBookingDto);
   }
   @Roles(ROLE.PARTNER)
@@ -83,5 +85,11 @@ export class BookingController {
     @Body() data: any,
   ) {
     return this.bookingService.updateBookingStatus(bookingId, data);
+  }
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  @Get('/getAllBooking')
+  async getAllBooking(){
+    return this.bookingService.getAllBooking()
   }
 }

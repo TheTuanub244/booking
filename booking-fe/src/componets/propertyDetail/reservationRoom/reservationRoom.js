@@ -114,9 +114,13 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       property: propertyInfo.property,
     });
 
-    localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
     
-  }, [numberOfGuests, selectedRoom, date]);
+    
+  }, [numberOfGuests, selectedRoom, date, totalPrice]);
+
+  useEffect(() => {
+    localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
+  }, [reservationInfo])
 
   const handleTimeoutFailedDisplay = async () => {
     setReserveFailed(true);
@@ -207,7 +211,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
         setBookingData(checkPendingBooking);
       } else {
         if (selectedRoom.length > 0) {
-          navigate("/payment");
+          navigate("/payment", {state: reservationInfo});
         } else {
           await handleTimeoutFailedDisplay();
         }

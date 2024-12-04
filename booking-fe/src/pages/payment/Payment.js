@@ -85,7 +85,14 @@ function Payment() {
   const totalRoomRef = useRef(0);
 
   const loadData = () => {
+    if (localStorage.getItem("reservation")) {
+      const ri= localStorage.getItem("reservation");
+      return ri ? JSON.parse(ri) : null;
+    }
     const ri = localStorage.getItem('reservationInfo');
+    if (ri) {
+      localStorage.setItem("reservation",ri);
+    }
     return ri ? JSON.parse(ri) : null;
   };
 
@@ -115,7 +122,9 @@ function Payment() {
   }, []);
 
   const handleChangeSelection = () => {
-    navigate(-1);
+    localStorage.removeItem("reservation");
+    navigate(`/property/${reservationInfo.property}`);
+
   };
 
   const handleChange = (e) => {

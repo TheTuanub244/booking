@@ -88,7 +88,6 @@ function Home() {
       getHistory(userId);
       handleFindUnfinishedBooking(userId);
     }
-
   }, []);
 
   return (

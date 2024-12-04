@@ -1,4 +1,4 @@
 interface ReviewTypeStats {
-    count: number;
-    totalRating: number;
-  }
+  count: number;
+  totalRating: number;
+}

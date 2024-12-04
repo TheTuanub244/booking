@@ -10,7 +10,7 @@ config(); // Load environment variables
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentSevice: PaymentService) { }
+  constructor(private readonly paymentSevice: PaymentService) {}
   @Post('save_payment')
   async savePayment(
     @Body() body: any,
@@ -162,12 +162,10 @@ export class PaymentController {
             }
           } else {
             // eslint-disable-next-line prettier/prettier
-            res
-              .status(200)
-              .json({
-                RspCode: '02',
-                Message: 'This order has been updated to the payment status',
-              });
+            res.status(200).json({
+              RspCode: '02',
+              Message: 'This order has been updated to the payment status',
+            });
           }
         } else {
           res.status(200).json({ RspCode: '04', Message: 'Amount invalid' });

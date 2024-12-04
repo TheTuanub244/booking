@@ -1,7 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.CreateSessionDto = void 0;
-class CreateSessionDto {
-}
+class CreateSessionDto {}
 exports.CreateSessionDto = CreateSessionDto;
 //# sourceMappingURL=createSession.dto.js.map

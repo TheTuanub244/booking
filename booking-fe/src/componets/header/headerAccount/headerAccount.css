@@ -38,6 +38,7 @@
 .notification-wrapperr {
   position: relative;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 .notification-iconn {
@@ -50,7 +51,10 @@
     background-color 0.3s,
     font-weight 0.3s;
 }
-
+.admin-icon {
+  margin-right: 25px;
+  cursor: pointer;
+}
 .notification-item.unreadd {
   background-color: #f9f9f9;
   font-weight: bold;
@@ -96,7 +100,8 @@
 }
 .notification-dropdownn {
   position: absolute;
-  top: -10%;
+  top: -110px;
+  left: 58%;
   background-color: white;
   color: black;
   width: 300px;

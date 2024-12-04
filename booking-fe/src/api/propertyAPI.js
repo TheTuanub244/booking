@@ -154,13 +154,21 @@ export const getPropertyByplace = async (place) => {
     return respone;
   }
 };
-export const deletePropertyById = async (id) => {
-  const respone = await axios.delete(
-    `${process.env.REACT_APP_API_URL}/property/deletePropertyById/${id}`,
+export const deletePropertyById = async (
+  id,
+  userId,
+  currentPage,
+  propertiesPage,
+) => {
+  const respone = await axios.post(
+    `${process.env.REACT_APP_API_URL}/property/deletePropertyById/${id}?page=${currentPage}&limit=${propertiesPage}`,
+    {
+      userId,
+    },
   );
 
   return respone.data;
-}
+};
 export const getDistinctPlace = async () => {
   const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/property/getDistinctPlace`,
@@ -186,12 +194,19 @@ export const getRateOfProperties = async () => {
   );
   return respone.data;
 };
-export const getPropertyAndPriceByDistance = async (longitude,  latitude, distance, check_in, check_out) => {
+export const getPropertyAndPriceByDistance = async (
+  longitude,
+  latitude,
+  distance,
+  check_in,
+  check_out,
+) => {
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/property/getPropertyAndPriceByDistance?distance=${distance}&longitude=${longitude}&latitude=${latitude}`,
     {
-      check_in, check_out
-    }
+      check_in,
+      check_out,
+    },
   );
   return respone.data;
-}
+};

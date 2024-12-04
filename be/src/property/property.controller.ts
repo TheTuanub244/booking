@@ -194,9 +194,19 @@ export class PropertyController {
   async getRateOfProperties() {
     return this.propertyService.getRateOfProperties();
   }
-  @Delete('deletePropertyById/:id')
-  async deletePropertyById(@Param('id') id: string) {
-    return this.propertyService.deletePropertyById(id);
+  @Post('deletePropertyById/:id')
+  async deletePropertyById(
+    @Param('id') id: string,
+    @Body() data: any,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 5,
+  ) {
+    return this.propertyService.deletePropertyById(
+      id,
+      data.userId,
+      page,
+      limit,
+    );
   }
   @Post('getPropertyAndPriceByDistance')
   async getPropertyAndPriceByDistance(

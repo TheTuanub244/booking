@@ -8,7 +8,10 @@ import {
   Popup,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { getAllProperty, getPropertyAndPriceByDistance } from "../../../api/propertyAPI";
+import {
+  getAllProperty,
+  getPropertyAndPriceByDistance,
+} from "../../../api/propertyAPI";
 import L from "leaflet";
 import "./Map.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -59,8 +62,7 @@ const Map = ({
   option,
   allowPositionChange,
   showPropertyInfo,
-  setOpenMap
-
+  setOpenMap,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -76,7 +78,7 @@ const Map = ({
       option?.capacity,
       userId,
     );
-    
+
     if (respone) {
       setIsLoading(false);
       setProperties(respone);
@@ -119,7 +121,6 @@ const Map = ({
         }
       },
     });
-
 
     return position ? (
       <Marker
@@ -208,14 +209,12 @@ const Map = ({
                       </p>
                     </div>
                     <button
-                      onClick={() =>
-                      {
+                      onClick={() => {
                         navigate(
                           `/property/${selectedProperty.value.property_id._id}`,
-                        )
-                        setOpenMap(false)
-                      }
-                      }
+                        );
+                        setOpenMap(false);
+                      }}
                     >
                       View
                     </button>
@@ -253,7 +252,7 @@ const Map = ({
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
               />
-              <LocationMarker />
+              <LocationMarker allowPositionChange={allowPositionChange} />
               {properties.map(
                 (property) =>
                   property.value && (

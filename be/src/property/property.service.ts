@@ -240,6 +240,9 @@ export class PropertyService {
         images: propertyImageUrl,
         rooms: [],
       };
+      if (!propertyData._id || propertyData._id === 'undefined') {
+        delete propertyData._id;
+      }
       const newProperty = new this.propertySchema(propertyData);
 
       const savedProperty = await newProperty.save();
@@ -492,9 +495,24 @@ export class PropertyService {
   async getDistinctPlace() {
     return this.propertySchema.distinct('address.province');
   }
-  async deletePropertyById(property_id: string) {
-    return this.propertySchema.findByIdAndDelete(
+  async deletePropertyById(
+    property_id: string,
+    owner_id: ObjectId,
+    page: number,
+    limit: number,
+  ) {
+    await this.propertySchema.findByIdAndDelete(
       new Types.ObjectId(property_id),
+      {
+        new: true,
+      },
     );
+
+    const newPropertiesList = await this.getPropertyWithOwner(
+      owner_id,
+      page,
+      limit,
+    );
+    return newPropertiesList;
   }
 }

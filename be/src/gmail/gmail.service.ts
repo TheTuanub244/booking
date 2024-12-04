@@ -9,7 +9,7 @@ export class GmailService {
   async sendEmail(to: string, subject: string, text: string, html: string) {
     const msg = {
       to: to,
-      from: 'khuatvanviet17@gmail.com', 
+      from: 'khuatvanviet17@gmail.com',
       subject,
       text,
       html,

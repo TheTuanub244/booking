@@ -145,23 +145,22 @@ export const checkResetPasswordToken = async (userId, token, user) => {
     user,
   );
 
-
   return respone.data;
 };
 export const acceptRequestPartner = async (userId) => {
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/user/updateRequestPartner`,
-    {userId, status: 'Partner'},
+    { userId, status: "Partner" },
   );
   return respone.data;
-}
+};
 export const declineRequestPartner = async (userId) => {
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/user/updateRequestPartner`,
-    {userId, status: 'Pending'},
+    { userId, status: "Pending" },
   );
   return respone.data;
-}
+};
 export const getAllUser = async (token) => {
   const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/user/getAllUser`,
@@ -169,8 +168,8 @@ export const getAllUser = async (token) => {
       headers: {
         Authorization: `Bearer ${token}`, //acessToken
       },
-      withCredentials: true, 
-    }
+      withCredentials: true,
+    },
   );
   return respone.data;
-}
+};

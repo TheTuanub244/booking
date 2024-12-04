@@ -1,20 +1,14 @@
 // ViewPartnerRequest.jsx
 import React, { useState, useEffect } from "react";
 import PartnerRequestTable from "../../../component/PartnerRequestTable/PartnerRequestTable";
-import { getPendingUser } from "../../../../../api/userAPI"; 
-import {
-  Box,
-  Typography,
-  CircularProgress,
-  Button,
-} from "@mui/material";
+import { getPendingUser } from "../../../../../api/userAPI";
+import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 const ViewPartnerRequest = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
 
   const fetchPendingUsers = async () => {
     setLoading(true);
@@ -36,7 +30,7 @@ const ViewPartnerRequest = () => {
 
   const handleAccept = async (id) => {
     try {
-      //await acceptPartnerRequest(id); 
+      //await acceptPartnerRequest(id);
       setPendingUsers((prev) => prev.filter((user) => user._id !== id));
       alert("Partner request accepted successfully.");
     } catch (err) {

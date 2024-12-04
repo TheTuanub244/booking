@@ -3,7 +3,7 @@ import "./headerAccount.css";
 import { signOut } from "../../../api/userAPI";
 import { useNavigate } from "react-router-dom";
 import { getRoleFromToken } from "../../../helpers/authHelpers";
-import { faBell, faHotel } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faHotel, faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   getAllNotificationWithUser,
@@ -19,10 +19,13 @@ function HeaderAccount() {
   const [notifications, setNotifications] = useState();
   const [totalUnseen, setTotalUnseen] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+  const accessToken = localStorage.getItem("accessToken");
+
   const handleNavigate = () => {
-    const accessToken = localStorage.getItem("accessToken");
     const role = getRoleFromToken(accessToken, "Partner");
+
     if (role) {
       navigate(`/partner/propertyList/${userId}`);
     } else {
@@ -48,6 +51,9 @@ function HeaderAccount() {
   useEffect(() => {
     getAllNotification();
     const id = localStorage.getItem("userId");
+    const adminRole = getRoleFromToken(accessToken, "Admin");
+    setIsAdmin(adminRole);
+
     if (id) {
       socketService.on("notifyPartner", (notification) => {
         console.log("Notification received in HeaderAccount:", notification);
@@ -120,9 +126,13 @@ function HeaderAccount() {
             </div>
             <div className="dropdown-bodyy">
               {notifications.length === 0 ? (
-                <p style={{
-                  marginLeft: "3%"
-                }}>Không có thông báo nào</p>
+                <p
+                  style={{
+                    marginLeft: "3%",
+                  }}
+                >
+                  Không có thông báo nào
+                </p>
               ) : (
                 notifications.map((notif, index) => (
                   <div
@@ -148,7 +158,11 @@ function HeaderAccount() {
           </div>
         )}
       </>
-
+      {isAdmin && (
+        <div className="admin-icon" onClick={() => navigate("/admin")}>
+          <FontAwesomeIcon icon={faUserTie} />
+        </div>
+      )}
       <span className="userName-account">{"Hello, " + userName}</span>
       <button onClick={handleSignOut} className="signOutButton">
         Sign Out

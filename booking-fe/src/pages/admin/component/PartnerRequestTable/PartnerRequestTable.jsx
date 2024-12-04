@@ -9,7 +9,7 @@ const PartnerRequestTable = ({ partnerRequests, onAccept, onDecline }) => {
   useEffect(() => {
     const tableRows = partnerRequests.map((partnerRequest) => ({
       ...partnerRequest,
-      id: partnerRequest._id, 
+      id: partnerRequest._id,
     }));
     setData(tableRows);
   }, [partnerRequests]);
@@ -19,12 +19,7 @@ const PartnerRequestTable = ({ partnerRequests, onAccept, onDecline }) => {
       field: "userName",
       headerName: "User Name",
       width: 200,
-      renderCell: (params) => (
-        <div>
-          
-          {params.row.userName}
-        </div>
-      ),
+      renderCell: (params) => <div>{params.row.userName}</div>,
     },
     {
       field: "email",
@@ -53,11 +48,7 @@ const PartnerRequestTable = ({ partnerRequests, onAccept, onDecline }) => {
       filterable: false,
       renderCell: (params) => (
         <div className="cellAction">
-      
-          <div
-            className="acceptButton"
-            onClick={() => onAccept(params.row.id)}
-          >
+          <div className="acceptButton" onClick={() => onAccept(params.row.id)}>
             Accept
           </div>
           <div

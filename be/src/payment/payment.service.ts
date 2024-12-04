@@ -13,13 +13,12 @@ export class PaymentService {
     private readonly paymentModel: Model<Payment>,
     private readonly gmailService: GmailService,
     @InjectModel(Booking.name)
-    private readonly bookingSchema: Model<Booking>
+    private readonly bookingSchema: Model<Booking>,
   ) {}
 
   async createPayment(data: any) {
     const payment = new this.paymentModel(data);
     return payment.save();
-    
   }
 
   async savePayment(data: any) {
@@ -34,7 +33,6 @@ export class PaymentService {
     const checkOutDate = data.checkOutDate;
     const email = data.email;
     const paymentMethod = data.paymentMethod;
-
 
     const subject = 'Thông báo giao dịch thành công';
     const text = `Kính gửi anh/chị ${firstname} ${lastname},

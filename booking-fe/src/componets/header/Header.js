@@ -82,13 +82,13 @@ function Header({ type, places, promptData }) {
   };
   const handleClick = async (e) => {
     const userId = localStorage.getItem("userId");
-    const option = JSON.parse(localStorage.getItem('option'))
-    option.check_in = moment(date[0].startDate).format("YYYY-MM-DD")
-    option.check_out = moment(date[0].endDate).format("YYYY-MM-DD")
-    option.capacity.adults = options.adult
-    option.capacity.childs.count = options.children
-    option.capacity.childs.age = selectedAge
-    option.capacity.room = options.room
+    const option = JSON.parse(localStorage.getItem("option"));
+    option.check_in = moment(date[0].startDate).format("YYYY-MM-DD");
+    option.check_out = moment(date[0].endDate).format("YYYY-MM-DD");
+    option.capacity.adults = options.adult;
+    option.capacity.childs.count = options.children;
+    option.capacity.childs.age = selectedAge;
+    option.capacity.room = options.room;
     localStorage.setItem("option", JSON.stringify(option));
     const data = {
       userId,
@@ -105,7 +105,7 @@ function Header({ type, places, promptData }) {
       },
     };
     data.province = data.place;
-    
+
     navigate("/searchResult", {
       state: { option: data, longitude, latitude },
     });
@@ -132,45 +132,44 @@ function Header({ type, places, promptData }) {
     }
   }, [promptData]);
   const handleChangeDate = (item) => {
-    
     setDate([item.selection || item.range1]);
-  }
+  };
   useEffect(() => {
-    const check_in = JSON.parse(localStorage.getItem('option'))?.check_in
-    const check_out = JSON.parse(localStorage.getItem('option'))?.check_out
-    
-   if(!check_in && !check_out){
+    const check_in = JSON.parse(localStorage.getItem("option"))?.check_in;
+    const check_out = JSON.parse(localStorage.getItem("option"))?.check_out;
+
+    if (!check_in && !check_out) {
       const option = {
         capacity: {
-          childs:{
+          childs: {
             count: 0,
-            age: 0
+            age: 0,
           },
-          room: 0
-        }
-      }
-      option.check_in = moment(date[0].startDate).format("YYYY-MM-DD")
-      option.check_out = moment(date[0].endDate).format("YYYY-MM-DD")
-      option.capacity.adults = 2
-      option.capacity.childs.count = 0
-      option.capacity.room = 1
-      localStorage.setItem('option', JSON.stringify(option))
-      console.log(date)
-
-   } else {
-
-    const option = JSON.parse(localStorage.getItem('option'))
-    setOptions({
-      adult: option.capacity.adults,
-      children: option.capacity.childs.count,
-      room: option.capacity.room
-    })
-    setDate([{
-      startDate: moment(option.check_in, "YYYY-MM-DD").toDate(),
-      endDate: moment(option.check_out, "YYYY-MM-DD").toDate()
-    }])
-   }
-  }, [])
+          room: 0,
+        },
+      };
+      option.check_in = moment(date[0].startDate).format("YYYY-MM-DD");
+      option.check_out = moment(date[0].endDate).format("YYYY-MM-DD");
+      option.capacity.adults = 2;
+      option.capacity.childs.count = 0;
+      option.capacity.room = 1;
+      localStorage.setItem("option", JSON.stringify(option));
+      console.log(date);
+    } else {
+      const option = JSON.parse(localStorage.getItem("option"));
+      setOptions({
+        adult: option.capacity.adults,
+        children: option.capacity.childs.count,
+        room: option.capacity.room,
+      });
+      setDate([
+        {
+          startDate: moment(option.check_in, "YYYY-MM-DD").toDate(),
+          endDate: moment(option.check_out, "YYYY-MM-DD").toDate(),
+        },
+      ]);
+    }
+  }, []);
   return (
     <div className="header">
       <div

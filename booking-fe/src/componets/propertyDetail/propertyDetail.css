@@ -80,7 +80,7 @@
 .mini-map {
   height: 300px;
   width: 30%;
-  margin-top: 15px;
+  margin-bottom: -10px;
   border-radius: 8px;
   overflow: hidden;
 }

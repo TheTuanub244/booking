@@ -18,10 +18,10 @@ import { Booking, BookingSchema } from 'src/booking/booking.schema';
       },
       {
         name: Booking.name,
-        schema: BookingSchema
-      }
+        schema: BookingSchema,
+      },
     ]),
-    GmailModule
+    GmailModule,
   ],
 })
 export class PaymentModule {}

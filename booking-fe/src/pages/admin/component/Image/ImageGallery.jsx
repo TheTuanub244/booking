@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { Box, Grid, IconButton, Fade, Paper, Typography } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from "react";
+import { Box, Grid, IconButton, Fade, Paper, Typography } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ImageGallery = ({ images, name }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -11,7 +14,7 @@ const ImageGallery = ({ images, name }) => {
   const totalImages = images.length;
 
   const handlePrevThumbnails = () => {
-    setSelectedImageIndex(selectedImageIndex -1);
+    setSelectedImageIndex(selectedImageIndex - 1);
     if (visibleStartIndex > 0 && visibleStartIndex === selectedImageIndex) {
       setVisibleStartIndex(visibleStartIndex - 1);
     }
@@ -19,7 +22,10 @@ const ImageGallery = ({ images, name }) => {
 
   const handleNextThumbnails = () => {
     setSelectedImageIndex(selectedImageIndex + 1);
-    if (visibleStartIndex + maxVisibleThumbnails === selectedImageIndex +1 && selectedImageIndex <   totalImages) {      
+    if (
+      visibleStartIndex + maxVisibleThumbnails === selectedImageIndex + 1 &&
+      selectedImageIndex < totalImages
+    ) {
       setVisibleStartIndex(visibleStartIndex + 1);
     }
   };
@@ -29,18 +35,21 @@ const ImageGallery = ({ images, name }) => {
   };
 
   const canPrev = selectedImageIndex > 0;
-  const canNext = selectedImageIndex +1 < totalImages;
+  const canNext = selectedImageIndex + 1 < totalImages;
 
-  const visibleThumbnails = images.slice(visibleStartIndex, visibleStartIndex + maxVisibleThumbnails);
+  const visibleThumbnails = images.slice(
+    visibleStartIndex,
+    visibleStartIndex + maxVisibleThumbnails,
+  );
 
   return (
     <Box>
       <Box
         sx={{
-          position: 'relative',
-          width: '100%',
-          paddingTop: '56.25%',
-          overflow: 'hidden',
+          position: "relative",
+          width: "100%",
+          paddingTop: "56.25%",
+          overflow: "hidden",
           mb: 2,
         }}
       >
@@ -50,13 +59,13 @@ const ImageGallery = ({ images, name }) => {
               src={images[selectedImageIndex]}
               alt={`${name} ${selectedImageIndex + 1}`}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 top: 0,
                 left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transition: 'opacity 0.5s ease-in-out',
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                transition: "opacity 0.5s ease-in-out",
               }}
               loading="lazy"
             />
@@ -64,15 +73,15 @@ const ImageGallery = ({ images, name }) => {
             <Paper
               variant="outlined"
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 0,
                 left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: '#f0f0f0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                width: "100%",
+                height: "100%",
+                backgroundColor: "#f0f0f0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <Typography variant="subtitle1" color="text.secondary">
@@ -84,9 +93,9 @@ const ImageGallery = ({ images, name }) => {
       </Box>
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <IconButton
@@ -94,19 +103,19 @@ const ImageGallery = ({ images, name }) => {
           aria-label="Previous Images"
           sx={{
             opacity: canPrev ? 1 : 0.3,
-            pointerEvents: canPrev ? 'auto' : 'none',
-            transition: 'opacity 0.3s',
+            pointerEvents: canPrev ? "auto" : "none",
+            transition: "opacity 0.3s",
           }}
         >
           <FontAwesomeIcon icon={faChevronLeft} />
         </IconButton>
         <Box
           sx={{
-            overflow: 'hidden',
-            width: '60%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            overflow: "hidden",
+            width: "60%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Grid
@@ -115,10 +124,10 @@ const ImageGallery = ({ images, name }) => {
             justifyContent="center"
             alignItems="center"
             sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              flexWrap: 'nowrap',
-              transition: 'transform 0.5s ease-in-out',
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "nowrap",
+              transition: "transform 0.5s ease-in-out",
             }}
           >
             {visibleThumbnails.map((img, index) => {
@@ -127,16 +136,22 @@ const ImageGallery = ({ images, name }) => {
                 <Grid item xs={4} key={actualIndex}>
                   <Box
                     sx={{
-                      position: 'relative',
-                      width: '100%',
-                      paddingTop: '56.25%',
-                      cursor: 'pointer',
-                      border: actualIndex === selectedImageIndex ? '2px solid #1976d2' : '2px solid transparent',
+                      position: "relative",
+                      width: "100%",
+                      paddingTop: "56.25%",
+                      cursor: "pointer",
+                      border:
+                        actualIndex === selectedImageIndex
+                          ? "2px solid #1976d2"
+                          : "2px solid transparent",
                       borderRadius: 1,
-                      overflow: 'hidden',
-                      transition: 'border 0.3s, box-shadow 0.3s',
-                      boxShadow: actualIndex === selectedImageIndex ? '0 0 10px rgba(25, 118, 210, 0.5)' : 'none',
-                      '&:hover': {
+                      overflow: "hidden",
+                      transition: "border 0.3s, box-shadow 0.3s",
+                      boxShadow:
+                        actualIndex === selectedImageIndex
+                          ? "0 0 10px rgba(25, 118, 210, 0.5)"
+                          : "none",
+                      "&:hover": {
                         opacity: 0.8,
                       },
                     }}
@@ -146,13 +161,13 @@ const ImageGallery = ({ images, name }) => {
                       src={img}
                       alt={`${name} Thumbnail ${actualIndex + 1}`}
                       style={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 0,
                         left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s',
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        transition: "transform 0.3s",
                       }}
                       loading="lazy"
                     />
@@ -167,8 +182,8 @@ const ImageGallery = ({ images, name }) => {
           aria-label="Next Images"
           sx={{
             opacity: canNext ? 1 : 0.3,
-            pointerEvents: canNext ? 'auto' : 'none',
-            transition: 'opacity 0.3s',
+            pointerEvents: canNext ? "auto" : "none",
+            transition: "opacity 0.3s",
           }}
         >
           <FontAwesomeIcon icon={faChevronRight} />

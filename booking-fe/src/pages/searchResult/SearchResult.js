@@ -49,7 +49,7 @@ const SearchResult = () => {
 
   const searchRoom = async () => {
     const response = await findAvailableRoomWithSearch(option);
-    
+
     setIsLoading(false);
     if (response?.length && response) {
       const uniqueProperties = Array.from(
@@ -106,14 +106,13 @@ const SearchResult = () => {
       }));
       setRates((prevRates) =>
         prevRates.map((item) => {
-
           const match = ratesArray.find((r) => r.name === item.name);
 
           return match ? { ...item, count: match.count } : item;
         }),
       );
       setPropertyTypes(propertyTypesArray);
-      
+
       setTotalProperties(sortedProperties);
       const paginatedProperties = sortedProperties.slice(
         currentPage - 1,
@@ -229,7 +228,6 @@ const SearchResult = () => {
                 disableClick={true}
                 allowPositionChange={false}
                 showPropertyInfo={false}
-
               />
             </div>
             {showFullMap && (
@@ -358,9 +356,11 @@ const SearchResult = () => {
           <div className="main-content">
             <div className="header-search">
               <h1>
-                {params.get("place") ? params.get("place") : (
-                   params.get("type") ? ( params.get("type")) : (location.state?.option?.province)
-                )}
+                {params.get("place")
+                  ? params.get("place")
+                  : params.get("type")
+                    ? params.get("type")
+                    : location.state?.option?.province}
                 : {properties.length} properties found
               </h1>
             </div>

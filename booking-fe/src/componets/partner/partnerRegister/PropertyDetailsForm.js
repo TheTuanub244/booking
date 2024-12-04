@@ -21,6 +21,7 @@ const PropertyDetailsForm = ({
   initialData,
   type,
   setTab,
+  setActiveTab,
 }) => {
   const [propertyData, setPropertyData] = useState({
     name: "",
@@ -352,8 +353,6 @@ const PropertyDetailsForm = ({
     });
   };
   const updateProperty = async () => {
-    console.log(1);
-
     const accessToken = localStorage.getItem("accessToken");
     const userId = localStorage.getItem("userId");
     propertyData.owner_id = userId;
@@ -372,7 +371,6 @@ const PropertyDetailsForm = ({
     });
     const formData = new FormData();
 
-    // Add general property information
     formData.append("_id", propertyData._id);
 
     formData.append("name", propertyData.name);
@@ -388,7 +386,6 @@ const PropertyDetailsForm = ({
         formData.append(`images[${idx}]`, image);
       });
     } else if (propertyData.images) {
-      // Nếu chỉ có một ảnh (trong trường hợp không phải mảng)
       formData.append("images[0]", propertyData.images);
     }
     if (Array.isArray(propertyData.image)) {
@@ -501,14 +498,10 @@ const PropertyDetailsForm = ({
     // Send FormData to backend
     try {
       const respone = await createPropertyWithPartner(formData, accessToken);
-      if (respone.response.status === 401) {
-        alert("You need to sign in!");
-        await handleSignOut();
-        navigate("/login");
-      } else {
-        getAllPropetyByOwner(userId);
-        setTab("list");
-      }
+      console.log(respone);
+
+      getAllPropetyByOwner(userId);
+      setActiveTab("list");
     } catch (error) {
       console.error("Failed to add property:", error);
     }
@@ -853,7 +846,7 @@ const PropertyDetailsForm = ({
               className="add-property-button"
               onClick={type === "update" ? updateProperty : addProperty}
             >
-              Add Property
+              {type === "update" ? "Update Property" : "Add Property"}
             </button>
           </div>
 
@@ -961,19 +954,18 @@ const PropertyDetailsForm = ({
               ))}
 
             <div className="mini-mapp">
+              <button
+                className="open-map-button"
+                onClick={() => setIsMapOpen(true)}
+              >
+                Open Map
+              </button>
               <Map
                 key={`${propertyData.location.lat}-${propertyData.location.lng}`}
                 onLocationSelect={() => {}}
                 initialLocation={propertyData.location}
               />
             </div>
-
-            <button
-              className="open-map-button"
-              onClick={() => setIsMapOpen(true)}
-            >
-              Open Map
-            </button>
           </div>
 
           {/* Map Pop-up Modal */}
@@ -989,6 +981,8 @@ const PropertyDetailsForm = ({
                 <Map
                   onLocationSelect={handleLocationSelect}
                   initialLocation={propertyData.location}
+                  disableClick={false}
+                  allowPositionChange={true}
                 />
               </div>
             </div>

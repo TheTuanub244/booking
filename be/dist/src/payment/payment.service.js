@@ -1,33 +1,49 @@
-"use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+'use strict';
+var __decorate =
+  (this && this.__decorate) ||
+  function (decorators, target, key, desc) {
+    var c = arguments.length,
+      r =
+        c < 3
+          ? target
+          : desc === null
+            ? (desc = Object.getOwnPropertyDescriptor(target, key))
+            : desc,
+      d;
+    if (typeof Reflect === 'object' && typeof Reflect.decorate === 'function')
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if ((d = decorators[i]))
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
+  };
+var __metadata =
+  (this && this.__metadata) ||
+  function (k, v) {
+    if (typeof Reflect === 'object' && typeof Reflect.metadata === 'function')
+      return Reflect.metadata(k, v);
+  };
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.PaymentService = void 0;
-const common_1 = require("@nestjs/common");
-const gmail_service_1 = require("../gmail/gmail.service");
+const common_1 = require('@nestjs/common');
+const gmail_service_1 = require('../gmail/gmail.service');
 let PaymentService = class PaymentService {
-    constructor(gmailService) {
-        this.gmailService = gmailService;
-    }
-    async savePayment(data) {
-        const username = data.username;
-        const transactionCode = data.vnp_TxnRef;
-        const transactionTime = data.vnp_PayDate;
-        const price = data.vnp_Amount;
-        const hotelName = data.hotelName;
-        const address = data.address;
-        const checkInDate = data.checkInDate;
-        const checkOutDate = data.checkOutDate;
-        const email = data.email;
-        const subject = 'Thông báo giao dịch thành công';
-        const text = `Kính gửi anh/chị ${username},
+  constructor(gmailService) {
+    this.gmailService = gmailService;
+  }
+  async savePayment(data) {
+    const username = data.username;
+    const transactionCode = data.vnp_TxnRef;
+    const transactionTime = data.vnp_PayDate;
+    const price = data.vnp_Amount;
+    const hotelName = data.hotelName;
+    const address = data.address;
+    const checkInDate = data.checkInDate;
+    const checkOutDate = data.checkOutDate;
+    const email = data.email;
+    const subject = 'Thông báo giao dịch thành công';
+    const text = `Kính gửi anh/chị ${username},
 
 Chúng tôi vui mừng thông báo giao dịch thanh toán của anh/chị đã được xử lý thành công.
 
@@ -50,7 +66,7 @@ Cảm ơn anh/chị đã sử dụng dịch vụ của chúng tôi.
 Trân trọng cảm ơn,
  Booking.com
 `;
-        const html = `
+    const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -129,11 +145,14 @@ Trân trọng cảm ơn,
   </div>
 </body>
 </html>`;
-    }
+  }
 };
 exports.PaymentService = PaymentService;
-exports.PaymentService = PaymentService = __decorate([
+exports.PaymentService = PaymentService = __decorate(
+  [
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [gmail_service_1.GmailService])
-], PaymentService);
+    __metadata('design:paramtypes', [gmail_service_1.GmailService]),
+  ],
+  PaymentService,
+);
 //# sourceMappingURL=payment.service.js.map

@@ -102,6 +102,8 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       partnerId: partnerId,
       property: propertyInfo.property
     });
+
+    localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
     
   }, [numberOfGuests, selectedRoom, date]);
 
@@ -185,7 +187,7 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
       
       const option = JSON.parse(localStorage.getItem('option'));
       
-      localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo));
+      
 
 
       if(selectedRoom.length > 0) {

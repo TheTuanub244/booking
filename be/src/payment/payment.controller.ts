@@ -10,7 +10,7 @@ config(); // Load environment variables
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentSevice: PaymentService) { }
+  constructor(private readonly paymentSevice: PaymentService) {}
   @Post('save_payment')
   async savePayment(
     @Body() body: any,
@@ -90,7 +90,8 @@ export class PaymentController {
     // Tạo URL chuyển hướng
     const paymentUrl = `${vnpUrl}?${qs.stringify(sortedParams, { encode: false })}`;
 
-    res.redirect(paymentUrl);
+    return res.status(200).json({ paymentUrl: paymentUrl });
+    // res.redirect(paymentUrl);
   }
 
   @Get('vnpay_return')
@@ -165,9 +166,9 @@ export class PaymentController {
             res
               .status(200)
               .json({
-                RspCode: '02',
-                Message: 'This order has been updated to the payment status',
-              });
+              RspCode: '02',
+              Message: 'This order has been updated to the payment status',
+            });
           }
         } else {
           res.status(200).json({ RspCode: '04', Message: 'Amount invalid' });

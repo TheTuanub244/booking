@@ -9,7 +9,7 @@ import {
   faPlaneDeparture,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 
 function Payment(
   //object 
@@ -87,7 +87,6 @@ function Payment(
 
   const loadData = () => {
     const ri = localStorage.getItem('reservationInfo');
-    console.log(ri);
     return ri ? JSON.parse(ri) : null;
   };
 
@@ -102,7 +101,7 @@ function Payment(
       });
 
       totalRoomRef.current = totalRoom; // Cập nhật giá trị vào ref
-      console.log(data.totalPrice);
+      // console.log(data.totalPrice);
       if (data.capacity.childs.count !== 0) {
         setHasChild(true);
       } else {
@@ -131,57 +130,63 @@ function Payment(
     });
     console.log(formData);
   };
+ 
+
+  let overViewData = {};
 
   const handleCreateBooking = async () => {
+    
+    localStorage.removeItem("overViewData");
     const user_id = localStorage.getItem("userId");
     const token = localStorage.getItem("accessToken");
-    console.log(`${user_id} ${token}`);
-    const capacity = {...reservationInfo.capacity,room:Number(totalRoomRef.current)};
- 
-    try {
-      const booking = await createBooking(
-        user_id,
-        reservationInfo.partnerId,
-        reservationInfo.property,
-        reservationInfo.roomData,
-        capacity,
-        reservationInfo.checkInDate,
-        reservationInfo.checkOutDate,
-        reservationInfo.totalPrice,
-        token
-      );
-      console.log('Booking created:', booking);
+    // console.log(`${user_id} ${token}`);
+    const capacity = { ...reservationInfo.capacity, room: Number(totalRoomRef.current) };
 
-      localStorage.setItem("email", formData.email);
- 
-      const overViewData = {
-        bookingId: booking._id,
-        email: formData.email,
-        firstName: formData.firstname,
-        lastName: formData.lastname,
-        address: reservationInfo.address,
-        hotelName: reservationInfo.hotelName,
-        checkInDate: reservationInfo.checkInDate,
-        checkOutDate: reservationInfo.checkOutDate,
-  
-      }
+    const booking = await createBooking(
+      user_id,
+      reservationInfo.partnerId,
+      reservationInfo.property,
+      reservationInfo.roomData,
+      capacity,
+      reservationInfo.checkInDate,
+      reservationInfo.checkOutDate,
+      reservationInfo.totalPrice,
+      token
+    );
+    console.log('Booking created:', booking);
 
-         localStorage.setItem('overViewData', JSON.stringify(overViewData));
-    } catch (error) {
-      console.error('Error creating booking:', error);
-      // Xử lý lỗi
+     overViewData = {
+      bookingId: booking._id,
+      email: formData.email,
+      firstName: formData.firstname,
+      lastName: formData.lastname,
+      address: reservationInfo.address,
+      hotelName: reservationInfo.hotelName,
+      checkInDate: reservationInfo.checkInDate,
+      checkOutDate: reservationInfo.checkOutDate,
+
     }
+    localStorage.setItem('overViewData', JSON.stringify(overViewData));
+    
+    console.log(overViewData);
+
   };
 
-  const handleSubmit = (e) => {
-    handleCreateBooking();
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await handleCreateBooking();
+    formData.amount = reservationInfo.totalPrice;
     axios
       .post(`${process.env.REACT_APP_API_URL}/payment/create_transaction`, formData)
       .then((res) => {
         console.log(res.data);
+        if (localStorage.getItem("overViewData")) {
+          window.location.href = res.data.paymentUrl;
+        }
       })
       .catch((err) => console.log(err));
+
+
   };
 
 
@@ -286,8 +291,8 @@ function Payment(
                     onSubmit={handleSubmit}
                     id="payment_form"
                     accept-charset="UTF-8"
-                    action="http://localhost:8000/payment/create_transaction"
-                    method="post"
+                    // action="http://localhost:8000/payment/create_transaction"
+                    // method="post"
                   >
                     <label>
                       First name<span className="required">*</span>
@@ -404,7 +409,7 @@ function Payment(
 
                     </div>
                   </form>
-
+                      <button onClick={handleSubmit}>Test</button>
                 </div>
               </div>
             </div>

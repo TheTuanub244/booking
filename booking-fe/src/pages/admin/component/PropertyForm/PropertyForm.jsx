@@ -15,14 +15,9 @@ import {
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
-} from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   const [propertyData, setPropertyData] = useState({
-    name: "",
-    property_type: "",
     name: "",
     property_type: "",
     address: {
@@ -30,13 +25,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       ward: "",
       district: "",
       province: "",
-      street: "",
-      ward: "",
-      district: "",
-      province: "",
     },
-    owner_id: "",
-    description: "",
     owner_id: "",
     description: "",
     images: [],
@@ -44,11 +33,9 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   });
 
   const [submitError, setSubmitError] = useState("");
-  const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const [openAddImageDialog, setOpenAddImageDialog] = useState(false);
-  const [newImageUrl, setNewImageUrl] = useState("");
   const [newImageUrl, setNewImageUrl] = useState("");
 
   const [success, setSuccess] = useState(false);
@@ -58,20 +45,12 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       setPropertyData({
         name: initialData.name || "",
         property_type: initialData.property_type || "",
-        name: initialData.name || "",
-        property_type: initialData.property_type || "",
         address: initialData.address || {
           street: "",
           ward: "",
           district: "",
           province: "",
-          street: "",
-          ward: "",
-          district: "",
-          province: "",
         },
-        owner_id: initialData.owner_id || "",
-        description: initialData.description || "",
         owner_id: initialData.owner_id || "",
         description: initialData.description || "",
         images: initialData.images || [],
@@ -106,13 +85,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     if (!propertyData.address.district.trim()) return "District is required.";
     if (!propertyData.address.province.trim()) return "Province is required.";
     if (!propertyData.description.trim()) return "Description is required.";
-    if (!propertyData.name.trim()) return "Property name is required.";
-    if (!propertyData.property_type.trim()) return "Property type is required.";
-    if (!propertyData.address.street.trim()) return "Street is required.";
-    if (!propertyData.address.ward.trim()) return "Ward is required.";
-    if (!propertyData.address.district.trim()) return "District is required.";
-    if (!propertyData.address.province.trim()) return "Province is required.";
-    if (!propertyData.description.trim()) return "Description is required.";
     return null;
   };
 
@@ -126,7 +98,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
     setSubmitting(true);
     setSubmitError("");
-    setSubmitError("");
 
     try {
       await onSubmit(propertyData);
@@ -134,11 +105,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     } catch (err) {
       console.error("Error submitting form:", err);
       setSubmitError(
-        err.message || "Failed to submit the form. Please try again later.",
-      );
-      console.error("Error submitting form:", err);
-      setSubmitError(
-        err.message || "Failed to submit the form. Please try again later.",
+        err.message || "Failed to submit the form. Please try again later."
       );
     } finally {
       setSubmitting(false);
@@ -155,7 +122,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
   const handleOpenAddImageDialog = () => {
     setNewImageUrl("");
-    setNewImageUrl("");
     setOpenAddImageDialog(true);
   };
 
@@ -169,7 +135,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   };
   const handleAddImage = () => {
     if (newImageUrl.trim() === "" || !isValidImageUrl(newImageUrl)) return;
-    if (newImageUrl.trim() === "" || !isValidImageUrl(newImageUrl)) return;
     setPropertyData((prevData) => ({
       ...prevData,
       images: [...prevData.images, newImageUrl.trim()],
@@ -182,7 +147,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom>
-        {formTitle || "Property Form"}
         {formTitle || "Property Form"}
       </Typography>
 
@@ -269,7 +233,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           fullWidth
           margin="normal"
           value={propertyData.owner_id || "Ch get dc Owner nen de tam"}
-          value={propertyData.owner_id || "Ch get dc Owner nen de tam"}
           InputProps={{
             readOnly: true,
           }}
@@ -301,10 +264,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                     width: "100%",
                     paddingTop: "56.25%", // 16:9 aspect ratio
                     overflow: "visible",
-                    position: "relative",
-                    width: "100%",
-                    paddingTop: "56.25%", // 16:9 aspect ratio
-                    overflow: "visible",
                   }}
                 >
                   <img
@@ -312,12 +271,8 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                     alt={`Property ${index + 1}`}
                     style={{
                       position: "absolute",
-                      position: "absolute",
                       top: 0,
                       left: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
@@ -329,7 +284,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                     onClick={() => handleRemoveImage(index)}
                     sx={{
                       position: "absolute",
-                      position: "absolute",
                       top: -10,
                       right: -10,
                       width: 24,
@@ -337,11 +291,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                       backgroundColor: "rgba(255, 255, 255, 0.8)",
                       "&:hover": {
                         backgroundColor: "rgba(255, 255, 255, 1)",
-                      backgroundColor: "rgba(255, 255, 255, 0.8)",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 1)",
                       },
-                      borderRadius: "50%",
                       borderRadius: "50%",
                       padding: 0,
                     }}
@@ -359,16 +309,8 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                 sx={{
                   width: "100%",
                   height: "100%",
-                  width: "100%",
-                  height: "100%",
                   padding: 0,
                   borderRadius: 2,
-                  textTransform: "none",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  color: "text.secondary",
                   textTransform: "none",
                   display: "flex",
                   flexDirection: "column",
@@ -395,7 +337,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           disabled={submitting}
         >
           {submitting ? "Submitting..." : "Submit"}
-          {submitting ? "Submitting..." : "Submit"}
         </Button>
       </form>
 
@@ -413,11 +354,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
             onChange={(e) => setNewImageUrl(e.target.value)}
             required
             error={newImageUrl !== "" && !isValidImageUrl(newImageUrl)}
-            error={newImageUrl !== "" && !isValidImageUrl(newImageUrl)}
             helperText={
-              newImageUrl !== "" && !isValidImageUrl(newImageUrl)
-                ? "Please enter a valid image URL."
-                : ""
               newImageUrl !== "" && !isValidImageUrl(newImageUrl)
                 ? "Please enter a valid image URL."
                 : ""
@@ -428,11 +365,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
               <img
                 src={newImageUrl}
                 alt="Preview"
-                style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
-                }}
                 style={{
                   width: "100%",
                   maxHeight: "200px",

@@ -76,4 +76,12 @@ export class BookingController {
   async calculateTotalNightPriceForReservation(@Body() data: any) {
     return this.bookingService.calculateTotalNightPriceForReservation(data);
   }
+
+  @Post(`/updateBookingStatus/:bookingId`)
+  async updateBookingStatus(
+    @Param('bookingId') bookingId: string,
+    @Body() data: any,
+  ) {
+    return this.bookingService.updateBookingStatus(bookingId, data);
+  }
 }

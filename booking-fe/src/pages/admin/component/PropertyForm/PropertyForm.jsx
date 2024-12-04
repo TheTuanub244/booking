@@ -1,5 +1,3 @@
-// src/components/PropertyForm.jsx
-
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -107,7 +105,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     } catch (err) {
       console.error("Error submitting form:", err);
       setSubmitError(
-        err.message || "Failed to submit the form. Please try again later.",
+        err.message || "Failed to submit the form. Please try again later."
       );
     } finally {
       setSubmitting(false);

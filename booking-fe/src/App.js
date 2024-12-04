@@ -21,25 +21,25 @@ import socketService from "./helpers/sockerService";
 import PartnerBookingDetail from "./pages/partner/partnerBookingDetail/PartnerBookingDetail";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DashBoard from "./pages/admin/contents/DashBoard/DashBoard";
-import UserTable from "./pages/admin/component/UserTable/UserTable";
-import RoomTable from "./pages/admin/component/RoomsTable/RoomTable";
 import UserManage from "./pages/admin/contents/user/UserManage/UserManage";
 import RoomManage from "./pages/admin/contents/room/RoomManage/RoomManage";
 import ViewRoom from "./pages/admin/contents/room/ViewRoom/ViewRoom";
 import ViewUser from "./pages/admin/contents/user/ViewUser/ViewUser";
-import BookingManage from "./pages/admin/contents/BookingManage/BookingManage";
 import Analytics from "./pages/admin/contents/Analytics/Analytics";
 import EditUser from "./pages/admin/contents/user/EditUser/EditUser";
 import PropertyManage from "./pages/admin/contents/property/PropertyManage/PropertyManage";
-import PropertyTable from "./pages/admin/component/PropertyTable/PropertyTable";
 import AddNewProperty from "./pages/admin/contents/property/AddNewProperty/AddNewProperty";
 import ViewProperty from "./pages/admin/contents/property/ViewProperty/ViewProperty";
 import EditProperty from "./pages/admin/contents/property/EditProperty/EditProperty";
-import ViewPartnerRequest from "./pages/admin/contents/partnerRequest/ViewPartnerRequest/ViewPartnerRequest";
 import AddNewRoom from "./pages/admin/contents/room/AddNewRoom/AddNewRoom";
 import AddNewUser from "./pages/admin/contents/user/AddNewUser/AddNewUser";
 import PropertyManageList from "./pages/admin/contents/property/PropertyList/PropertyManageList";
 import RoomManageList from "./pages/admin/contents/room/RoomList/RoomManageList";
+import PartnerRequestManage from "./pages/admin/contents/partnerRequest/PartnerRequestManage/PartnerRequestManage";
+import PartnerRequestList from "./pages/admin/contents/partnerRequest/ParnerRequestList/ParnerRequestList";
+import UserList from "./pages/admin/contents/user/UserList/UserList";
+import BookingList from "./pages/admin/contents/booking/BookingList/BookingList";
+import BookingManage from "./pages/admin/contents/booking/BookingManage/BookingManage";
 
 function App() {
   const userId = localStorage.getItem("userId");
@@ -65,10 +65,14 @@ function App() {
         <Route path="/property/:id" element={<Property />}></Route>
         <Route path="/admin" element={<AdminDashboard />}>
           <Route path="" element={<DashBoard />} />
-          <Route path="booking" element={<BookingManage />} />
-          <Route path="partnerRequest" element={<ViewPartnerRequest />}></Route>
+          <Route path="booking" element={<BookingManage />} >
+                <Route path="" element = {<BookingList/>} />
+          </Route>
+          <Route path="partnerRequest" element={<PartnerRequestManage />}>
+            <Route path="" element={<PartnerRequestList />} />
+          </Route>
           <Route path="user" element={<UserManage />}>
-            <Route path="" element={<UserTable />} />
+            <Route path="" element={<UserList />} />
             <Route path="new" element={<AddNewUser />} />
             <Route path="view/:id" element={<ViewUser />} />
             <Route path="edit/:id" element={<EditUser />} />

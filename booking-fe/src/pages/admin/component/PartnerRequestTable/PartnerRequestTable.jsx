@@ -1,4 +1,3 @@
-// PartnerRequestTable.jsx
 import React, { useState, useEffect } from "react";
 import "./PartnerRequestTable.css";
 import { DataGrid } from "@mui/x-data-grid";
@@ -69,7 +68,6 @@ const PartnerRequestTable = ({ partnerRequests, onAccept, onDecline }) => {
         rows={data}
         columns={columns}
         pageSize={9}
-        rowsPerPageOptions={[9, 15, 25]}
         disableSelectionOnClick
       />
     </div>

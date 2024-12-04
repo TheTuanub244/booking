@@ -12,29 +12,29 @@ import {
 import { redirect, useNavigate } from "react-router-dom";
 
 function Payment() {
-//object
-/*  address(chỗ này gửi được chuỗi đầy đủ như này luôn thì tốt "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam")
-      hotelName
-      checkInDate()
-      checkOutDate()
-      totalPrice(số tiền: ví dụ: 4000000)
-      capacity {
-        adults: (số lượng),
-        childs: {
-          count: (số lg),
-          age: (tuổi)
+  //object
+  /*  address(chỗ này gửi được chuỗi đầy đủ như này luôn thì tốt "190 Le Thanh Ton, District 1, Ho Chi Minh City, Vietnam")
+        hotelName
+        checkInDate()
+        checkOutDate()
+        totalPrice(số tiền: ví dụ: 4000000)
+        capacity {
+          adults: (số lượng),
+          childs: {
+            count: (số lg),
+            age: (tuổi)
+          }
         }
-      }
-      roomData(Mảng)
-      totalNight(số lượng: ví dụ:2)
-      review: {
-        total: (số lượng nhận xét)
-        point: (số điểm)
-        desc: (mô tả)
-      }
-    parterId: (id)
-    property:(id)
-  */
+        roomData(Mảng)
+        totalNight(số lượng: ví dụ:2)
+        review: {
+          total: (số lượng nhận xét)
+          point: (số điểm)
+          desc: (mô tả)
+        }
+      parterId: (id)
+      property:(id)
+    */
   const [hasChild, setHasChild] = useState(false);
   const [reservationInfo, setReservationInfo] = useState({
     address: "",
@@ -126,12 +126,12 @@ function Payment() {
     });
     console.log(formData);
   };
- 
+
 
   let overViewData = {};
 
   const handleCreateBooking = async () => {
-    
+
     localStorage.removeItem("overViewData");
     const user_id = localStorage.getItem("userId");
     const token = localStorage.getItem("accessToken");
@@ -151,7 +151,7 @@ function Payment() {
     );
     console.log('Booking created:', booking);
 
-     overViewData = {
+    overViewData = {
       bookingId: booking._id,
       email: formData.email,
       firstName: formData.firstname,
@@ -163,7 +163,7 @@ function Payment() {
 
     }
     localStorage.setItem('overViewData', JSON.stringify(overViewData));
-    
+
     console.log(overViewData);
 
   };
@@ -283,75 +283,75 @@ function Payment() {
                   </div>
                 </div>
 
-              <div className="priceSummary">
-                <h3>Your price summary</h3>
-                <div className="totalPrice">
-                  <div className="textLeft">Total</div>
-                  <div className="textRight">VND {reservationInfo?.totalPrice?.toLocaleString("en-US")}</div>
-                </div>
-              </div>
-            </div>
-            <div className="rightContent">
-
-              <div className="yourDetails">
-                <h3>Enter your details</h3>
-                <div className="alert">
-                  <FontAwesomeIcon icon={faInfo} className="iconInfo" />
-                  <div className="yourAlert">
-                    Almost done! Just fill in the{" "}
-                    <span className="required">*</span> required info
+                <div className="priceSummary">
+                  <h3>Your price summary</h3>
+                  <div className="totalPrice">
+                    <div className="textLeft">Total</div>
+                    <div className="textRight">VND {reservationInfo?.totalPrice?.toLocaleString("en-US")}</div>
                   </div>
                 </div>
-                <div className="formInput">
-                  <form
-                    onSubmit={handleSubmit}
-                    id="payment_form"
-                    accept-charset="UTF-8"
+              </div>
+              <div className="rightContent">
+
+                <div className="yourDetails">
+                  <h3>Enter your details</h3>
+                  <div className="alert">
+                    <FontAwesomeIcon icon={faInfo} className="iconInfo" />
+                    <div className="yourAlert">
+                      Almost done! Just fill in the{" "}
+                      <span className="required">*</span> required info
+                    </div>
+                  </div>
+                  <div className="formInput">
+                    <form
+                      onSubmit={handleSubmit}
+                      id="payment_form"
+                      accept-charset="UTF-8"
                     // action="http://localhost:8000/payment/create_transaction"
                     // method="post"
-                  >
-                    <label>
-                      First name<span className="required">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control form-control-lg"
-                      name="firstname"
-                      onChange={handleChange}
-                      required
-                    />
-                    <label>
-                      Last name<span className="required">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control form-control-comment form-control-lg"
-                      name="lastname"
-                      onChange={handleChange}
-                      required
-                    />
-                    <label>
-                      Email address<span className="required">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      class="form-control form-control-lg"
-                      name="email"
-                      onChange={handleChange}
-                      required
-                    />
-                    <label>
-                      Phone number<span className="required">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      pattern="\d+"
-                      id="Phone"
-                      className="form-control form-control-comment form-control-lg"
-                      name="phone"
-                      onChange={handleChange}
-                      required
-                    />
+                    >
+                      <label>
+                        First name<span className="required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control form-control-lg"
+                        name="firstname"
+                        onChange={handleChange}
+                        required
+                      />
+                      <label>
+                        Last name<span className="required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control form-control-comment form-control-lg"
+                        name="lastname"
+                        onChange={handleChange}
+                        required
+                      />
+                      <label>
+                        Email address<span className="required">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        class="form-control form-control-lg"
+                        name="email"
+                        onChange={handleChange}
+                        required
+                      />
+                      <label>
+                        Phone number<span className="required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        pattern="\d+"
+                        id="Phone"
+                        className="form-control form-control-comment form-control-lg"
+                        name="phone"
+                        onChange={handleChange}
+                        required
+                      />
 
                       <label for="amount">
                         Total price<span className="required">*</span>
@@ -423,14 +423,14 @@ function Payment() {
                         <p className="errorMessage">{errorPayment}</p>
                       )}
 
-                    <div className="btnDiv">
-                      <button type="submit" className="btnSub">
-                        Next: Final details
-                      </button>
+                      <div className="btnDiv">
+                        <button className="btnSub" onClick={handleSubmit}>
+                          Next: Final details
+                        </button>
 
-                    </div>
-                  </form>
-                      <button onClick={handleSubmit}>Test</button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>

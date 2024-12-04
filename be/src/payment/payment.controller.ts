@@ -11,7 +11,6 @@ config(); // Load environment variables
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentSevice: PaymentService) {}
-  constructor(private readonly paymentSevice: PaymentService) {}
   @Post('save_payment')
   async savePayment(
     @Body() body: any,

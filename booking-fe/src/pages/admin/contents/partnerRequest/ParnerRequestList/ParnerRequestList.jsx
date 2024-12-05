@@ -1,14 +1,29 @@
 import React, { useState, useEffect } from "react";
 import PartnerRequestTable from "../../../component/PartnerRequestTable/PartnerRequestTable";
-import { getPendingUser } from "../../../../../api/userAPI";
-import { Box, Typography, CircularProgress, Button } from "@mui/material";
+import {
+  getPendingUser,
+  acceptRequestPartner,
+  declineRequestPartner,
+} from "../../../../../api/userAPI";
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Button,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 const PartnerRequestList = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const fetchPendingUsers = async () => {
     setLoading(true);
     setError(null);
@@ -26,21 +41,30 @@ const PartnerRequestList = () => {
   useEffect(() => {
     fetchPendingUsers();
   }, []);
-
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
   const handleAccept = async (id) => {
     try {
-      //await acceptPartnerRequest(id);
+      await acceptRequestPartner(id);
       setPendingUsers((prev) => prev.filter((user) => user._id !== id));
-      alert("Partner request accepted successfully.");
+      setSnackbar({
+        open: true,
+        message: "Partner request accepted successfully.",
+        severity: "success",
+      });
     } catch (err) {
       console.error("Error accepting partner request:", err);
-      alert("Failed to accept the request. Please try again.");
+      const errorMessage =
+        err.response?.data?.message ||
+        "Failed to accept the request. Please try again.";
+      setSnackbar({ open: true, message: errorMessage, severity: "error" });
     }
   };
 
   const handleDecline = async (id) => {
     try {
-      //await declinePartnerRequest(id);
+      await declineRequestPartner(id);
       setPendingUsers((prev) => prev.filter((user) => user._id !== id));
       alert("Partner request declined successfully.");
     } catch (err) {
@@ -106,6 +130,20 @@ const PartnerRequestList = () => {
           onDecline={handleDecline}
         />
       )}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

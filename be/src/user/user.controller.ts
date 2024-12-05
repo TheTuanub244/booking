@@ -166,4 +166,10 @@ export class UserController {
   async getAllUser() {
     return this.userService.getAllUser();
   }
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  @Get('getPartner')
+  async getPartner() {
+    return this.userService.getPartner();
+  }
 }

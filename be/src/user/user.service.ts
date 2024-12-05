@@ -505,4 +505,9 @@ export class UserService {
   async getAllUser() {
     return await this.userSchema.find({});
   }
+  async getPartner() {
+    return await this.userSchema.find({
+      role: ROLE.PARTNER,
+    });
+  }
 }

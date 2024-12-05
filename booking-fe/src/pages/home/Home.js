@@ -22,7 +22,7 @@ import {
 import { checkSession, getSessionHistory } from "../../api/sessionAPI";
 import LastViewProperties from "../../componets/lastViewProperties/LastViewProperties";
 import { useNavigate } from "react-router-dom";
-import { findUnfinishedBooking } from "../../api/bookingAPI";
+import { findUnfinishedBooking, getAllBooking } from "../../api/bookingAPI";
 import BookingPopup from "../../componets/bookingPopup/BookingPopup";
 import { getAllUser } from "../../api/userAPI";
 import axios from "axios";
@@ -89,14 +89,6 @@ function Home() {
       getHistory(userId);
       handleFindUnfinishedBooking(userId);
     }
-    const test = async () => {
-      const get = await axios.get('http://localhost:8000/session/refreshAccessToken', {
-        withCredentials: true,
-      })
-      console.log(get);
-      
-    }
-    test()
   }, []);
 
   return (

@@ -110,6 +110,7 @@ export const updateBookingStatus = async (bookingId, status) => {
   return response.data;
 };
 export const getAllBooking = async (token) => {
+  console.log(token)
   const response = await axios.get(
     `${process.env.REACT_APP_API_URL}/booking/getAllBooking`,
     {

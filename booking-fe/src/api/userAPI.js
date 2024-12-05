@@ -175,7 +175,7 @@ export const getAllUser = async (token) => {
 };
 export const createUserWithAdmin = async (data) => {
   const respone = await axios.post(
-    `${process.env.REACT_APP_API_URL}/user/create-user`, {data}
+    `${process.env.REACT_APP_API_URL}/user/create-user`, {data},
     {
       withCredentials: true,
     },
@@ -184,7 +184,7 @@ export const createUserWithAdmin = async (data) => {
 }
 export const updateUserWithAdmin = async(userId, data) => {
   const respone = await axios.put(
-    `${process.env.REACT_APP_API_URL}/user/updateUserById/${userId}`, {data}
+    `${process.env.REACT_APP_API_URL}/user/updateUserById/${userId}`, {data},
     {
       withCredentials: true,
     },
@@ -193,7 +193,7 @@ export const updateUserWithAdmin = async(userId, data) => {
 }
 export const deleteUserWithAdmin = async(userId) => {
   const respone = await axios.delete(
-    `${process.env.REACT_APP_API_URL}/user/updateUserById/${userId}`
+    `${process.env.REACT_APP_API_URL}/user/updateUserById/${userId}`,
     {
       withCredentials: true,
     },

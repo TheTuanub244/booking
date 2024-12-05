@@ -152,3 +152,14 @@ export const updateBookingWithAdmin = async(bookingId, data) => {
   );
   return response.data;
 }
+export const getCompletedBookingByUser = async (userId) => {
+  
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/getCompletedBookingByUser/${userId}`,
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}

@@ -18,7 +18,7 @@
   list-style: none;
 }
 .reserveButton .reserve:hover {
-  background-color: #003b95;
+  background-color: #0a7075;
 }
 .table-responsive {
   overflow-x: auto;
@@ -132,7 +132,7 @@
 
 .reservation-details .update {
   padding: 10px 20px; /* Padding inside button */
-  background-color: #007bff; /* Primary button color */
+  background-color: #0c969c; /* Primary button color */
   color: white; /* White text */
   border: none; /* No border */
   border-radius: 4px; /* Slightly rounded corners */
@@ -153,7 +153,7 @@
 
 .ReservationForm .reserve {
   padding: 10px 20px; /* Padding inside button */
-  background-color: #007bff; /* Primary button color */
+  background-color: #0c969c; /* Primary button color */
   color: white; /* White text */
   border: none; /* No border */
   border-radius: 4px; /* Slightly rounded corners */
@@ -163,12 +163,12 @@
   transition: background-color 0.3s; /* Smooth transition */
 }
 .update:hover {
-  background-color: #003b95;
+  background-color: #0a7075;
 }
 button[type="submit"]:hover {
-  background-color: #0056b3; /* Darker shade on hover */
+  background-color: #0a7075; /* Darker shade on hover */
 }
 
 button[type="submit"]:active {
-  background-color: #004080; /* Even darker shade when clicked */
+  background-color: #032f30; /* Even darker shade when clicked */
 }

@@ -210,11 +210,11 @@
   text-align: center;
   height: 50px;
   color: #fff;
-  background-color: #003b95;
+  background-color: #0c969c;
   border-radius: 5px;
 }
 .property-name {
-  color: #006ce4;
+  color: #0c969c;
   cursor: pointer;
   font-weight: bold;
 }

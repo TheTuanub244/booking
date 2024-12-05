@@ -18,9 +18,9 @@ export const getMonthlyRevenueByProperty = async (id) => {
   );
   return respone.data;
 };
-export const getBooking = async (id, status) => {
+export const getBooking = async (id) => {
   const respone = await axios.get(
-    `${process.env.REACT_APP_API_URL}/booking/getBooking/${id}/${status}`,
+    `${process.env.REACT_APP_API_URL}/booking/getBookingByOwner/${id}`,
     {
       withCredentials: true,
     },
@@ -123,7 +123,7 @@ export const getAllBooking = async (token) => {
 }
 export const createBookingWithAdmin = async (data) => {
   const response = await axios.get(
-    `${process.env.REACT_APP_API_URL}/booking/createBookingWithAdmin`,{data}
+    `${process.env.REACT_APP_API_URL}/booking/createBookingWithAdmin`,{data},
     {
 
       withCredentials: true,
@@ -133,7 +133,7 @@ export const createBookingWithAdmin = async (data) => {
 } 
 export const deleteBookingByAdmin = async(bookingId) => {
   const response = await axios.delete(
-    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`,
     {
 
       withCredentials: true,
@@ -143,7 +143,7 @@ export const deleteBookingByAdmin = async(bookingId) => {
 }
 export const updateBookingWithAdmin = async(bookingId, data) => {
   const response = await axios.put(
-    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`, {data}
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`, {data},
     {
 
       withCredentials: true,

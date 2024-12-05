@@ -60,8 +60,8 @@
 }
 
 .locationItemImg img {
-  width: 100%; /* Đảm bảo hình ảnh chiếm hết chiều rộng */
-  height: auto; /* Đảm bảo tỷ lệ hình ảnh */
+  width: 100%;
+  height: 200px; 
 }
 
 .locationItemTitle {

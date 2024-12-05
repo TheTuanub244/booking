@@ -56,7 +56,7 @@
   width: 100%;
   padding: 10px;
   font-size: 18px;
-  background-color: #007bff;
+  background-color: #0c969c;
   color: white;
   border: none;
   border-radius: 5px;
@@ -68,5 +68,5 @@
 }
 
 .writeReview-submit-btn:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: #0a7075;
 }

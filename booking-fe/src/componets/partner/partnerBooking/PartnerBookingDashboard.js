@@ -32,6 +32,7 @@ const PartnerBookingDashboard = () => {
   const handleGetBooking = async () => {
     try {
       const response = await getBooking(userId);
+      console.log(response)
       setBookings(response);
     } catch (error) {
       console.error("Error fetching bookings:", error);

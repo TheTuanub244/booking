@@ -41,7 +41,7 @@ const ResultItem = ({ property, index }) => {
             <p
               style={{
                 fontSize: "12px",
-                color: "#006CE4",
+                color: "#0c969c",
                 textDecoration: "underline",
                 fontWeight: "600",
                 cursor: "pointer",
@@ -53,7 +53,7 @@ const ResultItem = ({ property, index }) => {
             <p
               style={{
                 fontSize: "12px",
-                color: "#006CE4",
+                color: "#0c969c",
                 textDecoration: "underline",
                 fontWeight: "600",
                 cursor: "pointer",

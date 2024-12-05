@@ -244,16 +244,6 @@ const PartnerBookingDetail = () => {
                     </ul>
                   )}
                 </div>
-                <p
-                  style={{
-                    fontWeight: "700",
-                    color: "#006CE4",
-                    cursor: "pointer",
-                    marginTop: "10px",
-                  }}
-                >
-                  Change your selection
-                </p>
                 <div className="total-price-container">
                   <h2>Total Price</h2>
                   <h1>{formatCurrency(booking.total_price)}</h1>

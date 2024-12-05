@@ -148,14 +148,14 @@ export const checkResetPasswordToken = async (userId, token, user) => {
   return respone.data;
 };
 export const acceptRequestPartner = async (userId) => {
-  const respone = await axios.post(
+  const respone = await axios.put(
     `${process.env.REACT_APP_API_URL}/user/updateRequestPartner`,
     { userId, status: "Partner" },
   );
   return respone.data;
 };
 export const declineRequestPartner = async (userId) => {
-  const respone = await axios.post(
+  const respone = await axios.put(
     `${process.env.REACT_APP_API_URL}/user/updateRequestPartner`,
     { userId, status: "Pending" },
   );

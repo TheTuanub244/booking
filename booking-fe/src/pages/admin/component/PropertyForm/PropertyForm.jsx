@@ -12,9 +12,17 @@ import {
   DialogActions,
   Snackbar,
   Grid,
+  MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faTimes,
+  faMapMarkerAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { getProvince } from "../../../../api/addressAPI";
+import LeafletMap from "../Map/LeafletMap";
 
 const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   const [propertyData, setPropertyData] = useState({
@@ -23,40 +31,82 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     address: {
       street: "",
       ward: "",
+      wardCode: "",
       district: "",
+      districtCode: "",
       province: "",
+      provinceCode: "",
     },
     owner_id: "",
     description: "",
     images: [],
+    location: {
+      latitude: 0,
+      longitude: 0,
+    },
     ...initialData,
   });
 
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const [openAddImageDialog, setOpenAddImageDialog] = useState(false);
-  const [newImageUrl, setNewImageUrl] = useState("");
-
   const [success, setSuccess] = useState(false);
+
+  // State for address data
+  const [addressData, setAddressData] = useState([]); // Contains provinces with their districts and wards
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+  // State for image uploads
+  const [selectedImages, setSelectedImages] = useState([]);
+
+  // State for map dialog
+  const [openMapDialog, setOpenMapDialog] = useState(false);
+
+  // Loading state
+  const [loadingAddressData, setLoadingAddressData] = useState(false);
+
+  useEffect(() => {
+    fetchAddressData();
+  }, []);
 
   useEffect(() => {
     if (initialData) {
-      setPropertyData({
-        name: initialData.name || "",
-        property_type: initialData.property_type || "",
-        address: initialData.address || {
-          street: "",
-          ward: "",
-          district: "",
-          province: "",
-        },
-        owner_id: initialData.owner_id || "",
-        description: initialData.description || "",
-        images: initialData.images || [],
-      });
+      setPropertyData((prevData) => ({
+        ...prevData,
+        ...initialData,
+      }));
+      if (initialData.address) {
+        const provinceCode = initialData.address.provinceCode;
+        const districtCode = initialData.address.districtCode;
+
+        const selectedProvince = addressData.find(
+          (p) => p.code === parseInt(provinceCode)
+        );
+        if (selectedProvince) {
+          setDistricts(selectedProvince.districts || []);
+          const selectedDistrict = selectedProvince.districts.find(
+            (d) => d.code === parseInt(districtCode)
+          );
+          if (selectedDistrict) {
+            setWards(selectedDistrict.wards || []);
+          }
+        }
+      }
     }
-  }, [initialData]);
+  }, [initialData, addressData]);
+
+  const fetchAddressData = async () => {
+    setLoadingAddressData(true);
+    try {
+      const response = await getProvince();
+      setAddressData(response);
+    } catch (error) {
+      console.error("Failed to fetch address data:", error);
+    } finally {
+      setLoadingAddressData(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,13 +118,56 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
-    setPropertyData((prevData) => ({
-      ...prevData,
-      address: {
-        ...prevData.address,
-        [name]: value,
-      },
-    }));
+    const code = value ? parseInt(value) : "";
+
+    if (name === "province") {
+      const selectedProvince = addressData.find((p) => p.code === code);
+      setDistricts(selectedProvince?.districts || []);
+      setWards([]);
+      setPropertyData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          province: selectedProvince ? selectedProvince.name : "",
+          provinceCode: code || "",
+          district: "",
+          districtCode: "",
+          ward: "",
+          wardCode: "",
+        },
+      }));
+    } else if (name === "district") {
+      const selectedDistrict = districts.find((d) => d.code === code);
+      setWards(selectedDistrict?.wards || []);
+      setPropertyData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          district: selectedDistrict ? selectedDistrict.name : "",
+          districtCode: code || "",
+          ward: "",
+          wardCode: "",
+        },
+      }));
+    } else if (name === "ward") {
+      const selectedWard = wards.find((w) => w.code === code);
+      setPropertyData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          ward: selectedWard ? selectedWard.name : "",
+          wardCode: code || "",
+        },
+      }));
+    } else {
+      setPropertyData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          [name]: value,
+        },
+      }));
+    }
   };
 
   const validateForm = () => {
@@ -85,6 +178,11 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     if (!propertyData.address.district.trim()) return "District is required.";
     if (!propertyData.address.province.trim()) return "Province is required.";
     if (!propertyData.description.trim()) return "Description is required.";
+    if (
+      propertyData.location.latitude === 0 ||
+      propertyData.location.longitude === 0
+    )
+      return "Location must be selected on the map.";
     return null;
   };
 
@@ -99,8 +197,22 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     setSubmitting(true);
     setSubmitError("");
 
+    // Prepare FormData
+    const formData = new FormData();
+    formData.append("name", propertyData.name);
+    formData.append("property_type", propertyData.property_type);
+    formData.append("description", propertyData.description);
+    formData.append("owner_id", propertyData.owner_id);
+    formData.append("address", JSON.stringify(propertyData.address));
+    formData.append("location", JSON.stringify(propertyData.location));
+
+    // Append images
+    selectedImages.forEach((image) => {
+      formData.append("images", image);
+    });
+
     try {
-      await onSubmit(propertyData);
+      await onSubmit(formData);
       setSuccess(true);
     } catch (err) {
       console.error("Error submitting form:", err);
@@ -112,37 +224,51 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }
   };
 
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setSelectedImages((prevImages) => [...prevImages, ...files]);
+
+    // Create preview URLs
+    const previewUrls = files.map((file) => URL.createObjectURL(file));
+    setPropertyData((prevData) => ({
+      ...prevData,
+      images: [...prevData.images, ...previewUrls],
+    }));
+  };
+
   const handleRemoveImage = (index) => {
+    setSelectedImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages.splice(index, 1);
+      return updatedImages;
+    });
+
     setPropertyData((prevData) => {
       const updatedImages = [...prevData.images];
+      URL.revokeObjectURL(updatedImages[index]);
       updatedImages.splice(index, 1);
       return { ...prevData, images: updatedImages };
     });
   };
 
-  const handleOpenAddImageDialog = () => {
-    setNewImageUrl("");
-    setOpenAddImageDialog(true);
-  };
-
-  const handleCloseAddImageDialog = () => {
-    setOpenAddImageDialog(false);
-  };
-
-  const isValidImageUrl = (url) => {
-    const pattern = /\.(jpeg|jpg|gif|png|bmp|svg)$/;
-    return pattern.test(url.toLowerCase());
-  };
-  const handleAddImage = () => {
-    if (newImageUrl.trim() === "" || !isValidImageUrl(newImageUrl)) return;
+  const handleMapClick = (location) => {
     setPropertyData((prevData) => ({
       ...prevData,
-      images: [...prevData.images, newImageUrl.trim()],
+      location: {
+        latitude: location.lat,
+        longitude: location.lng,
+      },
     }));
-    setOpenAddImageDialog(false);
+    setOpenMapDialog(false);
   };
 
-  const displayedImages = propertyData.images || [];
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setPropertyData((prevData) => ({
+      ...prevData,
+      owner_id: userId || "",
+    }));
+  }, []);
 
   return (
     <Box>
@@ -184,6 +310,88 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
         </Typography>
 
         <TextField
+          label="Province"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="province"
+          value={propertyData.address.provinceCode || ""}
+          onChange={handleAddressChange}
+          select
+          required
+        >
+          {loadingAddressData ? (
+            <MenuItem value="">
+              <CircularProgress size={24} />
+            </MenuItem>
+          ) : (
+            addressData.map((province) => (
+              <MenuItem key={province.code} value={province.code}>
+                {province.name}
+              </MenuItem>
+            ))
+          )}
+        </TextField>
+
+        <TextField
+          label="District"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="district"
+          value={propertyData.address.districtCode || ""}
+          onChange={handleAddressChange}
+          select
+          required
+          disabled={!propertyData.address.provinceCode}
+        >
+          {districts.length === 0 ? (
+            <MenuItem value="">
+              {propertyData.address.province ? (
+                <CircularProgress size={24} />
+              ) : (
+                "Please select a province first"
+              )}
+            </MenuItem>
+          ) : (
+            districts.map((district) => (
+              <MenuItem key={district.code} value={district.code}>
+                {district.name}
+              </MenuItem>
+            ))
+          )}
+        </TextField>
+
+        <TextField
+          label="Ward"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="ward"
+          value={propertyData.address.wardCode || ""}
+          onChange={handleAddressChange}
+          select
+          required
+          disabled={!propertyData.address.districtCode}
+        >
+          {wards.length === 0 ? (
+            <MenuItem value="">
+              {propertyData.address.district ? (
+                <CircularProgress size={24} />
+              ) : (
+                "Please select a district first"
+              )}
+            </MenuItem>
+          ) : (
+            wards.map((ward) => (
+              <MenuItem key={ward.code} value={ward.code}>
+                {ward.name}
+              </MenuItem>
+            ))
+          )}
+        </TextField>
+
+        <TextField
           label="Street"
           variant="outlined"
           fullWidth
@@ -195,44 +403,11 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
         />
 
         <TextField
-          label="Ward"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="ward"
-          value={propertyData.address.ward}
-          onChange={handleAddressChange}
-          required
-        />
-
-        <TextField
-          label="District"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="district"
-          value={propertyData.address.district}
-          onChange={handleAddressChange}
-          required
-        />
-
-        <TextField
-          label="Province"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="province"
-          value={propertyData.address.province}
-          onChange={handleAddressChange}
-          required
-        />
-
-        <TextField
           label="Owner"
           variant="outlined"
           fullWidth
           margin="normal"
-          value={propertyData.owner_id || "Ch get dc Owner nen de tam"}
+          value={propertyData.owner_id || "Owner ID not set"}
           InputProps={{
             readOnly: true,
           }}
@@ -256,13 +431,13 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
             Property Images
           </Typography>
           <Grid container spacing={2}>
-            {displayedImages.map((imageUrl, index) => (
+            {propertyData.images.map((imageUrl, index) => (
               <Grid item xs={12} sm={6} key={index}>
                 <Box
                   sx={{
                     position: "relative",
                     width: "100%",
-                    paddingTop: "56.25%", // 16:9 aspect ratio
+                    paddingTop: "56.25%",
                     overflow: "visible",
                   }}
                 >
@@ -305,7 +480,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
             <Grid item xs={12} sm={6}>
               <Button
                 variant="outlined"
-                onClick={handleOpenAddImageDialog}
+                component="label"
                 sx={{
                   width: "100%",
                   height: "100%",
@@ -322,11 +497,40 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
               >
                 <FontAwesomeIcon icon={faPlus} size="2x" />
                 <Typography variant="body2" sx={{ mt: 1 }}>
-                  Add Image
+                  Upload Images
                 </Typography>
+                <input
+                  type="file"
+                  hidden
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                />
               </Button>
             </Grid>
           </Grid>
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Property Location
+          </Typography>
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faMapMarkerAlt} />}
+            onClick={() => setOpenMapDialog(true)}
+          >
+            {propertyData.location.latitude && propertyData.location.longitude
+              ? "Update Location"
+              : "Select Location on Map"}
+          </Button>
+          {propertyData.location.latitude &&
+            propertyData.location.longitude && (
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                Selected Location: Latitude {propertyData.location.latitude},
+                Longitude {propertyData.location.longitude}
+              </Typography>
+            )}
         </Box>
 
         <Button
@@ -340,54 +544,28 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
         </Button>
       </form>
 
-      <Dialog open={openAddImageDialog} onClose={handleCloseAddImageDialog}>
-        <DialogTitle>Add New Image</DialogTitle>
+      {/* Map Dialog */}
+      <Dialog
+        open={openMapDialog}
+        onClose={() => setOpenMapDialog(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Select Property Location</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Image URL"
-            type="url"
-            fullWidth
-            variant="outlined"
-            value={newImageUrl}
-            onChange={(e) => setNewImageUrl(e.target.value)}
-            required
-            error={newImageUrl !== "" && !isValidImageUrl(newImageUrl)}
-            helperText={
-              newImageUrl !== "" && !isValidImageUrl(newImageUrl)
-                ? "Please enter a valid image URL."
-                : ""
-            }
+          <LeafletMap
+            initialLocation={propertyData.location}
+            onLocationSelect={handleMapClick}
+            height="500px"
           />
-          {isValidImageUrl(newImageUrl) && (
-            <Box sx={{ mt: 2 }}>
-              <img
-                src={newImageUrl}
-                alt="Preview"
-                style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
-                }}
-              />
-            </Box>
-          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseAddImageDialog} color="secondary">
+          <Button onClick={() => setOpenMapDialog(false)} color="secondary">
             Cancel
-          </Button>
-          <Button
-            onClick={handleAddImage}
-            color="primary"
-            variant="contained"
-            disabled={!isValidImageUrl(newImageUrl)}
-          >
-            Add
           </Button>
         </DialogActions>
       </Dialog>
+
       <Snackbar
         open={success}
         autoHideDuration={3000}

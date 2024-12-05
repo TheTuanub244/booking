@@ -110,6 +110,7 @@ export const updateBookingStatus = async (bookingId, status) => {
   return response.data;
 };
 export const getAllBooking = async (token) => {
+  console.log(token)
   const response = await axios.get(
     `${process.env.REACT_APP_API_URL}/booking/getAllBooking`,
     {
@@ -144,6 +145,17 @@ export const deleteBookingByAdmin = async(bookingId) => {
 export const updateBookingWithAdmin = async(bookingId, data) => {
   const response = await axios.put(
     `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`, {data},
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}
+export const getCompletedBookingByUser = async (userId) => {
+  
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/getCompletedBookingByUser/${userId}`,
     {
 
       withCredentials: true,

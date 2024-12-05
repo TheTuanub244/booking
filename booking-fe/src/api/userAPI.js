@@ -200,3 +200,15 @@ export const deleteUserWithAdmin = async(userId) => {
   );
   return respone.data;
 }
+export const getPartner = async (token) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/user/getPartner`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+      withCredentials: true,
+    },
+  );
+  return respone.data;
+}

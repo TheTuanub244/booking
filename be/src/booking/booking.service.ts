@@ -668,4 +668,16 @@ export class BookingService {
       bookingDto,
     );
   }
+  async getCompletedBookingByUser(userId: string) {
+    console.log(userId);
+    
+    return await this.bookingSchema
+      .find({
+        user_id: new Types.ObjectId(userId),
+        booking_status: BookingStatus.COMPLETED
+      })
+      .populate('property')
+      .populate('room_id')
+      .populate('user_id');
+  }
 }

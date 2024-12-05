@@ -1,8 +1,10 @@
+// src/pages/PropertyManageList/PropertyManageList.jsx
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropertyTable from "../../../component/PropertyTable/PropertyTable";
 import PropertySection from "../../../component/PropertyCardSection/PropertyCardSection";
-import { getAllProperty } from "../../../../../api/propertyAPI";
+import { getAllProperty, deleteProperty } from "../../../../../api/propertyAPI";
 import {
   Box,
   Typography,
@@ -12,20 +14,34 @@ import {
   InputLabel,
   CircularProgress,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const PropertyManageList = () => {
   const [viewMode, setViewMode] = useState("cards");
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Snackbar state for notifications
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     const fetchProperties = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const data = await getAllProperty();
         setProperties(data);
       } catch (error) {
         console.error("Error fetching properties:", error);
+        setError("Failed to load properties. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -36,6 +52,36 @@ const PropertyManageList = () => {
 
   const handleViewChange = (e) => {
     setViewMode(e.target.value);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      //await deleteProperty(id);
+      setProperties((prev) => prev.filter((property) => property._id !== id));
+      setSnackbar({
+        open: true,
+        message: "Property deleted successfully.",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Error deleting property:", error);
+      setSnackbar({
+        open: true,
+        message: "Failed to delete the property. Please try again.",
+        severity: "error",
+      });
+    }
+  };
+  const handleRetry = () => {
+    setLoading(true);
+    setError(null);
+    getAllProperty()
+      .then((data) => setProperties(data))
+      .catch((err) => {
+        console.error("Error fetching properties:", err);
+        setError("Failed to load properties. Please try again later.");
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -110,12 +156,50 @@ const PropertyManageList = () => {
           >
             <CircularProgress />
           </Box>
+        ) : error ? (
+          <Box
+            sx={{
+              textAlign: "center",
+              mt: 4,
+            }}
+          >
+            <Typography color="error" variant="h6" gutterBottom>
+              {error}
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<RefreshIcon />}
+              onClick={handleRetry}
+            >
+              Retry
+            </Button>
+          </Box>
+        ) : properties.length === 0 ? (
+          <Typography variant="h6" align="center" mt={4}>
+            No properties found.
+          </Typography>
         ) : viewMode === "cards" ? (
           <PropertySection properties={properties} />
         ) : (
-          <PropertyTable properties={properties} />
+          <PropertyTable properties={properties} onDelete={handleDelete} />
         )}
       </Box>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

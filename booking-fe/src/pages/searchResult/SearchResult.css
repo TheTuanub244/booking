@@ -114,7 +114,7 @@ input[type="range"] {
 }
 
 .availability-button {
-  background-color: #007bff;
+  background-color: #0c969c;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -137,7 +137,7 @@ input[type="range"] {
   left: 60px;
   z-index: 900;
   padding: 10px 20px;
-  background-color: #0071c2;
+  background-color: #0c969c;
   color: white;
   border: none;
   border-radius: 5px;
@@ -149,7 +149,7 @@ input[type="range"] {
 }
 
 .show-on-map-btn:hover {
-  background-color: #005bb5;
+  background-color: #0a7075;
 }
 
 /* Popup Map */
@@ -223,4 +223,10 @@ input[type="range"] {
   justify-content: space-between;
   margin-top: 10px;
   font-size: 14px;
+}
+.pagination-controls button {
+  background-color: #0c969c;
+}
+.pagination-controls button:hover{
+  background-color: #0a7075;
 }

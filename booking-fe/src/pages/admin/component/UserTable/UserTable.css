@@ -65,7 +65,7 @@
   font-weight: 700;
 }
 
-.cellWithRole.ADMIN {
+.cellWithRole.Admin {
   color: rgba(255, 87, 34, 0.8); /* Orange */
 }
 
@@ -85,9 +85,4 @@
 
 .userTableGridContainer {
   transition: filter 0.3s ease-in-out;
-}
-
-.MuiBackdrop-root {
-  backdrop-filter: blur(10px);
-  background-color: rgba(0, 0, 0, 0.4);
 }

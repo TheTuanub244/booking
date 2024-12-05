@@ -132,7 +132,6 @@ function Home() {
         </h1>
         <FeaturedProperties />
 
-        <Footer />
       </div>
       {unfinishedBooking && unfinishedBooking.length !== 0 && (
         <BookingPopup

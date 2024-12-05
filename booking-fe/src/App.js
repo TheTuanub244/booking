@@ -65,7 +65,7 @@ function App() {
         <Route path="/property/:id" element={<Property />}></Route>
         <Route path="/admin" element={<AdminDashboard />}>
           <Route path="" element={<DashBoard />} />
-          <Route path="booking" element={<BookingManage />} >
+          <Route path="booking" element={<BookingManage/>} >
                 <Route path="" element = {<BookingList/>} />
           </Route>
           <Route path="partnerRequest" element={<PartnerRequestManage />}>

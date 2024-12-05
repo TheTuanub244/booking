@@ -293,7 +293,7 @@ const SearchResult = () => {
                         style={{
                           position: "absolute",
                           height: "6px",
-                          background: "#007bff",
+                          background: "#0c969c",
                           borderRadius: "3px",
                           left: `${((values[0] - 100000) / (20000000 - 100000)) * 100}%`,
                           right: `${100 - ((values[1] - 100000) / (20000000 - 100000)) * 100}%`,
@@ -309,7 +309,7 @@ const SearchResult = () => {
                         ...props.style,
                         height: "20px",
                         width: "20px",
-                        backgroundColor: "#007bff",
+                        backgroundColor: "#0c969c",
                         borderRadius: "50%",
                         display: "flex",
                         justifyContent: "center",

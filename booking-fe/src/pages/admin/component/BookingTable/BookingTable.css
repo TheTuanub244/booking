@@ -54,27 +54,22 @@
 }
 
 /* Role Specific Styles */
-.bookingCellWithRole.PENDING {
-  background-color: rgba(255, 193, 7, 0.8); /* Amber for Pending */
-  color: #212529; /* Dark text for better contrast */
+.bookingCellWithRole.Pending {
+  color: rgba(255, 128, 1, 0.8); /* Amber for Pending */
 }
 
-.bookingCellWithRole.CONFIRMED {
-  background-color: rgba(40, 167, 69, 0.8); /* Green for Confirmed */
-  color: white;
+.bookingCellWithRole.Completed {
+  color: rgba(40, 167, 69, 0.8); /* Green for Confirmed */
 }
 
-.bookingCellWithRole.CANCELLED {
-  background-color: rgba(220, 53, 69, 0.8); /* Red for Cancelled */
-  color: white;
+.bookingCellWithRole.Canceled {
+  color: rgba(220, 53, 69, 0.8); /* Red for Cancelled */
 }
 
-.bookingCellWithRole.UNPAID {
-  background-color: rgba(220, 53, 69, 0.8); /* Red for Unpaid */
-  color: white;
+.bookingCellWithRole.Unpaid {
+  color: rgba(220, 53, 69, 0.8); /* Red for Unpaid */
 }
 
-.bookingCellWithRole.PAID {
-  background-color: rgba(40, 167, 69, 0.8); /* Green for Paid */
-  color: white;
+.bookingCellWithRole.Paid {
+  color: rgba(40, 167, 69, 0.8); /* Green for Paid */
 }

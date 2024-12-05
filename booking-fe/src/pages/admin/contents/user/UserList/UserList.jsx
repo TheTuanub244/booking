@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserTable from "../../../component/UserTable/UserTable";
-import { getPendingUser } from "../../../../../api/userAPI";
+import { getAllUser } from "../../../../../api/userAPI";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
@@ -13,7 +13,8 @@ const UserList = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getPendingUser();
+      const token = localStorage.getItem("accessToken");
+      const data = await getAllUser(token);
       setUsers(data);
     } catch (err) {
       console.error("Error fetching users:", err);

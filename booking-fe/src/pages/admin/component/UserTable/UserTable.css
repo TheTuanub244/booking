@@ -65,7 +65,7 @@
   font-weight: 700;
 }
 
-.cellWithRole.ADMIN {
+.cellWithRole.Admin {
   color: rgba(255, 87, 34, 0.8); /* Orange */
 }
 

@@ -49,7 +49,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     rooms: initialData.rooms || [],
     owner_id: initialData.owner_id || localStorage.getItem("userId") || "",
   });
-
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -62,6 +61,19 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
   const [loadingAddressData, setLoadingAddressData] = useState(false);
 
+  const roomType = ["single", "double", "suite"];
+
+  const propertyTypes = [
+    "Hotel",
+    "Apartment",
+    "Hostel",
+    "Resort",
+    "Lodge",
+    "Homestay",
+    "Villa",
+    "Penthouse",
+    "Bungalow",
+  ];
   useEffect(() => {
     console.log("Property Data Updated:", propertyData);
   }, [propertyData]);
@@ -377,8 +389,8 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   };
 
   const handleNestedRoomChange = (e, index, parentKey) => {
-    const { name, value } = e.target; // e.g., name = 'price_per_night.weekday'
-    const keys = name.split("."); // ['price_per_night', 'weekday']
+    const { name, value } = e.target;
+    const keys = name.split(".");
 
     setPropertyData((prevData) => {
       const updatedRooms = [...prevData.rooms];
@@ -510,6 +522,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
         {/* Property Type */}
         <TextField
+          select
           label="Property Type"
           variant="outlined"
           fullWidth
@@ -518,7 +531,13 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           value={propertyData.type}
           onChange={handleChange}
           required
-        />
+        >
+          {propertyTypes.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
 
         {/* Address Section */}
         <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
@@ -766,6 +785,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
               {/* Room Type */}
               <TextField
+                select
                 label="Room Type"
                 variant="outlined"
                 fullWidth
@@ -773,7 +793,13 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                 name="type"
                 value={room.type}
                 onChange={(e) => handleRoomChange(e, index)}
-              />
+              >
+                {roomType.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
 
               {/* Room Size */}
               <TextField

@@ -113,7 +113,6 @@ function ResultPayment() {
           .catch((err) => console.log(err));
       }
 
-      localStorage.removeItem("reservation");
       setMessage(true);
     } else {
       setMessage(false);
@@ -135,7 +134,7 @@ function ResultPayment() {
   };
 
   const handleReturnPayment = () => {
-    navigate("/payment");
+    navigate("/");
   };
   return (
     <div className="resultPayment">
@@ -181,7 +180,7 @@ function ResultPayment() {
             thực hiện lại giao dịch
           </h4>
           <button onClick={handleReturnPayment}>
-            Quay trở lại trang thanh toán
+            Quay trở lại trang chủ
           </button>
         </div>
       )}

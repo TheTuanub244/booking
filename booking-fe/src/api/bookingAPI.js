@@ -163,3 +163,13 @@ export const getCompletedBookingByUser = async (userId) => {
   );
   return response.data;
 }
+export const cancelBooking = async (id) => {
+  const response = await axios.delete(
+    `${process.env.REACT_APP_API_URL}/booking/cancelBooking/${id}`,
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}

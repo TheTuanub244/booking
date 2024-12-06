@@ -88,8 +88,15 @@ export class BookingService {
       await this.bookingSchema.findByIdAndDelete(
         new Types.ObjectId(booking_id),
       );
-    } else if (booking[0].booking_status === BookingStatus.COMPLETED) {
-      if (booking[0].payment_status === PaymentStatus.PAID) {
+    } else if (
+      booking[0].booking_status === BookingStatus.COMPLETED &&
+      booking[0].payment_status === PaymentStatus.PAID
+    ) {
+      const formattedCheckInDate = new Date(booking[0].check_in_date);
+      const currentDate = new Date();
+      const timeDifference: number =
+        formattedCheckInDate.getTime() - currentDate.getTime();
+      const daysDifference: number = timeDifference / (1000 * 3600 * 24);
         const subject = 'Booking Cancellation Confirmation';
         const text = `Your booking has been cancelled. Here are the details:
           - Property: ${booking[0].property.name}
@@ -128,7 +135,6 @@ export class BookingService {
           text,
           html,
         );
-      }
     }
   }
   async finalizeCancellation(bookingId: string): Promise<boolean> {
@@ -670,11 +676,11 @@ export class BookingService {
   }
   async getCompletedBookingByUser(userId: string) {
     console.log(userId);
-    
+
     return await this.bookingSchema
       .find({
         user_id: new Types.ObjectId(userId),
-        booking_status: BookingStatus.COMPLETED
+        booking_status: BookingStatus.COMPLETED,
       })
       .populate('property')
       .populate('room_id')

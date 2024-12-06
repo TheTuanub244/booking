@@ -3,7 +3,7 @@ import "./payment.css";
 import Navbar from "../../componets/navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { createBooking } from "../../api/bookingAPI";
+import { cancelBooking, createBooking } from "../../api/bookingAPI";
 import Modal from "react-modal";
 import {
   faWifi,
@@ -130,8 +130,8 @@ function Payment() {
     setIsModalOpen(true);
   };
 
-  const handleConfirm = () => {
-    
+  const handleConfirm = async () => {
+    await cancelBooking(overViewData.bookingId);
     localStorage.removeItem("reservation");
     navigate(`/property/${reservationInfo.property}`);
     closeModal();
@@ -476,7 +476,6 @@ function Payment() {
       >
         <h3>Bạn có muốn hủy chuyến đi không?
         </h3>
-        <h4>Nếu đồng ý chúng tôi sẽ gửi email để xác nhận</h4>
         <div style={{ marginTop: "20px" }}>
           <button
             style={{

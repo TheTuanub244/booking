@@ -10,6 +10,7 @@ import {
 import PartnerNavbar from "../../../componets/partner/partnerNavbar/partnerNavbar";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
+import {bookingAPI, cancelBooking} from "../../../api/bookingAPI";
 const PartnerBookingDetail = () => {
   const location = useLocation();
   const [booking, setBooking] = useState();
@@ -25,8 +26,8 @@ const PartnerBookingDetail = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const handleCancelBooking = () => {
-
+  const handleCancelBooking = async () => {
+    await cancelBooking(booking._id);
   }
 
 

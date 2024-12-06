@@ -40,6 +40,10 @@ export class NotificationGateway
     this.server.to(partnerId).emit('notifyPartner', notification);
   }
 
+  sendNotificationToUser(userId: string, notification: any){
+    this.server.to(userId).emit('notifyUser', notification);
+  }
+
   @SubscribeMessage('newBooking')
   handleNewBooking(@MessageBody() data: any): void {
     console.log('New booking received:', data);

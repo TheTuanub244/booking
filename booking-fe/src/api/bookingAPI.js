@@ -115,7 +115,7 @@ export const getAllBooking = async (token) => {
     `${process.env.REACT_APP_API_URL}/booking/getAllBooking`,
     {
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
       withCredentials: true,
     },
@@ -124,15 +124,15 @@ export const getAllBooking = async (token) => {
 }
 export const createBookingWithAdmin = async (data) => {
   const response = await axios.get(
-    `${process.env.REACT_APP_API_URL}/booking/createBookingWithAdmin`,{data},
+    `${process.env.REACT_APP_API_URL}/booking/createBookingWithAdmin`, { data },
     {
 
       withCredentials: true,
     },
   );
   return response.data;
-} 
-export const deleteBookingByAdmin = async(bookingId) => {
+}
+export const deleteBookingByAdmin = async (bookingId) => {
   const response = await axios.delete(
     `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`,
     {
@@ -142,9 +142,9 @@ export const deleteBookingByAdmin = async(bookingId) => {
   );
   return response.data;
 }
-export const updateBookingWithAdmin = async(bookingId, data) => {
+export const updateBookingWithAdmin = async (bookingId, data) => {
   const response = await axios.put(
-    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`, {data},
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`, { data },
     {
 
       withCredentials: true,
@@ -153,7 +153,7 @@ export const updateBookingWithAdmin = async(bookingId, data) => {
   return response.data;
 }
 export const getCompletedBookingByUser = async (userId) => {
-  
+
   const response = await axios.get(
     `${process.env.REACT_APP_API_URL}/booking/getCompletedBookingByUser/${userId}`,
     {

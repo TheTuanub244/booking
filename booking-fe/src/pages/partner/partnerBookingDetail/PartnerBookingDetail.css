@@ -166,15 +166,28 @@ p {
   margin-left: 10px;
 }
 
-.property-detail-night .checkInTitle, .checkOutTitle{
+.property-detail-night .checkInTitle{
   font-size: 20px;
 }
 
-.property-detail-night .checkInTime, .checkOutTime {
+.property-detail-night .checkOutTitle {
   font-size: 20px;
 }
+
+.property-detail-night .checkInTime  {
+  font-size: 20px;
+}
+
+.property-detail-night .checkOutTime {
+  font-size: 20px;
+}
+
 
 .property-detail-night .checkInFrom, .checkOutUntil {
+  font-size: 17px;
+}
+
+.property-detail-night .checkOutUntil {
   font-size: 17px;
 }
 

@@ -24,7 +24,7 @@ const BookingPopup = ({ booking, setUnfinishedBooking }) => {
           </button>
           <div
             className="popup-body"
-            onClick={() => navigate(`/payment`)}
+            // onClick={() => navigate(`/payment`)}
           >
             <img
               src={bookingPopup.propertyDetails.images[0]}

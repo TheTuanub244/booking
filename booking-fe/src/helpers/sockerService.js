@@ -29,6 +29,12 @@ class SocketService {
     }
   }
 
+  off(event) {
+    if (this.socket) {
+      this.socket.off(event);
+    }
+  }
+
   emit(event, data) {
     if (this.socket) {
       this.socket.emit(event, data);

@@ -27,7 +27,7 @@ export const updateLastProperties = async (userId, propertyId) => {
   return respone.data;
 };
 export const refreshAccessToken = async () => {
-  const response = await axios.get(`${process.env.REACT_APP_API_URL}/session/refreshAccessToken}`,
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/session/refreshAccessToken`,
     { withCredentials: true },)
     return response.data
 }

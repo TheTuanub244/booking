@@ -4,7 +4,7 @@ import { Booking } from 'src/booking/booking.schema';
 import { User } from 'src/user/user.schema';
 @Schema()
 export class Notification {
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  @Prop({ required: false, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   sender_id: User;
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })

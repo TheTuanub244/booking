@@ -11,6 +11,7 @@ import { BookingModule } from 'src/booking/booking.module';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { JwtStrategy } from 'src/common/strategy/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { NotificationModule } from 'src/notification/notification.module';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -36,6 +37,7 @@ const jwtConstant = {
     UserModule,
     forwardRef(() => BookingModule),
     PassportModule,
+    NotificationModule
   ],
 })
 export class SessionModule {}

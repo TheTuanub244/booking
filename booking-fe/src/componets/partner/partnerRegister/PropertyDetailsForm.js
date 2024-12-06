@@ -210,31 +210,37 @@ const PropertyDetailsForm = ({
         reader.readAsDataURL(file);
       });
     } else {
-      const file = e.target.files[0];
-      console.log(file);
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      const newImage = [];
 
-      const updatedRooms = [...propertyData.rooms];
-
-      updatedRooms[index].image = file;
-
-      if (file) {
+      files.forEach((file) => {
         const reader = new FileReader();
 
         reader.onloadend = () => {
-          const updatedRooms = [...propertyData.rooms];
+          newImages.push(reader.result);
+          newImage.push(file);
 
-          updatedRooms[index] = {
-            ...updatedRooms[index],
-            images: [reader.result],
-          };
+          if (newImages.length === files.length) {
+            setPropertyData((prevData) => {
+              const updatedRooms = [...prevData.rooms];
 
-          setPropertyData({
-            ...propertyData,
-            rooms: updatedRooms,
-          });
+              updatedRooms[index] = {
+                ...updatedRooms[index],
+                images: newImages,
+                image: newImage,
+              };
+
+              return {
+                ...prevData,
+                rooms: updatedRooms,
+              };
+            });
+          }
         };
+
         reader.readAsDataURL(file);
-      }
+      });
     }
   };
   useEffect(() => {
@@ -291,18 +297,27 @@ const PropertyDetailsForm = ({
         reader.readAsDataURL(file);
       });
     } else {
-      const file = e.target.files[0];
-      propertyData.image = file;
-      if (file) {
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      const newImage = [];
+      propertyData.image = files;
+      files.forEach((file) => {
         const reader = new FileReader();
+
         reader.onloadend = () => {
-          setPropertyData({
-            ...propertyData,
-            images: [reader.result], // Reset lại mảng images nếu chỉ muốn một ảnh
-          });
+          newImages.push(reader.result);
+          newImage.push(file);
+          if (newImages.length === files.length) {
+            setPropertyData({
+              ...propertyData,
+              images: newImages,
+              image: newImage,
+            });
+          }
         };
         reader.readAsDataURL(file);
-      }
+      });
+
     }
   };
 
@@ -466,6 +481,7 @@ const PropertyDetailsForm = ({
         },
       })),
     });
+    
     const formData = new FormData();
 
     formData.append("_id", propertyData._id);
@@ -478,7 +494,6 @@ const PropertyDetailsForm = ({
     formData.append("location", JSON.stringify(propertyData.location));
     formData.append("address", JSON.stringify(propertyData.address));
 
-    // Add main property image if available
     if (propertyData.images) {
       formData.append("images", propertyData.images);
     }
@@ -488,7 +503,6 @@ const PropertyDetailsForm = ({
 
     // Add room details, including each room’s image
     propertyData.rooms.forEach((room, index) => {
-      // Append individual room fields
       formData.append(`rooms[${index}][name]`, room.name);
       formData.append(`rooms[${index}][type]`, room.type);
       formData.append(`rooms[${index}][size]`, room.size);
@@ -509,13 +523,8 @@ const PropertyDetailsForm = ({
         formData.append(`rooms[${index}][image]`, room.image);
       }
     });
-    const respone = await createPropertyWithPartner(formData, accessToken);
-    console.log(respone);
-    // Send FormData to backend
     try {
       const respone = await createPropertyWithPartner(formData, accessToken);
-      console.log(respone);
-
       getAllPropetyByOwner(userId);
       setActiveTab("list");
     } catch (error) {

@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Loading from "../../../componets/loading/Loading";
 import "./PartnerBookingDetail.css";
+import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
+
 import {
   calculateNights,
   formatDateDayMonthAndYear,
@@ -9,13 +12,36 @@ import {
 import PartnerNavbar from "../../../componets/partner/partnerNavbar/partnerNavbar";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { formatCurrency } from "../../../helpers/currencyHelpers";
+import {bookingAPI, cancelBooking} from "../../../api/bookingAPI";
 const PartnerBookingDetail = () => {
   const location = useLocation();
   const [booking, setBooking] = useState();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeModal = () => setIsModalOpen(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(true);
+  }
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+  const navigate = useNavigate();
+
+  const handleCancelBooking = async () => {
+    try {
+      console.log(booking);
+      // await cancelBooking(booking._id);
+
+
+    } catch(error) {
+      console.log(error);
+    }
+
+  }
+
+
   const [roomCounts, setRoomCounts] = useState();
   useEffect(() => {
     setBooking(location.state);
@@ -48,125 +74,96 @@ const PartnerBookingDetail = () => {
       {booking ? (
         <div className="partner-booking-detail-container">
           <div className="partner-booking-detail-container-left">
-            <div className="partner-booking-user-info">
-              <h2>Customer Detail</h2>
-              <p>Email: {booking.userDetails[0].email}</p>
-            </div>
-            <p>
-              {booking.userDetails[0].address.ward},{" "}
-              {booking.userDetails[0].address.district},{" "}
-              {booking.userDetails[0].address.province}
-            </p>
-            <p>Phone: {booking.userDetails[0].phoneNumber}</p>
-            <p
-              className={`${
-                booking.booking_status === "Completed"
+            <div className="customer-detail">
+              <div className="partner-booking-user-info">
+                <h2>Customer Detail</h2>
+                <p>Email: {booking.userDetails[0].email}</p>
+              </div>
+              <p>
+                {booking.userDetails[0].address.ward},{" "}
+                {booking.userDetails[0].address.district},{" "}
+                {booking.userDetails[0].address.province}
+              </p>
+              <p>Phone: {booking.userDetails[0].phoneNumber}</p>
+              <p
+                className={`${booking.booking_status === "Completed"
                   ? "complete-color"
                   : booking.booking_status === "Pending"
                     ? "pending-color"
                     : "cancel-color"
-              }`}
-            >
-              Booking Status: {booking.booking_status}
-            </p>
+                  }`}
+              >
+                Booking Status: {booking.booking_status}
+              </p>
+
+              <button className="cancelBookingBtn" onClick={toggleModal}>Cancel Booking</button>
+            </div>
+
+
+            <div className="property-detail-information">
+              <div className="property-detail-image">
+                <img
+                  src={booking.propertyDetails.images[0]}
+                  className="image-thumbnail"
+                />
+              </div>
+              <div className="property-detail-text">
+                <div className="property-detail-name">
+                  {/* {booking.propertyDetails.name} */}
+                  Gatsby Hanoi Hotel & Travel
+                </div>
+                <div className="property-detail-address">
+                  {booking.propertyDetails.address.street},{" "}
+                  {booking.propertyDetails.address.ward},{" "}
+                  {booking.propertyDetails.address.district},{" "}
+                  {booking.propertyDetails.address.province}
+                </div>
+                <div className="property-detail-rate">
+                  <div className="rate-number">
+                    {/* {booking.propertyDetails.rate}  */}
+                    4.0
+                  </div>
+                  <span>Excellent - 128 reviews</span>
+
+                </div>
+              </div>
+
+            </div>
           </div>
           <div className="partner-booking-detail-container-right">
-            <div className="property-detail-information">
-              <p
-                style={{
-                  fontSize: "30px",
-                  fontWeight: "700",
-                  color: "black",
-                }}
-              >
-                {booking.propertyDetails.name}
-              </p>
-              <img
-                src={booking.propertyDetails.images[0]}
-                className="image-thumbnail"
-              />
-              <p
-                style={{
-                  marginTop: "20px",
-                }}
-              >
-                Địa chỉ {booking.propertyDetails.address.street},{" "}
-                {booking.propertyDetails.address.ward},{" "}
-                {booking.propertyDetails.address.district},{" "}
-                {booking.propertyDetails.address.province}
-              </p>
-              <div className="property-detail-rate">
-                <span className="rate-number">
-                  {booking.propertyDetails.rate}
-                </span>
-                <span
-                  style={{
-                    textAlign: "center",
-                    marginTop: "12px",
-                  }}
-                >
-                  <p>With 0 reviews</p>
-                </span>
-              </div>
-            </div>
+
             <div className="property-detail-night">
               <h3>Your booking details</h3>
-              <div className="check-in-check-out">
-                <div className="check-in">
-                  <p
-                    style={{
-                      fontWeight: "600",
-                    }}
-                  >
-                    Check in
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                    }}
-                  >
+              <div className="timeBooking">
+                <div className="checkIn">
+                  <div className="checkInTitle">Check in</div>
+                  <div className="checkInTime">
                     {formatDateDayMonthAndYear(booking.check_in_date)}
-                  </p>
+                  </div>
+                  <div className="checkInFrom">From 14:00</div>
+
                 </div>
-                <div className="check-out">
-                  <p
-                    style={{
-                      fontWeight: "600",
-                    }}
-                  >
-                    Check out
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                    }}
-                  >
+                <div className="checkOut">
+                  <div className="checkOutTitle">Check-out</div>
+                  <div className="checkOutTime">
                     {formatDateDayMonthAndYear(booking.check_out_date)}
-                  </p>
+                  </div>
+                  <div className="checkOutUntil">Until 11:00</div>
+
                 </div>
               </div>
-              <p
-                style={{
-                  fontWeight: "600",
-                }}
-              >
-                Total length of stay
-              </p>
-              <p
-                style={{
-                  fontWeight: "700",
-                }}
-              >
-                {calculateNights(booking.check_in_date, booking.check_out_date)}{" "}
-                {calculateNights(
-                  booking.check_in_date,
-                  booking.check_out_date,
-                ) > 1
-                  ? "nights"
-                  : "night"}
-              </p>
+              <div className="lengthStay">
+                <div className="lengthStayTitle">Total length of stay:</div>
+                <div className="totalNight">
+                  {calculateNights(booking.check_in_date, booking.check_out_date)}{" "}
+                  {calculateNights(
+                    booking.check_in_date,
+                    booking.check_out_date,
+                  ) > 1
+                    ? "nights"
+                    : "night"}
+                </div>
+              </div>
               <div className="rooms-details">
                 <p
                   style={{
@@ -244,24 +241,82 @@ const PartnerBookingDetail = () => {
                     </ul>
                   )}
                 </div>
-                <p
-                  style={{
-                    fontWeight: "700",
-                    color: "#006CE4",
-                    cursor: "pointer",
-                    marginTop: "10px",
-                  }}
-                >
-                  Change your selection
-                </p>
                 <div className="total-price-container">
-                  <h2>Total Price</h2>
-                  <h1>{formatCurrency(booking.total_price)}</h1>
+                  <div className="title">Total Price</div>
+                  <h2>{formatCurrency(booking.total_price)}</h2>
                 </div>
               </div>
             </div>
           </div>
+          <Modal
+            isOpen={isModalOpen}
+            onRequestClose={closeModal}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                top: "50%",
+                left: "50%",
+                right: "auto",
+                bottom: "auto",
+                marginRight: "-50%",
+                transform: "translate(-50%, -50%)",
+                width: "550px",
+                textAlign: "center",
+                borderRadius: "10px",
+              },
+            }}
+          >
+            {booking.booking_status === "Completed" ? (
+              <div>
+                <h3>Bạn có muốn hủy chuyến đi không?
+                </h3>
+                <h4>Nếu đồng ý chúng tôi sẽ gửi email để xác nhận</h4>
+              </div>
+            ) : (
+              <div>
+                <h3>Bạn có muốn hủy chuyến đi không?
+                </h3>
+              </div>
+            )}
+            
+            <div style={{ marginTop: "20px" }}>
+              <button
+                style={{
+                  marginRight: "10px",
+                  padding: "10px 20px",
+                  backgroundColor: "#007BFF",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+                onClick={handleCancelBooking}
+              >
+                Đồng ý
+              </button>
+              <button
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#6c757d",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+                onClick={closeModal}
+              >
+                Không
+              </button>
+            </div>
+          </Modal>
+
         </div>
+
+
+
+
       ) : (
         <Loading />
       )}

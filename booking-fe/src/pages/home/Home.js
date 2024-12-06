@@ -22,9 +22,11 @@ import {
 import { checkSession, getSessionHistory } from "../../api/sessionAPI";
 import LastViewProperties from "../../componets/lastViewProperties/LastViewProperties";
 import { useNavigate } from "react-router-dom";
-import { findUnfinishedBooking } from "../../api/bookingAPI";
+import { findUnfinishedBooking, getAllBooking, getCompletedBookingByUser } from "../../api/bookingAPI";
 import BookingPopup from "../../componets/bookingPopup/BookingPopup";
 import { getAllUser } from "../../api/userAPI";
+import axios from "axios";
+import LastBooking from "../../componets/lastBooking/lastBooking";
 
 function Home() {
   const [sessionHistory, setSessionHistory] = useState();
@@ -35,6 +37,7 @@ function Home() {
   const [isPopup, setIsPopup] = useState(false);
   const [promptData, setPromptData] = useState();
   const [unfinishedBooking, setUnfinishedBooking] = useState([]);
+  const [completedBooking, setCompletedBooking] = useState([])
   const navigate = useNavigate();
   const propertyByRates = async () => {
     const response = await getPropertyByRates();
@@ -48,6 +51,10 @@ function Home() {
     const data = await getSessionHistory(userId);
     setSessionHistory(data);
   };
+  const getCompletedBooking = async (userId) => {
+    const response = await getCompletedBookingByUser(userId)
+    setCompletedBooking(response)
+  }
   const handleGetAllProperty = async () => {
     const respone = await getDistinctPlace();
     setAllPlace(respone);
@@ -87,6 +94,7 @@ function Home() {
     if (userId) {
       getHistory(userId);
       handleFindUnfinishedBooking(userId);
+      getCompletedBooking(userId)
     }
   }, []);
 
@@ -107,6 +115,14 @@ function Home() {
             <LastViewProperties data={sessionHistory.lastViewProperties} />
           </>
         )}
+        {
+          userId && completedBooking && (
+            <>
+          <h1 className="homeTitle">Last Booking</h1>
+          <LastBooking data={completedBooking} />
+        </>
+          )
+        }
         <h1 className="homeTitle">Trending destinations</h1>
         <TredingDestination />
         <h1 className="homeTitle">Browse by property type</h1>
@@ -123,7 +139,6 @@ function Home() {
         </h1>
         <FeaturedProperties />
 
-        <Footer />
       </div>
       {unfinishedBooking && unfinishedBooking.length !== 0 && (
         <BookingPopup

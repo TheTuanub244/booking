@@ -93,13 +93,13 @@ function ResultPayment() {
           })
           .catch((err) => console.log(err));
 
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
-        .then((res) => {
-          console.log(res.data);
-           setIsApiCalled(true);
-        })
-        .catch((err) => console.log(err));
+        axios
+          .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
+          .then((res) => {
+            console.log(res.data);
+            setIsApiCalled(true);
+          })
+          .catch((err) => console.log(err));
 
         axios
           .post(
@@ -134,7 +134,7 @@ function ResultPayment() {
   };
 
   const handleReturnPayment = () => {
-    navigate("/payment");
+    navigate("/");
   };
   return (
     <div className="resultPayment">
@@ -180,7 +180,7 @@ function ResultPayment() {
             thực hiện lại giao dịch
           </h4>
           <button onClick={handleReturnPayment}>
-            Quay trở lại trang thanh toán
+            Quay trở lại trang chủ
           </button>
         </div>
       )}

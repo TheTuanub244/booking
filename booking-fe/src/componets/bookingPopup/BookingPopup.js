@@ -15,7 +15,7 @@ const BookingPopup = ({ booking, setUnfinishedBooking }) => {
   return (
     <div className="popup-container">
       {bookingPopup && (
-        <div className="popup-content">
+        <div className="popup-contentt">
           <button
             className="close-btn"
             onClick={() => setUnfinishedBooking(false)}
@@ -24,7 +24,7 @@ const BookingPopup = ({ booking, setUnfinishedBooking }) => {
           </button>
           <div
             className="popup-body"
-            onClick={() => navigate(`/property/${booking.propertyDetails._id}`)}
+            onClick={() => navigate(`/payment`)}
           >
             <img
               src={bookingPopup.propertyDetails.images[0]}

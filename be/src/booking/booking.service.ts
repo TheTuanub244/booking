@@ -88,8 +88,15 @@ export class BookingService {
       await this.bookingSchema.findByIdAndDelete(
         new Types.ObjectId(booking_id),
       );
-    } else if (booking[0].booking_status === BookingStatus.COMPLETED) {
-      if (booking[0].payment_status === PaymentStatus.PAID) {
+    } else if (
+      booking[0].booking_status === BookingStatus.COMPLETED &&
+      booking[0].payment_status === PaymentStatus.PAID
+    ) {
+      const formattedCheckInDate = new Date(booking[0].check_in_date);
+      const currentDate = new Date();
+      const timeDifference: number =
+        formattedCheckInDate.getTime() - currentDate.getTime();
+      const daysDifference: number = timeDifference / (1000 * 3600 * 24);
         const subject = 'Booking Cancellation Confirmation';
         const text = `Your booking has been cancelled. Here are the details:
           - Property: ${booking[0].property.name}
@@ -128,7 +135,6 @@ export class BookingService {
           text,
           html,
         );
-      }
     }
   }
   async finalizeCancellation(bookingId: string): Promise<boolean> {
@@ -238,6 +244,10 @@ export class BookingService {
 
     return totalNightPrice;
   }
+  async createBookingWithAdmin(createBookingDto: any) {
+    const newBooking = new this.bookingSchema(createBookingDto);
+    return await newBooking.save();
+  }
   async createBooking(createBookingDto: any) {
     const customerId = createBookingDto.user_id;
 
@@ -285,7 +295,7 @@ export class BookingService {
         type: 'Booking',
         message,
       });
-      this.notificationGateway.sendNotificationToPartner(
+      await this.notificationGateway.sendNotificationToPartner(
         createBookingDto.partnerId.toString(),
         message,
       );
@@ -631,6 +641,17 @@ export class BookingService {
       {
         $unwind: '$propertyDetails',
       },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $unwind: '$userDetails',
+      },
     ]);
 
     return findBooking;
@@ -641,5 +662,28 @@ export class BookingService {
       .populate('user_id')
       .populate('room_id')
       .populate('property');
+  }
+  async deleteBookingById(bookingId: string) {
+    return await this.bookingSchema.findByIdAndDelete(
+      new Types.ObjectId(bookingId),
+    );
+  }
+  async updateBookingById(bookingId: string, bookingDto: any) {
+    return await this.bookingSchema.findByIdAndUpdate(
+      new Types.ObjectId(bookingId),
+      bookingDto,
+    );
+  }
+  async getCompletedBookingByUser(userId: string) {
+    console.log(userId);
+
+    return await this.bookingSchema
+      .find({
+        user_id: new Types.ObjectId(userId),
+        booking_status: BookingStatus.COMPLETED,
+      })
+      .populate('property')
+      .populate('room_id')
+      .populate('user_id');
   }
 }

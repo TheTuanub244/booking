@@ -22,7 +22,7 @@
   display: flex;
   padding: 5% calc(23% + 5px);
   justify-content: space-between;
-  background-color: #003580;
+  background-color: #6ba3be;
   width: 100%;
 }
 .register-block {
@@ -51,7 +51,7 @@
   margin-right: 10px;
 }
 .register-block button {
-  background-color: #0095ff;
+  background-color: #0c969c;
   border: none;
   font-weight: 600;
   color: white;
@@ -67,7 +67,7 @@
 }
 
 .register-block button:hover {
-  background-color: #007acc;
+  background-color: #0a7075;
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
   transform: scale(1.02);
   cursor: pointer;
@@ -80,7 +80,7 @@
 
 /* Transition effect for changing words */
 .transition-text {
-  color: #0095ff;
+  color: #0c969c;
 
   position: relative;
   overflow: hidden;

@@ -92,7 +92,7 @@ export class PropertyService {
       }
     }
 
-    return validImages; // Trả về mảng các ảnh hợp lệ
+    return validImages; 
   }
   async updateProperty(property: any) {
     if (property.image) {
@@ -463,7 +463,7 @@ export class PropertyService {
       );
       const roundedNumber = distance.toFixed(1);
 
-      if (distance <= 10) {
+      if (distance <= 5) {
         perfectProperties.push({
           distance: roundedNumber,
           property,

@@ -20,6 +20,8 @@ import { auth } from '../../firebase-config';
 import { SessionService } from 'src/session/session.service';
 import admin from 'firebase-admin';
 import { ROLE } from './enum/role.enum';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
 @Injectable()
 export class UserService {
   constructor(
@@ -27,6 +29,8 @@ export class UserService {
     private userSchema: Model<User>,
     private jwtSerivce: JwtService,
     private sessionService: SessionService,
+    private readonly notificationGateway: NotificationGateway,
+    private readonly notificationService: NotificationService,
   ) {}
   async checkEmail(email: string) {
     const existEmail = await this.userSchema.findOne({ email: email });
@@ -44,7 +48,6 @@ export class UserService {
         userName: userName,
       })
       .exec();
-    console.log(address);
 
     if (existedUser) {
       throw new HttpException('User already exists', HttpStatus.CONFLICT);
@@ -60,6 +63,18 @@ export class UserService {
       phoneNumber,
     });
     return newUser.save();
+  }
+  async deleteUserById(userId: string) {
+    return await this.userSchema.findByIdAndDelete(new Types.ObjectId(userId), {
+      new: true,
+    });
+  }
+  async updateUserById(userId: string, userDto: any) {
+    return await this.userSchema.findByIdAndUpdate(
+      new Types.ObjectId(userId),
+      userDto,
+      { new: true },
+    );
   }
   async updatePassword(password: string, email: string) {
     const salt = await bcrypt.genSalt(10);
@@ -150,7 +165,7 @@ export class UserService {
       const newSession = await this.sessionService.createSession({
         userId: existUser._id.toString(),
         lastViewProperties: [],
-        lastBooking: null,
+        lastBooking: [],
         recent_search: [],
         uid: null,
       });
@@ -392,7 +407,7 @@ export class UserService {
     const newSession = await this.sessionService.createSession({
       uid: user.uid,
       userId: savedUser._id.toString(),
-      lastBooking: null,
+      lastBooking: [],
       lastViewProperties: [],
       recent_search: [],
     });
@@ -487,11 +502,26 @@ export class UserService {
     }
   }
   async updateRequestPartner(userId: string, status: ROLE) {
+    const messege = "Promote to Parter";
+    await this.notificationService.createNotification({
+      receiver_id: userId,
+      type: "Partner",
+      messege,
+    });
+    await this.notificationGateway.sendNotificationToUser(
+      userId,
+      messege
+    );
     return await this.userSchema.findByIdAndUpdate(new Types.ObjectId(userId), {
       role: status,
     });
   }
   async getAllUser() {
     return await this.userSchema.find({});
+  }
+  async getPartner() {
+    return await this.userSchema.find({
+      role: ROLE.PARTNER,
+    });
   }
 }

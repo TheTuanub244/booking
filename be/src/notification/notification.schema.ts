@@ -4,20 +4,24 @@ import { Booking } from 'src/booking/booking.schema';
 import { User } from 'src/user/user.schema';
 @Schema()
 export class Notification {
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  @Prop({ required: false, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   sender_id: User;
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   receiver_id: User;
 
   @Prop({
-    required: true,
+    required: false,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Booking',
   })
   booking_id: Booking;
 
-  @Prop({ required: true, enum: ['Booking', 'Payment'], default: 'Booking' })
+  @Prop({
+    required: true,
+    enum: ['Booking', 'Payment', 'Partner'],
+    default: 'Booking',
+  })
   type: string;
 
   @Prop({ required: true })

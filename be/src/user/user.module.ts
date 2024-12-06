@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import {
+  forwardRef,
+  MiddlewareConsumer,
+  Module,
+  RequestMethod,
+} from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -15,12 +20,23 @@ import { Session, SessionSchema } from 'src/session/session.schema';
 import { SessionService } from 'src/session/session.service';
 import { ResetPasswordMiddleware } from 'src/common/middleware/ResetPassword.middleware';
 import { CheckPasswordMiddleware } from 'src/common/middleware/CheckPassword.middleware';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationModule } from 'src/notification/notification.module';
+import { NotificationService } from 'src/notification/notification.service';
+import { Notification, NotificationSchema } from 'src/notification/notification.schema';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
 @Module({
   controllers: [UserController],
-  providers: [UserService, JwtStrategy, JwtAuthGuard, SessionService],
+  providers: [
+    UserService,
+    JwtStrategy,
+    JwtAuthGuard,
+    SessionService,
+    NotificationGateway,
+    NotificationService,
+  ],
   exports: [UserService, JwtModule, JwtAuthGuard, SessionService],
   imports: [
     MongooseModule.forFeature([
@@ -29,6 +45,7 @@ const jwtConstant = {
         schema: UserSchema,
       },
       { name: Session.name, schema: SessionSchema },
+      { name: Notification.name, schema: NotificationSchema },
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -36,6 +53,7 @@ const jwtConstant = {
       signOptions: { expiresIn: '60m' },
     }),
     PassportModule,
+    forwardRef(() => NotificationModule),
   ],
 })
 export class UserModule {

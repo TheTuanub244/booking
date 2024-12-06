@@ -16,7 +16,7 @@ const PartnerDashboard = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, 5000); // Change word every 5 seconds
+    }, 5000); 
 
     return () => clearInterval(intervalId);
   }, []);

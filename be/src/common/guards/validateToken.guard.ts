@@ -19,18 +19,18 @@ export class ValidateTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
     const token = request.cookies.refreshToken;
-
     if (!token) {
       throw new UnauthorizedException('Sign In Required');
     }
-    console.log(1);
 
     try {
       this.jwtService.verify(token, { secret: process.env.secret });
+
       return true;
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
         const refreshToken = request.cookies['refreshToken'];
+        console.log(refreshToken)
         if (!refreshToken) {
           throw new UnauthorizedException('Sign In Required');
         }
@@ -41,6 +41,7 @@ export class ValidateTokenGuard implements CanActivate {
 
         return true;
       }
+      
       throw new UnauthorizedException('Sign In Required');
     }
   }

@@ -87,11 +87,10 @@ export class PaymentController {
 
     sortedParams['vnp_SecureHash'] = signed;
 
-    // Tạo URL chuyển hướng
     const paymentUrl = `${vnpUrl}?${qs.stringify(sortedParams, { encode: false })}`;
-
+    console.log(1)
+    console.log(vnpUrl)
     return res.status(200).json({ paymentUrl: paymentUrl });
-    // res.redirect(paymentUrl);
   }
 
   @Get('vnpay_return')

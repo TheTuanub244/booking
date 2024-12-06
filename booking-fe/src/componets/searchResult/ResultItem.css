@@ -81,8 +81,8 @@
   margin-bottom: 15px;
 }
 .first-index {
-  border: 1px solid #57a6f4; /* Màu viền sáng */
-  box-shadow: 0 0 15px rgba(87, 166, 244, 0.6); /* Hiệu ứng bóng sáng */
+  border: 1px solid #6ba3be; 
+  box-shadow: 0 0 15px rgba(87, 166, 244, 0.6); 
   background-color: rgba(199, 226, 252, 0.6);
 }
 .hotel-image {
@@ -210,11 +210,11 @@
   text-align: center;
   height: 50px;
   color: #fff;
-  background-color: #003b95;
+  background-color: #0c969c;
   border-radius: 5px;
 }
 .property-name {
-  color: #006ce4;
+  color: #0c969c;
   cursor: pointer;
   font-weight: bold;
 }

@@ -2,10 +2,13 @@
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
+  color: #0c969c;
 }
 
 .roomName .name {
   font-weight: bold;
+  color: #0c969c;
+
 }
 .roomDropdown {
   position: relative;

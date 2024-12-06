@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./LastViewProperties.css";
+import "./lastBooking.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Pagination } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
 
-function LastViewProperties({ data }) {
+function LastBooking({ data }) {
   const navigate = useNavigate();
   const items = data;
   useEffect(() => {
@@ -14,7 +14,12 @@ function LastViewProperties({ data }) {
   }, [data]);
   return (
     <div className="fp">
-      <Swiper
+      {
+        !data || data?.length === 0 ? (
+          <h1>You have not book anything</h1>
+        ) : (
+          <div>
+            <Swiper
         spaceBetween={15} 
         slidesPerView={4} 
         navigation={items.length > 4}
@@ -28,25 +33,28 @@ function LastViewProperties({ data }) {
               onClick={() => navigate(`/property/${item._id}`)}
             >
               <div className="fpItemImg">
-                <img src={item.images[0]} alt="" className="fpImg" />
+                <img src={item.property.images[0]} alt="" className="fpImg" />
               </div>
               <div className="fpItemContent">
-                <h3 className="fpName">{item.name}</h3>
+                <h3 className="fpName">{item.property.name}</h3>
                 <div className="fpCity">
-                  {item.address.street}, {item.address.ward},{" "}
-                  {item.address.district}, {item.address.province}
+                  {item.property.address.street}, {item.property.address.ward},{" "}
+                  {item.property.address.district}, {item.property.address.province}
                 </div>
                 <div className="fpRating">
-                  <div className="star">{item.rate}</div>
-                  <span>Excellent - {item.numberReviews} reviews</span>
+                  <div className="star">{item.property.rate}</div>
+                  <span>Excellent - {item.property.numberReviews} reviews</span>
                 </div>
               </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
+          </div>
+        )
+      }
     </div>
   );
 }
 
-export default LastViewProperties;
+export default LastBooking;

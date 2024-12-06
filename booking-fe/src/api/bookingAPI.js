@@ -18,9 +18,9 @@ export const getMonthlyRevenueByProperty = async (id) => {
   );
   return respone.data;
 };
-export const getBooking = async (id, status) => {
+export const getBooking = async (id) => {
   const respone = await axios.get(
-    `${process.env.REACT_APP_API_URL}/booking/getBooking/${id}/${status}`,
+    `${process.env.REACT_APP_API_URL}/booking/getBookingByOwner/${id}`,
     {
       withCredentials: true,
     },
@@ -110,12 +110,64 @@ export const updateBookingStatus = async (bookingId, status) => {
   return response.data;
 };
 export const getAllBooking = async (token) => {
+  console.log(token)
   const response = await axios.get(
     `${process.env.REACT_APP_API_URL}/booking/getAllBooking`,
     {
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}
+export const createBookingWithAdmin = async (data) => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/createBookingWithAdmin`, { data },
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}
+export const deleteBookingByAdmin = async (bookingId) => {
+  const response = await axios.delete(
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`,
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}
+export const updateBookingWithAdmin = async (bookingId, data) => {
+  const response = await axios.put(
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`, { data },
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}
+export const getCompletedBookingByUser = async (userId) => {
+
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/booking/getCompletedBookingByUser/${userId}`,
+    {
+
+      withCredentials: true,
+    },
+  );
+  return response.data;
+}
+export const cancelBooking = async (id) => {
+  const response = await axios.delete(
+    `${process.env.REACT_APP_API_URL}/booking/cancelBooking/${id}`,
+    {
+
       withCredentials: true,
     },
   );

@@ -227,8 +227,8 @@ const PropertyDetailsForm = ({
 
               updatedRooms[index] = {
                 ...updatedRooms[index],
-                images: newImages,
-                image: newImage,
+                images: [...newImages],
+                image: [...newImage],
               };
 
               return {
@@ -298,20 +298,18 @@ const PropertyDetailsForm = ({
       });
     } else {
       const files = Array.from(e.target.files);
+      
       const newImages = [];
-      const newImage = [];
       propertyData.image = files;
       files.forEach((file) => {
         const reader = new FileReader();
 
         reader.onloadend = () => {
           newImages.push(reader.result);
-          newImage.push(file);
           if (newImages.length === files.length) {
             setPropertyData({
               ...propertyData,
               images: newImages,
-              image: newImage,
             });
           }
         };
@@ -385,7 +383,6 @@ const PropertyDetailsForm = ({
       })),
     });
     const formData = new FormData();
-
     formData.append("_id", propertyData._id);
 
     formData.append("name", propertyData.name);
@@ -494,14 +491,19 @@ const PropertyDetailsForm = ({
     formData.append("location", JSON.stringify(propertyData.location));
     formData.append("address", JSON.stringify(propertyData.address));
 
-    if (propertyData.images) {
-      formData.append("images", propertyData.images);
+    if (Array.isArray(propertyData.images)) {
+      propertyData.images.forEach((image, idx) => {
+        formData.append(`images[${idx}]`, image);
+      });
+    } else if (propertyData.images) {
+      formData.append("images[0]", propertyData.images);
     }
-    if (propertyData.image) {
-      formData.append("image", propertyData.image);
+    if (Array.isArray(propertyData.image)) {
+      propertyData.image.forEach((imageFile, idx) => {
+        formData.append(`image[${idx}]`, imageFile);
+      });
     }
 
-    // Add room details, including each room’s image
     propertyData.rooms.forEach((room, index) => {
       formData.append(`rooms[${index}][name]`, room.name);
       formData.append(`rooms[${index}][type]`, room.type);
@@ -515,18 +517,24 @@ const PropertyDetailsForm = ({
         JSON.stringify(room.price_per_night),
       );
 
-      // Append room image if available
-      if (room.images) {
-        formData.append(`rooms[${index}][images]`, room.images);
+      if (Array.isArray(room.images)) {
+        room.images.forEach((image, imgIdx) => {
+          formData.append(`rooms[${index}][images][${imgIdx}]`, image);
+        });
+      } else if (room.images) {
+        formData.append(`rooms[${index}][images][0]`, room.images);
       }
-      if (room.image) {
-        formData.append(`rooms[${index}][image]`, room.image);
+      if (Array.isArray(room.image)) {
+        room.image.forEach((image, imgIdx) => {
+          formData.append(`rooms[${index}]image[${imgIdx}]`, image);
+        });
       }
     });
     try {
       const respone = await createPropertyWithPartner(formData, accessToken);
       getAllPropetyByOwner(userId);
       setActiveTab("list");
+      console.log(formData)
     } catch (error) {
       console.error("Failed to add property:", error);
     }

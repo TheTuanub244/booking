@@ -12,6 +12,12 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { JwtStrategy } from 'src/common/strategy/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { NotificationModule } from 'src/notification/notification.module';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
+import {
+  Notification,
+  NotificationSchema,
+} from 'src/notification/notification.schema';
 const jwtConstant = {
   secret: 'jwtsecret',
 };
@@ -22,6 +28,8 @@ const jwtConstant = {
     UserService,
     JwtStrategy,
     JwtAuthGuard,
+    NotificationGateway,
+    NotificationService,
   ],
   controllers: [SessionController],
   exports: [JwtModule, JwtAuthGuard, SessionService, UserService],
@@ -29,6 +37,7 @@ const jwtConstant = {
     MongooseModule.forFeature([
       { name: Session.name, schema: SessionSchema },
       { name: User.name, schema: UserSchema },
+      { name: Notification.name, schema: NotificationSchema },
     ]),
     JwtModule.register({
       secret: jwtConstant.secret,
@@ -37,7 +46,7 @@ const jwtConstant = {
     UserModule,
     forwardRef(() => BookingModule),
     PassportModule,
-    NotificationModule
+    NotificationModule,
   ],
 })
 export class SessionModule {}

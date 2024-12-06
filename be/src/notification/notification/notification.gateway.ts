@@ -26,6 +26,7 @@ export class NotificationGateway
     const partnerId = client.handshake.query.partnerId;
     console.log(partnerId);
 
+
     if (partnerId) {
       client.join(partnerId);
       console.log(`Client ${client.id} joined room: ${partnerId}`);
@@ -49,6 +50,15 @@ export class NotificationGateway
     console.log('New booking received:', data);
     // Gửi thông báo đến tất cả các clients (partners)
     this.server.emit('notifyPartner', {
+      message: `New booking: ${data.message}`,
+      date: new Date(),
+    });
+  }
+
+  handlePromoteUser(@MessageBody() data: any): void {
+    console.log('Partner Promoted:', data);
+    // Gửi thông báo đến tất cả các clients (partners)
+    this.server.emit('notifyUser', {
       message: `New booking: ${data.message}`,
       date: new Date(),
     });

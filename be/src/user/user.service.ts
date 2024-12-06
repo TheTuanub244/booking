@@ -502,16 +502,22 @@ export class UserService {
     }
   }
   async updateRequestPartner(userId: string, status: ROLE) {
-    const messege = "Promote to Parter";
-    await this.notificationService.createNotification({
-      receiver_id: userId,
-      type: "Partner",
-      messege,
-    });
-    await this.notificationGateway.sendNotificationToUser(
-      userId,
-      messege
-    );
+    if(status === ROLE.PARTNER){
+      console.log(userId);
+      const message = "Promote to Parter";
+      const findUserId = await this.userSchema.findById(new Types.ObjectId(userId));
+      console.log(findUserId);
+      await this.notificationService.createNotification({
+        receiver_id: findUserId,
+        type: "Partner",
+        message,
+      });
+      await this.notificationGateway.sendNotificationToUser(
+        userId,
+        message
+      );
+    }
+    
     return await this.userSchema.findByIdAndUpdate(new Types.ObjectId(userId), {
       role: status,
     });

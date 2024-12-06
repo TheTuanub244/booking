@@ -1,4 +1,3 @@
-// PropertyForm.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
@@ -28,6 +27,7 @@ import PropTypes from "prop-types";
 
 const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   const [propertyData, setPropertyData] = useState({
+    _id: initialData._id,
     name: "",
     description: "",
     address: {
@@ -43,7 +43,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     owner_id: localStorage.getItem("userId") || "",
   });
 
-  const [selectedImages, setSelectedImages] = useState([]);
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -235,7 +234,9 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     formData.append("location", JSON.stringify(propertyData.location));
     formData.append("rooms", JSON.stringify(propertyData.rooms));
     formData.append("owner_id", propertyData.owner_id || "");
-
+    if (propertyData._id) {
+      formData.append("_id", propertyData._id);
+    }
     if (Array.isArray(propertyData.images)) {
       propertyData.images.forEach((image, idx) => {
         formData.append(`images`, image);
@@ -635,8 +636,8 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                 onClick={() => handleRemoveRoom(index)}
                 sx={{
                   position: "absolute",
-                  top: 8,
-                  right: 8,
+                  top: -20,
+                  right: -16,
                   backgroundColor: "rgba(255, 255, 255, 0.7)",
                   "&:hover": {
                     backgroundColor: "rgba(255, 255, 255, 1)",

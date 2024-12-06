@@ -5,8 +5,12 @@ import { Box, Grid, Button, CircularProgress, Alert } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { getPropertyById } from "../../../../../api/propertyAPI";
+import {
+  getPropertyById,
+  updatePropertyWithPartner,
+} from "../../../../../api/propertyAPI";
 import PropertyForm from "../../../component/PropertyForm/PropertyForm";
+import { findRoomByProperty } from "../../../../../api/roomAPI";
 
 const EditProperty = () => {
   const { id } = useParams();
@@ -19,7 +23,14 @@ const EditProperty = () => {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
+        const rooms = await findRoomByProperty(id);
+
         const data = await getPropertyById(id);
+        if (data) {
+          data.rooms = rooms;
+          data.location.lat = data.location.latitude;
+          data.location.lng = data.location.longitude;
+        }
         setInitialData(data);
       } catch (err) {
         console.error("Error fetching property data:", err);
@@ -32,10 +43,16 @@ const EditProperty = () => {
     fetchProperty();
   }, [id]);
 
-  const handleUpdateSubmit = async (updatedData) => {
-    console.log(updatedData);
-    // After successful update, you can navigate or show a success message
-    navigate(`/admin/property/view/${id}`);
+  const handleUpdateSubmit = async (formData) => {
+    const accessToken = localStorage.getItem("accessToken");
+    try {
+      console.log({ formData });
+      navigate(`/admin/property/view/${id}`);
+      const respone = await updatePropertyWithPartner(formData, accessToken);
+      console.log(respone);
+    } catch (error) {
+      console.error("Failed to add property:", error);
+    }
   };
 
   if (loading) {

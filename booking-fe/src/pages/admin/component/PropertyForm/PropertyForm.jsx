@@ -24,30 +24,26 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getProvince } from "../../../../api/addressAPI";
 import LeafletMap from "../Map/LeafletMap";
+import PropTypes from "prop-types";
 
 const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
-  // Initialize form state without spreading initialData
   const [propertyData, setPropertyData] = useState({
     name: "",
-    property_type: "",
-    address: {
-      street: "",
-      ward: "",
-      wardCode: "",
-      district: "",
-      districtCode: "",
-      province: "",
-      provinceCode: "",
-    },
-    owner_id: "",
     description: "",
-    images: [],
-    location: {
-      latitude: 0,
-      longitude: 0,
+    address: {
+      province: "",
+      district: "",
+      ward: "",
+      street: "",
     },
+    type: "",
+    images: [],
+    location: { lat: 0, lng: 0 },
+    rooms: [],
+    owner_id: localStorage.getItem("userId") || "",
   });
 
+  const [selectedImages, setSelectedImages] = useState([]);
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -55,8 +51,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   const [addressData, setAddressData] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-
-  const [selectedImages, setSelectedImages] = useState([]);
 
   const [openMapDialog, setOpenMapDialog] = useState(false);
 
@@ -69,7 +63,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   const fetchAddressData = async () => {
     setLoadingAddressData(true);
     try {
-      const response = await getProvince(); // Fetch provinces along with districts and wards
+      const response = await getProvince();
       setAddressData(response);
     } catch (error) {
       console.error("Failed to fetch address data:", error);
@@ -78,26 +72,24 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }
   };
 
-  // Function to map address names to codes
   const mapAddressNamesToCodes = useCallback(() => {
     if (initialData && addressData.length > 0 && initialData.address) {
       const { province, district, ward, street } = initialData.address;
       let provinceCode = "";
       let districtCode = "";
       let wardCode = "";
-      let selectedDistrict = null;
-      let selectedWard = null;
+
       const selectedProvince = addressData.find((p) => p.name === province);
       if (selectedProvince) {
         provinceCode = selectedProvince.code;
-
-        selectedDistrict = selectedProvince.districts.find(
+        const selectedDistrict = selectedProvince.districts.find(
           (d) => d.name === district
         );
         if (selectedDistrict) {
           districtCode = selectedDistrict.code;
-
-          selectedWard = selectedDistrict.wards.find((w) => w.name === ward);
+          const selectedWard = selectedDistrict.wards.find(
+            (w) => w.name === ward
+          );
           if (selectedWard) {
             wardCode = selectedWard.code;
           }
@@ -107,7 +99,8 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       setPropertyData((prevData) => ({
         ...prevData,
         name: initialData.name || "",
-        property_type: initialData.property_type || "",
+        description: initialData.description || "",
+        type: initialData.type || "",
         address: {
           street: street || "",
           ward: ward || "",
@@ -117,19 +110,23 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           province: province || "",
           provinceCode: provinceCode || "",
         },
-        owner_id: initialData.owner_id || "",
-        description: initialData.description || "",
         images: initialData.images || [],
         location: {
-          latitude: initialData.location?.latitude || 0,
-          longitude: initialData.location?.longitude || 0,
+          lat: initialData.location?.lat || 0,
+          lng: initialData.location?.lng || 0,
         },
+        rooms: initialData.rooms || [],
+        owner_id: initialData.owner_id || prevData.owner_id,
       }));
 
       if (selectedProvince) {
         setDistricts(selectedProvince.districts || []);
-        if (selectedDistrict) {
-          setWards(selectedDistrict.wards || []);
+        if (selectedProvince.districts.find((d) => d.code === districtCode)) {
+          setWards(
+            selectedProvince.districts
+              .find((d) => d.code === districtCode)
+              .wards.filter((w) => w.code === wardCode) || []
+          );
         } else {
           setWards([]);
         }
@@ -206,19 +203,15 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }
   };
 
-  // Validate the form before submission
   const validateForm = () => {
     if (!propertyData.name.trim()) return "Property name is required.";
-    if (!propertyData.property_type.trim()) return "Property type is required.";
+    if (!propertyData.description.trim()) return "Description is required.";
+    if (!propertyData.type.trim()) return "Property type is required.";
     if (!propertyData.address.street.trim()) return "Street is required.";
     if (!propertyData.address.ward.trim()) return "Ward is required.";
     if (!propertyData.address.district.trim()) return "District is required.";
     if (!propertyData.address.province.trim()) return "Province is required.";
-    if (!propertyData.description.trim()) return "Description is required.";
-    if (
-      propertyData.location.latitude === 0 ||
-      propertyData.location.longitude === 0
-    )
+    if (propertyData.location.lat === 0 || propertyData.location.lng === 0)
       return "Location must be selected on the map.";
     return null;
   };
@@ -236,15 +229,30 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
     const formData = new FormData();
     formData.append("name", propertyData.name);
-    formData.append("property_type", propertyData.property_type);
     formData.append("description", propertyData.description);
-    formData.append("owner_id", propertyData.owner_id);
+    formData.append("type", propertyData.type);
     formData.append("address", JSON.stringify(propertyData.address));
     formData.append("location", JSON.stringify(propertyData.location));
+    formData.append("rooms", JSON.stringify(propertyData.rooms));
+    formData.append("owner_id", propertyData.owner_id || "");
 
-    selectedImages.forEach((image) => {
-      formData.append("images", image);
-    });
+    if (Array.isArray(propertyData.images)) {
+      propertyData.images.forEach((image, idx) => {
+        formData.append(`images`, image);
+      });
+    } else if (propertyData.images) {
+      formData.append("images", propertyData.images);
+    }
+    if (Array.isArray(propertyData.image)) {
+      propertyData.image.forEach((imageFile, idx) => {
+        formData.append(`image`, imageFile);
+      });
+    }
+
+    console.log("FormData entries:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
 
     try {
       await onSubmit(formData);
@@ -259,65 +267,89 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }
   };
 
-  // Handle image uploads (new images as File objects)
-  const handleImageUpload = (e) => {
+  const handlePropertyImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setSelectedImages((prevImages) => [...prevImages, ...files]);
-
-    // Create preview URLs
-    const previewUrls = files.map((file) => URL.createObjectURL(file));
-    setPropertyData((prevData) => ({
-      ...prevData,
-      images: [...prevData.images, ...previewUrls],
-    }));
+    const newImages = [];
+    const newImage = [];
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newImages.push(reader.result);
+        newImage.push(file);
+        if (newImages.length === files.length) {
+          setPropertyData({
+            ...propertyData,
+            images: [...(propertyData.images || []), ...newImages],
+            image: [...(propertyData.image || []), ...newImage],
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
-  // Handle removing an image
   const handleRemoveImage = (index) => {
-    setSelectedImages((prevImages) => {
-      const updatedImages = [...prevImages];
-      updatedImages.splice(index, 1);
-      return updatedImages;
-    });
-
-    setPropertyData((prevData) => {
-      const updatedImages = [...prevData.images];
-      URL.revokeObjectURL(updatedImages[index]); // Clean up memory
-      updatedImages.splice(index, 1);
-      return { ...prevData, images: updatedImages };
+    const updatedImages = propertyData.images.filter((_, i) => i !== index); // Lọc bỏ ảnh theo index
+    setPropertyData({
+      ...propertyData,
+      images: updatedImages,
     });
   };
 
-  // Handle location selection from the map
   const handleMapClick = (location) => {
     setPropertyData((prevData) => ({
       ...prevData,
       location: {
-        latitude: location.lat,
-        longitude: location.lng,
+        lat: location.lat,
+        lng: location.lng,
       },
     }));
     setOpenMapDialog(false);
   };
 
-  // Initialize owner_id from localStorage or authentication context
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    setPropertyData((prevData) => ({
-      ...prevData,
-      owner_id: userId || "",
-    }));
-  }, []);
+    console.log("propertyData updated:", propertyData);
+  }, [propertyData]);
 
   useEffect(() => {
     return () => {
+      // Cleanup object URLs
       propertyData.images.forEach((img) => {
-        if (typeof img !== "string") {
+        if (img.startsWith("blob:")) {
           URL.revokeObjectURL(img);
         }
       });
     };
   }, [propertyData.images]);
+
+  const handleAddRoom = () => {
+    const newRoom = {
+      id: Date.now(),
+      roomName: "",
+      roomSize: "",
+    };
+    setPropertyData((prevData) => ({
+      ...prevData,
+      rooms: [...prevData.rooms, newRoom],
+    }));
+  };
+
+  const handleRemoveRoom = (index) => {
+    setPropertyData((prevData) => {
+      const updatedRooms = [...prevData.rooms];
+      updatedRooms.splice(index, 1);
+      return { ...prevData, rooms: updatedRooms };
+    });
+  };
+
+  const handleRoomChange = (e, index) => {
+    const { name, value } = e.target;
+    setPropertyData((prevData) => {
+      const updatedRooms = [...prevData.rooms];
+      updatedRooms[index] = { ...updatedRooms[index], [name]: value };
+      return { ...prevData, rooms: updatedRooms };
+    });
+  };
 
   return (
     <Box>
@@ -332,7 +364,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       )}
 
       <form onSubmit={handleFormSubmit}>
-        {/* Property Name */}
         <TextField
           label="Property Name"
           variant="outlined"
@@ -344,24 +375,34 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           required
         />
 
-        {/* Property Type */}
+        <TextField
+          label="Description"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="description"
+          value={propertyData.description}
+          onChange={handleChange}
+          multiline
+          rows={4}
+          required
+        />
+
         <TextField
           label="Property Type"
           variant="outlined"
           fullWidth
           margin="normal"
-          name="property_type"
-          value={propertyData.property_type}
+          name="type"
+          value={propertyData.type}
           onChange={handleChange}
           required
         />
 
-        {/* Address Section */}
         <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
           Address
         </Typography>
 
-        {/* Province Select */}
         <TextField
           label="Province"
           variant="outlined"
@@ -386,7 +427,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           )}
         </TextField>
 
-        {/* District Select */}
         <TextField
           label="District"
           variant="outlined"
@@ -416,7 +456,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           )}
         </TextField>
 
-        {/* Ward Select */}
         <TextField
           label="Ward"
           variant="outlined"
@@ -446,7 +485,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           )}
         </TextField>
 
-        {/* Street Input */}
         <TextField
           label="Street"
           variant="outlined"
@@ -457,23 +495,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           onChange={handleAddressChange}
           required
         />
-        {/* Property Location Section */}
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            Property Location
-          </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<FontAwesomeIcon icon={faMapMarkerAlt} />}
-            onClick={() => setOpenMapDialog(true)}
-          >
-            {propertyData.location.latitude && propertyData.location.longitude
-              ? "Update Location"
-              : "Select Location on Map"}
-          </Button>
-        </Box>
 
-        {/* Owner ID (Read-only) */}
         <TextField
           label="Owner"
           variant="outlined"
@@ -485,137 +507,57 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           }}
         />
 
-        {/* Description */}
-        <TextField
-          label="Description"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="description"
-          value={propertyData.description}
-          onChange={handleChange}
-          multiline
-          rows={4}
-          required
-        />
-
-        {/* Image Upload Section */}
         <Box sx={{ mt: 2 }}>
           <Typography variant="h6" gutterBottom>
             Property Images
           </Typography>
           <Grid container spacing={2}>
-            {/* Display Existing Images (URLs) */}
-            {propertyData.images
-              .filter(
-                (img) => typeof img === "string" && img.startsWith("http")
-              )
-              .map((imageUrl, index) => (
-                <Grid item xs={12} sm={6} key={`existing-${index}`}>
-                  <Box
-                    sx={{
-                      position: "relative",
+            {propertyData.images.map((imageUrl, index) => (
+              <Grid item xs={12} sm={6} key={index}>
+                <Box
+                  sx={{
+                    position: "relative",
+                    width: "100%",
+                    paddingTop: "56.25%",
+                    overflow: "visible",
+                  }}
+                >
+                  <img
+                    src={imageUrl}
+                    alt={`Property ${index + 1}`}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
                       width: "100%",
-                      paddingTop: "56.25%", // 16:9 aspect ratio
-                      overflow: "visible",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    loading="lazy"
+                  />
+                  <IconButton
+                    aria-label="remove image"
+                    onClick={() => handleRemoveImage(index)}
+                    sx={{
+                      position: "absolute",
+                      top: -10,
+                      right: -10,
+                      width: 24,
+                      height: 24,
+                      backgroundColor: "rgba(255, 255, 255, 0.8)",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 1)",
+                      },
+                      borderRadius: "50%",
+                      padding: 0,
                     }}
                   >
-                    <img
-                      src={imageUrl}
-                      alt={`Property ${index + 1}`}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                      loading="lazy"
-                    />
-                    <IconButton
-                      aria-label="remove image"
-                      onClick={() => handleRemoveImage(index)}
-                      sx={{
-                        position: "absolute",
-                        top: -10,
-                        right: -10,
-                        width: 24,
-                        height: 24,
-                        backgroundColor: "rgba(255, 255, 255, 0.8)",
-                        "&:hover": {
-                          backgroundColor: "rgba(255, 255, 255, 1)",
-                        },
-                        borderRadius: "50%",
-                        padding: 0,
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faTimes}
-                        color="#f44336"
-                        size="sm"
-                      />
-                    </IconButton>
-                  </Box>
-                </Grid>
-              ))}
+                    <FontAwesomeIcon icon={faTimes} color="#f44336" size="sm" />
+                  </IconButton>
+                </Box>
+              </Grid>
+            ))}
 
-            {/* Display New Images (Object URLs) */}
-            {propertyData.images
-              .filter(
-                (img) => typeof img !== "string" || !img.startsWith("http")
-              )
-              .map((imageUrl, index) => (
-                <Grid item xs={12} sm={6} key={`new-${index}`}>
-                  <Box
-                    sx={{
-                      position: "relative",
-                      width: "100%",
-                      paddingTop: "56.25%", // 16:9 aspect ratio
-                      overflow: "visible",
-                    }}
-                  >
-                    <img
-                      src={imageUrl}
-                      alt={`Property ${index + 1}`}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                      loading="lazy"
-                    />
-                    <IconButton
-                      aria-label="remove image"
-                      onClick={() => handleRemoveImage(index)}
-                      sx={{
-                        position: "absolute",
-                        top: -10,
-                        right: -10,
-                        width: 24,
-                        height: 24,
-                        backgroundColor: "rgba(255, 255, 255, 0.8)",
-                        "&:hover": {
-                          backgroundColor: "rgba(255, 255, 255, 1)",
-                        },
-                        borderRadius: "50%",
-                        padding: 0,
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faTimes}
-                        color="#f44336"
-                        size="sm"
-                      />
-                    </IconButton>
-                  </Box>
-                </Grid>
-              ))}
-
-            {/* Upload Images Button */}
             <Grid item xs={12} sm={6}>
               <Button
                 variant="outlined"
@@ -643,14 +585,93 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                   hidden
                   multiple
                   accept="image/*"
-                  onChange={handleImageUpload}
+                  onChange={handlePropertyImageChange}
                 />
               </Button>
             </Grid>
           </Grid>
         </Box>
 
-        {/* Submit Button */}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Rooms
+          </Typography>
+          {propertyData.rooms.map((room, index) => (
+            <Box
+              key={room.id}
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: 2,
+                padding: 2,
+                mb: 2,
+                position: "relative",
+              }}
+            >
+              <TextField
+                label="Room Name"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                name="roomName"
+                value={room.roomName}
+                onChange={(e) => handleRoomChange(e, index)}
+                required
+              />
+
+              <TextField
+                label="Room Size (sq ft)"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                name="roomSize"
+                type="number"
+                value={room.roomSize}
+                onChange={(e) => handleRoomChange(e, index)}
+                required
+              />
+
+              <IconButton
+                aria-label="remove room"
+                onClick={() => handleRemoveRoom(index)}
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 1)",
+                  },
+                }}
+              >
+                <FontAwesomeIcon icon={faTimes} color="#f44336" />
+              </IconButton>
+            </Box>
+          ))}
+
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faPlus} />}
+            onClick={handleAddRoom}
+          >
+            Add Room
+          </Button>
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Property Location
+          </Typography>
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faMapMarkerAlt} />}
+            onClick={() => setOpenMapDialog(true)}
+          >
+            {propertyData.location.lat && propertyData.location.lng
+              ? "Update Location"
+              : "Select Location on Map"}
+          </Button>
+        </Box>
+
         <Button
           type="submit"
           variant="contained"
@@ -662,7 +683,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
         </Button>
       </form>
 
-      {/* Map Dialog */}
       <Dialog
         open={openMapDialog}
         onClose={() => setOpenMapDialog(false)}
@@ -684,15 +704,62 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
         </DialogActions>
       </Dialog>
 
-      {/* Success Snackbar */}
       <Snackbar
         open={success}
         autoHideDuration={3000}
         onClose={() => setSuccess(false)}
-        message="Property submitted successfully!"
+        message="Property created successfully!"
       />
     </Box>
   );
+};
+
+PropertyForm.propTypes = {
+  initialData: PropTypes.shape({
+    name: PropTypes.string,
+    description: PropTypes.string,
+    address: PropTypes.shape({
+      province: PropTypes.string,
+      district: PropTypes.string,
+      ward: PropTypes.string,
+      street: PropTypes.string,
+    }),
+    type: PropTypes.string,
+    images: PropTypes.arrayOf(PropTypes.string),
+    location: PropTypes.shape({
+      lat: PropTypes.number,
+      lng: PropTypes.number,
+    }),
+    rooms: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        roomName: PropTypes.string,
+        roomSize: PropTypes.string,
+      })
+    ),
+    owner_id: PropTypes.string,
+  }),
+  onSubmit: PropTypes.func.isRequired,
+  formTitle: PropTypes.string,
+};
+
+PropertyForm.defaultProps = {
+  initialData: {
+    name: "",
+    description: "",
+    address: {
+      province: "",
+      district: "",
+      ward: "",
+      street: "",
+    },
+    type: "",
+    images: [],
+    location: { lat: 0, lng: 0 },
+    rooms: [],
+    owner_id: "",
+  },
+  formTitle: "Property Form",
 };
 
 export default PropertyForm;

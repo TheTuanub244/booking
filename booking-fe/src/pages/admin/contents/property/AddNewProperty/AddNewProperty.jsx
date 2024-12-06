@@ -6,13 +6,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import PropertyForm from "../../../component/PropertyForm/PropertyForm";
+import { createPropertyWithPartner } from "../../../../../api/propertyAPI";
 
 const AddNewProperty = () => {
   const navigate = useNavigate();
 
-  const handleCreateSubmit = async (newData) => {
-    console.log({ newData });
-    navigate(`/admin/property`);
+  const handleCreateSubmit = async (formData) => {
+    const accessToken = localStorage.getItem("accessToken");
+    try {
+      console.log({ formData });
+      navigate(`/admin/property`);
+      const respone = await createPropertyWithPartner(formData, accessToken);
+      console.log(respone);
+    } catch (error) {
+      console.error("Failed to add property:", error);
+    }
   };
 
   return (

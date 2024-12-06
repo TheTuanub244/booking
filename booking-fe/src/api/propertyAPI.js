@@ -22,6 +22,9 @@ export const updatePropertyWithPartner = async (formData, token) => {
   }
 };
 export const createPropertyWithPartner = async (formData, token) => {
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/property/createPropertyWithPartner`,
@@ -36,7 +39,8 @@ export const createPropertyWithPartner = async (formData, token) => {
     );
     return response.data;
   } catch (error) {
-    return error;
+    console.error("Error creating property:", error);
+    throw error;
   }
 };
 export const getAllProperty = async () => {

@@ -210,31 +210,37 @@ const PropertyDetailsForm = ({
         reader.readAsDataURL(file);
       });
     } else {
-      const file = e.target.files[0];
-      console.log(file);
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      const newImage = [];
 
-      const updatedRooms = [...propertyData.rooms];
-
-      updatedRooms[index].image = file;
-
-      if (file) {
+      files.forEach((file) => {
         const reader = new FileReader();
 
         reader.onloadend = () => {
-          const updatedRooms = [...propertyData.rooms];
+          newImages.push(reader.result);
+          newImage.push(file);
 
-          updatedRooms[index] = {
-            ...updatedRooms[index],
-            images: [reader.result],
-          };
+          if (newImages.length === files.length) {
+            setPropertyData((prevData) => {
+              const updatedRooms = [...prevData.rooms];
 
-          setPropertyData({
-            ...propertyData,
-            rooms: updatedRooms,
-          });
+              updatedRooms[index] = {
+                ...updatedRooms[index],
+                images: newImages,
+                image: newImage,
+              };
+
+              return {
+                ...prevData,
+                rooms: updatedRooms,
+              };
+            });
+          }
         };
+
         reader.readAsDataURL(file);
-      }
+      });
     }
   };
   useEffect(() => {
@@ -291,18 +297,27 @@ const PropertyDetailsForm = ({
         reader.readAsDataURL(file);
       });
     } else {
-      const file = e.target.files[0];
-      propertyData.image = file;
-      if (file) {
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      const newImage = [];
+      propertyData.image = files;
+      files.forEach((file) => {
         const reader = new FileReader();
+
         reader.onloadend = () => {
-          setPropertyData({
-            ...propertyData,
-            images: [reader.result], 
-          });
+          newImages.push(reader.result);
+          newImage.push(file);
+          if (newImages.length === files.length) {
+            setPropertyData({
+              ...propertyData,
+              images: newImages,
+              image: newImage,
+            });
+          }
         };
         reader.readAsDataURL(file);
-      }
+      });
+
     }
   };
 

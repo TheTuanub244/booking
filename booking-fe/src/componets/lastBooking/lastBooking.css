@@ -1,7 +1,6 @@
-/* Kiểu cho thẻ cha của các mục */
 .fp {
     display: flex;
-    justify-content: space-between; /* Căn giữa các mục trong hàng */
+    justify-content: space-between; 
     width: 100%;
     max-width: 1024px;
     gap: 20px;

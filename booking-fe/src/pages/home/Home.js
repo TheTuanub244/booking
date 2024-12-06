@@ -53,9 +53,6 @@ function Home() {
   };
   const getCompletedBooking = async (userId) => {
     const response = await getCompletedBookingByUser(userId)
-    console.log(userId);
-    console.log(response);
-    
     setCompletedBooking(response)
   }
   const handleGetAllProperty = async () => {

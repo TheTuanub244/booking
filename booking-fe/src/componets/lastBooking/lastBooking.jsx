@@ -14,7 +14,12 @@ function LastBooking({ data }) {
   }, [data]);
   return (
     <div className="fp">
-      <Swiper
+      {
+        !data || data?.length === 0 ? (
+          <h1>You have not book anything</h1>
+        ) : (
+          <div>
+            <Swiper
         spaceBetween={15} 
         slidesPerView={4} 
         navigation={items.length > 4}
@@ -45,6 +50,9 @@ function LastBooking({ data }) {
           </SwiperSlide>
         ))}
       </Swiper>
+          </div>
+        )
+      }
     </div>
   );
 }

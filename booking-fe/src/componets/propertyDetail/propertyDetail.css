@@ -72,7 +72,7 @@
   background-color: #0a7075;
 }
 .selectedTab {
-  border-bottom: 2px solid #006ce4;
+  border-bottom: 2px solid #0c969c;
 }
 .navigate-button:hover {
   background-color: rgba(26, 26, 26, 0.06);

@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import Loading from "../../../componets/loading/Loading";
 import "./PartnerBookingDetail.css";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
+
 import {
   calculateNights,
   formatDateDayMonthAndYear,
@@ -25,9 +27,18 @@ const PartnerBookingDetail = () => {
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+  const navigate = useNavigate();
 
   const handleCancelBooking = async () => {
-    await cancelBooking(booking._id);
+    try {
+      console.log(booking);
+      // await cancelBooking(booking._id);
+
+
+    } catch(error) {
+      console.log(error);
+    }
+
   }
 
 

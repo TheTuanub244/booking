@@ -26,6 +26,7 @@ const PropertyDetail = () => {
   const [location, setLocation] = useState("");
   const [selectedTab, setSelectedTab] = useState(1);
   const infoPrices = useRef(null);
+  const review = useRef(null);
   const overView = useRef(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [propertyInfo, setPropertyInfo] = useState({});
@@ -183,6 +184,8 @@ const PropertyDetail = () => {
       infoPrices.current.scrollIntoView({ behavior: "smooth" });
     } else if (tabNumber === 1 && overView.current) {
       overView.current.scrollIntoView({ behavior: "smooth" });
+    } else if(tabNumber === 3 && review.current){
+      review.current.scrollIntoView({behavior: "smooth"})
     }
   };
 
@@ -237,7 +240,7 @@ const PropertyDetail = () => {
               </button>
               <button
                 className={
-                  selectedTab === 3
+                  selectedTab === 4
                     ? "navigate-button selectedTab"
                     : "navigate-button"
                 }
@@ -246,10 +249,12 @@ const PropertyDetail = () => {
               </button>
               <button
                 className={
-                  selectedTab === 4
+                  selectedTab === 3
                     ? "navigate-button selectedTab"
                     : "navigate-button"
                 }
+                onClick={() => handleTabClick(3)}
+
               >
                 Guest review
               </button>
@@ -365,7 +370,7 @@ const PropertyDetail = () => {
               />
             </div>
           )}
-          <div className="property-review">
+          <div className="property-review" ref={review}>
             <PropertyReview
               property_id={id}
               isRefresh={refreshReview}

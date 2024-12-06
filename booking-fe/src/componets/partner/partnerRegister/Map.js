@@ -175,7 +175,7 @@ const Map = ({
                         style={{
                           fontSize: "16px",
                           fontWeight: "600",
-                          color: "#006CE4",
+                          color: "#0c969c",
                         }}
                       >
                         {selectedProperty.value.property_id.name}

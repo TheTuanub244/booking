@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// PropertyForm.jsx
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -25,6 +26,7 @@ import { getProvince } from "../../../../api/addressAPI";
 import LeafletMap from "../Map/LeafletMap";
 
 const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
+  // Initialize form state without spreading initialData
   const [propertyData, setPropertyData] = useState({
     name: "",
     property_type: "",
@@ -44,62 +46,30 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       latitude: 0,
       longitude: 0,
     },
-    ...initialData,
   });
 
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
   const [success, setSuccess] = useState(false);
 
-  // State for address data
-  const [addressData, setAddressData] = useState([]); // Contains provinces with their districts and wards
+  const [addressData, setAddressData] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
-  // State for image uploads
   const [selectedImages, setSelectedImages] = useState([]);
 
-  // State for map dialog
   const [openMapDialog, setOpenMapDialog] = useState(false);
 
-  // Loading state
   const [loadingAddressData, setLoadingAddressData] = useState(false);
 
   useEffect(() => {
     fetchAddressData();
   }, []);
 
-  useEffect(() => {
-    if (initialData) {
-      setPropertyData((prevData) => ({
-        ...prevData,
-        ...initialData,
-      }));
-      if (initialData.address) {
-        const provinceCode = initialData.address.provinceCode;
-        const districtCode = initialData.address.districtCode;
-
-        const selectedProvince = addressData.find(
-          (p) => p.code === parseInt(provinceCode)
-        );
-        if (selectedProvince) {
-          setDistricts(selectedProvince.districts || []);
-          const selectedDistrict = selectedProvince.districts.find(
-            (d) => d.code === parseInt(districtCode)
-          );
-          if (selectedDistrict) {
-            setWards(selectedDistrict.wards || []);
-          }
-        }
-      }
-    }
-  }, [initialData, addressData]);
-
   const fetchAddressData = async () => {
     setLoadingAddressData(true);
     try {
-      const response = await getProvince();
+      const response = await getProvince(); // Fetch provinces along with districts and wards
       setAddressData(response);
     } catch (error) {
       console.error("Failed to fetch address data:", error);
@@ -107,6 +77,72 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       setLoadingAddressData(false);
     }
   };
+
+  // Function to map address names to codes
+  const mapAddressNamesToCodes = useCallback(() => {
+    if (initialData && addressData.length > 0 && initialData.address) {
+      const { province, district, ward, street } = initialData.address;
+      let provinceCode = "";
+      let districtCode = "";
+      let wardCode = "";
+      let selectedDistrict = null;
+      let selectedWard = null;
+      const selectedProvince = addressData.find((p) => p.name === province);
+      if (selectedProvince) {
+        provinceCode = selectedProvince.code;
+
+        selectedDistrict = selectedProvince.districts.find(
+          (d) => d.name === district
+        );
+        if (selectedDistrict) {
+          districtCode = selectedDistrict.code;
+
+          selectedWard = selectedDistrict.wards.find((w) => w.name === ward);
+          if (selectedWard) {
+            wardCode = selectedWard.code;
+          }
+        }
+      }
+
+      setPropertyData((prevData) => ({
+        ...prevData,
+        name: initialData.name || "",
+        property_type: initialData.property_type || "",
+        address: {
+          street: street || "",
+          ward: ward || "",
+          wardCode: wardCode || "",
+          district: district || "",
+          districtCode: districtCode || "",
+          province: province || "",
+          provinceCode: provinceCode || "",
+        },
+        owner_id: initialData.owner_id || "",
+        description: initialData.description || "",
+        images: initialData.images || [],
+        location: {
+          latitude: initialData.location?.latitude || 0,
+          longitude: initialData.location?.longitude || 0,
+        },
+      }));
+
+      if (selectedProvince) {
+        setDistricts(selectedProvince.districts || []);
+        if (selectedDistrict) {
+          setWards(selectedDistrict.wards || []);
+        } else {
+          setWards([]);
+        }
+      } else {
+        setDistricts([]);
+        setWards([]);
+      }
+    }
+  }, [initialData, addressData]);
+
+  useEffect(() => {
+    mapAddressNamesToCodes();
+  }, [mapAddressNamesToCodes]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -170,6 +206,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }
   };
 
+  // Validate the form before submission
   const validateForm = () => {
     if (!propertyData.name.trim()) return "Property name is required.";
     if (!propertyData.property_type.trim()) return "Property type is required.";
@@ -197,7 +234,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     setSubmitting(true);
     setSubmitError("");
 
-    // Prepare FormData
     const formData = new FormData();
     formData.append("name", propertyData.name);
     formData.append("property_type", propertyData.property_type);
@@ -206,7 +242,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     formData.append("address", JSON.stringify(propertyData.address));
     formData.append("location", JSON.stringify(propertyData.location));
 
-    // Append images
     selectedImages.forEach((image) => {
       formData.append("images", image);
     });
@@ -224,6 +259,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }
   };
 
+  // Handle image uploads (new images as File objects)
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setSelectedImages((prevImages) => [...prevImages, ...files]);
@@ -236,6 +272,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }));
   };
 
+  // Handle removing an image
   const handleRemoveImage = (index) => {
     setSelectedImages((prevImages) => {
       const updatedImages = [...prevImages];
@@ -245,12 +282,13 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
     setPropertyData((prevData) => {
       const updatedImages = [...prevData.images];
-      URL.revokeObjectURL(updatedImages[index]);
+      URL.revokeObjectURL(updatedImages[index]); // Clean up memory
       updatedImages.splice(index, 1);
       return { ...prevData, images: updatedImages };
     });
   };
 
+  // Handle location selection from the map
   const handleMapClick = (location) => {
     setPropertyData((prevData) => ({
       ...prevData,
@@ -262,6 +300,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     setOpenMapDialog(false);
   };
 
+  // Initialize owner_id from localStorage or authentication context
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     setPropertyData((prevData) => ({
@@ -269,6 +308,16 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       owner_id: userId || "",
     }));
   }, []);
+
+  useEffect(() => {
+    return () => {
+      propertyData.images.forEach((img) => {
+        if (typeof img !== "string") {
+          URL.revokeObjectURL(img);
+        }
+      });
+    };
+  }, [propertyData.images]);
 
   return (
     <Box>
@@ -283,6 +332,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       )}
 
       <form onSubmit={handleFormSubmit}>
+        {/* Property Name */}
         <TextField
           label="Property Name"
           variant="outlined"
@@ -294,6 +344,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           required
         />
 
+        {/* Property Type */}
         <TextField
           label="Property Type"
           variant="outlined"
@@ -305,10 +356,12 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           required
         />
 
+        {/* Address Section */}
         <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
           Address
         </Typography>
 
+        {/* Province Select */}
         <TextField
           label="Province"
           variant="outlined"
@@ -333,6 +386,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           )}
         </TextField>
 
+        {/* District Select */}
         <TextField
           label="District"
           variant="outlined"
@@ -347,7 +401,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
         >
           {districts.length === 0 ? (
             <MenuItem value="">
-              {propertyData.address.province ? (
+              {propertyData.address.provinceCode ? (
                 <CircularProgress size={24} />
               ) : (
                 "Please select a province first"
@@ -362,6 +416,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           )}
         </TextField>
 
+        {/* Ward Select */}
         <TextField
           label="Ward"
           variant="outlined"
@@ -376,7 +431,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
         >
           {wards.length === 0 ? (
             <MenuItem value="">
-              {propertyData.address.district ? (
+              {propertyData.address.districtCode ? (
                 <CircularProgress size={24} />
               ) : (
                 "Please select a district first"
@@ -391,6 +446,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           )}
         </TextField>
 
+        {/* Street Input */}
         <TextField
           label="Street"
           variant="outlined"
@@ -401,7 +457,23 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           onChange={handleAddressChange}
           required
         />
+        {/* Property Location Section */}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Property Location
+          </Typography>
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faMapMarkerAlt} />}
+            onClick={() => setOpenMapDialog(true)}
+          >
+            {propertyData.location.latitude && propertyData.location.longitude
+              ? "Update Location"
+              : "Select Location on Map"}
+          </Button>
+        </Box>
 
+        {/* Owner ID (Read-only) */}
         <TextField
           label="Owner"
           variant="outlined"
@@ -413,6 +485,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           }}
         />
 
+        {/* Description */}
         <TextField
           label="Description"
           variant="outlined"
@@ -426,57 +499,123 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           required
         />
 
+        {/* Image Upload Section */}
         <Box sx={{ mt: 2 }}>
           <Typography variant="h6" gutterBottom>
             Property Images
           </Typography>
           <Grid container spacing={2}>
-            {propertyData.images.map((imageUrl, index) => (
-              <Grid item xs={12} sm={6} key={index}>
-                <Box
-                  sx={{
-                    position: "relative",
-                    width: "100%",
-                    paddingTop: "56.25%",
-                    overflow: "visible",
-                  }}
-                >
-                  <img
-                    src={imageUrl}
-                    alt={`Property ${index + 1}`}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    loading="lazy"
-                  />
-                  <IconButton
-                    aria-label="remove image"
-                    onClick={() => handleRemoveImage(index)}
+            {/* Display Existing Images (URLs) */}
+            {propertyData.images
+              .filter(
+                (img) => typeof img === "string" && img.startsWith("http")
+              )
+              .map((imageUrl, index) => (
+                <Grid item xs={12} sm={6} key={`existing-${index}`}>
+                  <Box
                     sx={{
-                      position: "absolute",
-                      top: -10,
-                      right: -10,
-                      width: 24,
-                      height: 24,
-                      backgroundColor: "rgba(255, 255, 255, 0.8)",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 1)",
-                      },
-                      borderRadius: "50%",
-                      padding: 0,
+                      position: "relative",
+                      width: "100%",
+                      paddingTop: "56.25%", // 16:9 aspect ratio
+                      overflow: "visible",
                     }}
                   >
-                    <FontAwesomeIcon icon={faTimes} color="#f44336" size="sm" />
-                  </IconButton>
-                </Box>
-              </Grid>
-            ))}
+                    <img
+                      src={imageUrl}
+                      alt={`Property ${index + 1}`}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      loading="lazy"
+                    />
+                    <IconButton
+                      aria-label="remove image"
+                      onClick={() => handleRemoveImage(index)}
+                      sx={{
+                        position: "absolute",
+                        top: -10,
+                        right: -10,
+                        width: 24,
+                        height: 24,
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
+                        "&:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 1)",
+                        },
+                        borderRadius: "50%",
+                        padding: 0,
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faTimes}
+                        color="#f44336"
+                        size="sm"
+                      />
+                    </IconButton>
+                  </Box>
+                </Grid>
+              ))}
 
+            {/* Display New Images (Object URLs) */}
+            {propertyData.images
+              .filter(
+                (img) => typeof img !== "string" || !img.startsWith("http")
+              )
+              .map((imageUrl, index) => (
+                <Grid item xs={12} sm={6} key={`new-${index}`}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      width: "100%",
+                      paddingTop: "56.25%", // 16:9 aspect ratio
+                      overflow: "visible",
+                    }}
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={`Property ${index + 1}`}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      loading="lazy"
+                    />
+                    <IconButton
+                      aria-label="remove image"
+                      onClick={() => handleRemoveImage(index)}
+                      sx={{
+                        position: "absolute",
+                        top: -10,
+                        right: -10,
+                        width: 24,
+                        height: 24,
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
+                        "&:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 1)",
+                        },
+                        borderRadius: "50%",
+                        padding: 0,
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faTimes}
+                        color="#f44336"
+                        size="sm"
+                      />
+                    </IconButton>
+                  </Box>
+                </Grid>
+              ))}
+
+            {/* Upload Images Button */}
             <Grid item xs={12} sm={6}>
               <Button
                 variant="outlined"
@@ -511,28 +650,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           </Grid>
         </Box>
 
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            Property Location
-          </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<FontAwesomeIcon icon={faMapMarkerAlt} />}
-            onClick={() => setOpenMapDialog(true)}
-          >
-            {propertyData.location.latitude && propertyData.location.longitude
-              ? "Update Location"
-              : "Select Location on Map"}
-          </Button>
-          {propertyData.location.latitude &&
-            propertyData.location.longitude && (
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                Selected Location: Latitude {propertyData.location.latitude},
-                Longitude {propertyData.location.longitude}
-              </Typography>
-            )}
-        </Box>
-
+        {/* Submit Button */}
         <Button
           type="submit"
           variant="contained"
@@ -566,6 +684,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
         </DialogActions>
       </Dialog>
 
+      {/* Success Snackbar */}
       <Snackbar
         open={success}
         autoHideDuration={3000}

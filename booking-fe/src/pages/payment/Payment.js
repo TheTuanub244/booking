@@ -4,6 +4,7 @@ import Navbar from "../../componets/navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { createBooking } from "../../api/bookingAPI";
+import Modal from "react-modal";
 import {
   faWifi,
   faPlaneDeparture,
@@ -35,6 +36,10 @@ function Payment() {
       parterId: (id)
       property:(id)
     */
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = () => setIsModalOpen(false);
   const [hasChild, setHasChild] = useState(false);
   const [reservationInfo, setReservationInfo] = useState({
     address: "",
@@ -85,7 +90,14 @@ function Payment() {
   const totalRoomRef = useRef(0);
 
   const loadData = () => {
+    if (localStorage.getItem("reservation")) {
+      const ri = localStorage.getItem("reservation");
+      return ri ? JSON.parse(ri) : null;
+    }
     const ri = localStorage.getItem('reservationInfo');
+    if (ri) {
+      localStorage.setItem("reservation", ri);
+    }
     return ri ? JSON.parse(ri) : null;
   };
 
@@ -115,7 +127,14 @@ function Payment() {
   }, []);
 
   const handleChangeSelection = () => {
-    navigate(-1);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirm = () => {
+    
+    localStorage.removeItem("reservation");
+    navigate(`/property/${reservationInfo.property}`);
+    closeModal();
   };
 
   const handleChange = (e) => {
@@ -434,6 +453,60 @@ function Payment() {
               </div>
             </div>
           </div>
+
+          <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            width: "550px",
+            textAlign: "center",
+            borderRadius: "10px",
+          },
+        }}
+      >
+        <h3>Bạn có muốn hủy chuyến đi không?
+        </h3>
+        <h4>Nếu đồng ý chúng tôi sẽ gửi email để xác nhận</h4>
+        <div style={{ marginTop: "20px" }}>
+          <button
+            style={{
+              marginRight: "10px",
+              padding: "10px 20px",
+              backgroundColor: "#007BFF",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+            onClick={handleConfirm}
+          >
+            Đồng ý
+          </button>
+          <button
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#6c757d",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+            onClick={closeModal}
+          >
+            Không
+          </button>
+        </div>
+      </Modal>
         </>
       )}
     </div>

@@ -59,8 +59,12 @@ function HeaderAccount() {
         console.log("Notification received in HeaderAccount:", notification);
         fetchNotifications();
       });
+      socketService.on('notifyUser', (notification) => {
+        console.log("Notification received in HeaderAccount - ToUser:", notification);
+      })
     }
   }, []);
+
 
   const handleSignOut = async () => {
     localStorage.removeItem("userName");

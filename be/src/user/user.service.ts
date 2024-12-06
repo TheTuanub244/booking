@@ -20,6 +20,8 @@ import { auth } from '../../firebase-config';
 import { SessionService } from 'src/session/session.service';
 import admin from 'firebase-admin';
 import { ROLE } from './enum/role.enum';
+import { NotificationGateway } from 'src/notification/notification/notification.gateway';
+import { NotificationService } from 'src/notification/notification.service';
 @Injectable()
 export class UserService {
   constructor(
@@ -27,6 +29,8 @@ export class UserService {
     private userSchema: Model<User>,
     private jwtSerivce: JwtService,
     private sessionService: SessionService,
+    private readonly notificationGateway: NotificationGateway,
+    private readonly notificationService: NotificationService,
   ) {}
   async checkEmail(email: string) {
     const existEmail = await this.userSchema.findOne({ email: email });
@@ -498,6 +502,16 @@ export class UserService {
     }
   }
   async updateRequestPartner(userId: string, status: ROLE) {
+    const messege = "Promote to Parter";
+    await this.notificationService.createNotification({
+      receiver_id: userId,
+      type: "Partner",
+      messege,
+    });
+    await this.notificationGateway.sendNotificationToUser(
+      userId,
+      messege
+    );
     return await this.userSchema.findByIdAndUpdate(new Types.ObjectId(userId), {
       role: status,
     });

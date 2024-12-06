@@ -4,7 +4,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropertyTable from "../../../component/PropertyTable/PropertyTable";
 import PropertySection from "../../../component/PropertyCardSection/PropertyCardSection";
-import { getAllProperty, deleteProperty } from "../../../../../api/propertyAPI";
+import {
+  getAllProperty,
+  deletePropertyById,
+} from "../../../../../api/propertyAPI";
 import {
   Box,
   Typography,

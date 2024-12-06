@@ -28,8 +28,6 @@ const EditProperty = () => {
         const data = await getPropertyById(id);
         if (data) {
           data.rooms = rooms;
-          data.location.lat = data.location.latitude;
-          data.location.lng = data.location.longitude;
         }
         setInitialData(data);
       } catch (err) {

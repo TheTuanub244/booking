@@ -298,7 +298,7 @@ const PropertyDetailsForm = ({
         reader.onloadend = () => {
           setPropertyData({
             ...propertyData,
-            images: [reader.result], // Reset lại mảng images nếu chỉ muốn một ảnh
+            images: [reader.result], 
           });
         };
         reader.readAsDataURL(file);

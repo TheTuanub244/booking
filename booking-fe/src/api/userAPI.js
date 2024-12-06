@@ -157,7 +157,7 @@ export const acceptRequestPartner = async (userId) => {
 export const declineRequestPartner = async (userId) => {
   const respone = await axios.put(
     `${process.env.REACT_APP_API_URL}/user/updateRequestPartner`,
-    { userId, status: "Pending" },
+    { userId, status: "Member" },
   );
   return respone.data;
 };

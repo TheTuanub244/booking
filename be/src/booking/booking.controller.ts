@@ -67,6 +67,7 @@ export class BookingController {
         return res.redirect(`${redirect}?status=failure`);
       }
     } catch (error) {
+      console.log(error)
       return res.redirect(`${redirect}?status=error`);
     }
   }

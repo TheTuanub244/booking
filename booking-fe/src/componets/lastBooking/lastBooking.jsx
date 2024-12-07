@@ -5,6 +5,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Pagination } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../componets/navbar/Navbar";
+
 
 function LastBooking({ data }) {
   const navigate = useNavigate();
@@ -12,13 +14,18 @@ function LastBooking({ data }) {
   useEffect(() => {
     console.log(data);
   }, [data]);
+
+  const handleClick = (item) => {
+    console.log(item);
+    navigate(`/lastBooking/${item._id}`, {state: item});
+  }
   return (
+    
     <div className="fp">
       {
         !data || data?.length === 0 ? (
           <h1>You have not book anything</h1>
         ) : (
-          <div>
             <Swiper
         spaceBetween={15} 
         slidesPerView={4} 
@@ -30,7 +37,7 @@ function LastBooking({ data }) {
           <SwiperSlide key={item._id}>
             <div
               className="fpItem"
-              onClick={() => navigate(`/property/${item._id}`)}
+              onClick={(e) => handleClick(item)}
             >
               <div className="fpItemImg">
                 <img src={item.property.images[0]} alt="" className="fpImg" />
@@ -50,7 +57,6 @@ function LastBooking({ data }) {
           </SwiperSlide>
         ))}
       </Swiper>
-          </div>
         )
       }
     </div>

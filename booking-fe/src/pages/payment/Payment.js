@@ -157,40 +157,41 @@ function Payment() {
   let overViewData = {};
 
   const handleCreateBooking = async () => {
+    if (!localStorage.getItem('overViewData')) {
+      const user_id = localStorage.getItem("userId");
+      const token = localStorage.getItem("accessToken");
+      // console.log(`${user_id} ${token}`);
+      const capacity = { ...reservationInfo.capacity, room: Number(totalRoomRef.current) };
 
-    localStorage.removeItem("overViewData");
-    const user_id = localStorage.getItem("userId");
-    const token = localStorage.getItem("accessToken");
-    // console.log(`${user_id} ${token}`);
-    const capacity = { ...reservationInfo.capacity, room: Number(totalRoomRef.current) };
+      const booking = await createBooking(
+        user_id,
+        reservationInfo.partnerId,
+        reservationInfo.property,
+        reservationInfo.roomData,
+        capacity,
+        reservationInfo.checkInDate,
+        reservationInfo.checkOutDate,
+        reservationInfo.totalPrice,
+        token
+      );
+      console.log('Booking created:', booking);
 
-    const booking = await createBooking(
-      user_id,
-      reservationInfo.partnerId,
-      reservationInfo.property,
-      reservationInfo.roomData,
-      capacity,
-      reservationInfo.checkInDate,
-      reservationInfo.checkOutDate,
-      reservationInfo.totalPrice,
-      token
-    );
-    console.log('Booking created:', booking);
+      overViewData = {
+        bookingId: booking._id,
+        email: formData.email,
+        firstName: formData.firstname,
+        lastName: formData.lastname,
+        address: reservationInfo.address,
+        hotelName: reservationInfo.hotelName,
+        checkInDate: reservationInfo.checkInDate,
+        checkOutDate: reservationInfo.checkOutDate,
 
-    overViewData = {
-      bookingId: booking._id,
-      email: formData.email,
-      firstName: formData.firstname,
-      lastName: formData.lastname,
-      address: reservationInfo.address,
-      hotelName: reservationInfo.hotelName,
-      checkInDate: reservationInfo.checkInDate,
-      checkOutDate: reservationInfo.checkOutDate,
+      }
+      localStorage.setItem('overViewData', JSON.stringify(overViewData));
 
+      console.log(overViewData);
     }
-    localStorage.setItem('overViewData', JSON.stringify(overViewData));
 
-    console.log(overViewData);
 
   };
 

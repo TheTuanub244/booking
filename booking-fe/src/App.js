@@ -40,7 +40,7 @@ import PartnerRequestList from "./pages/admin/contents/partnerRequest/ParnerRequ
 import UserList from "./pages/admin/contents/user/UserList/UserList";
 import BookingList from "./pages/admin/contents/booking/BookingList/BookingList";
 import BookingManage from "./pages/admin/contents/booking/BookingManage/BookingManage";
-
+import BookingDetails from "./pages/bookingDetails/BookingDetails";
 function App() {
   const userId = localStorage.getItem("userId");
   console.log(userId);
@@ -111,6 +111,8 @@ function App() {
           path="/partnerBookingDetail/:id"
           element={<PartnerBookingDetail />}
         />
+        <Route path="/lastBooking/:id" 
+        element={<BookingDetails />} />
       </Routes>
     </BrowserRouter>
   );

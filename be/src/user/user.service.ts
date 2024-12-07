@@ -437,9 +437,9 @@ export class UserService {
     );
   }
   async checkRequestPartner(userId: string) {
-    const findUser = await this.userSchema.find({
+    const findUser = await this.userSchema.findOne({
       _id: new Types.ObjectId(userId),
-      role: ROLE.PARTNER,
+      role: ROLE.PENDING,
     });
     if (findUser) {
       return true;
@@ -502,22 +502,21 @@ export class UserService {
     }
   }
   async updateRequestPartner(userId: string, status: ROLE) {
-    if(status === ROLE.PARTNER){
+    if (status === ROLE.PARTNER) {
       console.log(userId);
-      const message = "Promote to Parter";
-      const findUserId = await this.userSchema.findById(new Types.ObjectId(userId));
+      const message = 'Promote to Parter';
+      const findUserId = await this.userSchema.findById(
+        new Types.ObjectId(userId),
+      );
       console.log(findUserId);
       await this.notificationService.createNotification({
         receiver_id: findUserId,
-        type: "Partner",
+        type: 'Partner',
         message,
       });
-      await this.notificationGateway.sendNotificationToUser(
-        userId,
-        message
-      );
+      await this.notificationGateway.sendNotificationToUser(userId, message);
     }
-    
+
     return await this.userSchema.findByIdAndUpdate(new Types.ObjectId(userId), {
       role: status,
     });

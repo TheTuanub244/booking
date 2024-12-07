@@ -3,6 +3,7 @@ import UserTable from "../../../component/UserTable/UserTable";
 import { getAllUser } from "../../../../../api/userAPI";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { Link } from "react-router-dom"; // Import Link to add routing for Add New User
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -23,7 +24,7 @@ const UserList = () => {
       setLoading(false);
     }
   };
-  console.log({ users });
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -42,18 +43,37 @@ const UserList = () => {
   return (
     <Box
       sx={{
-        padding: 4,
-        backgroundColor: "#f5f5f5",
-        borderRadius: 2,
-        boxShadow: 3,
-        minHeight: "70vh",
+        padding: 3,
+        backgroundColor: "#f9f9f9",
+        borderRadius: "10px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
         display: "flex",
         flexDirection: "column",
       }}
     >
-      <Typography variant="h4" gutterBottom>
-        User Management
-      </Typography>
+      <Box
+        className="userManageListTitle"
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography variant="h5" color="textSecondary">
+          User Management
+        </Typography>
+        <Button
+          component={Link}
+          to="new" // Link to the page for adding a new user
+          variant="outlined"
+          color="success"
+          size="small"
+          sx={{ borderRadius: 1, fontSize: "14px" }}
+        >
+          Add New
+        </Button>
+      </Box>
 
       {loading ? (
         <Box

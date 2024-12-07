@@ -1,66 +1,78 @@
-import "./AddNewUser.css";
-import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { useState } from "react";
-import { usersRows } from "../../../data/userdata";
+import React from "react";
+import { Box, Grid, Button } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate } from "react-router-dom";
+import UserForm from "../../../component/UserForm/UserForm";
+
+//import { createUser } from "../../../../../api/userAPI";
 
 const AddNewUser = () => {
-  const [file, setFile] = useState("");
-  const inputs = usersRows;
-  console.log(inputs);
+  const navigate = useNavigate();
+
+  const handleCreateSubmit = async (Data) => {
+    const accessToken = localStorage.getItem("accessToken");
+    try {
+      console.log({ Data });
+      //const response = await createUser(formData, accessToken);
+      //console.log(response);
+      navigate(`/admin/user`);
+    } catch (error) {
+      console.error("Failed to add user:", error);
+    }
+  };
 
   return (
-    <div className="new">
-      <div className="newContainer">
-        <div className="top">
-          <h1>Add New User</h1>
-        </div>
-        <div className="bottom">
-          <div className="left">
-            <img
-              src={
-                file
-                  ? URL.createObjectURL(file)
-                  : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-              }
-              alt=""
-            />
-          </div>
-          <div className="right">
-            <form>
-              <div className="formInput">
-                <label htmlFor="file">
-                  Image: <DriveFolderUploadOutlinedIcon className="icon" />
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  onChange={(e) => setFile(e.target.files[0])}
-                  style={{ display: "none" }}
-                />
-              </div>
-              {inputs.map((input) => (
-                <div className="formInput" key={input.id}>
-                  <label>{input.label}</label>
-                  {input.type === "select" ? (
-                    <select>
-                      {input.options.map((option, idx) => (
-                        <option key={idx} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input type={input.type} placeholder={input.placeholder} />
-                  )}
-                </div>
-              ))}
+    <Box
+      sx={{
+        padding: 4,
+        backgroundColor: "#fff",
+        maxHeight: "100vh",
+        overflowY: "auto",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-start",
+          mb: 2,
+        }}
+      >
+        <Button
+          variant="outlined"
+          startIcon={<FontAwesomeIcon icon={faArrowLeft} />}
+          component={Link}
+          to="/admin/users" // Link to your user list
+        >
+          Back to User List
+        </Button>
+      </Box>
 
-              <button>Send</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={8}>
+          <UserForm
+            initialData={{
+              _id: "",
+              username: "",
+              email: "",
+              role: "",
+              password: "",
+              confirmPassword: "",
+              address: {
+                province: "",
+                district: "",
+                ward: "",
+                provinceCode: "",
+                districtCode: "",
+                wardCode: "",
+              },
+            }}
+            onSubmit={handleCreateSubmit}
+            formTitle="Create New User"
+          />
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

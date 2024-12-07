@@ -54,7 +54,7 @@ const RoomDetail = ({ roomData }) => {
             {name}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            {property_id.name} {/* Display property name */}
+            {property_id.name}
           </Typography>
           <Box display="flex" alignItems="center" mb={1}>
             <FontAwesomeIcon icon={faLocationDot} style={{ marginRight: 8 }} />

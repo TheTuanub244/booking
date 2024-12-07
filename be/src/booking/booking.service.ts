@@ -627,6 +627,7 @@ export class BookingService {
       { $set: data },
       { new: true },
     );
+    console.log(updateBooking)
     if (!updateBooking) {
       throw new NotFoundException(`Booking with ID ${bookingId} not found`);
     }

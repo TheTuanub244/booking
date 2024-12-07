@@ -82,24 +82,24 @@ function ResultPayment() {
         payment_status: "Paid",
       };
       if (!isApiCalled) {
+        console.log(paymentData)
         axios
           .post(
             `${process.env.REACT_APP_API_URL}/payment/create_payment`,
             paymentData,
           )
           .then((res) => {
-            console.log(res.data);
             setIsApiCalled(true);
           })
           .catch((err) => console.log(err));
 
-        // axios
-        //   .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
-        //   .then((res) => {
-        //     console.log(res.data);
-        //     setIsApiCalled(true);
-        //   })
-        //   .catch((err) => console.log(err));
+        axios
+          .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
+          .then((res) => {
+            console.log(res.data);
+            setIsApiCalled(true);
+          })
+          .catch((err) => console.log(err));
 
         axios
           .post(
@@ -125,7 +125,6 @@ function ResultPayment() {
 
   useEffect(() => {
     if (paymentMethod !== "") {
-      console.log(paymentMethod);
       sendData();
     }
   }, [paymentMethod]);

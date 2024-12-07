@@ -26,7 +26,6 @@ function HeaderAccount() {
 
   const handleNavigate = () => {
     const role = getRoleFromToken(accessToken, "Partner");
-
     if (role) {
       navigate(`/partner/propertyList/${userId}`);
     } else {

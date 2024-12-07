@@ -101,7 +101,7 @@ export const calculateTotalNightPriceForReservation = async (
 
 export const updateBookingStatus = async (bookingId, status) => {
   const response = await axios.post(
-    `${process.env.REACT_APP_API_URL}/booking/updateBookingStates/${bookingId}`,
+    `${process.env.REACT_APP_API_URL}/booking/updateBookingStatus/${bookingId}`,
     status,
     {
       withCredentials: true,

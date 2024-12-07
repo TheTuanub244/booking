@@ -16,7 +16,7 @@ const RoomCard = ({ room }) => {
   return (
     <Card
       component={Link}
-      to={`view/${room._id}`}
+      to={`/admin/room/view/${room._id}`}
       sx={{
         width: 300, // Reduced width
         height: 180, // Reduced height

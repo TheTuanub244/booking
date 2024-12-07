@@ -24,6 +24,7 @@ import {
 import { getProvince } from "../../../../api/addressAPI";
 import LeafletMap from "../Map/LeafletMap";
 import PropTypes from "prop-types";
+import { getPartner } from "../../../../api/userAPI";
 
 const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
   const [propertyData, setPropertyData] = useState({
@@ -61,6 +62,27 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
 
   const [loadingAddressData, setLoadingAddressData] = useState(false);
 
+  const [partners, setPartners] = useState([]); // Store partners data
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchPartners();
+  }, []);
+
+  // Function to fetch partners from the API
+  const fetchPartners = async () => {
+    setLoading(true);
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const data = await getPartner(accessToken);
+      console.log({ data });
+      setPartners(data);
+    } catch (error) {
+      console.error("Error fetching partners:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const roomType = ["single", "double", "suite"];
 
   const propertyTypes = [
@@ -95,7 +117,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const fetchAddressData = async () => {
     setLoadingAddressData(true);
     try {
@@ -120,7 +141,13 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       setLoadingAddressData(false);
     }
   };
-
+  const handleOwnerChange = (e) => {
+    const selectedOwnerId = e.target.value;
+    setPropertyData((prevData) => ({
+      ...prevData,
+      owner_id: selectedOwnerId,
+    }));
+  };
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
     const code = value ? parseInt(value) : "";
@@ -641,17 +668,23 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
           required
         />
 
-        {/* Owner (Read Only) */}
+        {/* Owner Select Field */}
         <TextField
           label="Owner"
           variant="outlined"
           fullWidth
           margin="normal"
-          value={propertyData.owner_id || "Owner ID not set"}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
+          value={propertyData.owner_id}
+          onChange={handleOwnerChange}
+          select
+          disabled={loading} // Disable select if data is still loading
+        >
+          {partners.map((partner) => (
+            <MenuItem key={partner._id} value={partner._id}>
+              {partner.userName}
+            </MenuItem>
+          ))}
+        </TextField>
 
         {/* Property Images */}
         <Box sx={{ mt: 2 }}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserTable from "../../../component/UserTable/UserTable";
-import { getAllUser } from "../../../../../api/userAPI";
+import { getAllUser, deleteUserWithAdmin } from "../../../../../api/userAPI";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Link } from "react-router-dom"; // Import Link to add routing for Add New User
@@ -31,7 +31,7 @@ const UserList = () => {
 
   const handleDelete = async (id) => {
     try {
-      // await deleteUser(id);
+      await deleteUserWithAdmin(id);
       setUsers((prev) => prev.filter((user) => user._id !== id));
       alert("User deleted successfully.");
     } catch (err) {

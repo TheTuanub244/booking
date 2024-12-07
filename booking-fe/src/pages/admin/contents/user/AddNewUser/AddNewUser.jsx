@@ -5,17 +5,18 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import UserForm from "../../../component/UserForm/UserForm";
 
-//import { createUser } from "../../../../../api/userAPI";
+import { createUserWithAdmin, signUp } from "../../../../../api/userAPI";
 
 const AddNewUser = () => {
   const navigate = useNavigate();
 
-  const handleCreateSubmit = async (Data) => {
+  const handleCreateSubmit = async (data) => {
     const accessToken = localStorage.getItem("accessToken");
     try {
-      console.log({ Data });
-      //const response = await createUser(formData, accessToken);
-      //console.log(response);
+      console.log({ data });
+      //const response = await createUserWithAdmin(data);
+      const response = await signUp(data);
+      console.log(response);
       navigate(`/admin/user`);
     } catch (error) {
       console.error("Failed to add user:", error);
@@ -42,7 +43,7 @@ const AddNewUser = () => {
           variant="outlined"
           startIcon={<FontAwesomeIcon icon={faArrowLeft} />}
           component={Link}
-          to="/admin/users" // Link to your user list
+          to="/admin/user" // Link to your user list
         >
           Back to User List
         </Button>

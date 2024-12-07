@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { getProvince } from "../../../../api/addressAPI";
+
 const UserForm = ({ initialData, onSubmit, formTitle }) => {
   const [userData, setUserData] = useState({
     _id: initialData._id || "",
@@ -18,6 +19,8 @@ const UserForm = ({ initialData, onSubmit, formTitle }) => {
     role: initialData.role || "",
     password: "",
     confirmPassword: "",
+    dob: initialData.dob || "", // Date of Birth field
+    phoneNumber: initialData.phoneNumber || "", // Phone Number field
     address: {
       province: initialData.address?.province || "",
       district: initialData.address?.district || "",
@@ -124,6 +127,8 @@ const UserForm = ({ initialData, onSubmit, formTitle }) => {
     if (!userData.username.trim()) return "Username is required.";
     if (!userData.email.trim()) return "Email is required.";
     if (!userData.role.trim()) return "Role is required.";
+    if (!userData.dob.trim()) return "Date of Birth is required."; // Validate Date of Birth
+    if (!userData.phoneNumber.trim()) return "Phone number is required."; // Validate Phone Number
     if (userData.password && userData.password !== userData.confirmPassword)
       return "Passwords do not match.";
     return null;
@@ -250,6 +255,34 @@ const UserForm = ({ initialData, onSubmit, formTitle }) => {
         required={userData._id === ""}
       />
 
+      {/* Date of Birth */}
+      <TextField
+        label="Date of Birth"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        name="dob"
+        type="date"
+        value={userData.dob}
+        onChange={handleInputChange}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        required
+      />
+
+      {/* Phone Number */}
+      <TextField
+        label="Phone Number"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        name="phoneNumber"
+        value={userData.phoneNumber}
+        onChange={handleInputChange}
+        required
+      />
+
       {/* Address - Province */}
       <TextField
         select
@@ -334,6 +367,8 @@ UserForm.propTypes = {
     username: PropTypes.string,
     email: PropTypes.string,
     role: PropTypes.string,
+    dob: PropTypes.string, // Added Date of Birth to PropTypes
+    phoneNumber: PropTypes.string, // Added Phone Number to PropTypes
     address: PropTypes.shape({
       province: PropTypes.string,
       district: PropTypes.string,
@@ -355,6 +390,8 @@ UserForm.defaultProps = {
     username: "",
     email: "",
     role: "",
+    dob: "", // Default Date of Birth as empty string
+    phoneNumber: "", // Default Phone Number as empty string
     password: "",
     confirmPassword: "",
     address: {

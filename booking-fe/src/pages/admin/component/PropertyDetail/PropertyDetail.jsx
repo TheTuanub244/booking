@@ -1,12 +1,13 @@
 import React from "react";
-import { Box, Grid, Typography, Button } from "@mui/material";
+import { Box, Grid, Typography, Button, Paper } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import ImageGallery from "../Image/ImageGallery";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
+import RoomCard from "../RoomCard/RoomCard";
 
-const PropertyDetail = ({ propertyData }) => {
+const AdminPropertyDetail = ({ propertyData, roomData }) => {
   const {
     _id,
     name,
@@ -90,11 +91,33 @@ const PropertyDetail = ({ propertyData }) => {
           )}
         </Grid>
       </Grid>
+
+      {/* Rooms Section */}
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Rooms Available
+        </Typography>
+        <Grid container spacing={4}>
+          {roomData && roomData.length > 0 ? (
+            roomData.map((room) => (
+              <Grid item xs={12} sm={6} md={4} key={room._id}>
+                <RoomCard room={room} />
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" color="text.secondary">
+                No rooms available for this property.
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
+      </Box>
     </Box>
   );
 };
 
-PropertyDetail.propTypes = {
+AdminPropertyDetail.propTypes = {
   propertyData: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -110,6 +133,22 @@ PropertyDetail.propTypes = {
     description: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
   }).isRequired,
+  roomData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      capacity: PropTypes.shape({
+        adults: PropTypes.number.isRequired,
+        childs: PropTypes.number,
+      }).isRequired,
+      images: PropTypes.arrayOf(PropTypes.string),
+      price_per_night: PropTypes.shape({
+        weekday: PropTypes.number.isRequired,
+        weekend: PropTypes.number.isRequired,
+      }).isRequired,
+      size: PropTypes.number.isRequired,
+    })
+  ).isRequired,
 };
 
-export default PropertyDetail;
+export default AdminPropertyDetail;

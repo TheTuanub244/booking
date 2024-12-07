@@ -1,5 +1,3 @@
-// src/pages/PropertyManageList/PropertyManageList.jsx
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropertyTable from "../../../component/PropertyTable/PropertyTable";

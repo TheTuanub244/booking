@@ -90,7 +90,7 @@ const PropertyDetailsForm = ({
   };
   const getDistrict = async (code) => {
     const findDistrict = address.find((index) => index.code === parseInt(code));
-
+    
     setDistrict(findDistrict.districts);
   };
   const getWard = async (code) => {

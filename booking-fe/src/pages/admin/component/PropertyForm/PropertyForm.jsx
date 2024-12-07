@@ -483,8 +483,8 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     setPropertyData((prevData) => ({
       ...prevData,
       location: {
-        lat: location.lat,
-        lng: location.lng,
+        latitude: location.lat,
+        longitude: location.lng,
       },
     }));
     setOpenMapDialog(false);

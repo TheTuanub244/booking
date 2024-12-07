@@ -106,8 +106,8 @@ export class BookingController {
   async updateBookingById(@Param('id') id: string, @Body() data: any) {
     return this.bookingService.updateBookingById(id, data.data);
   }
-  @Get('getCompletedBookingByUser/:id')
-  async getCompletedBookingByUser(@Param('id') id: string) {
-    return this.bookingService.getCompletedBookingByUser(id);
+  @Get('getCompletedAndCancelledBookingByUser/:id')
+  async getCompletedAndCancelledBookingByUser(@Param('id') id: string) {
+    return this.bookingService.getCompletedAndCancelledBookingByUser(id);
   }
 }

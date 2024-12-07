@@ -697,13 +697,18 @@ export class BookingService {
       bookingDto,
     );
   }
-  async getCompletedBookingByUser(userId: string) {
-    console.log(userId);
-
+  async getCompletedAndCancelledBookingByUser(userId: string) {
     return await this.bookingSchema
       .find({
         user_id: new Types.ObjectId(userId),
-        booking_status: BookingStatus.COMPLETED,
+        $or: [
+          {
+            booking_status: BookingStatus.COMPLETED,
+          },
+          {
+            booking_status: BookingStatus.CANCELED,
+          },
+        ],
       })
       .populate('property')
       .populate('room_id')

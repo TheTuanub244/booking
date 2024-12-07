@@ -152,10 +152,10 @@ export const updateBookingWithAdmin = async (bookingId, data) => {
   );
   return response.data;
 }
-export const getCompletedBookingByUser = async (userId) => {
+export const getCompletedAndCancelledBookingByUser = async (userId) => {
 
   const response = await axios.get(
-    `${process.env.REACT_APP_API_URL}/booking/getCompletedBookingByUser/${userId}`,
+    `${process.env.REACT_APP_API_URL}/booking/getCompletedAndCancelledBookingByUser/${userId}`,
     {
 
       withCredentials: true,

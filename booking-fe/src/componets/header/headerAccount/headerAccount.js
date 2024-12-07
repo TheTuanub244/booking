@@ -11,6 +11,7 @@ import {
   markAsRead,
 } from "../../../api/notificationAPI";
 import socketService from "../../../helpers/sockerService";
+import { refreshAccessToken } from "../../../api/sessionAPI";
 
 function HeaderAccount() {
   const isSignIn = localStorage.getItem("isSignIn");
@@ -59,8 +60,33 @@ function HeaderAccount() {
         console.log("Notification received in HeaderAccount:", notification);
         fetchNotifications();
       });
+      socketService.on("notifyUser", (notification) => {
+        console.log("Notification received in HeaderAccount - ToUser:", notification);
+      })
     }
+    return () => {
+      if (id) {
+        socketService.off("notifyPartner");
+        socketService.off('notifyUser');
+      }
+    };
   }, []);
+
+  const handleRefreshToken = async () => {
+    const refToken = await refreshAccessToken();
+
+    console.log(refToken);
+
+    localStorage.setItem("userId", refToken._id);
+    localStorage.setItem("accessToken", refToken.access_token);
+
+    console.log(localStorage.getItem("accessToken"));
+
+    window.location.reload();
+
+
+  }
+
 
   const handleSignOut = async () => {
     localStorage.removeItem("userName");
@@ -134,7 +160,7 @@ function HeaderAccount() {
                   Không có thông báo nào
                 </p>
               ) : (
-                notifications.map((notif, index) => (
+                notifications.map((notif, index) => { return (
                   <div
                     key={index}
                     className={`notification-itemm ${
@@ -143,16 +169,25 @@ function HeaderAccount() {
                   >
                     <p>{notif.message}</p>
                     <small>{new Date(notif.created_at).toLocaleString()}</small>
-                    {!notif.status && (
+                    {notif.type === "Partner" ? (
                       <button
                         className="mark-readd"
-                        onClick={() => handleMarkAsRead(notif._id)}
+                        onClick={() => {handleMarkAsRead(notif._id); handleRefreshToken(); }}
                       >
-                        Đánh dấu đã đọc
+                        Click To become Partner
                       </button>
+                    ) : (
+                      !notif.status && (
+                        <button
+                          className="mark-readd"
+                          onClick={() => handleMarkAsRead(notif._id)}
+                        >
+                          Đánh dấu đã đọc
+                        </button>
+                      )
                     )}
                   </div>
-                ))
+                )})
               )}
             </div>
           </div>

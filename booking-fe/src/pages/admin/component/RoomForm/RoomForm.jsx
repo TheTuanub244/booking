@@ -1,5 +1,4 @@
-// src/components/RoomForm/RoomForm.jsx
-
+// RoomForm.jsx
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -23,8 +22,10 @@ const RoomForm = ({ initialData, onSubmit, formTitle }) => {
     size: initialData.size || "",
     capacity: initialData.capacity || {
       adults: "",
-      childs: { count: "", age: "" },
-      room: "",
+      childs: {
+        count: "",
+        age: "",
+      },
     },
     price_per_night: initialData.price_per_night || {
       weekday: "",
@@ -48,35 +49,13 @@ const RoomForm = ({ initialData, onSubmit, formTitle }) => {
 
     if (name.startsWith("capacity.")) {
       const field = name.split(".")[1];
-      if (field.startsWith("childs.")) {
-        const subField = field.split(".")[1];
-        setRoomData((prevData) => ({
-          ...prevData,
-          capacity: {
-            ...prevData.capacity,
-            childs: {
-              ...prevData.capacity.childs,
-              [subField]: value,
-            },
-          },
-        }));
-      } else if (field === "room") {
-        setRoomData((prevData) => ({
-          ...prevData,
-          capacity: {
-            ...prevData.capacity,
-            [field]: value,
-          },
-        }));
-      } else {
-        setRoomData((prevData) => ({
-          ...prevData,
-          capacity: {
-            ...prevData.capacity,
-            [field]: value,
-          },
-        }));
-      }
+      setRoomData((prevData) => ({
+        ...prevData,
+        capacity: {
+          ...prevData.capacity,
+          [field]: value,
+        },
+      }));
     } else if (name.startsWith("price_per_night.")) {
       const field = name.split(".")[1];
       setRoomData((prevData) => ({
@@ -142,8 +121,7 @@ const RoomForm = ({ initialData, onSubmit, formTitle }) => {
     if (
       !roomData.capacity.adults &&
       !roomData.capacity.childs.count &&
-      !roomData.capacity.childs.age &&
-      !roomData.capacity.room
+      !roomData.capacity.childs.age
     )
       return "At least one capacity field is required.";
     if (
@@ -201,7 +179,7 @@ const RoomForm = ({ initialData, onSubmit, formTitle }) => {
       //   name: "",
       //   type: "",
       //   size: "",
-      //   capacity: { adults: "", childs: { count: "", age: "" }, room: "" },
+      //   capacity: { adults: "", childs: { count: "", age: "" } },
       //   price_per_night: { weekday: "", weekend: "" },
       //   images: [],
       //   imageFiles: [],
@@ -319,7 +297,7 @@ const RoomForm = ({ initialData, onSubmit, formTitle }) => {
         Capacity
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={4}>
           <TextField
             label="Adults"
             variant="outlined"
@@ -332,7 +310,7 @@ const RoomForm = ({ initialData, onSubmit, formTitle }) => {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={4}>
           <TextField
             label="Children Count"
             variant="outlined"
@@ -345,7 +323,7 @@ const RoomForm = ({ initialData, onSubmit, formTitle }) => {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={4}>
           <TextField
             label="Children Age"
             variant="outlined"
@@ -354,19 +332,6 @@ const RoomForm = ({ initialData, onSubmit, formTitle }) => {
             name="capacity.childs.age"
             type="number"
             value={roomData.capacity.childs.age}
-            onChange={handleInputChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            label="Rooms"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            name="capacity.room"
-            type="number"
-            value={roomData.capacity.room}
             onChange={handleInputChange}
             required
           />
@@ -476,14 +441,13 @@ RoomForm.propTypes = {
     _id: PropTypes.string,
     name: PropTypes.string,
     type: PropTypes.string,
-    size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    size: PropTypes.number,
     capacity: PropTypes.shape({
       adults: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       childs: PropTypes.shape({
         count: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         age: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       }),
-      room: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     }),
     price_per_night: PropTypes.shape({
       weekday: PropTypes.string,
@@ -502,7 +466,7 @@ RoomForm.defaultProps = {
     name: "",
     type: "",
     size: "",
-    capacity: { adults: "", childs: { count: "", age: "" }, room: "" },
+    capacity: { adults: "", childs: { count: "", age: "" } },
     price_per_night: { weekday: "", weekend: "" },
     images: [],
     imageFiles: [],

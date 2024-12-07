@@ -5,10 +5,12 @@ import { useParams } from "react-router-dom";
 import { getPropertyById } from "../../../../../api/propertyAPI";
 import { CircularProgress, Box, Alert } from "@mui/material";
 import AdminPropertyDetail from "../../../component/PropertyDetail/PropertyDetail";
+import { findRoomByProperty } from "../../../../../api/roomAPI";
 
 const ViewProperty = () => {
   const { id } = useParams();
   const [propertyData, setPropertyData] = useState(null);
+  const [roomData, setRoomData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -20,6 +22,9 @@ const ViewProperty = () => {
           ...data,
           images: Array.isArray(data.images) ? data.images : [],
         });
+        const RoomData = await findRoomByProperty(id);
+        console.log({ RoomData });
+        setRoomData(RoomData);
       } catch (err) {
         console.error("Error fetching property data:", err);
         setError(true);
@@ -61,7 +66,9 @@ const ViewProperty = () => {
     );
   }
 
-  return <AdminPropertyDetail propertyData={propertyData} />;
+  return (
+    <AdminPropertyDetail propertyData={propertyData} roomData={roomData} />
+  );
 };
 
 export default ViewProperty;

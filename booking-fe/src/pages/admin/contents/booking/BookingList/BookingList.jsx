@@ -82,7 +82,7 @@ const BookingList = () => {
             variant="contained"
             color="primary"
             startIcon={<RefreshIcon />}
-            // onClick={fetchBookings}
+            onClick={fetchBookings}
           >
             Retry
           </Button>

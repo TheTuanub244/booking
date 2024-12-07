@@ -141,7 +141,7 @@ const BookingTable = ({ bookings, onDelete }) => {
         handleClose={handleCloseDialog}
         handleConfirm={handleConfirmAction}
         title={`Delete Booking`}
-        content={`Are you sure you want to delete the booking for "${selectedBookingDetails?.userName}"?`}
+        content={`Are you sure you want to delete the booking of "${selectedBookingDetails?.userName}"?`}
       />
     </div>
   );

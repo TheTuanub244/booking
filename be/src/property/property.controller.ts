@@ -47,26 +47,50 @@ export class PropertyController {
     @Body() data: any,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    const propertyImage = files.find((file) => file.fieldname === 'image');
-
+    console.log(files)
+    const propertyImage = files.filter(
+      (file, idx) => file.fieldname === `image[${idx}]`,
+    );
     const roomImages = files.filter((file) =>
       file.fieldname.startsWith('rooms'),
     );
+    if (propertyImage.length !== 0) {
+      console.log(propertyImage)
 
-    const propertyData = {
-      ...data,
-      image: propertyImage ? propertyImage.path : null,
-      address: JSON.parse(data.address),
-      location: JSON.parse(data.location),
-      rooms:
-        typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
-      roomImages: roomImages.map((file) => ({
-        path: file.path,
-        fieldname: file.fieldname,
-      })),
-    };
+      const propertyData = {
+        ...data,
+        image: propertyImage.map((image) => image.path),
+        address: JSON.parse(data.address),
+        location: JSON.parse(data.location),
+        rooms:
+          typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
+      };
+      propertyData.rooms = propertyData.rooms.map((room, index) => {
+        const imagesForRoom = roomImages
+          .filter(
+            (file, idx) => file.fieldname === `rooms[${index}]image[${idx}]`,
+          )
+          .map((file) => ({
+            path: file.path,
+            fieldname: file.fieldname,
+          }));
 
-    return this.propertyService.createNewProperty(propertyData);
+        return {
+          ...room,
+          image: imagesForRoom, 
+        };
+      });
+      return this.propertyService.createNewProperty(propertyData);
+    } else {
+      const propertyData = {
+        ...data,
+        address: JSON.parse(data.address),
+        location: JSON.parse(data.location),
+        rooms:
+          typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
+      };
+      return this.propertyService.createNewProperty(propertyData);
+    }
   }
   @Post('/updatePropertyWithPartner')
   @UseGuards(ValidateTokenGuard, RolesGuard)
@@ -89,6 +113,7 @@ export class PropertyController {
     @Body() data: any,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
+    console.log(files)
     const propertyImage = files.filter(
       (file, idx) => file.fieldname === `image[${idx}]`,
     );

@@ -8,9 +8,20 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const PropertyCard = ({ property }) => {
   const propertyId = property._id;
+
+  // Define a placeholder image URL
+  const placeholderImage =
+    "https://via.placeholder.com/280x90.png?text=No+Image";
+
+  // Safely access the first image or use the placeholder
+  const propertyImage =
+    Array.isArray(property.images) && property.images.length > 0
+      ? property.images[0]
+      : placeholderImage;
 
   return (
     <Card
@@ -33,8 +44,12 @@ const PropertyCard = ({ property }) => {
       <CardMedia
         component="img"
         height="90" // Fixed height for the image
-        image={property.images[0]}
+        image={propertyImage}
         alt={property.name}
+        onError={(e) => {
+          e.target.onerror = null; // Prevent infinite loop if placeholder fails
+          e.target.src = placeholderImage;
+        }}
         sx={{
           objectFit: "cover", // Ensures image is scaled properly inside the fixed space
         }}
@@ -101,6 +116,38 @@ const PropertyCard = ({ property }) => {
       </Box>
     </Card>
   );
+};
+
+// Define default props
+PropertyCard.defaultProps = {
+  property: {
+    _id: "",
+    name: "Unnamed Property",
+    images: [],
+    address: {
+      street: "N/A",
+      ward: "N/A",
+      district: "N/A",
+      province: "N/A",
+    },
+    rate: 0,
+  },
+};
+
+// Define PropTypes for type checking
+PropertyCard.propTypes = {
+  property: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string),
+    address: PropTypes.shape({
+      street: PropTypes.string.isRequired,
+      ward: PropTypes.string.isRequired,
+      district: PropTypes.string.isRequired,
+      province: PropTypes.string.isRequired,
+    }).isRequired,
+    rate: PropTypes.number.isRequired,
+  }),
 };
 
 export default PropertyCard;

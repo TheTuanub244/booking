@@ -16,7 +16,10 @@ const ViewProperty = () => {
     const fetchProperty = async () => {
       try {
         const data = await getPropertyById(id);
-        setPropertyData(data);
+        setPropertyData({
+          ...data,
+          images: Array.isArray(data.images) ? data.images : [],
+        });
       } catch (err) {
         console.error("Error fetching property data:", err);
         setError(true);

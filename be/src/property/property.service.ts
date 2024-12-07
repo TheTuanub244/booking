@@ -64,7 +64,7 @@ export class PropertyService {
     }
   }
   async appendImageFile(images, newImages) {
-    const validImages = []; // Mảng để lưu ảnh hợp lệ sau khi kiểm tra
+    const validImages = [];
 
     if (images) {
       await Promise.all(
@@ -72,7 +72,7 @@ export class PropertyService {
           try {
             const isValidImage = await this.checkImageExistsOnCloudinary(image);
             if (isValidImage) {
-              validImages.push(image); // Chỉ thêm ảnh vào validImages nếu ảnh hợp lệ
+              validImages.push(image);
             }
           } catch (err) {}
         }),
@@ -92,7 +92,7 @@ export class PropertyService {
       }
     }
 
-    return validImages; 
+    return validImages;
   }
   async updateProperty(property: any) {
     if (property.image) {
@@ -115,7 +115,7 @@ export class PropertyService {
           );
           return {
             ...room,
-            image: roomImages, 
+            image: roomImages,
           };
         }),
       );
@@ -196,17 +196,28 @@ export class PropertyService {
     }
   }
   async createNewProperty(property: any) {
-    const propertyImageUrl = property.image
-      ? await this.uploadImageToCloudinary(property.image)
-      : null;
-
-    // Upload room images
-    const roomImageUrls = await Promise.all(
-      property.roomImages.map((imagePath) =>
-        this.uploadImageToCloudinary(imagePath.path),
-      ),
+    const propertyImageUrl = await Promise.all(
+      property.image.map((imagePath) => {
+        if (imagePath) {
+          return this.uploadImageToCloudinary(imagePath);
+        }
+      }),
     );
-
+    const roomImageUrls = await Promise.all(
+      property.rooms.map(async (room) => {
+        const roomImages = await Promise.all(
+          room.image.map((imagePath) => {
+            if (imagePath) {
+              return this.uploadImageToCloudinary(imagePath.path);
+            }
+          }),
+        );
+        return {
+          ...room,
+          images: roomImages,
+        };
+      }),
+    );
     if (property.rooms) {
       const propertyData = {
         ...property,
@@ -216,6 +227,7 @@ export class PropertyService {
           images: roomImageUrls[index] || null,
         })),
       };
+
       if (!propertyData._id || propertyData._id === 'undefined') {
         delete propertyData._id;
       }
@@ -227,7 +239,7 @@ export class PropertyService {
         value.capacity = JSON.parse(value.capacity);
         value.price_per_night = JSON.parse(value.price_per_night);
         value.size = parseInt(value.size);
-        value.images = [value.images];
+        value.images = value.images.images;
         value.price_per_night = value.price_per_night;
         value.property_id = savedProperty._id;
 

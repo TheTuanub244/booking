@@ -16,10 +16,10 @@ const RoomCard = ({ room }) => {
   return (
     <Card
       component={Link}
-      to={`view/${room._id}`}
+      to={`/admin/room/view/${room._id}`}
       sx={{
-        width: 320,
-        height: 350,
+        width: 300, // Reduced width
+        height: 180, // Reduced height
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -29,17 +29,18 @@ const RoomCard = ({ room }) => {
           boxShadow: 6,
         },
         position: "relative",
+        borderRadius: 1, // Optional: rounding corners for a softer look
       }}
     >
       <CardMedia
         component="img"
-        height="160"
-        image={images[0] || "https://via.placeholder.com/320x160"}
+        height="90" // Reduced image height
+        image={images[0] || "https://via.placeholder.com/240x120"}
         alt={name}
         sx={{ objectFit: "cover" }}
       />
 
-      <CardContent sx={{ padding: "8px 16px", flexGrow: 1 }}>
+      <CardContent sx={{ padding: "4px 8px", flexGrow: 1 }}>
         <Tooltip title={name} placement="top" arrow>
           <Typography
             variant="body2"
@@ -48,7 +49,7 @@ const RoomCard = ({ room }) => {
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-              fontSize: "1rem",
+              fontSize: "0.875rem", // Smaller text
             }}
             gutterBottom
           >
@@ -56,15 +57,25 @@ const RoomCard = ({ room }) => {
           </Typography>
         </Tooltip>
 
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ fontSize: "0.875rem" }}
-        >
-          Property: {propertyName}
-        </Typography>
+        <Tooltip title={propertyName} placement="top" arrow>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              fontSize: "0.75rem",
+              maxWidth: "60%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Property: {propertyName}
+          </Typography>
+        </Tooltip>
 
-        <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+        <Typography variant="body2" sx={{ fontSize: "0.75rem" }}>
+          {" "}
+          {/* Smaller text */}
           {type} - {size} m²
         </Typography>
       </CardContent>
@@ -72,18 +83,18 @@ const RoomCard = ({ room }) => {
       <Box
         sx={{
           position: "absolute",
-          bottom: 10,
-          right: 10,
+          bottom: 8, // Adjusted position
+          right: 8, // Adjusted position
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-end",
-          fontSize: "0.875rem",
+          fontSize: "0.75rem", // Smaller text
         }}
       >
         <Typography
           variant="body2"
           color="text.primary"
-          sx={{ fontSize: "0.875rem", fontWeight: "bold" }}
+          sx={{ fontSize: "0.75rem", fontWeight: "bold" }} // Smaller text
         >
           Price per Night
         </Typography>
@@ -91,7 +102,7 @@ const RoomCard = ({ room }) => {
         <Typography
           variant="body2"
           color="primary"
-          sx={{ fontSize: "0.875rem" }}
+          sx={{ fontSize: "0.75rem" }} // Smaller text
         >
           Weekday:{" "}
           {price_per_night?.weekday
@@ -102,7 +113,7 @@ const RoomCard = ({ room }) => {
         <Typography
           variant="body2"
           color="primary"
-          sx={{ fontSize: "0.875rem" }}
+          sx={{ fontSize: "0.75rem" }} // Smaller text
         >
           Weekend:{" "}
           {price_per_night?.weekend

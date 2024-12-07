@@ -44,7 +44,6 @@ function HeaderAccount() {
   };
   const handleMarkAllAsRead = async (userId) => {
     await markAllAsRead(userId);
-
     fetchNotifications();
   };
 
@@ -171,7 +170,7 @@ function HeaderAccount() {
                     {notif.type === "Partner" ? (
                       <button
                         className="mark-readd"
-                        onClick={() => {handleMarkAsRead(notif._id); handleRefreshToken(); }}
+                        onClick={async () => {await handleMarkAsRead(notif._id); handleRefreshToken(); }}
                       >
                         Click To become Partner
                       </button>

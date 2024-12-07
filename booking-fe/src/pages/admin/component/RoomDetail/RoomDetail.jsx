@@ -1,23 +1,25 @@
 import React from "react";
-import { Box, Grid, Typography, Button, Paper } from "@mui/material";
+import { Box, Grid, Typography, Button } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import ImageGallery from "../Image/ImageGallery";
 import PropTypes from "prop-types";
-import RoomCard from "../RoomCard/RoomCard";
+import ImageGallery from "../Image/ImageGallery";
 
-const AdminPropertyDetail = ({ propertyData, roomData }) => {
+const RoomDetail = ({ roomData }) => {
   const {
     _id,
     name,
-    property_type,
+    property_id, // Only display the property name
     address,
-    owner_id,
     images,
     description,
     rate,
-  } = propertyData;
+    capacity,
+    price_per_night,
+    size,
+    facility,
+  } = roomData;
 
   const fullAddress = `${address.street}, ${address.ward}, ${address.district}, ${address.province}`;
 
@@ -41,7 +43,7 @@ const AdminPropertyDetail = ({ propertyData, roomData }) => {
           variant="outlined"
           startIcon={<FontAwesomeIcon icon={faEdit} />}
           component={Link}
-          to={`/admin/property/edit/${_id}`}
+          to={`/admin/room/edit/${_id}`}
         >
           Edit
         </Button>
@@ -52,7 +54,7 @@ const AdminPropertyDetail = ({ propertyData, roomData }) => {
             {name}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            {property_type}
+            {property_id.name}
           </Typography>
           <Box display="flex" alignItems="center" mb={1}>
             <FontAwesomeIcon icon={faLocationDot} style={{ marginRight: 8 }} />
@@ -62,11 +64,28 @@ const AdminPropertyDetail = ({ propertyData, roomData }) => {
             ⭐ {rate}
           </Typography>
           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-            Owner ID: {owner_id}
+            Size: {size} m²
+          </Typography>
+          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            Capacity: {capacity.adults} adults, {capacity.childs.count} child
+            (Age: {capacity.childs.age})
+          </Typography>
+          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            Price per Night:
+            <Typography variant="body2" component="span" color="text.primary">
+              ${price_per_night.weekday} (Weekdays), ${price_per_night.weekend}{" "}
+              (Weekends)
+            </Typography>
           </Typography>
           <Typography variant="body1" paragraph>
             {description}
           </Typography>
+          <Typography variant="h6" gutterBottom>
+            Facilities:
+          </Typography>
+          <ul>
+            {facility.map((item, index) => item && <li key={index}>{item}</li>)}
+          </ul>
         </Grid>
         <Grid item xs={12} md={6}>
           {Array.isArray(images) && images.length > 0 ? (
@@ -91,64 +110,40 @@ const AdminPropertyDetail = ({ propertyData, roomData }) => {
           )}
         </Grid>
       </Grid>
-
-      {/* Rooms Section */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Rooms Available
-        </Typography>
-        <Grid container spacing={4}>
-          {roomData && roomData.length > 0 ? (
-            roomData.map((room) => (
-              <Grid item xs={12} sm={6} md={4} key={room._id}>
-                <RoomCard room={room} />
-              </Grid>
-            ))
-          ) : (
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" color="text.secondary">
-                No rooms available for this property.
-              </Typography>
-            </Grid>
-          )}
-        </Grid>
-      </Box>
     </Box>
   );
 };
 
-AdminPropertyDetail.propTypes = {
-  propertyData: PropTypes.shape({
+RoomDetail.propTypes = {
+  roomData: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    property_type: PropTypes.string.isRequired,
+    property_id: PropTypes.shape({
+      name: PropTypes.string.isRequired, // Display property name only
+    }).isRequired,
     address: PropTypes.shape({
       street: PropTypes.string.isRequired,
       ward: PropTypes.string.isRequired,
       district: PropTypes.string.isRequired,
       province: PropTypes.string.isRequired,
     }).isRequired,
-    owner_id: PropTypes.string.isRequired,
     images: PropTypes.arrayOf(PropTypes.string),
     description: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
+    capacity: PropTypes.shape({
+      adults: PropTypes.number.isRequired,
+      childs: PropTypes.shape({
+        count: PropTypes.number.isRequired,
+        age: PropTypes.number.isRequired,
+      }).isRequired,
+    }).isRequired,
+    price_per_night: PropTypes.shape({
+      weekday: PropTypes.number.isRequired,
+      weekend: PropTypes.number.isRequired,
+    }).isRequired,
+    size: PropTypes.number.isRequired,
+    facility: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
-  roomData: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      capacity: PropTypes.shape({
-        adults: PropTypes.number.isRequired,
-        childs: PropTypes.number,
-      }).isRequired,
-      images: PropTypes.arrayOf(PropTypes.string),
-      price_per_night: PropTypes.shape({
-        weekday: PropTypes.number.isRequired,
-        weekend: PropTypes.number.isRequired,
-      }).isRequired,
-      size: PropTypes.number.isRequired,
-    })
-  ).isRequired,
 };
 
-export default AdminPropertyDetail;
+export default RoomDetail;

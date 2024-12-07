@@ -16,21 +16,35 @@ import {
   InputLabel,
   CircularProgress,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const RoomManageList = () => {
   const [viewMode, setViewMode] = useState("cards");
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Snackbar state for notifications
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     const fetchRooms = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        // const data = await getAllRoomWithDetails();
-        const data = await findRoomByProperty("67330d931e768dcfe6999375");
+        const data = await getAllRoomWithDetails();
         setRooms(data);
+        console.log({ data });
       } catch (error) {
         console.error("Error fetching rooms:", error);
+        setError("Failed to load rooms. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -38,9 +52,21 @@ const RoomManageList = () => {
 
     fetchRooms();
   }, []);
-  console.log({ rooms });
+
   const handleViewChange = (e) => {
     setViewMode(e.target.value);
+  };
+
+  const handleRetry = () => {
+    setLoading(true);
+    setError(null);
+    getAllRoomWithDetails()
+      .then((data) => setRooms(data))
+      .catch((err) => {
+        console.error("Error fetching rooms:", err);
+        setError("Failed to load rooms. Please try again later.");
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -115,12 +141,50 @@ const RoomManageList = () => {
           >
             <CircularProgress />
           </Box>
+        ) : error ? (
+          <Box
+            sx={{
+              textAlign: "center",
+              mt: 4,
+            }}
+          >
+            <Typography color="error" variant="h6" gutterBottom>
+              {error}
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<RefreshIcon />}
+              onClick={handleRetry}
+            >
+              Retry
+            </Button>
+          </Box>
+        ) : rooms.length === 0 ? (
+          <Typography variant="h6" align="center" mt={4}>
+            No rooms found.
+          </Typography>
         ) : viewMode === "cards" ? (
           <RoomSection rooms={rooms} />
         ) : (
           <RoomTable rooms={rooms} />
         )}
       </Box>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

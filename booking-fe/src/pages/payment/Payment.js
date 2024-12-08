@@ -6,6 +6,9 @@ import axios from "axios";
 import { cancelBooking, createBooking } from "../../api/bookingAPI";
 import Modal from "react-modal";
 import {
+  calculateNights,
+} from "../../helpers/dateHelpers";
+import {
   faWifi,
   faPlaneDeparture,
   faInfo,
@@ -90,20 +93,37 @@ function Payment() {
   const totalRoomRef = useRef(0);
   const location = useLocation();
   const dataFromProperty = location.state;
-  const pendingBooking = localStorage.getItem('pendingBooking');
+  const pendingBooking = JSON.parse(localStorage.getItem('unfinishedBooking'));
   const loadData = () => {
     if (dataFromProperty) {
-      localStorage.setItem("reservationInfo",dataFromProperty);
       if (dataFromProperty) {
         console.log(dataFromProperty);
       }
-      return dataFromProperty ? JSON.parse(dataFromProperty) : null;
+      return dataFromProperty ? dataFromProperty : null;
     } else {
-      const ri = localStorage.getItem('reservationInfo');
-      if (ri) {
-        console.log(ri);
+      const ri = JSON.parse(localStorage.getItem('unfinishedBooking'));
+      const address = ri[0].propertyDetails.address
+      const data = {
+        address: `${address.street}, ${address.ward}, ${address.province}, ${address.district}  `,
+        hotelName: `${ri[0].propertyDetails.name}`,
+        checkInDate: `${ri[0].check_in_date}`,
+        checkOutDate: `${ri[0].check_out_date}`,
+        totalPrice: ri[0].total_price,
+        capacity: {
+          adults: ri[0].capacity.adults,
+          childs: ri[0].capacity.childs,
+        },
+        roomData: ri[0].room_id,
+        totalNight: calculateNights(ri[0].check_in_date,ri[0].check_out_date),
+        reviews: {
+          total: 15,
+          point: ri[0].propertyDetails.rate,
+          desc: "Good"
+        },
+        partnerId: "",
+        property: "",
       }
-      return ri ? JSON.parse(ri) : null;
+     return data;
     }
 
   };
@@ -114,11 +134,16 @@ function Payment() {
     if (data) {
       setReservationInfo(data); // Cập nhật state
       // Xử lý logic trực tiếp với dữ liệu mới
-      data.roomData.forEach((room) => {
-        totalRoom += room.numberOfRooms;
-      });
+      if (!dataFromProperty) {
+        totalRoomRef.current = pendingBooking[0].capacity.room;
+      } else {
+        data.roomData.forEach((room) => {
+          totalRoom += room.numberOfRooms;
+        });
+  
+        totalRoomRef.current = totalRoom; // Cập nhật giá trị vào ref
+      }
 
-      totalRoomRef.current = totalRoom; // Cập nhật giá trị vào ref
       // console.log(data.totalPrice);
       if (data.capacity.childs.count !== 0) {
         setHasChild(true);
@@ -144,11 +169,10 @@ function Payment() {
 
   const handleCancelBooking = async () => {
     try {
-      const data = JSON.parse(localStorage.getItem("overViewData"));
-      await cancelBooking(data.bookingId);
+      const data = JSON.parse(localStorage.getItem("unfinishedBooking"));
+      await cancelBooking(data[0]._id);
       localStorage.removeItem('overViewData');
-      localStorage.removeItem('pendingBooking');
-      localStorage.removeItem('reservationInfo');
+      localStorage.removeItem('unfinishedBooking');
       navigate(`/property/${reservationInfo.property}`);
       closeModal();
     } catch (error) {
@@ -196,7 +220,7 @@ function Payment() {
 
     } else {
       overViewData = {
-        bookingId: pendingBooking.bookingId
+        bookingId: pendingBooking[0]._id
       }
     }
     overViewData = {

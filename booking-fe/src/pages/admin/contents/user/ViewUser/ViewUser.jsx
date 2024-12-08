@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-// import { getUserById } from "../../../../../api/userAPI";
+import { getUserById } from "../../../../../api/userAPI";
 import { CircularProgress, Box, Alert } from "@mui/material";
 import UserDetail from "../../../component/UserDetail/UserDetail";
 
@@ -29,8 +29,9 @@ const ViewUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        //const data = await getUserById(id);
-        const data = mockUserData;
+        const data = await getUserById(id);
+        console.log({ data });
+        //const data = mockUserData;
         setUserData(data);
       } catch (err) {
         console.error("Error fetching user data:", err);

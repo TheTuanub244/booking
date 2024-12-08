@@ -3,7 +3,7 @@ import { Box, Grid, Button, CircularProgress, Alert } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams, useNavigate } from "react-router-dom";
-//import { getUserById, updateUser } from "../../../../../api/userAPI"; // Ensure the `getUserById` and `updateUser` functions are implemented
+import { getUserById, updateUser } from "../../../../../api/userAPI"; // Ensure the `getUserById` and `updateUser` functions are implemented
 import UserForm from "../../../component/UserForm/UserForm"; // Assuming UserForm is in this path
 
 const EditUser = () => {
@@ -34,8 +34,8 @@ const EditUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        //const data = await getUserById(id);
-        const data = mockUserData;
+        const data = await getUserById(id);
+        //const data = mockUserData;
         setInitialData(data);
       } catch (err) {
         console.error("Error fetching user data:", err);
@@ -110,7 +110,7 @@ const EditUser = () => {
           variant="outlined"
           startIcon={<FontAwesomeIcon icon={faArrowLeft} />}
           component={Link}
-          to={`/admin/users/view/${id}`}
+          to={`/admin/user/view/${id}`}
         >
           Back to Details
         </Button>

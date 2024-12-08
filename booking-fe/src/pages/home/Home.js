@@ -22,7 +22,7 @@ import {
 import { checkSession, getSessionHistory } from "../../api/sessionAPI";
 import LastViewProperties from "../../componets/lastViewProperties/LastViewProperties";
 import { useNavigate } from "react-router-dom";
-import { findUnfinishedBooking, getAllBooking, getCompletedBookingByUser } from "../../api/bookingAPI";
+import { findUnfinishedBooking, getAllBooking, getCompletedAndCancelledBookingByUser, getCompletedBookingByUser } from "../../api/bookingAPI";
 import BookingPopup from "../../componets/bookingPopup/BookingPopup";
 import { getAllUser } from "../../api/userAPI";
 import axios from "axios";
@@ -52,7 +52,7 @@ function Home() {
     setSessionHistory(data);
   };
   const getCompletedBooking = async (userId) => {
-    const response = await getCompletedBookingByUser(userId)
+    const response = await getCompletedAndCancelledBookingByUser(userId)
     setCompletedBooking(response)
   }
   const handleGetAllProperty = async () => {

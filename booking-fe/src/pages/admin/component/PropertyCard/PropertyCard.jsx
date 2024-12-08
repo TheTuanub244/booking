@@ -26,7 +26,7 @@ const PropertyCard = ({ property }) => {
   return (
     <Card
       component={Link}
-      to={`view/${propertyId}`}
+      to={`/admin/property/view/${propertyId}`}
       sx={{
         width: 280, // Fixed width
         height: 170, // Fixed height

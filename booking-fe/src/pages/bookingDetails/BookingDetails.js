@@ -111,7 +111,11 @@ useEffect(() => {
                 Booking Status: {booking.booking_status}
               </p>
 
-              <button className="cancelBookingBtn" onClick={toggleModal}>Cancel Booking</button>
+              {
+                booking.booking_status === "Completed" && (
+                  <button className="cancelBookingBtn" onClick={toggleModal}>Cancel Booking</button>
+                )
+              }
             </div>
 
 

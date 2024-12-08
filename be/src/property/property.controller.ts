@@ -47,7 +47,7 @@ export class PropertyController {
     @Body() data: any,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    console.log(files)
+    console.log(files);
     const propertyImage = files.filter(
       (file, idx) => file.fieldname === `image[${idx}]`,
     );
@@ -55,8 +55,6 @@ export class PropertyController {
       file.fieldname.startsWith('rooms'),
     );
     if (propertyImage.length !== 0) {
-      console.log(propertyImage)
-
       const propertyData = {
         ...data,
         image: propertyImage.map((image) => image.path),
@@ -65,22 +63,27 @@ export class PropertyController {
         rooms:
           typeof data.rooms === 'string' ? JSON.parse(data.rooms) : data.rooms,
       };
-      propertyData.rooms = propertyData.rooms.map((room, index) => {
-        const imagesForRoom = roomImages
-          .filter(
-            (file, idx) => file.fieldname === `rooms[${index}]image[${idx}]`,
-          )
-          .map((file) => ({
-            path: file.path,
-            fieldname: file.fieldname,
-          }));
+      if (propertyData.rooms) {
+        propertyData.rooms = propertyData.rooms.map((room, index) => {
+          const imagesForRoom = roomImages
+            .filter(
+              (file, idx) => file.fieldname === `rooms[${index}]image[${idx}]`,
+            )
+            .map((file) => ({
+              path: file.path,
+              fieldname: file.fieldname,
+            }));
 
-        return {
-          ...room,
-          image: imagesForRoom, 
-        };
-      });
-      return this.propertyService.createNewProperty(propertyData);
+          return {
+            ...room,
+            image: imagesForRoom,
+          };
+        });
+        return this.propertyService.createNewProperty(propertyData);
+      } else {
+        propertyData.rooms = [];
+        return this.propertyService.createNewProperty(propertyData);
+      }
     } else {
       const propertyData = {
         ...data,
@@ -113,7 +116,7 @@ export class PropertyController {
     @Body() data: any,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    console.log(files)
+    console.log(files);
     const propertyImage = files.filter(
       (file, idx) => file.fieldname === `image[${idx}]`,
     );

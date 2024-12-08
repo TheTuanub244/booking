@@ -11,7 +11,8 @@ const RoomSection = ({ rooms }) => {
   const currentRooms = rooms.slice(startIndex, endIndex);
 
   const handlePageChange = (event, value) => {
-    setPage(value);
+    // Guard against invalid page numbers
+    setPage(Math.max(value, 1));
   };
 
   if (!rooms.length) {

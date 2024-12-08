@@ -75,6 +75,20 @@ export class BookingService {
       {
         $unwind: '$propertyDetails',
       },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'propertyDetails.owner_id',
+          foreignField: '_id',
+          as: 'ownerDetails',
+        },
+      },
+      {
+        $unwind: {
+          path: '$ownerDetails',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
     ]);
     if (!findBooking) {
       throw new NotFoundException(`Booking with ID ${booking_id} not found`);
@@ -83,7 +97,6 @@ export class BookingService {
   }
   async cancelBooking(booking_id: string) {
     const booking = await this.getBookingById(booking_id);
-
     if (booking[0].booking_status === BookingStatus.PENDING) {
       await this.bookingSchema.findByIdAndDelete(
         new Types.ObjectId(booking_id),
@@ -97,19 +110,19 @@ export class BookingService {
       const timeDifference: number =
         formattedCheckInDate.getTime() - currentDate.getTime();
       const daysDifference: number = timeDifference / (1000 * 3600 * 24);
-        const subject = 'Booking Cancellation Confirmation';
-        const text = `Your booking has been cancelled. Here are the details:
+      const subject = 'Booking Cancellation Confirmation';
+      const text = `Your booking has been cancelled. Here are the details:
           - Property: ${booking[0].property.name}
           - Room(s): ${Array.isArray(booking[0].roomDetails) ? booking[0].roomDetails?.map((room) => room.name).join(', ') : booking[0].roomDetails.name}
           - Check-in Date: ${booking[0].check_in_date.toDateString()}
           - Check-out Date: ${booking[0].check_out_date.toDateString()}
           - Refund Amount: $${booking[0].total_price}`;
-        const cancelUrl = `${process.env.BACK_END_URL}/booking/confirm-cancellation?booking_id=${booking[0]._id}&redirect=${process.env.FRONT_END_URL}`;
-        const html = `
+      const cancelUrl = `${process.env.BACK_END_URL}/booking/confirm-cancellation?booking_id=${booking[0]._id}&redirect=${process.env.FRONT_END_URL}`;
+      const html = `
           <h1>Booking Cancellation Confirmation</h1>
           <p>We received your request to cancel the booking. Here are the details:</p>
           <ul>
-            <li><strong>Property:</strong> ${booking[0].property.name}</li>
+            <li><strong>Property:</strong> ${booking[0].propertyDetails.name}</li>
             <li><strong>Room(s):</strong> ${Array.isArray(booking[0].roomDetails) ? booking[0].roomDetails?.map((room) => room.name).join(', ') : booking[0].roomDetails.name}</li>
             <li><strong>Check-in Date:</strong> ${booking[0].check_in_date.toDateString()}</li>
             <li><strong>Check-out Date:</strong> ${booking[0].check_out_date.toDateString()}</li>
@@ -128,13 +141,12 @@ export class BookingService {
         <p>If you did not request this action, you can safely ignore this email.</p>
           <p>We hope to serve you again in the future.</p>
         `;
-
-        await this.gmailService.sendEmail(
-          booking[0].userDetails.email,
-          subject,
-          text,
-          html,
-        );
+      await this.gmailService.sendEmail(
+        booking[0].userDetails.email,
+        subject,
+        text,
+        html,
+      );
     }
   }
   async finalizeCancellation(bookingId: string): Promise<boolean> {
@@ -147,8 +159,19 @@ export class BookingService {
       type: 'Booking',
       message,
     });
-    booking[0].booking_status = BookingStatus.CANCELED;
-    await booking[0].save();
+    await this.bookingSchema.findByIdAndUpdate(
+      new Types.ObjectId(bookingId),
+      {
+        booking_status: BookingStatus.CANCELED,
+      },
+      {
+        new: true,
+      },
+    );
+    await this.notificationGateway.sendNotificationToPartner(
+      booking[0].ownerDetails._id.toString(),
+      message,
+    );
     return true;
   }
   async calculateTotalNightPriceForReservation(booking: any) {
@@ -604,6 +627,7 @@ export class BookingService {
       { $set: data },
       { new: true },
     );
+    console.log(updateBooking)
     if (!updateBooking) {
       throw new NotFoundException(`Booking with ID ${bookingId} not found`);
     }
@@ -674,13 +698,18 @@ export class BookingService {
       bookingDto,
     );
   }
-  async getCompletedBookingByUser(userId: string) {
-    console.log(userId);
-
+  async getCompletedAndCancelledBookingByUser(userId: string) {
     return await this.bookingSchema
       .find({
         user_id: new Types.ObjectId(userId),
-        booking_status: BookingStatus.COMPLETED,
+        $or: [
+          {
+            booking_status: BookingStatus.COMPLETED,
+          },
+          {
+            booking_status: BookingStatus.CANCELED,
+          },
+        ],
       })
       .populate('property')
       .populate('room_id')

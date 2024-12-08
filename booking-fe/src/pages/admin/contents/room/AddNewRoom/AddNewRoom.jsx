@@ -1,65 +1,76 @@
-import "./AddNewRoom.css";
-import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { useState } from "react";
-import { roomRows } from "../../../data/roomdata";
+// src/pages/CreateNewRoom.jsx
+
+import React from "react";
+import { Box, Grid, Button, Alert } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate } from "react-router-dom";
+import RoomForm from "../../../component/RoomForm/RoomForm";
+
 const AddNewRoom = () => {
-  const [file, setFile] = useState("");
-  const inputs = roomRows;
-  console.log(inputs);
+  const navigate = useNavigate();
+
+  const handleCreateSubmit = async (formData) => {
+    const accessToken = localStorage.getItem("accessToken");
+    try {
+      console.log("Submitting Room Data:", formData);
+      //const response = await createRoom(formData, accessToken);
+      //console.log("Room Created:", response);
+
+      navigate("/admin/rooms");
+    } catch (error) {
+      console.error("Failed to add room:", error);
+
+      throw error; // Re-throw to let RoomForm handle any additional logic if needed
+    }
+  };
 
   return (
-    <div className="new">
-      <div className="newContainer">
-        <div className="top">
-          <h1>Add New User</h1>
-        </div>
-        <div className="bottom">
-          <div className="left">
-            <img
-              src={
-                file
-                  ? URL.createObjectURL(file)
-                  : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-              }
-              alt=""
-            />
-          </div>
-          <div className="right">
-            <form>
-              <div className="formInput">
-                <label htmlFor="file">
-                  Image: <DriveFolderUploadOutlinedIcon className="icon" />
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  onChange={(e) => setFile(e.target.files[0])}
-                  style={{ display: "none" }}
-                />
-              </div>
-              {inputs.map((input) => (
-                <div className="formInput" key={input.id}>
-                  <label>{input.label}</label>
-                  {input.type === "select" ? (
-                    <select>
-                      {input.options.map((option, idx) => (
-                        <option key={idx} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input type={input.type} placeholder={input.placeholder} />
-                  )}
-                </div>
-              ))}
+    <Box
+      sx={{
+        padding: 4,
+        backgroundColor: "#fff",
+        maxHeight: "100vh",
+        overflowY: "auto",
+      }}
+    >
+      {/* Back Button */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-start",
+          mb: 2,
+        }}
+      >
+        <Button
+          variant="outlined"
+          startIcon={<FontAwesomeIcon icon={faArrowLeft} />}
+          component={Link}
+          to="/admin/rooms" // Adjust the route as necessary
+        >
+          Back to Rooms List
+        </Button>
+      </Box>
 
-              <button>Send</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* Room Form */}
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={8}>
+          <RoomForm
+            initialData={{
+              name: "",
+              type: "",
+              size: "",
+              capacity: { adults: "", childs: { count: "", age: "" } },
+              price_per_night: { weekday: "", weekend: "" },
+              images: [],
+              imageFiles: [],
+            }}
+            onSubmit={handleCreateSubmit}
+            formTitle="Create New Room"
+          />
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

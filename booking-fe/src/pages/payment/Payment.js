@@ -10,7 +10,7 @@ import {
   faPlaneDeparture,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
-import { redirect, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Payment() {
   //object
@@ -88,13 +88,24 @@ function Payment() {
     "Please fill in your last name",
   );
   const totalRoomRef = useRef(0);
-
+  const location = useLocation();
+  const dataFromProperty = location.state;
+  const pendingBooking = localStorage.getItem('pendingBooking');
   const loadData = () => {
-    const ri = localStorage.getItem('reservationInfo');
-    if (ri) {
-      console.log(ri);
+    if (dataFromProperty) {
+      localStorage.setItem("reservationInfo",dataFromProperty);
+      if (dataFromProperty) {
+        console.log(dataFromProperty);
+      }
+      return dataFromProperty ? JSON.parse(dataFromProperty) : null;
+    } else {
+      const ri = localStorage.getItem('reservationInfo');
+      if (ri) {
+        console.log(ri);
+      }
+      return ri ? JSON.parse(ri) : null;
     }
-    return ri ? JSON.parse(ri) : null;
+
   };
 
   const editData = () => {
@@ -123,7 +134,7 @@ function Payment() {
   }, []);
 
   const handleChangeSelection = () => {
-    if (localStorage.getItem('overViewData')) {
+    if (!dataFromProperty) {
       setIsModalOpen(true);
     } else {
       navigate(`/property/${reservationInfo.property}`);
@@ -136,6 +147,8 @@ function Payment() {
       const data = JSON.parse(localStorage.getItem("overViewData"));
       await cancelBooking(data.bookingId);
       localStorage.removeItem('overViewData');
+      localStorage.removeItem('pendingBooking');
+      localStorage.removeItem('reservationInfo');
       navigate(`/property/${reservationInfo.property}`);
       closeModal();
     } catch (error) {
@@ -145,6 +158,7 @@ function Payment() {
   };
 
   const handleChange = (e) => {
+
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -157,7 +171,7 @@ function Payment() {
   let overViewData = {};
 
   const handleCreateBooking = async () => {
-    if (!localStorage.getItem('overViewData')) {
+    if (dataFromProperty) {
       const user_id = localStorage.getItem("userId");
       const token = localStorage.getItem("accessToken");
       // console.log(`${user_id} ${token}`);
@@ -177,21 +191,27 @@ function Payment() {
       console.log('Booking created:', booking);
 
       overViewData = {
-        bookingId: booking._id,
-        email: formData.email,
-        firstName: formData.firstname,
-        lastName: formData.lastname,
-        address: reservationInfo.address,
-        hotelName: reservationInfo.hotelName,
-        checkInDate: reservationInfo.checkInDate,
-        checkOutDate: reservationInfo.checkOutDate,
-
+        bookingId: booking._id
       }
-      localStorage.setItem('overViewData', JSON.stringify(overViewData));
 
-      console.log(overViewData);
+    } else {
+      overViewData = {
+        bookingId: pendingBooking.bookingId
+      }
     }
+    overViewData = {
+      ...overViewData,
+      checkInDate: reservationInfo.checkInDate,
+      checkOutDate: reservationInfo.checkOutDate,
+      address: reservationInfo.address,
+      hotelName: reservationInfo.hotelName,
+      firstName: formData.firstname,
+      email: formData.email,
+      lastName: formData.lastname
+  };
 
+    localStorage.setItem('overViewData', JSON.stringify(overViewData));
+    console.log(overViewData);
 
   };
 
@@ -199,6 +219,7 @@ function Payment() {
     e.preventDefault();
     await handleCreateBooking();
     formData.amount = reservationInfo.totalPrice;
+    
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/payment/create_transaction`,

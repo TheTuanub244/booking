@@ -131,10 +131,14 @@ function ResultPayment() {
   }, [paymentMethod]);
   const handleReturnHome = () => {
     localStorage.removeItem('overViewData');
+    localStorage.removeItem('pendingBooking');
+    localStorage.removeItem('reservationInfo');
+
     navigate("/");
   };
 
   const handleReturnPayment = () => {
+    localStorage.getItem('pendingBooking',{bookingId: bookingId});
     navigate("/");
   };
   return (

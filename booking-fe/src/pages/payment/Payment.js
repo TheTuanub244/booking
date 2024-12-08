@@ -121,7 +121,7 @@ function Payment() {
           desc: "Good"
         },
         partnerId: "",
-        property: "",
+        property: `${ri[0].property}`,
       }
      return data;
     }

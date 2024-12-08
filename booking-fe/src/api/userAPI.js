@@ -184,7 +184,7 @@ export const createUserWithAdmin = async (data) => {
 }
 export const updateUserWithAdmin = async(userId, data) => {
   const respone = await axios.put(
-    `${process.env.REACT_APP_API_URL}/user/updateUserById/${userId}`, {data},
+    `${process.env.REACT_APP_API_URL}/user/updateUserById/${userId}`, data,
     {
       withCredentials: true,
     },

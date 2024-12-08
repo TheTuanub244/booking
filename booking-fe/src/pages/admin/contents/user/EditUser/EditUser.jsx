@@ -3,7 +3,7 @@ import { Box, Grid, Button, CircularProgress, Alert } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { getUserById, updateUser } from "../../../../../api/userAPI"; // Ensure the `getUserById` and `updateUser` functions are implemented
+import { getUserById, updateUserWithAdmin } from "../../../../../api/userAPI"; // Ensure the `getUserById` and `updateUser` functions are implemented
 import UserForm from "../../../component/UserForm/UserForm"; // Assuming UserForm is in this path
 
 const EditUser = () => {
@@ -48,13 +48,13 @@ const EditUser = () => {
     fetchUser();
   }, [id]);
 
-  const handleUpdateSubmit = async (formData) => {
+  const handleUpdateSubmit = async (data) => {
     const accessToken = localStorage.getItem("accessToken");
     try {
-      console.log({ formData });
-      navigate(`/admin/users/view/${id}`);
-      //const response = await updateUser(formData, accessToken); // Ensure the updateUser function is implemented in your API
-      // console.log(response);
+      console.log({ data });
+      const response = await updateUserWithAdmin(id, data);
+      console.log(response);
+      navigate(`/admin/user/view/${id}`);
     } catch (error) {
       console.error("Failed to update user:", error);
     }

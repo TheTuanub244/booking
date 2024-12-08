@@ -22,6 +22,8 @@ const ViewProperty = () => {
           ...data,
           images: Array.isArray(data.images) ? data.images : [],
         });
+        console.log({ data });
+
         const RoomData = await findRoomByProperty(id);
         console.log({ RoomData });
         setRoomData(RoomData);

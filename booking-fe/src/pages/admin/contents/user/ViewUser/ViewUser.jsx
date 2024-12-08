@@ -10,22 +10,6 @@ const ViewUser = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const mockUserData = {
-    _id: id,
-    username: "john_doe",
-    email: "john.doe@example.com",
-    role: "user",
-    address: {
-      province: "Hanoi",
-      district: "Ba Dinh",
-      ward: "Phuc Xa",
-      provinceCode: "01",
-      districtCode: "02",
-      wardCode: "03",
-    },
-    password: "password123",
-    confirmPassword: "password123",
-  };
   useEffect(() => {
     const fetchUser = async () => {
       try {

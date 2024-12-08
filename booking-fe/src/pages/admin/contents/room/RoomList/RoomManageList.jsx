@@ -94,7 +94,7 @@ const RoomManageList = () => {
         <Typography variant="h5" color="textSecondary">
           Room Management
         </Typography>
-        <Button
+        {/* <Button
           component={Link}
           to="new"
           variant="outlined"
@@ -103,7 +103,7 @@ const RoomManageList = () => {
           sx={{ borderRadius: 1, fontSize: "14px" }}
         >
           Add New
-        </Button>
+        </Button> */}
       </Box>
 
       <Box

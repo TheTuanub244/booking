@@ -303,7 +303,9 @@ export class PropertyService {
     };
   }
   async getPropertyById(id: string) {
-    return this.propertySchema.findById(new Types.ObjectId(id));
+    return this.propertySchema
+      .findById(new Types.ObjectId(id))
+      .populate({ path: 'owner_id' });
   }
   async getPropertiesSortedByRate() {
     const properties = await this.propertySchema

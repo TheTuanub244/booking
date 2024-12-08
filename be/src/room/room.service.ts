@@ -483,4 +483,9 @@ export class RoomService {
     );
     return availableRoom;
   }
+  async getRoomById(roomId: string) {
+    return await this.roomSchema
+      .findById(new Types.ObjectId(roomId))
+      .populate({ path: 'property_id' });
+  }
 }

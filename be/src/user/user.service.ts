@@ -529,4 +529,7 @@ export class UserService {
       role: ROLE.PARTNER,
     });
   }
+  async getUserById(userId: string) {
+    return await this.userSchema.findById(new Types.ObjectId(userId));
+  }
 }

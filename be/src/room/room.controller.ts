@@ -104,4 +104,8 @@ export class RoomController {
       data.check_out_date,
     );
   }
+  @Get('getRoomById/:roomId')
+  async getUserById(@Param('roomId') roomId: string) {
+    return this.roomService.getRoomById(roomId);
+  }
 }

@@ -13,8 +13,7 @@ import { getProvince } from "../../../../api/addressAPI";
 
 const UserForm = ({ initialData, onSubmit, formTitle }) => {
   const [userData, setUserData] = useState({
-    _id: initialData._id || "",
-    username: initialData.username || "",
+    userName: initialData.userName || "",
     email: initialData.email || "",
     role: initialData.role || "",
     password: "",
@@ -38,11 +37,22 @@ const UserForm = ({ initialData, onSubmit, formTitle }) => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [loadingAddressData, setLoadingAddressData] = useState(false);
+  useEffect(() => {
+    if (initialData._id) {
+      setUserData((prevData) => ({
+        ...prevData,
+        _id: initialData._id,
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     fetchAddressData();
   }, []);
 
+  useEffect(() => {
+    console.log("User Data Updated:", userData);
+  }, [userData]);
   // Fetch address data from API
   const fetchAddressData = async () => {
     setLoadingAddressData(true);
@@ -124,11 +134,11 @@ const UserForm = ({ initialData, onSubmit, formTitle }) => {
   };
 
   const validateForm = () => {
-    if (!userData.username.trim()) return "Username is required.";
+    if (!userData.userName.trim()) return "Username is required.";
     if (!userData.email.trim()) return "Email is required.";
     if (!userData.role.trim()) return "Role is required.";
-    if (!userData.dob.trim()) return "Date of Birth is required."; // Validate Date of Birth
-    if (!userData.phoneNumber.trim()) return "Phone number is required."; // Validate Phone Number
+    if (!userData.dob.trim()) return "Date of Birth is required.";
+    if (!userData.phoneNumber.trim()) return "Phone number is required.";
     if (userData.password && userData.password !== userData.confirmPassword)
       return "Passwords do not match.";
     return null;
@@ -146,7 +156,17 @@ const UserForm = ({ initialData, onSubmit, formTitle }) => {
     setSubmitError("");
 
     try {
-      await onSubmit(userData, userData._id); // Pass data to the submit handler
+      const {
+        userName,
+        email,
+        role,
+        password,
+        confirmPassword,
+        dob,
+        phoneNumber,
+        address,
+      } = userData;
+      await onSubmit(userData);
       setSuccess(true);
     } catch (err) {
       console.error("Error submitting user form:", err);
@@ -188,12 +208,12 @@ const UserForm = ({ initialData, onSubmit, formTitle }) => {
 
       {/* Username */}
       <TextField
-        label="Username"
+        label="UserName"
         variant="outlined"
         fullWidth
         margin="normal"
-        name="username"
-        value={userData.username}
+        name="userName"
+        value={userData.userName}
         onChange={handleInputChange}
         required
       />
@@ -364,7 +384,7 @@ const UserForm = ({ initialData, onSubmit, formTitle }) => {
 UserForm.propTypes = {
   initialData: PropTypes.shape({
     _id: PropTypes.string,
-    username: PropTypes.string,
+    userName: PropTypes.string,
     email: PropTypes.string,
     role: PropTypes.string,
     dob: PropTypes.string, // Added Date of Birth to PropTypes
@@ -387,7 +407,7 @@ UserForm.propTypes = {
 UserForm.defaultProps = {
   initialData: {
     _id: "",
-    username: "",
+    userName: "",
     email: "",
     role: "",
     dob: "", // Default Date of Birth as empty string

@@ -14,8 +14,8 @@ const AddNewUser = () => {
     const accessToken = localStorage.getItem("accessToken");
     try {
       console.log({ data });
-      //const response = await createUserWithAdmin(data);
-      const response = await signUp(data);
+      const response = await createUserWithAdmin(data);
+      //const response = await signUp(data);
       console.log(response);
       navigate(`/admin/user`);
     } catch (error) {
@@ -54,7 +54,7 @@ const AddNewUser = () => {
           <UserForm
             initialData={{
               _id: "",
-              username: "",
+              userName: "",
               email: "",
               role: "",
               password: "",

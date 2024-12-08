@@ -17,7 +17,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from './enum/role.enum';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Response } from 'express';
+import { query, Response } from 'express';
 import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 @Controller('user')
 export class UserController {
@@ -164,6 +164,11 @@ export class UserController {
   async getAllUser() {
     return this.userService.getAllUser();
   }
+  @Get('getUserById/:userId')
+  async getUserById(@Param('userId') userId: string) {
+    return this.userService.getUserById(userId);
+  }
+
   @UseGuards(ValidateTokenGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
   @Get('getPartner')

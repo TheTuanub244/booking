@@ -87,6 +87,8 @@ function Home() {
       const respone = await findUnfinishedBooking(userId);
       if (respone) {
         setUnfinishedBooking(respone);
+
+        localStorage.setItem('unfinishedBooking', JSON.stringify(respone));
       }
     };
 

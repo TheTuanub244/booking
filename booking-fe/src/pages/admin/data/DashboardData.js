@@ -18,19 +18,15 @@ import {
 
 export const SidebarData = [
   {
-    icon: faHome,
-    heading: "Dashboard",
-    path: "/admin",
+    icon: faHotel,
+    heading: "Property",
+    path: "/admin/property",
   },
+ 
   {
-    icon: faClipboardList,
-    heading: "Booking",
-    path: "/admin/booking",
-  },
-  {
-    icon: faUserShield,
-    heading: "Partner Request",
-    path: "/admin/partnerRequest",
+    icon: faBoxOpen,
+    heading: "Room",
+    path: "/admin/room",
   },
   {
     icon: faUsers,
@@ -38,15 +34,17 @@ export const SidebarData = [
     path: "/admin/user",
   },
   {
-    icon: faBoxOpen,
-    heading: "Room",
-    path: "/admin/room",
+    icon: faUserShield,
+    heading: "Partner Request",
+    path: "/admin/partnerRequest",
   },
   {
-    icon: faHotel,
-    heading: "Property",
-    path: "/admin/property",
+    icon: faClipboardList,
+    heading: "Booking",
+    path: "/admin/booking",
   },
+
+  
 ];
 export const cardsData = [
   {

@@ -24,7 +24,7 @@ const SideBar = ({ setSelectedComponent }) => {
     <div className="sidebar">
       <Link to='/' className="logo">
         <img src={Logo} alt="" />
-        <span>booking.com</span>
+        <span>booking-app</span>
       </Link>
 
       <div className="menu">

@@ -113,7 +113,7 @@ const PropertyManageList = () => {
         </Typography>
         <Button
           component={Link}
-          to="new"
+          to="/admin/property/new"
           variant="outlined"
           color="success"
           size="small"

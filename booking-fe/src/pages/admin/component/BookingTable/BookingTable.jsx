@@ -155,7 +155,8 @@ const BookingTable = ({ bookings, onDelete }) => {
         className="bookingTableGrid"
         rows={data}
         columns={columns}
-        pageSize={10}
+        pageSize={7}
+        rowsPerPageOptions={[7]}
         disableSelectionOnClick
         components={{
           NoRowsOverlay: CustomNoRowsOverlay,

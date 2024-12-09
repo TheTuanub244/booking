@@ -257,7 +257,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     formData.append("name", propertyData.name);
     formData.append("owner_id", propertyData.owner_id);
     formData.append("description", propertyData.description);
-    formData.append("type", propertyData.type);
+    formData.append("property_type", propertyData.type);
     formData.append("location", JSON.stringify(propertyData.location));
     formData.append("address", JSON.stringify(propertyData.address));
 

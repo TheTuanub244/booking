@@ -42,8 +42,8 @@ const UserTable = ({ users, onDelete }) => {
       headerName: "Address",
       width: 300,
       valueGetter: (params) => {
-        const { province, district, ward, street } = params.row.address || {};
-        return `${street || ""}, ${ward || ""}, ${district || ""}, ${province || ""}`;
+        const { province, district, ward } = params.row.address || {};
+        return ` ${ward || ""}, ${district || ""}, ${province || ""}`;
       },
     },
     {

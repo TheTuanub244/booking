@@ -137,7 +137,7 @@ export const createBookingWithAdmin = async (data) => {
 }
 export const deleteBookingByAdmin = async (bookingId) => {
   const response = await axios.delete(
-    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`,
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById/${bookingId}`,
     {
 
       withCredentials: true,
@@ -147,7 +147,7 @@ export const deleteBookingByAdmin = async (bookingId) => {
 }
 export const updateBookingWithAdmin = async (bookingId, data) => {
   const response = await axios.put(
-    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById${bookingId}`, { data },
+    `${process.env.REACT_APP_API_URL}/booking/deleteBookingById/${bookingId}`, { data },
     {
 
       withCredentials: true,

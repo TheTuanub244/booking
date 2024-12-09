@@ -20,7 +20,7 @@ const AdminPropertyDetail = ({ propertyData, roomData }) => {
   } = propertyData;
 
   const fullAddress = `${address.street}, ${address.ward}, ${address.district}, ${address.province}`;
-
+  const ownerName = owner_id ? owner_id.userName : "No Owner";
   return (
     <Box
       sx={{
@@ -61,9 +61,11 @@ const AdminPropertyDetail = ({ propertyData, roomData }) => {
           <Typography variant="subtitle1" color="text.secondary" gutterBottom>
             ⭐ {rate}
           </Typography>
+
           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-            Owner: {owner_id.userName}
+            Owner: {ownerName}
           </Typography>
+
           <Typography variant="body1" paragraph>
             {description}
           </Typography>

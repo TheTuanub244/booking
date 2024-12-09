@@ -181,14 +181,7 @@ const PropertyListPage = () => {
                         >
                           Xóa
                         </button>
-                        <button
-                          className="edit-button"
-                          onClick={() => {
-                            handleEdit(property);
-                          }}
-                        >
-                          Chỉnh sửa
-                        </button>
+
                       </td>
                     </tr>
                   ))
@@ -237,14 +230,7 @@ const PropertyListPage = () => {
                         >
                           Xóa
                         </button>
-                        <button
-                          className="edit-button"
-                          onClick={() => {
-                            handleEdit(property);
-                          }}
-                        >
-                          Chỉnh sửa
-                        </button>
+
                       </td>
                     </tr>
                   ))}

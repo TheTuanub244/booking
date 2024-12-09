@@ -2,12 +2,14 @@ import React from "react";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./headerLogin.css";
+import { useNavigate } from "react-router-dom";
 
 function HeaderLogin() {
+  const navigate = useNavigate()
   return (
     <div className="headerLogin">
       <div className="headerLoginContainer">
-        <div className="logo">Booking.com</div>
+        <div className="logo" onClick={() => navigate('/')}>Booking-app</div>
         <div className="top-bar">
           <div className="language">
             <img

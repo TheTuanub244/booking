@@ -78,6 +78,7 @@
   background-color: rgba(26, 26, 26, 0.06);
 }
 .mini-map {
+  position: relative;
   height: 300px;
   width: 30%;
   margin-bottom: -10px;
@@ -121,14 +122,19 @@
 }
 .open-map-button {
   position: absolute;
+  bottom: 30px;
+  left: 100px;
   padding: 8px 16px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: #0c969c;
   color: white;
+  z-index: 1000;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
-
+.open-map-button:hover{
+  background-color: #0a7075;
+}
 .modal-overlay {
   position: absolute;
   top: 0;

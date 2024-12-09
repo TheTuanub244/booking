@@ -15,6 +15,7 @@ const RevenueChart = ({ setTotalRevenue, type, property }) => {
     } else {
       const userId = localStorage.getItem("userId");
       data = await getMonthlyRevenue(userId);
+      console.log(data)
     }
     const result = await data;
     const revenueData = new Array(12).fill(0);

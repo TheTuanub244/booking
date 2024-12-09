@@ -202,10 +202,8 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
     try{
       
       const option = JSON.parse(localStorage.getItem('option'));
-      
-      
-
-      const checkPendingBooking = await findUnfinishedBooking(userId);
+      const token = localStorage.getItem('accessToken')
+      const checkPendingBooking = await findUnfinishedBooking(userId, token);
       if (checkPendingBooking.length !== 0) {
         setPendingBooking(true);
         setBookingData(checkPendingBooking);
@@ -216,18 +214,6 @@ const ReservationRoom = ({ roomData, partnerId, propertyInfo }) => {
           await handleTimeoutFailedDisplay();
         }
       }
-
-      // await createBooking(
-      //   userId,
-      //   partnerId,
-      //   roomData[0].room.property_id._id,
-      //   selectedRoom,
-      //   option.capacity,
-      //   option.check_in,
-      //   option.check_out,
-      //   totalPrice,
-      //   accessToken
-      // );
     } catch (err) {
       console.log(err);
       if (err.response.status === 401) {

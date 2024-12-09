@@ -383,7 +383,7 @@ export class BookingService {
     const result = await this.bookingSchema.aggregate([
       {
         $match: {
-          booking_status: 'completed',
+          booking_status: 'Completed',
         },
       },
       {
@@ -466,7 +466,6 @@ export class BookingService {
       },
       { $sort: { '_id.year': 1 } },
     ]);
-
     return result.map((item) => ({
       owner_id: item._id.owner_id,
       year: item._id.year,
@@ -481,7 +480,7 @@ export class BookingService {
     const result = await this.bookingSchema.aggregate([
       {
         $match: {
-          booking_status: 'completed',
+          booking_status: 'Completed',
         },
       },
       {
@@ -495,12 +494,12 @@ export class BookingService {
       { $unwind: '$propertyDetails' },
       {
         $match: {
-          'propertyDetails._id': objectIdPropertyId, // Thay đổi ở đây
+          'propertyDetails._id': objectIdPropertyId, 
         },
       },
       {
         $project: {
-          property_id: '$propertyDetails._id', // Thay đổi ở đây
+          property_id: '$propertyDetails._id', 
           check_in_date: 1,
           check_out_date: 1,
           total_price: 1,
@@ -519,7 +518,7 @@ export class BookingService {
       },
       {
         $project: {
-          property_id: 1, // Thay đổi ở đây
+          property_id: 1, 
           days: { $range: [0, { $toInt: '$duration' }] },
           check_in_date: 1,
           dailyRevenue: 1,
@@ -529,7 +528,7 @@ export class BookingService {
       {
         $group: {
           _id: {
-            property_id: '$property_id', // Thay đổi ở đây
+            property_id: '$property_id', 
             year: {
               $year: {
                 $add: [
@@ -552,7 +551,7 @@ export class BookingService {
       },
       {
         $group: {
-          _id: { property_id: '$_id.property_id', year: '$_id.year' }, // Thay đổi ở đây
+          _id: { property_id: '$_id.property_id', year: '$_id.year' }, 
           monthlyRevenues: {
             $push: {
               month: '$_id.month',

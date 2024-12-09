@@ -18,6 +18,7 @@ import { ValidateTokenGuard } from 'src/common/guards/validateToken.guard';
 @Controller('review')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
+  @UseGuards(ValidateTokenGuard, RolesGuard)
   @Roles(ROLE.MEMBER, ROLE.PARTNER)
   @Post('/createReview')
   async createReview(@Body() createReviewDto: CreateReviewDto) {

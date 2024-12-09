@@ -23,7 +23,7 @@ async function bootstrap() {
   });
   app.enableCors({
     origin: [
-      'https://booking-app-1edf4.web.app',
+      'https://maithetuan-20211010.web.app/',
       'http://localhost:3000',
       'http://192.169.101.137:3000',
     ],

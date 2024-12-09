@@ -16,7 +16,7 @@ import { ReviewModule } from './review/review.module';
 import { PaymentModule } from './payment/payment.module';
 import { AmentitesModule } from './amentites/amentites.module';
 import * as admin from 'firebase-admin';
-import * as serviceAccount from './config/booking-app-1edf4-6fd333d27011.json';
+import * as serviceAccount from './config/maithetuan-20211010-firebase-adminsdk-2w4j6-0863a250a1.json';
 import { PromotionModule } from './promotion/promotion.module';
 import { NotificationModule } from './notification/notification.module';
 import { NotificationGateway } from './notification/notification/notification.gateway';

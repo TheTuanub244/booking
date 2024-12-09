@@ -55,3 +55,9 @@
   background: #003580;
   margin-right: calc(1rem - 8px);
 }
+.sidebar .menu a {
+  text-decoration: none;
+}
+.sidebar a {
+  text-decoration: none;
+}

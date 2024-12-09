@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./BookingTable.css";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridOverlay } from "@mui/x-data-grid";
 import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog";
+import { Box, Typography } from "@mui/material";
 
 const BookingTable = ({ bookings, onDelete }) => {
   const [data, setData] = useState([]);
@@ -10,14 +11,18 @@ const BookingTable = ({ bookings, onDelete }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentAction, setCurrentAction] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedBookingDetails, setSelectedBookingDetails] = useState(null); // To store booking details
+  const [selectedBookingDetails, setSelectedBookingDetails] = useState(null);
 
   useEffect(() => {
-    const tableRows = bookings.map((booking) => ({
-      ...booking,
-      id: booking._id,
-    }));
-    setData(tableRows);
+    if (bookings && Array.isArray(bookings)) {
+      const tableRows = bookings.map((booking) => ({
+        ...booking,
+        id: booking._id,
+      }));
+      setData(tableRows);
+    } else {
+      setData([]);
+    }
   }, [bookings]);
 
   const columns = [
@@ -126,14 +131,32 @@ const BookingTable = ({ bookings, onDelete }) => {
     setCurrentAction(null);
   };
 
+  const CustomNoRowsOverlay = () => (
+    <GridOverlay>
+      <Typography variant="h6" color="text.secondary">
+        No booking has been made by the user.
+      </Typography>
+    </GridOverlay>
+  );
   return (
-    <div className={`bookingTableGridContainer ${dialogOpen ? "blurred" : ""}`}>
+    <Box
+      className={`bookingTableGridContainer ${dialogOpen ? "blurred" : ""}`}
+      sx={{
+        minHeight: "500px",
+        height: "100%",
+        width: "100%",
+        position: "relative",
+      }}
+    >
       <DataGrid
         className="bookingTableGrid"
         rows={data}
         columns={columns}
         pageSize={10}
         disableSelectionOnClick
+        components={{
+          NoRowsOverlay: CustomNoRowsOverlay,
+        }}
       />
 
       <ConfirmationDialog
@@ -143,7 +166,7 @@ const BookingTable = ({ bookings, onDelete }) => {
         title={`Delete Booking`}
         content={`Are you sure you want to delete the booking of "${selectedBookingDetails?.userName}"?`}
       />
-    </div>
+    </Box>
   );
 };
 

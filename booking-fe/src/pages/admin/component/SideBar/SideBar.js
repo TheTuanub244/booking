@@ -5,7 +5,7 @@ import { SidebarData } from "../../data/DashboardData";
 import { Link, useLocation } from "react-router-dom";
 
 const SideBar = ({ setSelectedComponent }) => {
-  const location = useLocation(); // Get the current path
+  const location = useLocation(); 
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
@@ -22,10 +22,10 @@ const SideBar = ({ setSelectedComponent }) => {
 
   return (
     <div className="sidebar">
-      <div className="logo">
+      <Link to ='/' className="logo">
         <img src={Logo} alt="" />
         <span>booking.com</span>
-      </div>
+      </Link>
       <div className="menu">
         {SidebarData.map((item, index) => {
           return (

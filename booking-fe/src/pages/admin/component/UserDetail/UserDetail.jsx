@@ -4,8 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import PropertyCard from "../PropertyCard/PropertyCard"; // Assuming you have a PropertyCard component
+import BookingTable from "../BookingTable/BookingTable";
 
-const UserDetail = ({ userData }) => {
+const UserDetail = ({ userData, propertyData, bookingData }) => {
   const {
     _id,
     userName,
@@ -60,39 +62,39 @@ const UserDetail = ({ userData }) => {
             Role: {role}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-            Admin: {isAdmin ? "Yes" : "No"}
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
             Address: {fullAddress}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" gutterBottom>
             Date of Birth: {new Date(dob).toLocaleDateString()}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-            Password Reset Token Status: {resetPasswordTokenStatus}
-          </Typography>
         </Grid>
       </Grid>
+
+      {propertyData && propertyData.length > 0 && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            Properties Managed by {userName}
+          </Typography>
+          <Grid container spacing={4}>
+            {propertyData.map((p) => (
+              <Grid item xs={12} sm={6} md={4} key={p.property._id}>
+                <PropertyCard property={p.property} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
+      {/* Bookings Section */}
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          {userName}'s' Bookings
+        </Typography>
+        <Box sx={{ height: "600px", overflow: "hidden" }}>
+          <BookingTable bookings={bookingData} />
+        </Box>
+      </Box>
     </Box>
   );
-};
-
-UserDetail.propTypes = {
-  userData: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    phoneNumber: PropTypes.string.isRequired,
-    role: PropTypes.arrayOf(PropTypes.string).isRequired,
-    address: PropTypes.shape({
-      ward: PropTypes.string.isRequired,
-      district: PropTypes.string.isRequired,
-      province: PropTypes.string.isRequired,
-    }).isRequired,
-    dob: PropTypes.string.isRequired,
-    isAdmin: PropTypes.bool.isRequired,
-    resetPasswordTokenStatus: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
 export default UserDetail;

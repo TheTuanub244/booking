@@ -56,6 +56,8 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     images: Array.isArray(initialData.images) ? initialData.images : [],
     image: Array.isArray(initialData.image) ? initialData.image : [],
     location: {
+      latitude: initialData.location?.latitude || 0,
+      longitude: initialData.location?.longitude || 0,
       lat: initialData.location?.latitude || 0,
       lng: initialData.location?.longitude || 0,
     },

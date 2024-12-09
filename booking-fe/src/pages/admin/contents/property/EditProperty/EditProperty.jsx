@@ -1,6 +1,13 @@
 // src/pages/EditProperty.jsx
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Button, CircularProgress, Alert } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Button,
+  CircularProgress,
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams, useNavigate } from "react-router-dom";
@@ -19,6 +26,17 @@ const EditProperty = () => {
   const [initialData, setInitialData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  // Snackbar state
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -65,7 +83,6 @@ const EditProperty = () => {
           }
         }
 
-        // Set the transformed initial data including the codes
         setInitialData({
           ...propertyData,
           address: {
@@ -95,9 +112,25 @@ const EditProperty = () => {
       console.log({ formData });
       const response = await updatePropertyWithPartner(formData, accessToken);
       console.log(response);
-      navigate(`/admin/property/view/${id}`);
+
+      // If successful, show success snackbar
+      setSnackbar({
+        open: true,
+        message: "Property updated successfully!",
+        severity: "success",
+      });
+
+      // After showing the snackbar, navigate to the details page
+      setTimeout(() => {
+        navigate(`/admin/property/view/${id}`);
+      }, 2000); // Adjust delay as needed
     } catch (error) {
       console.error("Failed to update property:", error);
+      setSnackbar({
+        open: true,
+        message: "Failed to update the property. Please try again.",
+        severity: "error",
+      });
     }
   };
 
@@ -166,6 +199,21 @@ const EditProperty = () => {
           />
         </Grid>
       </Grid>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

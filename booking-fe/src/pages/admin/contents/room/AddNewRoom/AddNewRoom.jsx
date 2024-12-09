@@ -17,7 +17,7 @@ const AddNewRoom = () => {
       //const response = await createRoom(formData, accessToken);
       //console.log("Room Created:", response);
 
-      navigate("/admin/rooms");
+      navigate("/admin/room");
     } catch (error) {
       console.error("Failed to add room:", error);
 
@@ -46,7 +46,7 @@ const AddNewRoom = () => {
           variant="outlined"
           startIcon={<FontAwesomeIcon icon={faArrowLeft} />}
           component={Link}
-          to="/admin/rooms" // Adjust the route as necessary
+          to="/admin/room"
         >
           Back to Rooms List
         </Button>

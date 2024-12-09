@@ -7,7 +7,7 @@ function FailedDisplay({ text, isOpen, setIsOpen, bookingData }) {
   const handleTimeoutFailedDisplay = async () => {
     setIsOpen(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     setIsOpen(false);
   };
@@ -16,6 +16,11 @@ function FailedDisplay({ text, isOpen, setIsOpen, bookingData }) {
     handleTimeoutFailedDisplay();
   }, [isOpen]);
 
+
+  const handleClick =  () => {
+    console.log(bookingData);
+  }
+ 
   return (
     <>
       {isOpen && (

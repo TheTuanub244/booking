@@ -62,7 +62,7 @@ const AdminPropertyDetail = ({ propertyData, roomData }) => {
             ⭐ {rate}
           </Typography>
           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-            Owner ID: {owner_id}
+            Owner: {owner_id.userName}
           </Typography>
           <Typography variant="body1" paragraph>
             {description}
@@ -115,40 +115,6 @@ const AdminPropertyDetail = ({ propertyData, roomData }) => {
       </Box>
     </Box>
   );
-};
-
-AdminPropertyDetail.propTypes = {
-  propertyData: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    property_type: PropTypes.string.isRequired,
-    address: PropTypes.shape({
-      street: PropTypes.string.isRequired,
-      ward: PropTypes.string.isRequired,
-      district: PropTypes.string.isRequired,
-      province: PropTypes.string.isRequired,
-    }).isRequired,
-    owner_id: PropTypes.string.isRequired,
-    images: PropTypes.arrayOf(PropTypes.string),
-    description: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired,
-  }).isRequired,
-  roomData: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      capacity: PropTypes.shape({
-        adults: PropTypes.number.isRequired,
-        childs: PropTypes.number,
-      }).isRequired,
-      images: PropTypes.arrayOf(PropTypes.string),
-      price_per_night: PropTypes.shape({
-        weekday: PropTypes.number.isRequired,
-        weekend: PropTypes.number.isRequired,
-      }).isRequired,
-      size: PropTypes.number.isRequired,
-    })
-  ).isRequired,
 };
 
 export default AdminPropertyDetail;

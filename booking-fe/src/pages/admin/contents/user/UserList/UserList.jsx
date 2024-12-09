@@ -65,7 +65,7 @@ const UserList = () => {
         </Typography>
         <Button
           component={Link}
-          to="new" // Link to the page for adding a new user
+          to="new"
           variant="outlined"
           color="success"
           size="small"

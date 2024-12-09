@@ -6,11 +6,14 @@ import axios from "axios";
 import { cancelBooking, createBooking } from "../../api/bookingAPI";
 import Modal from "react-modal";
 import {
+  calculateNights,
+} from "../../helpers/dateHelpers";
+import {
   faWifi,
   faPlaneDeparture,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
-import { redirect, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Payment() {
   //object
@@ -88,13 +91,41 @@ function Payment() {
     "Please fill in your last name",
   );
   const totalRoomRef = useRef(0);
-
+  const location = useLocation();
+  const dataFromProperty = location.state;
+  const pendingBooking = JSON.parse(localStorage.getItem('unfinishedBooking'));
   const loadData = () => {
-    const ri = localStorage.getItem('reservationInfo');
-    if (ri) {
-      console.log(ri);
+    if (dataFromProperty) {
+      if (dataFromProperty) {
+        console.log(dataFromProperty);
+      }
+      return dataFromProperty ? dataFromProperty : null;
+    } else {
+      const ri = JSON.parse(localStorage.getItem('unfinishedBooking'));
+      const address = ri[0].propertyDetails.address
+      const data = {
+        address: `${address.street}, ${address.ward}, ${address.province}, ${address.district}  `,
+        hotelName: `${ri[0].propertyDetails.name}`,
+        checkInDate: `${ri[0].check_in_date}`,
+        checkOutDate: `${ri[0].check_out_date}`,
+        totalPrice: ri[0].total_price,
+        capacity: {
+          adults: ri[0].capacity.adults,
+          childs: ri[0].capacity.childs,
+        },
+        roomData: ri[0].room_id,
+        totalNight: calculateNights(ri[0].check_in_date,ri[0].check_out_date),
+        reviews: {
+          total: 15,
+          point: ri[0].propertyDetails.rate,
+          desc: "Good"
+        },
+        partnerId: "",
+        property: `${ri[0].property}`,
+      }
+     return data;
     }
-    return ri ? JSON.parse(ri) : null;
+
   };
 
   const editData = () => {
@@ -103,11 +134,16 @@ function Payment() {
     if (data) {
       setReservationInfo(data); // Cập nhật state
       // Xử lý logic trực tiếp với dữ liệu mới
-      data.roomData.forEach((room) => {
-        totalRoom += room.numberOfRooms;
-      });
+      if (!dataFromProperty) {
+        totalRoomRef.current = pendingBooking[0].capacity.room;
+      } else {
+        data.roomData.forEach((room) => {
+          totalRoom += room.numberOfRooms;
+        });
+  
+        totalRoomRef.current = totalRoom; // Cập nhật giá trị vào ref
+      }
 
-      totalRoomRef.current = totalRoom; // Cập nhật giá trị vào ref
       // console.log(data.totalPrice);
       if (data.capacity.childs.count !== 0) {
         setHasChild(true);
@@ -123,7 +159,7 @@ function Payment() {
   }, []);
 
   const handleChangeSelection = () => {
-    if (localStorage.getItem('overViewData')) {
+    if (!dataFromProperty) {
       setIsModalOpen(true);
     } else {
       navigate(`/property/${reservationInfo.property}`);
@@ -133,9 +169,10 @@ function Payment() {
 
   const handleCancelBooking = async () => {
     try {
-      const data = JSON.parse(localStorage.getItem("overViewData"));
-      await cancelBooking(data.bookingId);
+      const data = JSON.parse(localStorage.getItem("unfinishedBooking"));
+      await cancelBooking(data[0]._id);
       localStorage.removeItem('overViewData');
+      localStorage.removeItem('unfinishedBooking');
       navigate(`/property/${reservationInfo.property}`);
       closeModal();
     } catch (error) {
@@ -145,6 +182,7 @@ function Payment() {
   };
 
   const handleChange = (e) => {
+
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -157,7 +195,7 @@ function Payment() {
   let overViewData = {};
 
   const handleCreateBooking = async () => {
-    if (!localStorage.getItem('overViewData')) {
+    if (dataFromProperty) {
       const user_id = localStorage.getItem("userId");
       const token = localStorage.getItem("accessToken");
       // console.log(`${user_id} ${token}`);
@@ -177,21 +215,27 @@ function Payment() {
       console.log('Booking created:', booking);
 
       overViewData = {
-        bookingId: booking._id,
-        email: formData.email,
-        firstName: formData.firstname,
-        lastName: formData.lastname,
-        address: reservationInfo.address,
-        hotelName: reservationInfo.hotelName,
-        checkInDate: reservationInfo.checkInDate,
-        checkOutDate: reservationInfo.checkOutDate,
-
+        bookingId: booking._id
       }
-      localStorage.setItem('overViewData', JSON.stringify(overViewData));
 
-      console.log(overViewData);
+    } else {
+      overViewData = {
+        bookingId: pendingBooking[0]._id
+      }
     }
+    overViewData = {
+      ...overViewData,
+      checkInDate: reservationInfo.checkInDate,
+      checkOutDate: reservationInfo.checkOutDate,
+      address: reservationInfo.address,
+      hotelName: reservationInfo.hotelName,
+      firstName: formData.firstname,
+      email: formData.email,
+      lastName: formData.lastname
+  };
 
+    localStorage.setItem('overViewData', JSON.stringify(overViewData));
+    console.log(overViewData);
 
   };
 
@@ -199,6 +243,7 @@ function Payment() {
     e.preventDefault();
     await handleCreateBooking();
     formData.amount = reservationInfo.totalPrice;
+    
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/payment/create_transaction`,

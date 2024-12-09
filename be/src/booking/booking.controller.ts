@@ -67,7 +67,7 @@ export class BookingController {
         return res.redirect(`${redirect}?status=failure`);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return res.redirect(`${redirect}?status=error`);
     }
   }
@@ -110,5 +110,9 @@ export class BookingController {
   @Get('getCompletedAndCancelledBookingByUser/:id')
   async getCompletedAndCancelledBookingByUser(@Param('id') id: string) {
     return this.bookingService.getCompletedAndCancelledBookingByUser(id);
+  }
+  @Get('getBookingById/:bookingId')
+  async getRoomById(@Param('bookingId') bookingId: string) {
+    return this.bookingService.getById(bookingId);
   }
 }

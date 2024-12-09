@@ -494,12 +494,12 @@ export class BookingService {
       { $unwind: '$propertyDetails' },
       {
         $match: {
-          'propertyDetails._id': objectIdPropertyId, 
+          'propertyDetails._id': objectIdPropertyId,
         },
       },
       {
         $project: {
-          property_id: '$propertyDetails._id', 
+          property_id: '$propertyDetails._id',
           check_in_date: 1,
           check_out_date: 1,
           total_price: 1,
@@ -518,7 +518,7 @@ export class BookingService {
       },
       {
         $project: {
-          property_id: 1, 
+          property_id: 1,
           days: { $range: [0, { $toInt: '$duration' }] },
           check_in_date: 1,
           dailyRevenue: 1,
@@ -528,7 +528,7 @@ export class BookingService {
       {
         $group: {
           _id: {
-            property_id: '$property_id', 
+            property_id: '$property_id',
             year: {
               $year: {
                 $add: [
@@ -551,7 +551,7 @@ export class BookingService {
       },
       {
         $group: {
-          _id: { property_id: '$_id.property_id', year: '$_id.year' }, 
+          _id: { property_id: '$_id.property_id', year: '$_id.year' },
           monthlyRevenues: {
             $push: {
               month: '$_id.month',
@@ -626,7 +626,7 @@ export class BookingService {
       { $set: data },
       { new: true },
     );
-    console.log(updateBooking)
+    console.log(updateBooking);
     if (!updateBooking) {
       throw new NotFoundException(`Booking with ID ${bookingId} not found`);
     }
@@ -713,5 +713,8 @@ export class BookingService {
       .populate('property')
       .populate('room_id')
       .populate('user_id');
+  }
+  async getById(bookingId: string) {
+    return await this.bookingSchema.findById(new Types.ObjectId(bookingId));
   }
 }

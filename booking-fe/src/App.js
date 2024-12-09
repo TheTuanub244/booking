@@ -41,6 +41,7 @@ import UserList from "./pages/admin/contents/user/UserList/UserList";
 import BookingList from "./pages/admin/contents/booking/BookingList/BookingList";
 import BookingManage from "./pages/admin/contents/booking/BookingManage/BookingManage";
 import BookingDetails from "./pages/bookingDetails/BookingDetails";
+import EditBooking from "./pages/admin/contents/booking/EditBooking/EditBooking";
 function App() {
   const userId = localStorage.getItem("userId");
   console.log(userId);
@@ -67,6 +68,7 @@ function App() {
           <Route path="" element={<DashBoard />} />
           <Route path="booking" element={<BookingManage/>} >
                 <Route path="" element = {<BookingList/>} />
+                <Route path="edit/:id" element={<EditBooking/>} />
           </Route>
           <Route path="partnerRequest" element={<PartnerRequestManage />}>
             <Route path="" element={<PartnerRequestList />} />

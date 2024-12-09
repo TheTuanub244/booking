@@ -3,11 +3,11 @@ import "./BookingTable.css";
 import { DataGrid, GridOverlay } from "@mui/x-data-grid";
 import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog";
 import { Box, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const BookingTable = ({ bookings, onDelete }) => {
   const [data, setData] = useState([]);
 
-  // States for confirmation dialog
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentAction, setCurrentAction] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
@@ -49,27 +49,27 @@ const BookingTable = ({ bookings, onDelete }) => {
     {
       field: "checkIn",
       headerName: "Check-In Date",
-      width: 150,
+      width: 140,
       valueGetter: (params) =>
         new Date(params.row.check_in_date).toLocaleDateString(),
     },
     {
       field: "checkOut",
       headerName: "Check-Out Date",
-      width: 150,
+      width: 140,
       valueGetter: (params) =>
         new Date(params.row.check_out_date).toLocaleDateString(),
     },
     {
       field: "totalPrice",
       headerName: "Total Price",
-      width: 100,
-      valueGetter: (params) => `$${params.row.total_price || 0}`,
+      width: 110,
+      valueGetter: (params) => `${params.row.total_price || 0}VNĐ`,
     },
     {
       field: "bookingStatus",
       headerName: "Booking Status",
-      width: 150,
+      width: 130,
       renderCell: (params) => (
         <div className={`bookingCellWithRole ${params.row.booking_status}`}>
           {params.row.booking_status}
@@ -79,7 +79,7 @@ const BookingTable = ({ bookings, onDelete }) => {
     {
       field: "paymentStatus",
       headerName: "Payment Status",
-      width: 150,
+      width: 130,
       renderCell: (params) => (
         <div className={`bookingCellWithRole ${params.row.payment_status}`}>
           {params.row.payment_status}
@@ -89,11 +89,14 @@ const BookingTable = ({ bookings, onDelete }) => {
     {
       field: "action",
       headerName: "Action",
-      width: 80,
+      width: 120,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
         <div className="bookingCellAction">
+          <Link to={`edit/${params.row.id}`} style={{ textDecoration: "none" }}>
+            <button className="bookingEditButton">Edit</button>
+          </Link>
           <button
             className="bookingDeleteButton"
             onClick={() =>

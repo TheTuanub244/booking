@@ -4,7 +4,6 @@ import {
   deleteBookingByAdmin,
   getAllBooking,
 } from "../../../../../api/bookingAPI";
-import { mockBookings } from "../../../data/bookingdata";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
@@ -19,7 +18,8 @@ const BookingList = () => {
     try {
       const token = localStorage.getItem("accessToken");
       const data = await getAllBooking(token);
-      //const data = mockBookings;
+      console.log({ data });
+
       setBookings(data);
     } catch (err) {
       console.error("Error fetching bookings:", err);

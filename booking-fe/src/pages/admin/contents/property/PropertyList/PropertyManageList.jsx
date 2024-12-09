@@ -57,7 +57,8 @@ const PropertyManageList = () => {
 
   const handleDelete = async (id) => {
     try {
-      //await deleteProperty(id);
+      const userId = localStorage.getItem("userId");
+      await deletePropertyById(id, userId, 1, 10);
       setProperties((prev) => prev.filter((property) => property._id !== id));
       setSnackbar({
         open: true,

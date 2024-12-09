@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import BookingTable from "../../../component/BookingTable/BookingTable";
-import { getAllBooking } from "../../../../../api/bookingAPI";
+import {
+  deleteBookingByAdmin,
+  getAllBooking,
+} from "../../../../../api/bookingAPI";
 import { mockBookings } from "../../../data/bookingdata";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -32,7 +35,7 @@ const BookingList = () => {
 
   const handleDelete = async (id) => {
     try {
-      // await deleteBooking(id);
+      await deleteBookingByAdmin(id);
       setBookings((prev) => prev.filter((booking) => booking._id !== id));
       alert("Booking deleted successfully.");
     } catch (err) {

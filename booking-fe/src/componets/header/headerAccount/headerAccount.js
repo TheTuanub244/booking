@@ -93,6 +93,8 @@ function HeaderAccount() {
     localStorage.removeItem("userDisplayName");
     localStorage.removeItem("isSignIn");
     localStorage.removeItem("email");
+    localStorage.removeItem("unfinishedBooking");
+    localStorage.removeItem("reservationInfo");
     await signOut(userId);
     window.location.reload();
   };

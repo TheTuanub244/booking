@@ -3,6 +3,7 @@ import { redirect, useLocation, useNavigate } from "react-router-dom";
 import "./resultPayment.css";
 import axios from "axios";
 import moment from "moment";
+import { findUnfinishedBooking } from "../../api/bookingAPI";
 
 function ResultPayment() {
   const location = useLocation(); // Lấy thông tin URL hiện tại
@@ -15,6 +16,7 @@ function ResultPayment() {
   const payDate = queryParams.get("vnp_PayDate");
   const transactionCode = queryParams.get("vnp_TxnRef");
   const overViewData = JSON.parse(localStorage.getItem("overViewData"));
+  
   const {
     email,
     firstName,
@@ -93,13 +95,13 @@ function ResultPayment() {
           })
           .catch((err) => console.log(err));
 
-        axios
-          .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
-          .then((res) => {
-            console.log(res.data);
-            setIsApiCalled(true);
-          })
-          .catch((err) => console.log(err));
+        // axios
+        //   .post(`${process.env.REACT_APP_API_URL}/payment/save_payment`, emailData)
+        //   .then((res) => {
+        //     console.log(res.data);
+        //     setIsApiCalled(true);
+        //   })
+        //   .catch((err) => console.log(err));
 
         axios
           .post(
@@ -130,11 +132,21 @@ function ResultPayment() {
   }, [paymentMethod]);
   const handleReturnHome = () => {
     localStorage.removeItem('overViewData');
+    localStorage.removeItem('unfinishedBooking');
+
     navigate("/");
   };
 
-  const handleReturnPayment = () => {
-    navigate("/");
+  const handleReturnPayment = async () => {
+    try {
+      const data = await findUnfinishedBooking(localStorage.getItem('userId'));
+      localStorage.getItem('unfinishedBooking',data);
+      navigate("/");
+    } catch(error) {
+      console.log(error);
+    }
+    
+
   };
   return (
     <div className="resultPayment">

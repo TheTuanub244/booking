@@ -24,7 +24,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post('/create-user')
   async createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+    return this.userService.createUser(createUserDto); 
   }
   @Delete('/deleteUserById/:id')
   async deleteUserById(@Query('id') id: string) {

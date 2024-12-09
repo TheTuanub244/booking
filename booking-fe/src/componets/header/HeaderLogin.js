@@ -7,7 +7,7 @@ function HeaderLogin() {
   return (
     <div className="headerLogin">
       <div className="headerLoginContainer">
-        <div className="logo">Booking.com</div>
+        <div className="logo">Booking-app</div>
         <div className="top-bar">
           <div className="language">
             <img

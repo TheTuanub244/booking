@@ -120,6 +120,7 @@ input {
 }
 
 .room-section {
+  margin-top: 20px;
   background-color: #f9f9f9;
   padding: 25px;
   border-radius: 8px;

@@ -36,7 +36,6 @@ const DashboardPage = ({ type, property }) => {
           type={type}
           property={property}
         />
-        {/* <Mont /> */}
         <AverageRatingChart
           setAverageRating={setAverageRating}
           type={type}

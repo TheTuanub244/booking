@@ -335,7 +335,7 @@ export class RoomService {
     }, 0);
     const bookings = await this.bookingSchema
       .find({
-        booking_status: 'completed',
+        booking_status: 'Completed',
       })
       .populate({
         path: 'property',
@@ -389,7 +389,7 @@ export class RoomService {
     }, 0);
     const bookings = await this.bookingSchema
       .find({
-        booking_status: 'completed',
+        booking_status: 'Completed',
       })
       .populate({
         path: 'property',

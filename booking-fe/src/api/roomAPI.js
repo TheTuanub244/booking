@@ -109,3 +109,12 @@ export const getAllRoomWithDetails = async () => {
 
   return respone.data;
 };
+export const getRoomById = async(roomId) => {
+  const respone = await axios.get(
+    `${process.env.REACT_APP_API_URL}/room/getRoomById/${roomId}`,
+    {
+      withCredentials: true,
+    },
+  );
+  return respone.data;
+}

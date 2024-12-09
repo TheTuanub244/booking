@@ -3,8 +3,10 @@ import { Box, Grid, Button, CircularProgress, Alert } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { getUserById, updateUserWithAdmin } from "../../../../../api/userAPI"; // Ensure the `getUserById` and `updateUser` functions are implemented
-import UserForm from "../../../component/UserForm/UserForm"; // Assuming UserForm is in this path
+import { getUserById, updateUserWithAdmin } from "../../../../../api/userAPI";
+import { getProvince } from "../../../../../api/addressAPI"; // Import getProvince
+import UserForm from "../../../component/UserForm/UserForm";
+import UpdateUserForm from "../../../component/UserForm/UpdateUserForm";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -14,29 +16,71 @@ const EditUser = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const mockUserData = {
-    _id: id,
-    username: "john_doe",
-    email: "john.doe@example.com",
-    role: "user",
-    address: {
-      province: "Hanoi",
-      district: "Ba Dinh",
-      ward: "Phuc Xa",
-      provinceCode: "01",
-      districtCode: "02",
-      wardCode: "03",
-    },
-    password: "password123",
-    confirmPassword: "password123",
-  };
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await getUserById(id);
-        //const data = mockUserData;
-        setInitialData(data);
+        const fetchedData = await getUserById(id);
+
+        // Fetch all address data to match the names back to codes
+        const addressList = await getProvince();
+
+        let provinceCode = "";
+        let districtCode = "";
+        let wardCode = "";
+
+        if (fetchedData.address) {
+          // Find the province by name
+          const selectedProvince = addressList.find(
+            (p) => p.name === fetchedData.address.province
+          );
+
+          if (selectedProvince) {
+            provinceCode = selectedProvince.code;
+
+            // Find the district by name
+            const selectedDistrict = selectedProvince.districts.find(
+              (d) => d.name === fetchedData.address.district
+            );
+
+            if (selectedDistrict) {
+              districtCode = selectedDistrict.code;
+
+              // Find the ward by name
+              const selectedWard = selectedDistrict.wards.find(
+                (w) => w.name === fetchedData.address.ward
+              );
+
+              if (selectedWard) {
+                wardCode = selectedWard.code;
+              }
+            }
+          }
+        }
+
+        // Convert role array to a single string if needed
+        let roleValue = "";
+        if (Array.isArray(fetchedData.role) && fetchedData.role.length > 0) {
+          roleValue = fetchedData.role[0];
+        } else {
+          roleValue = fetchedData.role || "";
+        }
+
+        // Convert the dob to YYYY-MM-DD format
+        const dobValue = fetchedData.dob ? fetchedData.dob.split("T")[0] : "";
+
+        setInitialData({
+          ...fetchedData,
+          role: roleValue,
+          dob: dobValue,
+          address: {
+            province: fetchedData.address?.province || "",
+            district: fetchedData.address?.district || "",
+            ward: fetchedData.address?.ward || "",
+            provinceCode: provinceCode,
+            districtCode: districtCode,
+            wardCode: wardCode,
+          },
+        });
       } catch (err) {
         console.error("Error fetching user data:", err);
         setError(true);
@@ -49,11 +93,8 @@ const EditUser = () => {
   }, [id]);
 
   const handleUpdateSubmit = async (data) => {
-    const accessToken = localStorage.getItem("accessToken");
     try {
-      console.log({ data });
       const response = await updateUserWithAdmin(id, data);
-      console.log(response);
       navigate(`/admin/user/view/${id}`);
     } catch (error) {
       console.error("Failed to update user:", error);
@@ -118,7 +159,7 @@ const EditUser = () => {
 
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
-          <UserForm
+          <UpdateUserForm
             initialData={initialData}
             onSubmit={handleUpdateSubmit}
             formTitle="Edit User"

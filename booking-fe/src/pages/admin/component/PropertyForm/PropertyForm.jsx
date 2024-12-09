@@ -40,7 +40,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       districtCode: initialData.address?.districtCode || "",
       wardCode: initialData.address?.wardCode || "",
     },
-    type: initialData.type || "",
+    type: initialData.property_type || "",
     images: initialData.images || [],
     image: initialData.image || [], // For file uploads
     location: {
@@ -48,7 +48,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       lng: initialData.location?.lng || 0,
     },
     rooms: initialData.rooms || [],
-    owner_id: initialData.owner_id || localStorage.getItem("userId") || "",
+    owner_id: initialData.owner_id._id || localStorage.getItem("userId") || "",
   });
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);

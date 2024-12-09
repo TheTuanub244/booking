@@ -1,5 +1,4 @@
 // src/pages/EditProperty.jsx
-
 import React, { useState, useEffect } from "react";
 import { Box, Grid, Button, CircularProgress, Alert } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +10,7 @@ import {
 } from "../../../../../api/propertyAPI";
 import PropertyForm from "../../../component/PropertyForm/PropertyForm";
 import { findRoomByProperty } from "../../../../../api/roomAPI";
+import { getProvince } from "../../../../../api/addressAPI";
 
 const EditProperty = () => {
   const { id } = useParams();
@@ -23,13 +23,61 @@ const EditProperty = () => {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
+        // Fetch the property data
         const rooms = await findRoomByProperty(id);
+        const propertyData = await getPropertyById(id);
 
-        const data = await getPropertyById(id);
-        if (data) {
-          data.rooms = rooms;
+        if (propertyData) {
+          propertyData.rooms = rooms;
         }
-        setInitialData(data);
+
+        // Fetch all address data
+        const addressList = await getProvince();
+
+        // Extract property address from fetched data
+        const address = propertyData.address || {};
+
+        let provinceCode = "";
+        let districtCode = "";
+        let wardCode = "";
+
+        // Match the address names to their codes
+        if (address.province) {
+          const selectedProvince = addressList.find(
+            (p) => p.name === address.province
+          );
+          if (selectedProvince) {
+            provinceCode = selectedProvince.code;
+
+            const selectedDistrict = selectedProvince.districts.find(
+              (d) => d.name === address.district
+            );
+            if (selectedDistrict) {
+              districtCode = selectedDistrict.code;
+
+              const selectedWard = selectedDistrict.wards.find(
+                (w) => w.name === address.ward
+              );
+              if (selectedWard) {
+                wardCode = selectedWard.code;
+              }
+            }
+          }
+        }
+
+        // Set the transformed initial data including the codes
+        setInitialData({
+          ...propertyData,
+          address: {
+            ...propertyData.address,
+            province: address.province || "",
+            district: address.district || "",
+            ward: address.ward || "",
+            provinceCode: provinceCode,
+            districtCode: districtCode,
+            wardCode: wardCode,
+          },
+        });
       } catch (err) {
         console.error("Error fetching property data:", err);
         setError(true);
@@ -45,11 +93,11 @@ const EditProperty = () => {
     const accessToken = localStorage.getItem("accessToken");
     try {
       console.log({ formData });
+      const response = await updatePropertyWithPartner(formData, accessToken);
+      console.log(response);
       navigate(`/admin/property/view/${id}`);
-      const respone = await updatePropertyWithPartner(formData, accessToken);
-      console.log(respone);
     } catch (error) {
-      console.error("Failed to add property:", error);
+      console.error("Failed to update property:", error);
     }
   };
 
@@ -117,8 +165,6 @@ const EditProperty = () => {
             formTitle="Edit Property"
           />
         </Grid>
-
-        {/* You can include additional components or information here if needed */}
       </Grid>
     </Box>
   );

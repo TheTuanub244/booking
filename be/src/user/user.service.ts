@@ -42,7 +42,7 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto) {
     const { userName, password, dob, email, address, phoneNumber } =
       createUserDto;
-    
+
     const existedUser = await this.userSchema
       .findOne({
         userName: userName,
@@ -530,6 +530,8 @@ export class UserService {
     });
   }
   async getUserById(userId: string) {
-    return await this.userSchema.findById(new Types.ObjectId(userId));
+    return await this.userSchema
+      .findById(new Types.ObjectId(userId))
+      .select('+password');
   }
 }

@@ -1,10 +1,16 @@
 import axios from "axios";
 
-export const createReview = async (data) => {
+export const createReview = async (data, token) => {
   const respone = await axios.post(
     `${process.env.REACT_APP_API_URL}/review/createReview`,
     data,
-  ); //data = { userId, roomId, rating, reviewText, reviewType }
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    },
+  ); 
   return respone.data;
 };
 export const getMonthlyRate = async (owner_id) => {

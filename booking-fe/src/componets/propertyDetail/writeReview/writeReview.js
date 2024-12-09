@@ -4,6 +4,8 @@ import { createReview } from "../../../api/reviewAPI";
 import SuccessfullyDisplay from "../../successfullyDisplay/successfullyDisplay";
 import FailedDisplay from "../../failedDisplay/failedDisplay";
 import { faI } from "@fortawesome/free-solid-svg-icons";
+import { Button, Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function WriteReview({ rooms, refreshReviewSection }) {
   // Define TYPE enum inside the function
@@ -16,17 +18,18 @@ function WriteReview({ rooms, refreshReviewSection }) {
     LOCATION: "Location",
     FREE_WIFI: "Free wifi",
   };
-
+  const accessToken = localStorage.getItem('accessToken')
   const [userId, setUserId] = useState(null);
   const [roomId, setRoomId] = useState(null); // This will be set based on room selection
   const [rating, setRating] = useState(1); // Default to 1 star
   const [reviewText, setReviewText] = useState("");
   const [reviewType, setReviewType] = useState(TYPE.STAFF); // Default review type
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const [succesfullyPopUp, setSuccessfullyPopUp] = useState(false);
   const [failedPopUp, setFailedPopUp] = useState(false);
-
+  const navigate = useNavigate()
   useEffect(() => {
     // Get userId from sessionStorage
     const user = localStorage.getItem("userId");
@@ -68,7 +71,7 @@ function WriteReview({ rooms, refreshReviewSection }) {
     };
 
     try {
-      await createReview(reviewData);
+      await createReview(reviewData, accessToken);
 
       console.log("Review submitted:", reviewData);
 
@@ -76,13 +79,21 @@ function WriteReview({ rooms, refreshReviewSection }) {
 
       refreshReviewSection();
     } catch (e) {
+      if(e.status === 401){
+        setShowModal(true)
+      }else {
       await handleTimeoutFailedDisplay();
+
+      }
     } finally {
     }
 
     setIsSubmitting(false);
   };
-
+  const handleCloseModal = async () => {
+    setShowModal(false);
+    navigate("/login");
+  };
   return (
     <div className="writeReview-section">
       <h2 className="writeReview-title">Write a Review</h2>
@@ -153,6 +164,22 @@ function WriteReview({ rooms, refreshReviewSection }) {
           {isSubmitting ? "Submitting..." : "Submit Review"}
         </button>
       </form>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        className="fix-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Sign in required</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>You must sign in to write your review!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => handleCloseModal()}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
       {succesfullyPopUp && (
         <SuccessfullyDisplay
           text={"Tạo đánh giá thành công!"}

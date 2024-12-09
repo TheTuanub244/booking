@@ -71,7 +71,8 @@ export class BookingController {
       return res.redirect(`${redirect}?status=error`);
     }
   }
-
+  @UseGuards(ValidateTokenGuard, RolesGuard)
+  @Roles(ROLE.MEMBER, ROLE.PARTNER)
   @Get(`/findUnfinishedBooking/:userId`)
   async findUnfinishedBooking(@Param('userId') userId: string) {
     return this.bookingService.findUnfinishedBooking(userId);

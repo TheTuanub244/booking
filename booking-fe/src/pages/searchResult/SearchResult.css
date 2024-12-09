@@ -134,7 +134,7 @@ input[type="range"] {
 .show-on-map-btn {
   position: absolute;
   bottom: 20px;
-  left: 60px;
+  left: 75px;
   z-index: 900;
   padding: 10px 20px;
   background-color: #0c969c;

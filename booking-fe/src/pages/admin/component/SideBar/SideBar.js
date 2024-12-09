@@ -24,7 +24,7 @@ const SideBar = ({ setSelectedComponent }) => {
     <div className="sidebar">
       <div className="logo">
         <img src={Logo} alt="" />
-        <span>booking.com</span>
+        <span>booking-app</span>
       </div>
       <div className="menu">
         {SidebarData.map((item, index) => {

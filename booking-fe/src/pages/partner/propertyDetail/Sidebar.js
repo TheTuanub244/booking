@@ -12,28 +12,25 @@ const Sidebar = ({ setTab, tab }) => {
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
       <div className="brand-link">
-        <span className="brand-text font-weight-light">Admin Dashboard</span>
+        <span className="brand-text font-weight-light">Partner Dashboard</span>
       </div>
       <div className="sidebar">
         <nav className="mt-2">
           <ul className="nav nav-pills nav-sidebar flex-column" role="menu">
             <li className="nav-item" onClick={() => handleChangeTab("info")}>
-              <div className={`nav-link ${tab === "info" ? "active" : ""}`}>
-                <i className="nav-icon fas fa-info-circle"></i>
+              <div className={`nav-linkk ${tab === "info" ? "active" : ""}`}>
                 <p>Property Details</p>
               </div>
             </li>
 
             <li className="nav-item" onClick={() => handleChangeTab("finance")}>
-              <div className={`nav-link ${tab === "finance" ? "active" : ""}`}>
-                <i className="nav-icon fas fa-dollar-sign"></i>
+              <div className={`nav-linkk ${tab === "finance" ? "active" : ""}`}>
                 <p>Finance Details</p>
               </div>
             </li>
 
             <li className="nav-item" onClick={() => handleChangeTab("update")}>
-              <div className={`nav-link ${tab === "update" ? "active" : ""}`}>
-                <i className="nav-icon fas fa-edit"></i>
+              <div className={`nav-linkk ${tab === "update" ? "active" : ""}`}>
                 <p>Update Property</p>
               </div>
             </li>

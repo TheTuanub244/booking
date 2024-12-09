@@ -59,10 +59,13 @@ export const createBooking = async (
   );
   return respone.data;
 };
-export const findUnfinishedBooking = async (userId) => {
+export const findUnfinishedBooking = async (userId, token) => {
   const respone = await axios.get(
     `${process.env.REACT_APP_API_URL}/booking/findUnfinishedBooking/${userId}`,
     {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       withCredentials: true,
     },
   );

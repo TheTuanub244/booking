@@ -883,7 +883,6 @@ const PropertyDetailsForm = ({
             </button>
           </div>
 
-          {/* Container for Map and Property Summary */}
           <div className="container-map">
             <h3>Property Summary</h3>
             <p>
@@ -988,7 +987,7 @@ const PropertyDetailsForm = ({
 
             <div className="mini-mapp">
               <button
-                className="open-map-button"
+                className={type === "update" ? "open-map-buttonn" : "open-map-buttonnn"}
                 onClick={() => setIsMapOpen(true)}
               >
                 Open Map

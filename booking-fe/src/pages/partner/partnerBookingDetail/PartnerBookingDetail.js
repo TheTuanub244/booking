@@ -96,7 +96,6 @@ const PartnerBookingDetail = () => {
                 Booking Status: {booking.booking_status}
               </p>
 
-              <button className="cancelBookingBtn" onClick={toggleModal}>Cancel Booking</button>
             </div>
 
 
@@ -248,69 +247,6 @@ const PartnerBookingDetail = () => {
               </div>
             </div>
           </div>
-          <Modal
-            isOpen={isModalOpen}
-            onRequestClose={closeModal}
-            style={{
-              overlay: {
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-              },
-              content: {
-                top: "50%",
-                left: "50%",
-                right: "auto",
-                bottom: "auto",
-                marginRight: "-50%",
-                transform: "translate(-50%, -50%)",
-                width: "550px",
-                textAlign: "center",
-                borderRadius: "10px",
-              },
-            }}
-          >
-            {booking.booking_status === "Completed" ? (
-              <div>
-                <h3>Bạn có muốn hủy chuyến đi không?
-                </h3>
-                <h4>Nếu đồng ý chúng tôi sẽ gửi email để xác nhận</h4>
-              </div>
-            ) : (
-              <div>
-                <h3>Bạn có muốn hủy chuyến đi không?
-                </h3>
-              </div>
-            )}
-            
-            <div style={{ marginTop: "20px" }}>
-              <button
-                style={{
-                  marginRight: "10px",
-                  padding: "10px 20px",
-                  backgroundColor: "#007BFF",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={handleCancelBooking}
-              >
-                Đồng ý
-              </button>
-              <button
-                style={{
-                  padding: "10px 20px",
-                  backgroundColor: "#6c757d",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={closeModal}
-              >
-                Không
-              </button>
-            </div>
-          </Modal>
 
         </div>
 

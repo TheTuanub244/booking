@@ -81,10 +81,12 @@ function Home() {
     );
 
     const userId = localStorage.getItem("userId");
+    const accessToken = localStorage.getItem("accessToken");
+
     setUserId(userId);
     getPropertyType();
     const handleFindUnfinishedBooking = async (userId) => {
-      const respone = await findUnfinishedBooking(userId);
+      const respone = await findUnfinishedBooking(userId, accessToken);
       if (respone) {
         setUnfinishedBooking(respone);
 

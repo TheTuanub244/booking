@@ -27,11 +27,11 @@ export class UserController {
     return this.userService.createUser(createUserDto); 
   }
   @Delete('/deleteUserById/:id')
-  async deleteUserById(@Query('id') id: string) {
+  async deleteUserById(@Param('id') id: string) {
     return this.userService.deleteUserById(id);
   }
   @Put('/updateUserById/:id')
-  async updateUserById(@Query('id') id: string, @Body() data: any) {
+  async updateUserById(@Param('id') id: string, @Body() data: any) {
     return this.userService.updateUserById(id, data);
   }
   @Post('/sign-up')

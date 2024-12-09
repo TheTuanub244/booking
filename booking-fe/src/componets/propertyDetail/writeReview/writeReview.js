@@ -18,7 +18,6 @@ function WriteReview({ rooms, refreshReviewSection }) {
     LOCATION: "Location",
     FREE_WIFI: "Free wifi",
   };
-  const accessToken = localStorage.getItem('accessToken')
   const [userId, setUserId] = useState(null);
   const [roomId, setRoomId] = useState(null); // This will be set based on room selection
   const [rating, setRating] = useState(1); // Default to 1 star
@@ -71,6 +70,8 @@ function WriteReview({ rooms, refreshReviewSection }) {
     };
 
     try {
+      const accessToken = localStorage.getItem('accessToken')
+
       await createReview(reviewData, accessToken);
 
       console.log("Review submitted:", reviewData);

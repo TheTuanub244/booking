@@ -30,7 +30,6 @@ export class ValidateTokenGuard implements CanActivate {
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
         const refreshToken = request.cookies['refreshToken'];
-        console.log(refreshToken)
         if (!refreshToken) {
           throw new UnauthorizedException('Sign In Required');
         }

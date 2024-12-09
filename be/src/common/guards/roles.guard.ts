@@ -31,12 +31,13 @@ export class RolesGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException('You must sign in');
     }
     let payload;
+
+
     try {
       payload = this.jwtService.verify(token);
     } catch (error) {

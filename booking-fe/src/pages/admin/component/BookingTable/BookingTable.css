@@ -52,7 +52,28 @@
   font-weight: bold; /* Make the text thick */
   color: white; /* Default text color */
 }
+/* Edit Button Styles */
+.bookingEditButton {
+  padding: 2px 5px;
+  border-radius: 5px;
+  background-color: #4caf50; /* A green color for edit */
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  font-weight: bold; /* Make button text bold */
+  border: none; /* Remove default button border */
+  outline: none; /* Remove default button outline */
+}
 
+.bookingEditButton:hover {
+  background-color: #3e8e41; /* A darker green on hover */
+}
+.bookingCellWithRole {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* Role Specific Styles */
 .bookingCellWithRole.Pending {
   color: rgba(255, 128, 1, 0.8); /* Amber for Pending */

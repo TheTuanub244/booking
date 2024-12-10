@@ -20,7 +20,7 @@
   height: 3rem;
 }
 .logo span {
-  color: blue;
+  color: #031716;
 }
 .menu {
   margin-top: 4rem;
@@ -45,14 +45,14 @@
   cursor: pointer;
 }
 .active {
-  background: #0056b3;
+  background: #0a7075;
   margin-left: 0;
 }
 .active::before {
   content: "";
   width: 8px;
   height: 100%;
-  background: #003580;
+  background: #031716;
   margin-right: calc(1rem - 8px);
 }
 .sidebar .menu a {

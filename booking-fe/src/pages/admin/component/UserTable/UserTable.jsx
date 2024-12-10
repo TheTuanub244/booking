@@ -59,7 +59,7 @@ const UserTable = ({ users, onDelete }) => {
     {
       field: "action",
       headerName: "Action",
-      width: 250,
+      width: 150,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
@@ -110,7 +110,7 @@ const UserTable = ({ users, onDelete }) => {
         className="userTableGrid"
         rows={data}
         columns={columns}
-        pageSize={10}
+        pageSize={7}
         disableSelectionOnClick
       />
 

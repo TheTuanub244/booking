@@ -27,6 +27,18 @@ import PropTypes from "prop-types";
 import { getPartner } from "../../../../api/userAPI";
 
 const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
+  const normalizedRooms = (initialData.rooms || []).map((room) => ({
+    ...room,
+    images: Array.isArray(room.images) ? room.images : [],
+    image: Array.isArray(room.image) ? room.image : [],
+    capacity: room.capacity || {
+      adults: 0,
+      childs: { count: 0, age: 0 },
+      room: 0,
+    },
+    price_per_night: room.price_per_night || { weekday: "", weekend: "" },
+  }));
+
   const [propertyData, setPropertyData] = useState({
     _id: initialData._id || "",
     name: initialData.name || "",
@@ -40,16 +52,19 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       districtCode: initialData.address?.districtCode || "",
       wardCode: initialData.address?.wardCode || "",
     },
-    type: initialData.type || "",
-    images: initialData.images || [],
-    image: initialData.image || [], // For file uploads
+    type: initialData.property_type || "",
+    images: Array.isArray(initialData.images) ? initialData.images : [],
+    image: Array.isArray(initialData.image) ? initialData.image : [],
     location: {
-      lat: initialData.location?.lat || 0,
-      lng: initialData.location?.lng || 0,
+      latitude: initialData.location?.latitude || 0,
+      longitude: initialData.location?.longitude || 0,
+      lat: initialData.location?.latitude || 0,
+      lng: initialData.location?.longitude || 0,
     },
-    rooms: initialData.rooms || [],
-    owner_id: initialData.owner_id || localStorage.getItem("userId") || "",
+    rooms: normalizedRooms,
+    owner_id: initialData.owner_id?._id || localStorage.getItem("userId") || "",
   });
+
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -244,7 +259,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     formData.append("name", propertyData.name);
     formData.append("owner_id", propertyData.owner_id);
     formData.append("description", propertyData.description);
-    formData.append("type", propertyData.type);
+    formData.append("property_type", propertyData.type);
     formData.append("location", JSON.stringify(propertyData.location));
     formData.append("address", JSON.stringify(propertyData.address));
 
@@ -262,8 +277,6 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     }
     // Add room details, including each room’s image
     propertyData.rooms.forEach((room, index) => {
-      // Append individual room fields
-
       if (room._id) {
         // Only append if _id exists
         formData.append(`rooms[${index}][_id]`, room._id);
@@ -440,16 +453,21 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
       const reader = new FileReader();
 
       reader.onloadend = () => {
-        newImages.push(reader.result); // For preview
-        newImageFiles.push(file); // For upload
+        newImages.push(reader.result);
+        newImageFiles.push(file);
 
         if (newImages.length === files.length) {
           setPropertyData((prevData) => {
             const updatedRooms = [...prevData.rooms];
+            const room = updatedRooms[index];
+            if (!Array.isArray(room.image)) {
+              room.image = [];
+            }
+
             updatedRooms[index] = {
-              ...updatedRooms[index],
-              images: [...updatedRooms[index].images, ...newImages],
-              image: [...updatedRooms[index].image, ...newImageFiles],
+              ...room,
+              images: [...room.images, ...newImages],
+              image: [...room.image, ...newImageFiles],
             };
             return { ...prevData, rooms: updatedRooms };
           });
@@ -483,6 +501,8 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
     setPropertyData((prevData) => ({
       ...prevData,
       location: {
+        lat: location.lat,
+        lng: location.lng,
         latitude: location.lat,
         longitude: location.lng,
       },
@@ -817,7 +837,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
               />
 
               {/* Room Type */}
-              <TextField
+              {/* <TextField
                 select
                 label="Room Type"
                 variant="outlined"
@@ -832,7 +852,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                     {option}
                   </MenuItem>
                 ))}
-              </TextField>
+              </TextField> */}
 
               {/* Room Size */}
               <TextField
@@ -938,7 +958,7 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                       >
                         <img
                           src={imgUrl}
-                          alt={`Room ${index + 1} Image ${imgIndex + 1}`}
+                          alt={`Room ${index + 1} ${imgIndex + 1}`}
                           style={{
                             position: "absolute",
                             top: 0,
@@ -954,8 +974,10 @@ const PropertyForm = ({ initialData, onSubmit, formTitle }) => {
                           onClick={() => handleRemoveRoomImage(index, imgIndex)}
                           sx={{
                             position: "absolute",
-                            top: 5,
-                            right: 5,
+                            top: -10,
+                            right: -10,
+                            width: 24,
+                            height: 24,
                             backgroundColor: "rgba(255, 255, 255, 0.8)",
                             "&:hover": {
                               backgroundColor: "rgba(255, 255, 255, 1)",

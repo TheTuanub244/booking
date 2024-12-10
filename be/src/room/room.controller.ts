@@ -105,7 +105,7 @@ export class RoomController {
     );
   }
   @Get('getRoomById/:roomId')
-  async getUserById(@Param('roomId') roomId: string) {
+  async getRoomById(@Param('roomId') roomId: string) {
     return this.roomService.getRoomById(roomId);
   }
 }

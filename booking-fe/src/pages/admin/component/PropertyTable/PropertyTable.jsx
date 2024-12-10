@@ -50,12 +50,15 @@ const PropertyTable = ({ properties, onDelete }) => {
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 150,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
         <div className="propertyCellAction">
-          <Link to={`view/${params.row.id}`} style={{ textDecoration: "none" }}>
+          <Link
+            to={`/admin/property/view/${params.row.id}`}
+            style={{ textDecoration: "none" }}
+          >
             <button className="propertyViewButton">View</button>
           </Link>
           <button
@@ -99,7 +102,8 @@ const PropertyTable = ({ properties, onDelete }) => {
         className="propertyTableGrid"
         rows={tableRows}
         columns={propertyColumns}
-        pageSize={6}
+        pageSize={7}
+        rowsPerPageOptions={[7]}
         disableSelectionOnClick
       />
 

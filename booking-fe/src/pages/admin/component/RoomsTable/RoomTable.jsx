@@ -71,7 +71,7 @@ const RoomTable = ({ rooms, onDelete }) => {
     {
       field: "action",
       headerName: "Action",
-      width: 170,
+      width: 150,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
@@ -96,8 +96,8 @@ const RoomTable = ({ rooms, onDelete }) => {
         className="roomTableGrid"
         rows={tableRows}
         columns={roomColumn}
-        pageSize={6}
-        rowsPerPageOptions={[6]}
+        pageSize={7}
+        rowsPerPageOptions={[7]}
         disableSelectionOnClick
       />
 

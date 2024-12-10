@@ -1,9 +1,5 @@
 import {
-  UilEstate,
   UilClipboardAlt,
-  UilUsersAlt,
-  UilPackage,
-  UilChart,
   UilUsdSquare,
   UilMoneyWithdrawal,
 } from "@iconscout/react-unicons";
@@ -11,42 +7,44 @@ import img1 from "../imgs/img1.png";
 import img2 from "../imgs/img2.png";
 import img3 from "../imgs/img3.png";
 
+import {
+  faHome,
+  faClipboardList,
+  faUserShield,
+  faUsers,
+  faBoxOpen,
+  faHotel,
+} from "@fortawesome/free-solid-svg-icons";
+
 export const SidebarData = [
   {
-    icon: UilEstate,
-    heading: "Dashboard",
-    path: "/admin",
+    icon: faHotel,
+    heading: "Property",
+    path: "/admin/property",
   },
+ 
   {
-    icon: UilClipboardAlt,
-    heading: "Booking",
-    path: "/admin/booking",
-  },
-  {
-    icon: UilUsersAlt,
-    heading: "Partner Request",
-    path: "/admin/partnerRequest",
-  },
-  {
-    icon: UilUsersAlt,
-    heading: "User",
-    path: "/admin/user",
-  },
-  {
-    icon: UilPackage,
+    icon: faBoxOpen,
     heading: "Room",
     path: "/admin/room",
   },
   {
-    icon: UilChart,
-    heading: "Property",
-    path: "/admin/property",
+    icon: faUsers,
+    heading: "User",
+    path: "/admin/user",
   },
   {
-    icon: UilChart,
-    heading: "Analytic",
-    path: "/admin/analytic",
+    icon: faUserShield,
+    heading: "Partner Request",
+    path: "/admin/partnerRequest",
   },
+  {
+    icon: faClipboardList,
+    heading: "Booking",
+    path: "/admin/booking",
+  },
+
+  
 ];
 export const cardsData = [
   {

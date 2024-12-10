@@ -9,7 +9,6 @@ const RegisterBox = ({ setIsRegister, setExistedUser }) => {
     const respone = await checkEmail(email);
 
     if (respone !== true) {
-      console.log(respone);
 
       setExistedUser(respone);
     }

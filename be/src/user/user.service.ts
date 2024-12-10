@@ -427,9 +427,9 @@ export class UserService {
     return this.userSchema.findByIdAndUpdate(
       new Types.ObjectId(userId),
       {
-        $addToSet: {
-          role: ROLE.PARTNER,
-        },
+        $set: {
+          role: ROLE.PENDING
+        }
       },
       {
         new: true,

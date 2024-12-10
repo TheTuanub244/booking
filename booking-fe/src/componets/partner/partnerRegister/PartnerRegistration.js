@@ -81,7 +81,7 @@ const PartnerRegistration = ({ existedUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (existedUser) {
-      console.log(formData);
+      await requestToPartner(existedUser._id);
     }
     setShowModal(true);
   };

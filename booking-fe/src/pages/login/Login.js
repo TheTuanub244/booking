@@ -246,6 +246,8 @@ function Login() {
       displayName: displayName,
     };
     SaveUserDataToLocal(userData);
+    const redirectPath = localStorage.getItem('redirectPath')
+    navigate(redirectPath)
   };
   return (
     <div>

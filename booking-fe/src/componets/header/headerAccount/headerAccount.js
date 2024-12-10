@@ -55,10 +55,12 @@ function HeaderAccount() {
 
     if (id) {
       socketService.on("notifyPartner", (notification) => {
+        getAllNotification()
         console.log("Notification received in HeaderAccount:", notification);
         fetchNotifications();
       });
       socketService.on("notifyUser", (notification) => {
+        getAllNotification()
         console.log("Notification received in HeaderAccount - ToUser:", notification);
       })
     }

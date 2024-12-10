@@ -25,7 +25,7 @@ export class NotificationService {
     });
     const findNoti = await this.notificationSchema.find({
       receiver_id: new Types.ObjectId(user_id),
-    });
+    }).sort({ createdAt: -1 });
     return {
       noti: findNoti,
       seen: countSeen,
